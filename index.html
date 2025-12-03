@@ -2,7 +2,7 @@
 <html lang="he" dir="rtl">
 <head>
   <meta charset="utf-8">
-  <title>מפת פשיעה לפי רשות מקומית</title>
+  <title>נתוני פשיעה לפי רשות</title>
 
   <!-- GOVMAP API -->
   <script
@@ -11,7 +11,7 @@
     onload="initGovMap()">
   </script>
 
-  <!-- הדאטה שהפקנו מה-Pivot: חייב להכיל const crimeDB = {...} -->
+  <!-- הקובץ שנוצר מה-Pivot: מכיל const crimeDB = {...} -->
   <script src="crimeDB.js"></script>
 
   <style>
@@ -78,30 +78,39 @@
   </div>
 
   <script>
-    // ❗ חשוב: אלה השמות שאתה אולי צריך להתאים לפי מה שתראה בקונסול
-   const SETTLEMENT_LAYER = "124";
+    // שכבת ועדים מקומיים – 124 לפי GOVMAP
+    const SETTLEMENT_LAYER = "124";
 
-    const CITY_FIELD = "SHEM_RASHUT";         // שם השדה של "שם רשות" (לעדכן לפי ה-response)
+    // את זה נעדכן אחרי שנראה מה חוזר ב-console
+    const CITY_FIELD = "SHEM_RASHUT"; // נחליף לשם הנכון אחרי שנראה response
 
-    // מופעל אוטומטית כשסקריפט GOVMAP נטען (onload באלמנט ה-script)
+    // מופעל כשסקריפט GOVMAP נטען
     function initGovMap() {
+      console.log("initGovMap – מתחיל ליצור מפה");
+
+      function registerClickListener() {
+        console.log("map loaded – נרשמים לאירוע CLICK");
+
+        govmap.onEvent(govmap.events.CLICK).progress(onMapClick);
+      }
+
       govmap.createMap("map", {
         token: "ede9a5fd-7c23-432f-8ffb-d85feffa3f3c", // הטוקן שלך
         layers: [SETTLEMENT_LAYER],
         background: 2,
         layersMode: 1,
         zoomButtons: true,
-        level: 8,
+        level: 10,
         showXY: true,
-        identifyOnClick: false
+        identifyOnClick: false,
+        onLoad: registerClickListener      // 👈 חשוב! ההאזנה נרשמת רק אחרי שהמפה עלתה
       });
-
-      // האזנה לקליקים על המפה
-      govmap.onEvent(govmap.events.CLICK).progress(onMapClick);
     }
 
     // מה קורה כשמשתמש לוחץ על המפה
     async function onMapClick(e) {
+      console.log("onMapClick – אירוע לחיצה:", e);
+
       try {
         const res = await govmap.selectFeaturesOnMap({
           drawType: govmap.drawType.Point,
@@ -137,14 +146,14 @@
     function extractCityName(res) {
       if (!res) return null;
 
-      // מבנה נפוץ: res = { "ועדים מקומיים": [ { SHEM_RASHUT: "דרום השרון", ... } ] }
+      // קודם ננסה במבנה של אובייקט לפי שם שכבה ("124")
       if (res[SETTLEMENT_LAYER] && res[SETTLEMENT_LAYER].length > 0) {
         const feature = res[SETTLEMENT_LAYER][0];
         const name = feature[CITY_FIELD];
         return name ? name.toString().trim() : null;
       }
 
-      // ביטוח – אם המבנה יהיה פשוט מערך
+      // ביטוח – אם זה פשוט מערך
       if (Array.isArray(res) && res.length > 0) {
         const feature = res[0];
         if (feature && feature[CITY_FIELD]) {
@@ -165,10 +174,7 @@
     function showCrimeData(cityName) {
       const panel = document.getElementById("cityInfo");
 
-      // אם יש מיפוי בין שם רשות של GOVMAP לבין השם ב-crimeDB – אפשר לטפל פה
-      const normalizedName = cityName; // אם צריך, תשנה פה לשימוש במפה חיצונית
-
-      const data = crimeDB[normalizedName];
+      const data = crimeDB[cityName];
 
       if (!data) {
         panel.innerHTML = `
