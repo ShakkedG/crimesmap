@@ -1,203 +1,437 @@
-<!DOCTYPE html>
-<html lang="he" dir="rtl">
-<head>
-  <meta charset="utf-8">
-  <title>נתוני פשיעה לפי רשות</title>
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+<head> 
+    <script src="https://www.govmap.gov.il/govmap/api/govmap.api.js" defer onload="initGovMap()"></script> 
 
-  <!-- GOVMAP API -->
-  <script
-    src="https://www.govmap.gov.il/govmap/api/govmap.api.js"
-    defer
-    onload="initGovMap()">
-  </script>
+    <script type="text/javascript"> 
+    function initGovMap() { 
+        govmap.createMap('map', { 
+            token: 'ede9a5fd-7c23-432f-8ffb-d85feffa3f3c', 
+            layers: ["GASSTATIONS","PARCEL_HOKS", "KSHTANN_ASSETS", "bus_stops", "PARCEL_ALL","219111","219113","219114"], 
+            showXY: true, 
+            identifyOnClick: true, 
+            isEmbeddedToggle: false, 
+            background: 2, 
+            layersMode: 1, 
+            zoomButtons: false, 
+            level: 9,
+            extent:{xmin: 193700, ymin: 664900, xmax: 195000, ymax: 666100},
+        }); 
+    } 
 
-  <!-- הקובץ שנוצר מה-Pivot: מכיל const crimeDB = {...} -->
-  <script src="crimeDB.js"></script>
+    function toggleButton() {
+        const btn = document.getElementById('showButton');
+        const resultsDiv = document.getElementById('results');
 
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-    }
+        if (!btn.classList.contains('redButton')) {
+            btn.classList.add('redButton');
 
-    #container {
-      display: flex;
-      height: 100vh;
-    }
+            var params = { 
+                continous: false,
+                drawType: govmap.drawType.Rectangle,
+                filterLayer: false,
+                isZoomToExtent: true,
+                layers: ["GASSTATIONS", "219111", "219113", "219114"],
+                returnFields: {
+                    "GASSTATIONS": ["objectid", "company"],
+                    "219111": ["value0"],
+                    "219113": ["value0"],
+                    "219114": ["value0"]
+                }
+            };
 
-    #map {
-      flex: 3;
-    }
+            govmap.selectFeaturesOnMap(params).then(function(response1) { 
+                btn.classList.remove('redButton');
+                resultsDiv.style.display = 'block';
 
-    #infoPanel {
-      flex: 1;
-      padding: 15px;
-      background: #f5f5f5;
-      box-sizing: border-box;
-      border-left: 1px solid #ccc;
-      overflow-y: auto;
-    }
+                console.log('selectFeaturesOnMap response:', response1); 
+                
+                // בסיס ל־HTML
+                var html = '<div id="closeResultsBtn" onclick="closeResults()">✖</div>';
 
-    #infoPanel h2 {
-      margin-top: 0;
-    }
+                if (response1 && response1.length > 0) { 
+                    // חלוקה לקבוצות לפי שכבה
+                    const gasStations = [];
+                    const p219111 = [];
+                    const p219113 = [];
+                    const p219114 = [];
 
-    .crime-type {
-      margin: 4px 0;
-    }
+                    response1.forEach(function(item) {
+                        const layer =
+                            item.layerName ||
+                            item.layername ||
+                            item.layer ||
+                            ''; // fallback
 
-    .city-name {
-      font-size: 22px;
-      font-weight: bold;
-      margin-bottom: 6px;
-    }
+                        if (layer === 'GASSTATIONS' || item.company) {
+                            gasStations.push(item);
+                        } else if (layer === '219111') {
+                            p219111.push(item);
+                        } else if (layer === '219113') {
+                            p219113.push(item);
+                        } else if (layer === '219114') {
+                            p219114.push(item);
+                        }
+                    });
 
-    .total-crime {
-      font-size: 18px;
-      margin-bottom: 10px;
-    }
+                    const total = response1.length;
 
-    ul {
-      padding-right: 18px;
-    }
-  </style>
-</head>
+                    html += '<h3>תוצאות חיפוש</h3>'; 
+                    html += '<p class="results-subtitle">בחרת אזור במפה, הנה מה שמצאנו:</p>'; 
 
-<body>
-  <div id="container">
-    <!-- פאנל המידע -->
-    <div id="infoPanel">
-      <h2>נתוני פשיעה לפי רשות</h2>
-      <div id="cityInfo">
-        לחץ על רשות במפה (שכבת "ועדים מקומיים") כדי לראות נתונים.
-      </div>
-    </div>
+                    // כרטיסי סיכום
+                    html += '<div class="results-summary">';
+                    html += '  <div class="summary-chip summary-total">';
+                    html += '    <div class="summary-label">סה״כ נקודות</div>';
+                    html += '    <div class="summary-value">' + total + '</div>';
+                    html += '  </div>';
 
-    <!-- המפה -->
-    <div id="map"></div>
-  </div>
+                    if (gasStations.length) {
+                        html += '  <div class="summary-chip summary-gas">';
+                        html += '    <div class="summary-label">תחנות דלק</div>';
+                        html += '    <div class="summary-value">' + gasStations.length + '</div>';
+                        html += '  </div>';
+                    }
+                    if (p219111.length) {
+                        html += '  <div class="summary-chip summary-parcel">';
+                        html += '    <div class="summary-label">שכבה 219111</div>';
+                        html += '    <div class="summary-value">' + p219111.length + '</div>';
+                        html += '  </div>';
+                    }
+                    if (p219113.length) {
+                        html += '  <div class="summary-chip summary-parcel">';
+                        html += '    <div class="summary-label">שכבה 219113</div>';
+                        html += '    <div class="summary-value">' + p219113.length + '</div>';
+                        html += '  </div>';
+                    }
+                    if (p219114.length) {
+                        html += '  <div class="summary-chip summary-parcel">';
+                        html += '    <div class="summary-label">שכבה 219114</div>';
+                        html += '    <div class="summary-value">' + p219114.length + '</div>';
+                        html += '  </div>';
+                    }
 
-  <script>
-    // שכבת ועדים מקומיים – 124 לפי GOVMAP
-    const SETTLEMENT_LAYER = "124";
+                    html += '</div>'; // results-summary
 
-    // את זה נעדכן אחרי שנראה מה חוזר ב-console
-    const CITY_FIELD = "SHEM_RASHUT"; // נחליף לשם הנכון אחרי שנראה response
+                    // טבלה – תחנות דלק
+                    if (gasStations.length) {
+                        html += '<h4 class="results-section-title">⛽ תחנות דלק שנמצאו</h4>';
+                        html += '<table class="results-table">';
+                        html += '  <thead>';
+                        html += '    <tr><th>#</th><th>חברה</th><th>מזהה (objectid)</th></tr>';
+                        html += '  </thead>';
+                        html += '  <tbody>';
 
-    // מופעל כשסקריפט GOVMAP נטען
-    function initGovMap() {
-      console.log("initGovMap – מתחיל ליצור מפה");
+                        gasStations.forEach(function(station, index) {
+                            html += '    <tr>';
+                            html += '      <td>' + (index + 1) + '</td>';
+                            html += '      <td>' + (station.company || '-') + '</td>';
+                            html += '      <td>' + (station.objectid || '-') + '</td>';
+                            html += '    </tr>';
+                        });
 
-      function registerClickListener() {
-        console.log("map loaded – נרשמים לאירוע CLICK");
+                        html += '  </tbody>';
+                        html += '</table>';
+                    }
 
-        govmap.onEvent(govmap.events.CLICK).progress(onMapClick);
-      }
+                    // פונקציה קטנה ליצירת טבלה לשכבות 219xxx
+                    function buildParcelTable(title, items) {
+                        if (!items.length) return '';
 
-      govmap.createMap("map", {
-        token: "ede9a5fd-7c23-432f-8ffb-d85feffa3f3c", // הטוקן שלך
-        layers: [SETTLEMENT_LAYER],
-        background: 2,
-        layersMode: 1,
-        zoomButtons: true,
-        level: 10,
-        showXY: true,
-        identifyOnClick: false,
-        onLoad: registerClickListener      // 👈 חשוב! ההאזנה נרשמת רק אחרי שהמפה עלתה
-      });
-    }
+                        var out = '';
+                        out += '<h4 class="results-section-title">' + title + '</h4>';
+                        out += '<table class="results-table results-table-parcels">';
+                        out += '  <thead>';
+                        out += '    <tr><th>#</th><th>value0</th></tr>';
+                        out += '  </thead>';
+                        out += '  <tbody>';
 
-    // מה קורה כשמשתמש לוחץ על המפה
-    async function onMapClick(e) {
-      console.log("onMapClick – אירוע לחיצה:", e);
+                        items.forEach(function(p, i) {
+                            out += '    <tr>';
+                            out += '      <td>' + (i + 1) + '</td>';
+                            out += '      <td>' + (p.value0 || '-') + '</td>';
+                            out += '    </tr>';
+                        });
 
-      try {
-        const res = await govmap.selectFeaturesOnMap({
-          drawType: govmap.drawType.Point,
-          x: e.mapPoint.x,
-          y: e.mapPoint.y,
-          layers: [SETTLEMENT_LAYER],
-          filterLayer: true,
-          isZoomToExtent: false,
-          returnFields: {
-            [SETTLEMENT_LAYER]: [CITY_FIELD]
-          }
-        });
+                        out += '  </tbody>';
+                        out += '</table>';
+                        return out;
+                    }
 
-        console.log("selectFeaturesOnMap response:", res);
+                    html += buildParcelTable('📌 שכבה 219111', p219111);
+                    html += buildParcelTable('📌 שכבה 219113', p219113);
+                    html += buildParcelTable('📌 שכבה 219114', p219114);
 
-        const cityName = extractCityName(res);
+                    // JSON גולמי במצב מתקפל
+                    html += '<details class="raw-details">';
+                    html += '  <summary>הצג נתונים גולמיים (JSON)</summary>';
+                    html += '  <pre>' + JSON.stringify(response1, null, 2) + '</pre>';
+                    html += '</details>';
+                    
+                    resultsDiv.innerHTML = html; 
+                    
+                } else { 
+                    html += '<h3>תוצאות חיפוש</h3>'; 
+                    html += '<p class="no-results">❌ לא נמצאו נקודות עניין באזור שנבחר.</p>'; 
+                    resultsDiv.innerHTML = html;
+                } 
+                
+            }).catch(function(error) { 
+                console.error('Error in selectFeaturesOnMap:', error); 
+                btn.classList.remove('redButton');
+                resultsDiv.style.display = 'block';
+                resultsDiv.innerHTML = '' +
+                    '<div id="closeResultsBtn" onclick="closeResults()">✖</div>' +
+                    '<h3>שגיאה בביצוע החיפוש</h3>' +
+                    '<p style="color: #f44336;">❌ שגיאה: ' + (error.message || error) + '</p>'; 
+            }); 
 
-        if (!cityName) {
-          showMessage("לא זוהתה רשות בנקודה שנבחרה.");
-          return;
+        } else {
+            btn.classList.remove('redButton');
         }
-
-        console.log("רשות שזוהתה:", cityName);
-        showCrimeData(cityName);
-
-      } catch (err) {
-        console.error("שגיאה בקריאה ל-selectFeaturesOnMap:", err);
-        showMessage("אירעה שגיאה בעת קריאת הנתונים מהמפה.");
-      }
     }
 
-    // מוציא את שם הרשות מהתשובה של GOVMAP
-    function extractCityName(res) {
-      if (!res) return null;
+    function closeResults() {
+        document.getElementById('results').style.display = 'none';
+    }
+    </script> 
 
-      // קודם ננסה במבנה של אובייקט לפי שם שכבה ("124")
-      if (res[SETTLEMENT_LAYER] && res[SETTLEMENT_LAYER].length > 0) {
-        const feature = res[SETTLEMENT_LAYER][0];
-        const name = feature[CITY_FIELD];
-        return name ? name.toString().trim() : null;
-      }
+    <style> 
+    body { 
+        margin: 0; 
+        padding: 0; 
+        font-family: Arial, sans-serif; 
+    } 
 
-      // ביטוח – אם זה פשוט מערך
-      if (Array.isArray(res) && res.length > 0) {
-        const feature = res[0];
-        if (feature && feature[CITY_FIELD]) {
-          return feature[CITY_FIELD].toString().trim();
-        }
-      }
+    #header { 
+        position: absolute; 
+        top: 0; 
+        left: 0; 
+        right: 0; 
+        height: 80px; 
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+        color: white; 
+        display: flex; 
+        align-items: center; 
+        justify-content: space-between; 
+        padding: 0 30px; 
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
+        z-index: 1001; 
+    } 
 
-      return null;
+    #header h1 { 
+        margin: 0; 
+        font-size: 32px; 
+        font-weight: bold; 
+    } 
+
+    #map-container { 
+        position: relative; 
+        width: 100vw; 
+        height: 100vh; 
+        padding-top: 80px; 
+        box-sizing: border-box; 
+    } 
+
+    #map { 
+        width: 100%; 
+        height: 100%; 
+    } 
+
+    #button-container { 
+        position: absolute; 
+        top: 100px; 
+        left: 20px; 
+        z-index: 1000; 
+    } 
+
+    #showButton { 
+        padding: 15px 30px; 
+        font-size: 18px; 
+        background-color: #4CAF50; 
+        color: white; 
+        border: none; 
+        border-radius: 5px; 
+        cursor: pointer; 
+        box-shadow: 0 4px 6px rgba(0,0,0,0.3); 
+        transition: all 0.3s ease;
+    } 
+
+    #showButton:hover { 
+        background-color: #45a049; 
+        transform: translateY(-2px);
+        box-shadow: 0 6px 8px rgba(0,0,0,0.4);
+    } 
+
+    .redButton {
+        background-color: #f44336 !important;
     }
 
-    // מציג הודעה כללית בפאנל
-    function showMessage(text) {
-      const panel = document.getElementById("cityInfo");
-      panel.innerHTML = `<p>${text}</p>`;
+    .redButton:hover {
+        background-color: #da190b !important;
     }
 
-    // מציג נתוני פשיעה לפי רשות מתוך crimeDB
-    function showCrimeData(cityName) {
-      const panel = document.getElementById("cityInfo");
+    #results { 
+        position: absolute; 
+        bottom: 20px; 
+        left: 20px; 
+        right: 20px; 
+        max-height: 50vh; 
+        overflow: auto; 
+        background: white; 
+        padding: 24px 24px 18px; 
+        border-radius: 12px; 
+        box-shadow: 0 4px 16px rgba(0,0,0,0.25); 
+        z-index: 1000; 
+        display: none; 
+        box-sizing: border-box;
+    } 
 
-      const data = crimeDB[cityName];
-
-      if (!data) {
-        panel.innerHTML = `
-          <div class="city-name">${cityName}</div>
-          <p>אין נתונים בטבלת הפשיעה עבור רשות זו.</p>
-        `;
-        return;
-      }
-
-      let html = "";
-      html += `<div class="city-name">${cityName}</div>`;
-      html += `<div class="total-crime"><strong>סה"כ עבירות:</strong> ${data.total}</div>`;
-      html += `<h4>פירוט לפי קבוצת עבירה:</h4>`;
-      html += `<ul>`;
-
-      for (const [type, count] of Object.entries(data.breakdown)) {
-        html += `<li class="crime-type"><strong>${type}:</strong> ${count}</li>`;
-      }
-
-      html += `</ul>`;
-
-      panel.innerHTML = html;
+    #closeResultsBtn {
+        position: absolute;
+        top: 8px;
+        right: 12px;
+        font-size: 22px;
+        cursor: pointer;
+        color: #444;
+        font-weight: bold;
     }
-  </script>
-</body>
+
+    #closeResultsBtn:hover {
+        color: #ff4444;
+    }
+
+    #results h3 {
+        margin: 0 0 6px 0;
+        color: #222;
+        border-bottom: 2px solid #667eea;
+        padding-bottom: 8px;
+        font-size: 20px;
+    }
+
+    .results-subtitle {
+        margin: 4px 0 16px 0;
+        color: #555;
+        font-size: 14px;
+    }
+
+    .results-summary {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 18px;
+    }
+
+    .summary-chip {
+        min-width: 120px;
+        padding: 10px 14px;
+        border-radius: 999px;
+        background: #f5f5f5;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+
+    .summary-label {
+        font-size: 12px;
+        color: #777;
+        margin-bottom: 2px;
+    }
+
+    .summary-value {
+        font-size: 18px;
+        font-weight: bold;
+        color: #222;
+    }
+
+    .summary-total {
+        background: #eef2ff;
+    }
+
+    .summary-gas {
+        background: #e6fffa;
+    }
+
+    .summary-parcel {
+        background: #fff7ed;
+    }
+
+    .results-section-title {
+        margin: 10px 0 6px 0;
+        color: #333;
+        font-size: 16px;
+    }
+
+    .results-table {
+        width: 100%;
+        border-collapse: collapse;
+        border-radius: 8px;
+        overflow: hidden;
+        margin-bottom: 12px;
+        font-size: 14px;
+    }
+
+    .results-table th,
+    .results-table td {
+        padding: 8px 10px;
+        border: 1px solid #e0e0e0;
+        text-align: right;
+    }
+
+    .results-table thead {
+        background: #f3f4ff;
+        font-weight: bold;
+    }
+
+    .results-table tbody tr:nth-child(even) {
+        background: #fafafa;
+    }
+
+    .results-table-parcels thead {
+        background: #fff3e0;
+    }
+
+    .raw-details {
+        margin-top: 14px;
+        font-size: 13px;
+    }
+
+    .raw-details summary {
+        cursor: pointer;
+        color: #667eea;
+        font-weight: bold;
+        margin-bottom: 8px;
+    }
+
+    .raw-details pre { 
+        background: #f5f5f5; 
+        padding: 10px; 
+        border-radius: 5px; 
+        overflow-x: auto; 
+        margin-top: 8px;
+    } 
+
+    .no-results {
+        color: #f44336;
+        margin-top: 12px;
+        font-size: 15px;
+    }
+    </style> 
+</head> 
+
+<body> 
+    <div id="header"> 
+        <h1>שקד גולן GovMap</h1> 
+        <div style="font-size: 18px;">אתר קיבוץ עינת</div> 
+    </div> 
+
+    <div id="map-container"> 
+        <div id="button-container"> 
+            <button id="showButton" onClick="toggleButton()">🗺️ בחר אזור במפה</button> 
+        </div> 
+        
+        <div id="map"></div> 
+        <div id="results"></div> 
+    </div> 
+</body> 
 </html>
