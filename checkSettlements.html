@@ -1,56 +1,9 @@
-<!DOCTYPE html>
-<html lang="he" dir="rtl">
-<head>
-  <meta charset="utf-8">
-  <title>בדיקת התאמה בין שכבת 124 לבין crimeDB</title>
-
-  <!-- GOVMAP API -->
-  <script
-    src="https://www.govmap.gov.il/govmap/api/govmap.api.js"
-    defer
-    onload="initGovMap()">
-  </script>
-
-  <!-- קובץ הפשיעה שלך -->
-  <script src="crimeDB.js"></script>
-
-  <style>
-    body { font-family: Arial, sans-serif; padding: 20px; }
-    h1 { margin-bottom: 5px; }
-    h2 { margin-bottom: 5px; }
-    .box {
-      padding: 10px;
-      border: 1px solid #ccc;
-      margin: 15px 0;
-      background: #f7f7f7;
-    }
-    ul { margin-top: 5px; }
-    li { margin: 3px 0; }
-    .ok { color: green; }
-    .warn { color: red; }
-    #map { width: 0; height: 0; overflow: hidden; }
-  </style>
-</head>
-
-<body>
-
-<h1>בדיקת התאמה בין שכבת 124 לבין crimeDB</h1>
-<p>הקלק על הכפתור כדי לטעון את השכבה ולבצע את ההשוואה.</p>
-
-<button onclick="runCheck()">הרץ בדיקה</button>
-
-<div id="results"></div>
-
-<!-- div נסתר בשביל המפה (נדרש ע"י GovMap) -->
-<div id="map"></div>
-
 <script>
   const SETTLEMENT_LAYER = "124";
-  const TOKEN = "ede9a5fd-7c23-432f-8ffb-d85feffa3f3c",; // ← תחליף לטוקן שלך
+  const TOKEN = "PUT_YOUR_TOKEN_HERE"; // שים פה את הטוקן שלך
 
   let mapInitialized = false;
 
-  // מופעל כשסקריפט GOVMAP נטען
   function initGovMap() {
     govmap.createMap("map", {
       token: TOKEN,
@@ -65,26 +18,17 @@
     console.log("GovMap initialized");
   }
 
-  // ------------------------------------------------
-  // שלב 1 — טוען ישויות של שכבת 124
-  // ------------------------------------------------
   async function loadLayer124() {
     if (!mapInitialized) {
-      throw new Error("המפה עדיין לא נטענה, נסה שוב עוד שנייה.");
+      throw new Error("המפה עדיין לא נטענה, נסה שוב.");
     }
 
-    const params = {
-      layerName: SETTLEMENT_LAYER
-    };
-
+    const params = { layerName: SETTLEMENT_LAYER };
     const entities = await govmap.getLayerEntities(params);
     console.log("getLayerEntities response:", entities);
     return entities;
   }
 
-  // ------------------------------------------------
-  // שלב 2 — למצוא איזה שדה מכיל את שם הרשות
-  // ------------------------------------------------
   function detectNameField(entities) {
     const counts = {};
     const captions = {};
@@ -103,104 +47,9 @@
 
     let best = null;
     let bestCount = 0;
-
-    for (const [key, count] of Object.entries(counts)) {
-      if (count > bestCount) {
+    for (const key in counts) {
+      if (counts[key] > bestCount) {
         best = key;
-        bestCount = count;
+        bestCount = counts[key];
       }
     }
-
-    return { fieldName: best, captions, counts };
-  }
-
-  // ------------------------------------------------
-  // שלב 3 — חילוץ שמות רשויות מהשדה שנבחר
-  // ------------------------------------------------
-  function extractSettlementNames(entities, fieldName) {
-    const names = new Set();
-
-    for (const ent of entities) {
-      const fields = ent.Fields || [];
-      const nameField = fields.find(f => f.FieldName === fieldName);
-      if (nameField && nameField.Value) {
-        names.add(nameField.Value.toString().trim());
-      }
-    }
-
-    return Array.from(names).sort();
-  }
-
-  // ------------------------------------------------
-  // שלב 4 — השוואה מול crimeDB
-  // ------------------------------------------------
-  function compareNames(layerNames, crimeDB) {
-    const dbNames = Object.keys(crimeDB);
-
-    const missingInDB = layerNames.filter(n => !dbNames.includes(n));
-    const extraInDB   = dbNames.filter(n => !layerNames.includes(n));
-
-    return { missingInDB, extraInDB, dbNames };
-  }
-
-  // ------------------------------------------------
-  // עזר להצגת רשימות
-  // ------------------------------------------------
-  function showList(title, items, css) {
-    return `
-      <div class="box">
-        <h2 class="${css}">${title}</h2>
-        ${
-          items.length === 0
-            ? '<p class="ok">אין</p>'
-            : '<ul>' + items.map(i => `<li>${i}</li>`).join("") + '</ul>'
-        }
-      </div>
-    `;
-  }
-
-  // ------------------------------------------------
-  // שלב 5 — הפעלה מלאה
-  // ------------------------------------------------
-  async function runCheck() {
-    const resultsDiv = document.getElementById("results");
-    resultsDiv.innerHTML = "<p>טוען נתונים מגובמפה...</p>";
-
-    try {
-      const entities = await loadLayer124();
-
-      const { fieldName, captions, counts } = detectNameField(entities);
-      if (!fieldName) {
-        throw new Error("לא נמצא שדה טקסט עברי שמתאים לשם הרשות.");
-      }
-
-      console.log("שדה שנבחר:", fieldName, "כותרת:", captions[fieldName], "ספירה:", counts[fieldName]);
-
-      const settlements = extractSettlementNames(entities, fieldName);
-      const { missingInDB, extraInDB, dbNames } = compareNames(settlements, crimeDB);
-
-      resultsDiv.innerHTML = `
-        <div class="box">
-          <h2>שדה שם הרשות שנבחר:</h2>
-          <p><strong>${fieldName}</strong> (כיתוב: ${captions[fieldName] || "ללא"})</p>
-        </div>
-
-        ${showList("ישובים שקיימים במפה אבל לא קיימים ב-crimeDB", missingInDB, "warn")}
-        ${showList("ישובים שקיימים ב-crimeDB אבל לא קיימים בשכבה 124", extraInDB, "warn")}
-
-        <div class="box">
-          <h2>סיכום</h2>
-          <p>סה״כ יישובים בשכבה 124: <strong>${settlements.length}</strong></p>
-          <p>סה״כ יישובים ב-crimeDB: <strong>${dbNames.length}</strong></p>
-        </div>
-      `;
-
-    } catch (err) {
-      console.error(err);
-      resultsDiv.innerHTML = `<p style="color:red">${err}</p>`;
-    }
-  }
-</script>
-
-</body>
-</html>
