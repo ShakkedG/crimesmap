@@ -108,39 +108,43 @@
     }
 
     // מה קורה כשמשתמש לוחץ על המפה
-    async function onMapClick(e) {
-      console.log("onMapClick – אירוע לחיצה:", e);
+  async function onMapClick(e) {
+  console.log("onMapClick – אירוע לחיצה:", e);
 
-      try {
-        const res = await govmap.selectFeaturesOnMap({
-          drawType: govmap.drawType.Point,
-          x: e.mapPoint.x,
-          y: e.mapPoint.y,
-          layers: [SETTLEMENT_LAYER],
-          filterLayer: true,
-          isZoomToExtent: false,
-          returnFields: {
-            [SETTLEMENT_LAYER]: [CITY_FIELD]
-          }
-        });
+  // בדיקה: מה יש בתוך mapPoint?
+  console.log("mapPoint:", e.mapPoint);
+  console.log("mapPoint keys:", Object.keys(e.mapPoint || {}));
 
-        console.log("selectFeaturesOnMap response:", res);
-
-        const cityName = extractCityName(res);
-
-        if (!cityName) {
-          showMessage("לא זוהתה רשות בנקודה שנבחרה.");
-          return;
-        }
-
-        console.log("רשות שזוהתה:", cityName);
-        showCrimeData(cityName);
-
-      } catch (err) {
-        console.error("שגיאה בקריאה ל-selectFeaturesOnMap:", err);
-        showMessage("אירעה שגיאה בעת קריאת הנתונים מהמפה.");
+  try {
+    const res = await govmap.selectFeaturesOnMap({
+      drawType: govmap.drawType.Point,
+      x: e.mapPoint && e.mapPoint.x,
+      y: e.mapPoint && e.mapPoint.y,
+      layers: [SETTLEMENT_LAYER],
+      filterLayer: true,
+      isZoomToExtent: false,
+      returnFields: {
+        [SETTLEMENT_LAYER]: [CITY_FIELD]
       }
+    });
+
+    console.log("selectFeaturesOnMap response:", res);
+
+    const cityName = extractCityName(res);
+
+    if (!cityName) {
+      showMessage("לא זוהתה רשות בנקודה שנבחרה.");
+      return;
     }
+
+    console.log("רשות שזוהתה:", cityName);
+    showCrimeData(cityName);
+
+  } catch (err) {
+    console.error("שגיאה בקריאה ל-selectFeaturesOnMap:", err);
+    showMessage("אירעה שגיאה בעת קריאת הנתונים מהמפה.");
+  }
+}
 
     // מוציא את שם הרשות מהתשובה של GOVMAP
     function extractCityName(res) {
