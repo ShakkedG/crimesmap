@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <title>מפת פשיעה לפי רשות מקומית</title>
+
+  <!-- GOVMAP API -->
+  <script
+    src="https://www.govmap.gov.il/govmap/api/govmap.api.js"
+    defer
+    onload="initGovMap()">
+  </script>
+
+  <!-- הדאטה שהפקנו מה-Pivot: חייב להכיל const crimeDB = {...} -->
+  <script src="crimeDB.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    #container {
+      display: flex;
+      height: 100vh;
+    }
+
+    #map {
+      flex: 3;
+    }
+
+    #infoPanel {
+      flex: 1;
+      padding: 15px;
+      background: #f5f5f5;
+      box-sizing: border-box;
+      border-left: 1px solid #ccc;
+      overflow-y: auto;
+    }
+
+    #infoPanel h2 {
+      margin-top: 0;
+    }
+
+    .crime-type {
+      margin: 4px 0;
+    }
+
+    .city-name {
+      font-size: 22px;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+
+    .total-crime {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    ul {
+      padding-right: 18px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="container">
+    <!-- פאנל המידע -->
+    <div id="infoPanel">
+      <h2>נתוני פשיעה לפי רשות</h2>
+      <div id="cityInfo">
+        לחץ על רשות במפה (שכבת "ועדים מקומיים") כדי לראות נתונים.
+      </div>
+    </div>
+
+    <!-- המפה -->
+    <div id="map"></div>
+  </div>
+
+  <script>
+    // ❗ חשוב: אלה השמות שאתה אולי צריך להתאים לפי מה שתראה בקונסול
+    const SETTLEMENT_LAYER = "ועדים מקומיים"; // שם השכבה בגובמפה
+    const CITY_FIELD = "SHEM_RASHUT";         // שם השדה של "שם רשות" (לעדכן לפי ה-response)
+
+    // מופעל אוטומטית כשסקריפט GOVMAP נטען (onload באלמנט ה-script)
+    function initGovMap() {
+      govmap.createMap("map", {
+        token: "ede9a5fd-7c23-432f-8ffb-d85feffa3f3c", // הטוקן שלך
+        layers: [SETTLEMENT_LAYER],
+        background: 2,
+        layersMode: 1,
+        zoomButtons: true,
+        level: 8,
+        showXY: true,
+        identifyOnClick: false
+      });
+
+      // האזנה לקליקים על המפה
+      govmap.onEvent(govmap.events.CLICK).progress(onMapClick);
+    }
+
+    // מה קורה כשמשתמש לוחץ על המפה
+    async function onMapClick(e) {
+      try {
+        const res = await govmap.selectFeaturesOnMap({
+          drawType: govmap.drawType.Point,
+          x: e.mapPoint.x,
+          y: e.mapPoint.y,
+          layers: [SETTLEMENT_LAYER],
+          filterLayer: true,
+          isZoomToExtent: false,
+          returnFields: {
+            [SETTLEMENT_LAYER]: [CITY_FIELD]
+          }
+        });
+
+        console.log("selectFeaturesOnMap response:", res);
+
+        const cityName = extractCityName(res);
+
+        if (!cityName) {
+          showMessage("לא זוהתה רשות בנקודה שנבחרה.");
+          return;
+        }
+
+        console.log("רשות שזוהתה:", cityName);
+        showCrimeData(cityName);
+
+      } catch (err) {
+        console.error("שגיאה בקריאה ל-selectFeaturesOnMap:", err);
+        showMessage("אירעה שגיאה בעת קריאת הנתונים מהמפה.");
+      }
+    }
+
+    // מוציא את שם הרשות מהתשובה של GOVMAP
+    function extractCityName(res) {
+      if (!res) return null;
+
+      // מבנה נפוץ: res = { "ועדים מקומיים": [ { SHEM_RASHUT: "דרום השרון", ... } ] }
+      if (res[SETTLEMENT_LAYER] && res[SETTLEMENT_LAYER].length > 0) {
+        const feature = res[SETTLEMENT_LAYER][0];
+        const name = feature[CITY_FIELD];
+        return name ? name.toString().trim() : null;
+      }
+
+      // ביטוח – אם המבנה יהיה פשוט מערך
+      if (Array.isArray(res) && res.length > 0) {
+        const feature = res[0];
+        if (feature && feature[CITY_FIELD]) {
+          return feature[CITY_FIELD].toString().trim();
+        }
+      }
+
+      return null;
+    }
+
+    // מציג הודעה כללית בפאנל
+    function showMessage(text) {
+      const panel = document.getElementById("cityInfo");
+      panel.innerHTML = `<p>${text}</p>`;
+    }
+
+    // מציג נתוני פשיעה לפי רשות מתוך crimeDB
+    function showCrimeData(cityName) {
+      const panel = document.getElementById("cityInfo");
+
+      // אם יש מיפוי בין שם רשות של GOVMAP לבין השם ב-crimeDB – אפשר לטפל פה
+      const normalizedName = cityName; // אם צריך, תשנה פה לשימוש במפה חיצונית
+
+      const data = crimeDB[normalizedName];
+
+      if (!data) {
+        panel.innerHTML = `
+          <div class="city-name">${cityName}</div>
+          <p>אין נתונים בטבלת הפשיעה עבור רשות זו.</p>
+        `;
+        return;
+      }
+
+      let html = "";
+      html += `<div class="city-name">${cityName}</div>`;
+      html += `<div class="total-crime"><strong>סה"כ עבירות:</strong> ${data.total}</div>`;
+      html += `<h4>פירוט לפי קבוצת עבירה:</h4>`;
+      html += `<ul>`;
+
+      for (const [type, count] of Object.entries(data.breakdown)) {
+        html += `<li class="crime-type"><strong>${type}:</strong> ${count}</li>`;
+      }
+
+      html += `</ul>`;
+
+      panel.innerHTML = html;
+    }
+  </script>
+</body>
+</html>
