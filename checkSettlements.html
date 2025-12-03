@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <title>בדיקת התאמה: שכבת ועדים מול crimeDB</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    h2 { margin-bottom: 5px; }
+    .box { padding: 10px; border: 1px solid #ccc; margin-bottom: 20px; background: #f7f7f7; }
+    ul { margin-top: 5px; }
+    li { margin: 3px 0; }
+    .ok { color: green; }
+    .warn { color: red; }
+  </style>
+
+  <!-- קובץ הפשיעה שלך -->
+  <script src="crimeDB.js"></script>
+
+</head>
+
+<body>
+
+<h1>בדיקת התאמה בין שכבת 124 לבין crimeDB</h1>
+<p>הקלק על הכפתור כדי לטעון את השכבה ולבצע את ההשוואה.</p>
+
+<button onclick="runCheck()">הרץ בדיקה</button>
+
+<div id="results"></div>
+
+<script>
+
+// ------------------------------------------------
+// שלב 1 — טוען רשימת רשויות משכבת 124
+// ------------------------------------------------
+
+async function loadLayer124() {
+  const url = "https://www.govmap.gov.il/govmap/api/layers/getLayerRecords?layerId=124";
+
+  const res = await fetch(url);
+  if (!res.ok) {
+    throw new Error("שגיאה בטעינת שכבת 124: " + res.status);
+  }
+
+  const json = await res.json();
+  return json.features;
+}
+
+// ------------------------------------------------
+// שלב 2 — למצוא איזה שדה מכיל את שם הרשות
+// ------------------------------------------------
+
+function detectNameField(features) {
+  const possible = {};
+
+  for (const f of features) {
+    const attrs = f.attributes;
+    for (const key in attrs) {
+      const val = attrs[key];
+      if (typeof val === "string" && /[\u0590-\u05FF]/.test(val)) {
+        possible[key] = (possible[key] || 0) + 1;
+      }
+    }
+  }
+
+  // נמצא השדה שמופיע הכי הרבה פעמים
+  let best = null;
+  let bestCount = 0;
+
+  for (const [key, count] of Object.entries(possible)) {
+    if (count > bestCount) {
+      best = key;
+      bestCount = count;
+    }
+  }
+
+  return best;
+}
+
+// ------------------------------------------------
+// שלב 3 — חילוץ שמות רשויות מהשדה שנבחר
+// ------------------------------------------------
+
+function extractSettlementNames(features, fieldName) {
+  const names = new Set();
+
+  for (const f of features) {
+    const attrs = f.attributes;
+    if (attrs[fieldName]) {
+      names.add(attrs[fieldName].toString().trim());
+    }
+  }
+
+  return Array.from(names).sort();
+}
+
+// ------------------------------------------------
+// שלב 4 — השוואה מול crimeDB
+// ------------------------------------------------
+
+function compareNames(layerNames, crimeDB) {
+  const dbNames = Object.keys(crimeDB);
+
+  const missingInDB = layerNames.filter(n => !dbNames.includes(n));
+  const extraInDB   = dbNames.filter(n => !layerNames.includes(n));
+
+  return { missingInDB, extraInDB };
+}
+
+// ------------------------------------------------
+// שלב 5 — תצוגה על המסך
+// ------------------------------------------------
+
+function showList(title, items, css) {
+  return `
+    <div class="box">
+      <h2 class="${css}">${title}</h2>
+      ${items.length === 0
+        ? '<p class="ok">אין</p>'
+        : '<ul>' + items.map(i => `<li>${i}</li>`).join("") + '</ul>'}
+    </div>
+  `;
+}
+
+// ------------------------------------------------
+// שלב 6 — הפעלה מלאה
+// ------------------------------------------------
+
+async function runCheck() {
+  const resultsDiv = document.getElementById("results");
+  resultsDiv.innerHTML = "<p>טוען שכבה... רגע...</p>";
+
+  try {
+    const features = await loadLayer124();
+
+    const field = detectNameField(features);
+    if (!field) throw new Error("לא נמצא שדה שם רשות!");
+
+    const settlements = extractSettlementNames(features, field);
+
+    const { missingInDB, extraInDB } = compareNames(settlements, crimeDB);
+
+    resultsDiv.innerHTML = `
+      <div class="box">
+        <h2>שדה שם הרשות שנבחר:</h2>
+        <p><strong>${field}</strong></p>
+      </div>
+
+      ${showList("ישובים שקיימים במפה אבל לא קיימים ב-crimeDB", missingInDB, "warn")}
+      ${showList("ישובים שקיימים ב-crimeDB אבל לא קיימים בשכבה 124", extraInDB, "warn")}
+
+      <div class="box">
+        <h2>סה״כ שכבה: ${settlements.length} יישובים</h2>
+        <h2>סה״כ crimeDB: ${Object.keys(crimeDB).length} יישובים</h2>
+      </div>
+    `;
+
+  } catch (err) {
+    resultsDiv.innerHTML = `<p style="color:red">${err}</p>`;
+  }
+}
+
+</script>
+</body>
+</html>
