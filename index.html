@@ -137,11 +137,14 @@
     const y = e.mapPoint.y;
 
     const params = {
-      layerName: MUNICIPAL_LAYER,
-      x: x,
-      y: y,
-      radius: 80 // מטר – אפשר לשחק עם זה
-    };
+  LayerName: MUNICIPAL_LAYER,
+  Point: { x, y },
+  Radius: 80
+};
+
+const resp = await govmap.getLayerData(params);
+// resp.data / resp.Data וכו' – כמו שכבר טיפלנו
+
 
     try {
       const resp = await govmap.getLayerData(params);
