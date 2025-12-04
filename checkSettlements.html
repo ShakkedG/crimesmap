@@ -37,6 +37,7 @@
       const fields = ent.Fields || [];
       for (const f of fields) {
         const val = f.Value;
+        // מחפש ערכים עם אותיות בעברית
         if (typeof val === "string" && /[\u0590-\u05FF]/.test(val)) {
           const key = f.FieldName;
           counts[key] = (counts[key] || 0) + 1;
@@ -53,3 +54,35 @@
         bestCount = counts[key];
       }
     }
+
+    if (!best) {
+      console.warn("לא נמצא שדה שם בעברית");
+      return null;
+    }
+
+    const result = {
+      fieldName: best,
+      caption: captions[best] || "",
+      count: bestCount
+    };
+
+    console.log("Detected name field:", result);
+    return result;
+  }
+
+  // דוגמה לשימוש – תריץ אחרי שהמפה נטענה
+  async function debugNameField() {
+    try {
+      const entities = await loadLayer125();
+      const info = detectNameField(entities);
+      if (info) {
+        alert(`שדה השם כנראה: ${info.fieldName} (${info.caption})`);
+      } else {
+        alert("לא הצלחתי לזהות שדה שם");
+      }
+    } catch (err) {
+      console.error(err);
+      alert(err.message || err);
+    }
+  }
+</script>
