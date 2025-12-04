@@ -4142,4 +4142,4 @@ const crimeDB = {
     }
   }
 };
-export default crimeDB;
+
