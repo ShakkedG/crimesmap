@@ -122,7 +122,8 @@
     });
 
     mapInitialized = true;
-    console.log("GovMap ready (layer", MUNICIPAL_LAYER, ")");
+    govmap.onEvent(govmap.events.CLICK).progress(onMapClick);
+
 
     // מאזינים לקליק על המפה
     govmap.onEvent(govmap.events.mapClick, onMapClick);
