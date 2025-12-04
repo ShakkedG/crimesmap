@@ -4,7 +4,8 @@
   <meta charset="utf-8">
   <title>מפת פשיעה לפי רשויות מקומיות</title>
 
-  <!-- נטען ראשון: בסיס הנתונים -->
+  <!-- קודם: קובץ הדאטה crimeDB.js -->
+  <!-- חייב להכיל:  const crimeDB = { ... };  בלי export -->
   <script src="crimeDB.js"></script>
 
   <style>
@@ -52,26 +53,35 @@
 
   <!-- קוד המפה -->
   <script type="text/javascript">
-
-    const MUNICIPAL_LAYER = "125";
+    const MUNICIPAL_LAYER = "125"; // רשויות מקומיות
     const TOKEN = "ede9a5fd-7c23-432f-8ffb-d85feffa3f3c";
 
     let mapInitialized = false;
     const crimeIndex = {};
     let detectedMunicipalityField = null;
 
+    // --- נירמול שמות רשויות (מוריד "מועצה אזורית", "עיריית" וכו') ---
     function normalizeName(name) {
-      return (name || "")
-        .toString()
-        .trim()
+      let s = (name || "").toString().trim();
+
+      s = s
+        .replace(/^מועצה\s+אזורית\s+/, "")
+        .replace(/^מועצה\s+מקומית\s+/, "")
+        .replace(/^עיריית\s+/, "")
+        .replace(/^עיריה\s+/, "");
+
+      s = s
         .replace(/["׳״']/g, "")
         .replace(/[\s\-]/g, "")
         .toLowerCase();
+
+      return s;
     }
 
+    // --- בונה אינדקס מה-crimeDB לפי שם מנורמל ---
     function buildCrimeIndex() {
       if (typeof crimeDB === "undefined") {
-        console.error("crimeDB לא מוגדר. ודא ש-crimeDB.js נטען ושאין בו export.");
+        console.error("crimeDB לא מוגדר. ודא ש-crimeDB.js נטען לפני הסקריפט ושאין בו export.");
         return;
       }
 
@@ -83,6 +93,25 @@
       console.log("crimeIndex built:", Object.keys(crimeIndex).length, "entries");
     }
 
+    // --- חיפוש התאמה לרשות ב-crimeIndex עם קצת גמישות ---
+    function findCrimeEntry(muniName) {
+      const norm = normalizeName(muniName);
+
+      // התאמה מדויקת
+      if (crimeIndex[norm]) return crimeIndex[norm];
+
+      // התאמה חלקית – אם אחת המחרוזות היא סיומת של השניה
+      let best = null;
+      for (const key in crimeIndex) {
+        if (key === norm) return crimeIndex[key];
+        if (!best && (key.endsWith(norm) || norm.endsWith(key))) {
+          best = crimeIndex[key];
+        }
+      }
+      return best;
+    }
+
+    // --- יצירת המפה ורישום לאירוע CLICK ---
     function initGovMap() {
       buildCrimeIndex();
 
@@ -107,6 +136,7 @@
       console.log("GovMap ready (layer", MUNICIPAL_LAYER, ")");
     }
 
+    // --- קליק על המפה ---
     async function onMapClick(e) {
       if (!mapInitialized) return;
 
@@ -116,7 +146,7 @@
       const params = {
         LayerName: MUNICIPAL_LAYER,
         Point: { x, y },
-        Radius: 80
+        Radius: 250 // רדיוס גדול יותר כדי לתפוס גם לחיצות קרובות לגבול
       };
 
       try {
@@ -132,7 +162,7 @@
           [];
 
         if (!items.length) {
-          showInfo("לא נמצאה רשות מקומית", "אין רשות מקומית בנקודה הזו.");
+          showInfo("לא נמצאה רשות מקומית", "אין רשות מקומית בנקודה הזו או שהשכבה אינה פעילה ברמת הזום הנוכחית.");
           return;
         }
 
@@ -149,15 +179,17 @@
         const muniName = detectMunicipalityName(attrs);
 
         if (!muniName) {
-          showInfo("לא זוהה שם רשות", "לא נמצא שדה מתאים לשם רשות.");
+          showInfo("לא זוהה שם רשות", "לא נמצא שדה מתאים לשם רשות מקומית באטריביוטים.");
           return;
         }
 
-        const norm = normalizeName(muniName);
-        const crimeEntry = crimeIndex[norm];
+        const crimeEntry = findCrimeEntry(muniName);
 
         if (!crimeEntry) {
-          showInfo(`רשות: ${muniName}`, "לא נמצאו נתוני פשיעה בקובץ.");
+          showInfo(
+            `רשות מקומית: ${muniName}`,
+            "לא נמצאו נתוני פשיעה בקובץ crimeDB עבור רשות זו."
+          );
           return;
         }
 
@@ -171,12 +203,14 @@
             lines.push("");
           }
 
-          if (typeof data.breakdown === "object") {
+          if (typeof data.breakdown === "object" && data.breakdown !== null) {
             lines.push("פירוט לפי קבוצת עבירה:\n");
             for (const k of Object.keys(data.breakdown)) {
               lines.push(`• ${k}: ${data.breakdown[k]}`);
             }
           }
+        } else {
+          lines.push(String(data));
         }
 
         showInfo(title, lines.join("\n"));
@@ -187,6 +221,7 @@
       }
     }
 
+    // --- זיהוי שדה שם הרשות מתוך האטריביוטים ---
     function detectMunicipalityName(attrs) {
       if (!attrs) return null;
 
@@ -194,6 +229,7 @@
         return attrs[detectedMunicipalityField];
       }
 
+      // קודם: מנסים למצוא ערך שעבורו יש התאמה ב-crimeIndex
       for (const key of Object.keys(attrs)) {
         const val = attrs[key];
         if (typeof val !== "string") continue;
@@ -207,6 +243,7 @@
         }
       }
 
+      // fallback: השדה העברי הראשון
       for (const key of Object.keys(attrs)) {
         const val = attrs[key];
         if (typeof val === "string" && /[\u0590-\u05FF]/.test(val)) {
@@ -219,14 +256,14 @@
       return null;
     }
 
+    // --- עדכון הפאנל ---
     function showInfo(title, body) {
       document.getElementById("info-title").textContent = title;
       document.getElementById("info-body").textContent = body;
     }
-
   </script>
 
-  <!-- טעינת GOVMAP בסוף -->
+  <!-- טעינת GOVMAP בסוף, מפעיל initGovMap -->
   <script
     src="https://www.govmap.gov.il/govmap/api/govmap.api.js"
     defer
@@ -237,10 +274,11 @@
 
 <body>
   <div id="map"></div>
+
   <div id="info-panel">
     <div id="info-title">מפת פשיעה לפי רשות</div>
     <div id="info-body">
-      לחץ על רשות מקומית במפה כדי לראות נתונים מתוך crimeDB.
+      לחץ על רשות מקומית במפה כדי לראות נתונים מהקובץ crimeDB.
     </div>
   </div>
 </body>
