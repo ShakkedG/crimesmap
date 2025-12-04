@@ -1,91 +1,216 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <title>בדיקת התאמת יישובים</title>
+
+  <!-- טעינת GOVMAP -->
+  <script 
+    src="https://www.govmap.gov.il/govmap/api/govmap.api.js"
+    defer 
+    onload="initGovMap()">
+  </script>
+
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+      direction: rtl;
+    }
+
+    #map {
+      width: 100%;
+      height: 100%;
+    }
+
+    #btnCompare {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      z-index: 9999;
+      padding: 10px 20px;
+      font-size: 16px;
+      background: #1976d2;
+      border: none;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    #btnCompare:hover {
+      background: #0d47a1;
+    }
+  </style>
+</head>
+
+<body>
+
+<div id="map"></div>
+
+<button id="btnCompare" onclick="compareLayerToJson()">השווה יישובים</button>
+
+
+<!-- קוד JS -->
 <script>
-// --- 1. טוען את ה-JSON מהקובץ ---
-async function loadCrimeDB() {
-  const res = await fetch("crimeDB.js"); // או crimeDB.json
-  const text = await res.text();
+  // ---------- קבועים ----------
+  const SETTLEMENT_LAYER = "125";
+  const TOKEN = "ede9a5fd-7c23-432f-8ffb-d85feffa3f3c";
 
-  // אם זה קובץ JS שמכיל: const crimeDB = {...}
-  if (text.includes("crimeDB")) {
-    // מפעיל אותו כסקריפט
-    const script = document.createElement("script");
-    script.textContent = text;
-    document.body.appendChild(script);
+  let mapInitialized = false;
 
-    return window.crimeDB;
+
+  // ---------- 1. טעינת מפה ----------
+  function initGovMap() {
+    govmap.createMap("map", {
+      token: TOKEN,
+      layers: [SETTLEMENT_LAYER],
+      background: 2,
+      layersMode: 1,
+      zoomButtons: false,
+      showXY: false,
+      identifyOnClick: false
+    });
+    mapInitialized = true;
+    console.log("GovMap Ready");
   }
 
-  // אם זה JSON רגיל
-  return JSON.parse(text);
-}
+
+  // ---------- 2. טעינת ישויות שכבה ----------
+  async function loadLayer125() {
+    if (!mapInitialized) {
+      throw new Error("המפה עדיין לא נטענה.");
+    }
+
+    const params = { layerName: SETTLEMENT_LAYER };
+    const entities = await govmap.getLayerEntities(params);
+
+    console.log("entities:", entities);
+    return entities;
+  }
 
 
-// --- 2. מזהה את שדה השם בשכבה ---
-function detectNameField(entities) {
-  const counts = {};
-  const captions = {};
+  // ---------- 3. טעינת קובץ JSON (crimeDB) ----------
+  async function loadCrimeDB() {
+    const res = await fetch("crimeDB.js");
+    const text = await res.text();
 
-  for (const ent of entities) {
-    const fields = ent.Fields || [];
-    for (const f of fields) {
-      const val = f.Value;
-      if (typeof val === "string" && /[\u0590-\u05FF]/.test(val)) {
-        const key = f.FieldName;
-        counts[key] = (counts[key] || 0) + 1;
-        captions[key] = f.Caption;
+    if (text.includes("crimeDB")) {
+      const script = document.createElement("script");
+      script.textContent = text;
+      document.body.appendChild(script);
+
+      return window.crimeDB;
+    }
+
+    return JSON.parse(text);
+  }
+
+
+  // ---------- 4. זיהוי שדה שם היישוב ----------
+  function detectNameField(entities) {
+    const counters = {};
+    const captions = {};
+
+    for (const ent of entities) {
+      const fields = ent.Fields || [];
+
+      for (const f of fields) {
+        const val = f.Value;
+
+        if (typeof val === "string" && /[\u0590-\u05FF]/.test(val)) {
+          const key = f.FieldName;
+
+          counters[key] = (counters[key] || 0) + 1;
+          captions[key] = f.Caption;
+        }
       }
     }
+
+    let best = null;
+    let bestCount = 0;
+
+    for (const key in counters) {
+      if (counters[key] > bestCount) {
+        best = key;
+        bestCount = counters[key];
+      }
+    }
+
+    if (!best) return null;
+
+    return {
+      fieldName: best,
+      caption: captions[best],
+      count: bestCount
+    };
   }
 
-  let best = null;
-  let bestCount = 0;
 
-  for (const k in counts) {
-    if (counts[k] > bestCount) {
-      best = k;
-      bestCount = counts[k];
+  // ---------- 5. חילוץ שמות יישובים מתוך השכבה ----------
+  function extractSettlementNames(entities, fieldName) {
+    const names = new Set();
+
+    for (const ent of entities) {
+      const f = ent.Fields?.find(x => x.FieldName === fieldName);
+      if (!f) continue;
+
+      const name = (f.Value || "").trim();
+      if (name.length > 0) names.add(name);
+    }
+
+    return names;
+  }
+
+
+  // ---------- 6. השוואת שמות ----------
+  async function compareLayerToJson() {
+    try {
+      console.log("⚡ טוען שכבה 125...");
+      const entities = await loadLayer125();
+
+      console.log("⚡ טוען JSON...");
+      const db = await loadCrimeDB();
+
+      console.log("⚡ מזהה שדה שם...");
+      const nameField = detectNameField(entities);
+
+      if (!nameField) {
+        alert("לא מצאתי שדה שם בעברית בשכבה.");
+        return;
+      }
+
+      console.log("שדה שמות שזוהה:", nameField);
+
+      const layerNames = extractSettlementNames(entities, nameField.fieldName);
+      const jsonNames = new Set(Object.keys(db));
+
+      const missingInJson = [...layerNames].filter(x => !jsonNames.has(x));
+      const missingInLayer = [...jsonNames].filter(x => !layerNames.has(x));
+
+      console.log("=======================================");
+      console.log("יישובים בשכבה שלא מופיעים ב-JSON:");
+      console.log(missingInJson);
+
+      console.log("---------------------------------------");
+
+      console.log("יישובים ב-JSON שלא מופיעים בשכבה:");
+      console.log(missingInLayer);
+
+      console.log("=======================================");
+
+      alert("בדיקה הסתיימה! ראה תוצאות ב-console.");
+    }
+
+    catch (err) {
+      console.error("Error:", err);
+      alert("שגיאה: " + err.message);
     }
   }
 
-  if (!best) return null;
+</script>
 
-  return {
-    fieldName: best,
-    caption: captions[best],
-    count: bestCount
-  };
-}
-
-
-// --- 3. פונקציה שמחזירה Map של שמות יישובים מהשכבה ---
-function extractSettlementNames(entities, fieldName) {
-  const names = new Set();
-
-  for (const ent of entities) {
-    const f = ent.Fields?.find(x => x.FieldName === fieldName);
-    if (!f) continue;
-
-    let name = (f.Value || "").trim();
-    if (name.length > 0) names.add(name);
-  }
-  return names;
-}
-
-
-// --- 4. פונקציית ההשוואה המרכזית ---
-async function compareLayerToJson() {
-  // טוען את הנתונים מהשכבה
-  const entities = await loadLayer125();
-
-  // טוען JSON
-  const db = await loadCrimeDB();
-
-  // מוצא את שדה השם
-  const nameField = detectNameField(entities);
-  if (!nameField) {
-    alert("לא הצלחתי לזהות שדה שם בשכבה");
-    return;
-  }
-
-  const layerNames = extractSettlementNames(entities, nameField.fieldName);
-
-  // מוצא את רשימת היישובים מה-JSO
+</body>
+</html>
