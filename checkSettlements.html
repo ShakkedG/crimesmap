@@ -1,88 +1,91 @@
 <script>
-  const SETTLEMENT_LAYER = "125";
-  const TOKEN = "ede9a5fd-7c23-432f-8ffb-d85feffa3f3c"; // שים פה את הטוקן שלך
+// --- 1. טוען את ה-JSON מהקובץ ---
+async function loadCrimeDB() {
+  const res = await fetch("crimeDB.js"); // או crimeDB.json
+  const text = await res.text();
 
-  let mapInitialized = false;
+  // אם זה קובץ JS שמכיל: const crimeDB = {...}
+  if (text.includes("crimeDB")) {
+    // מפעיל אותו כסקריפט
+    const script = document.createElement("script");
+    script.textContent = text;
+    document.body.appendChild(script);
 
-  function initGovMap() {
-    govmap.createMap("map", {
-      token: TOKEN,
-      layers: [SETTLEMENT_LAYER],
-      background: 2,
-      layersMode: 1,
-      zoomButtons: false,
-      showXY: false,
-      identifyOnClick: false
-    });
-    mapInitialized = true;
-    console.log("GovMap initialized");
+    return window.crimeDB;
   }
 
-  async function loadLayer125() {
-    if (!mapInitialized) {
-      throw new Error("המפה עדיין לא נטענה, נסה שוב.");
-    }
+  // אם זה JSON רגיל
+  return JSON.parse(text);
+}
 
-    const params = { layerName: SETTLEMENT_LAYER };
-    const entities = await govmap.getLayerEntities(params);
-    console.log("getLayerEntities response:", entities);
-    return entities;
-  }
 
-  function detectNameField(entities) {
-    const counts = {};
-    const captions = {};
+// --- 2. מזהה את שדה השם בשכבה ---
+function detectNameField(entities) {
+  const counts = {};
+  const captions = {};
 
-    for (const ent of entities) {
-      const fields = ent.Fields || [];
-      for (const f of fields) {
-        const val = f.Value;
-        // מחפש ערכים עם אותיות בעברית
-        if (typeof val === "string" && /[\u0590-\u05FF]/.test(val)) {
-          const key = f.FieldName;
-          counts[key] = (counts[key] || 0) + 1;
-          captions[key] = f.Caption;
-        }
+  for (const ent of entities) {
+    const fields = ent.Fields || [];
+    for (const f of fields) {
+      const val = f.Value;
+      if (typeof val === "string" && /[\u0590-\u05FF]/.test(val)) {
+        const key = f.FieldName;
+        counts[key] = (counts[key] || 0) + 1;
+        captions[key] = f.Caption;
       }
     }
-
-    let best = null;
-    let bestCount = 0;
-    for (const key in counts) {
-      if (counts[key] > bestCount) {
-        best = key;
-        bestCount = counts[key];
-      }
-    }
-
-    if (!best) {
-      console.warn("לא נמצא שדה שם בעברית");
-      return null;
-    }
-
-    const result = {
-      fieldName: best,
-      caption: captions[best] || "",
-      count: bestCount
-    };
-
-    console.log("Detected name field:", result);
-    return result;
   }
 
-  // דוגמה לשימוש – תריץ אחרי שהמפה נטענה
-  async function debugNameField() {
-    try {
-      const entities = await loadLayer125();
-      const info = detectNameField(entities);
-      if (info) {
-        alert(`שדה השם כנראה: ${info.fieldName} (${info.caption})`);
-      } else {
-        alert("לא הצלחתי לזהות שדה שם");
-      }
-    } catch (err) {
-      console.error(err);
-      alert(err.message || err);
+  let best = null;
+  let bestCount = 0;
+
+  for (const k in counts) {
+    if (counts[k] > bestCount) {
+      best = k;
+      bestCount = counts[k];
     }
   }
-</script>
+
+  if (!best) return null;
+
+  return {
+    fieldName: best,
+    caption: captions[best],
+    count: bestCount
+  };
+}
+
+
+// --- 3. פונקציה שמחזירה Map של שמות יישובים מהשכבה ---
+function extractSettlementNames(entities, fieldName) {
+  const names = new Set();
+
+  for (const ent of entities) {
+    const f = ent.Fields?.find(x => x.FieldName === fieldName);
+    if (!f) continue;
+
+    let name = (f.Value || "").trim();
+    if (name.length > 0) names.add(name);
+  }
+  return names;
+}
+
+
+// --- 4. פונקציית ההשוואה המרכזית ---
+async function compareLayerToJson() {
+  // טוען את הנתונים מהשכבה
+  const entities = await loadLayer125();
+
+  // טוען JSON
+  const db = await loadCrimeDB();
+
+  // מוצא את שדה השם
+  const nameField = detectNameField(entities);
+  if (!nameField) {
+    alert("לא הצלחתי לזהות שדה שם בשכבה");
+    return;
+  }
+
+  const layerNames = extractSettlementNames(entities, nameField.fieldName);
+
+  // מוצא את רשימת היישובים מה-JSO
