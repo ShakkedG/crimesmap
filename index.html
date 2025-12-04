@@ -78,8 +78,8 @@
   </div>
 
   <script>
-    // שכבת ועדים מקומיים – 124 לפי GOVMAP
-    const SETTLEMENT_LAYER = "124";
+    // שכבת ועדים מקומיים – 125 לפי GOVMAP
+    const SETTLEMENT_LAYER = "125";
 
     // את זה נעדכן אחרי שנראה מה חוזר ב-console
     const CITY_FIELD = "SHEM_RASHUT"; // נחליף לשם הנכון אחרי שנראה response
@@ -150,7 +150,7 @@
     function extractCityName(res) {
       if (!res) return null;
 
-      // קודם ננסה במבנה של אובייקט לפי שם שכבה ("124")
+      // קודם ננסה במבנה של אובייקט לפי שם שכבה ("125")
       if (res[SETTLEMENT_LAYER] && res[SETTLEMENT_LAYER].length > 0) {
         const feature = res[SETTLEMENT_LAYER][0];
         const name = feature[CITY_FIELD];
