@@ -2,7 +2,7 @@
 <html lang="he" dir="rtl">
 <head>
   <meta charset="utf-8">
-  <title>נתוני פשיעה לפי רשות</title>
+  <title>מפת פשיעה לפי רשויות מקומיות</title>
 
   <!-- GOVMAP API -->
   <script
@@ -11,197 +11,255 @@
     onload="initGovMap()">
   </script>
 
-  <!-- הקובץ שנוצר מה-Pivot: מכיל const crimeDB = {...} -->
+  <!-- בסיס הנתונים שהפקנו: const crimeDB = { "רשות": {total, breakdown} } -->
   <script src="crimeDB.js"></script>
 
   <style>
-    body {
+    html, body {
       margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
       font-family: Arial, sans-serif;
-    }
-
-    #container {
-      display: flex;
-      height: 100vh;
+      direction: rtl;
     }
 
     #map {
-      flex: 3;
+      width: 100%;
+      height: 100%;
     }
 
-    #infoPanel {
-      flex: 1;
-      padding: 15px;
-      background: #f5f5f5;
-      box-sizing: border-box;
-      border-left: 1px solid #ccc;
-      overflow-y: auto;
+    #info-panel {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      z-index: 9999;
+      background: rgba(255, 255, 255, 0.97);
+      border-radius: 8px;
+      padding: 10px 14px;
+      min-width: 280px;
+      max-width: 360px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+      font-size: 14px;
     }
 
-    #infoPanel h2 {
-      margin-top: 0;
-    }
-
-    .crime-type {
-      margin: 4px 0;
-    }
-
-    .city-name {
-      font-size: 22px;
+    #info-title {
       font-weight: bold;
       margin-bottom: 6px;
+      font-size: 15px;
     }
 
-    .total-crime {
-      font-size: 18px;
-      margin-bottom: 10px;
-    }
-
-    ul {
-      padding-right: 18px;
+    #info-body {
+      white-space: pre-line;
+      line-height: 1.4;
+      max-height: 60vh;
+      overflow-y: auto;
     }
   </style>
 </head>
 
 <body>
-  <div id="container">
-    <!-- פאנל המידע -->
-    <div id="infoPanel">
-      <h2>נתוני פשיעה לפי רשות</h2>
-      <div id="cityInfo">
-        לחץ על רשות במפה (שכבת "ועדים מקומיים") כדי לראות נתונים.
-      </div>
-    </div>
 
-    <!-- המפה -->
-    <div id="map"></div>
+<div id="map"></div>
+
+<div id="info-panel">
+  <div id="info-title">מפת פשיעה לפי רשות</div>
+  <div id="info-body">
+    לחץ על רשות מקומית בשכבה "רשויות מקומיות" (125) כדי לראות את הנתונים מהקובץ.
   </div>
+</div>
 
-  <script>
-    // שכבת ועדים מקומיים – 125 לפי GOVMAP
-    const SETTLEMENT_LAYER = "125";
+<script>
+  // ========= קבועים =========
+  // שכבת רשויות מקומיות ב-GovMap
+  const MUNICIPAL_LAYER = "125";
+  const TOKEN = "ede9a5fd-7c23-432f-8ffb-d85feffa3f3c";
 
-    // את זה נעדכן אחרי שנראה מה חוזר ב-console
-    const CITY_FIELD = "SHEM_RASHUT"; // נחליף לשם הנכון אחרי שנראה response
+  let mapInitialized = false;
 
-    // מופעל כשסקריפט GOVMAP נטען
-    function initGovMap() {
-      console.log("initGovMap – מתחיל ליצור מפה");
+  // אינדקס של crimeDB לפי שם מנורמל
+  const crimeIndex = {};
+  // נשמור פעם אחת את שם שדה הרשות כפי שמגיע מהשכבה
+  let detectedMunicipalityField = null;
 
-      function registerClickListener() {
-        console.log("map loaded – נרשמים לאירוע CLICK");
+  // ========= נירמול שמות רשויות =========
+  function normalizeName(name) {
+    return (name || "")
+      .toString()
+      .trim()
+      .replace(/["׳״']/g, "")   // גרשיים
+      .replace(/[\s\-]/g, "")   // רווחים ומקפים
+      .toLowerCase();
+  }
 
-        govmap.onEvent(govmap.events.CLICK).progress(onMapClick);
-      }
-
-      govmap.createMap("map", {
-        token: "ede9a5fd-7c23-432f-8ffb-d85feffa3f3c", // הטוקן שלך
-        layers: [SETTLEMENT_LAYER],
-        background: 2,
-        layersMode: 1,
-        zoomButtons: true,
-        level: 10,
-        showXY: true,
-        identifyOnClick: false,
-        onLoad: registerClickListener      // 👈 חשוב! ההאזנה נרשמת רק אחרי שהמפה עלתה
-      });
-    }
-
-    // מה קורה כשמשתמש לוחץ על המפה
-  async function onMapClick(e) {
-  console.log("onMapClick – אירוע לחיצה:", e);
-
-  // בדיקה: מה יש בתוך mapPoint?
-  console.log("mapPoint:", e.mapPoint);
-  console.log("mapPoint keys:", Object.keys(e.mapPoint || {}));
-
-  try {
-    const res = await govmap.selectFeaturesOnMap({
-      drawType: govmap.drawType.Point,
-      x: e.mapPoint && e.mapPoint.x,
-      y: e.mapPoint && e.mapPoint.y,
-      layers: [SETTLEMENT_LAYER],
-      filterLayer: true,
-      isZoomToExtent: false,
-      returnFields: {
-        [SETTLEMENT_LAYER]: [CITY_FIELD]
-      }
-    });
-
-    console.log("selectFeaturesOnMap response:", res);
-
-    const cityName = extractCityName(res);
-
-    if (!cityName) {
-      showMessage("לא זוהתה רשות בנקודה שנבחרה.");
+  // ========= בניית אינדקס מ-crimeDB =========
+  function buildCrimeIndex() {
+    if (!window.crimeDB) {
+      console.error("crimeDB לא מוגדר. ודא ש- crimeDB.js נטען לפני הסקריפט הזה ושאין בו export.");
       return;
     }
 
-    console.log("רשות שזוהתה:", cityName);
-    showCrimeData(cityName);
+    for (const key of Object.keys(crimeDB)) {
+      const norm = normalizeName(key);
+      crimeIndex[norm] = { name: key, data: crimeDB[key] };
+    }
 
-  } catch (err) {
-    console.error("שגיאה בקריאה ל-selectFeaturesOnMap:", err);
-    showMessage("אירעה שגיאה בעת קריאת הנתונים מהמפה.");
+    console.log("crimeIndex built with", Object.keys(crimeIndex).length, "municipalities");
   }
-}
 
-    // מוציא את שם הרשות מהתשובה של GOVMAP
-    function extractCityName(res) {
-      if (!res) return null;
+  // ========= יצירת המפה =========
+  function initGovMap() {
+    buildCrimeIndex();
 
-      // קודם ננסה במבנה של אובייקט לפי שם שכבה ("125")
-      if (res[SETTLEMENT_LAYER] && res[SETTLEMENT_LAYER].length > 0) {
-        const feature = res[SETTLEMENT_LAYER][0];
-        const name = feature[CITY_FIELD];
-        return name ? name.toString().trim() : null;
-      }
+    govmap.createMap("map", {
+      token: TOKEN,
+      layers: [MUNICIPAL_LAYER],
+      background: 2,
+      layersMode: 1,
+      zoomButtons: true,
+      showXY: true,
+      identifyOnClick: false
+    });
 
-      // ביטוח – אם זה פשוט מערך
-      if (Array.isArray(res) && res.length > 0) {
-        const feature = res[0];
-        if (feature && feature[CITY_FIELD]) {
-          return feature[CITY_FIELD].toString().trim();
-        }
-      }
+    mapInitialized = true;
+    console.log("GovMap ready (layer", MUNICIPAL_LAYER, ")");
 
-      return null;
-    }
+    // מאזינים לקליק על המפה
+    govmap.onEvent(govmap.events.mapClick, onMapClick);
+  }
 
-    // מציג הודעה כללית בפאנל
-    function showMessage(text) {
-      const panel = document.getElementById("cityInfo");
-      panel.innerHTML = `<p>${text}</p>`;
-    }
+  // ========= טיפול בקליק על המפה =========
+  async function onMapClick(e) {
+    if (!mapInitialized) return;
 
-    // מציג נתוני פשיעה לפי רשות מתוך crimeDB
-    function showCrimeData(cityName) {
-      const panel = document.getElementById("cityInfo");
+    const x = e.mapPoint.x;
+    const y = e.mapPoint.y;
 
-      const data = crimeDB[cityName];
+    const params = {
+      layerName: MUNICIPAL_LAYER,
+      x: x,
+      y: y,
+      radius: 80 // מטר – אפשר לשחק עם זה
+    };
 
-      if (!data) {
-        panel.innerHTML = `
-          <div class="city-name">${cityName}</div>
-          <p>אין נתונים בטבלת הפשיעה עבור רשות זו.</p>
-        `;
+    try {
+      const resp = await govmap.getLayerData(params);
+      console.log("getLayerData response:", resp);
+
+      // המבנה יכול להשתנות – מכסים כמה אופציות
+      const items =
+        resp.data ||
+        resp.Data ||
+        resp.entities ||
+        resp.Entities ||
+        resp.features ||
+        [];
+
+      if (!items.length) {
+        showInfo("לא נמצאה רשות מקומית", "אין רשות מקומית בנקודה הזו או שהשכבה לא פעילה ברמת הזום הנוכחית.");
         return;
       }
 
-      let html = "";
-      html += `<div class="city-name">${cityName}</div>`;
-      html += `<div class="total-crime"><strong>סה"כ עבירות:</strong> ${data.total}</div>`;
-      html += `<h4>פירוט לפי קבוצת עבירה:</h4>`;
-      html += `<ul>`;
+      const feature = items[0];
+      const attrs =
+        feature.Attributes ||
+        feature.attributes ||
+        feature.fields ||
+        feature.Fields ||
+        feature;  // fallback
 
-      for (const [type, count] of Object.entries(data.breakdown)) {
-        html += `<li class="crime-type"><strong>${type}:</strong> ${count}</li>`;
+      console.log("feature attributes:", attrs);
+
+      const muniName = detectMunicipalityName(attrs);
+      if (!muniName) {
+        showInfo("לא זוהה שם רשות", "לא נמצא שדה טקסט מתאים לשם הרשות באטריביוטים.");
+        return;
       }
 
-      html += `</ul>`;
+      const norm = normalizeName(muniName);
+      const crimeEntry = crimeIndex[norm];
 
-      panel.innerHTML = html;
+      if (!crimeEntry) {
+        showInfo(
+          `רשות מקומית: ${muniName}`,
+          "לא נמצאו נתוני פשיעה לרשות זו בקובץ crimeDB."
+        );
+        return;
+      }
+
+      const title = `רשות מקומית: ${crimeEntry.name}`;
+      const lines = [];
+
+      const data = crimeEntry.data;
+      // אנחנו יודעים שהפקנו total + breakdown לפי קבוצת עבירה
+      if (typeof data === "object" && data !== null) {
+        if (typeof data.total !== "undefined") {
+          lines.push(`סה\"כ אירועים: ${data.total}`);
+          lines.push("");
+        }
+
+        if (typeof data.breakdown === "object" && data.breakdown !== null) {
+          lines.push("פירוט לפי קבוצת עבירה:");
+          for (const k of Object.keys(data.breakdown)) {
+            lines.push(`• ${k}: ${data.breakdown[k]}`);
+          }
+        } else {
+          lines.push(String(data));
+        }
+      } else {
+        lines.push(String(data));
+      }
+
+      showInfo(title, lines.join("\n"));
+
+    } catch (err) {
+      console.error("getLayerData error:", err);
+      showInfo("שגיאה בקריאת שכבה", err.message || String(err));
     }
-  </script>
+  }
+
+  // ========= זיהוי שדה שם הרשות באטריביוטים =========
+  function detectMunicipalityName(attrs) {
+    if (!attrs) return null;
+
+    // אם כבר זיהינו שדה בעבר – להשתמש בו
+    if (detectedMunicipalityField && attrs[detectedMunicipalityField]) {
+      return attrs[detectedMunicipalityField];
+    }
+
+    // 1. ננסה למצוא שדה שעבור הערך שלו יש התאמה ב-crimeIndex
+    for (const key of Object.keys(attrs)) {
+      const val = attrs[key];
+      if (typeof val !== "string") continue;
+      if (!/[\u0590-\u05FF]/.test(val)) continue; // רק ערכים בעברית
+
+      const norm = normalizeName(val);
+      if (crimeIndex[norm]) {
+        detectedMunicipalityField = key;
+        console.log("Detected municipality field:", key, "=>", val);
+        return val;
+      }
+    }
+
+    // 2. fallback – פשוט שדה עברי ראשון
+    for (const key of Object.keys(attrs)) {
+      const val = attrs[key];
+      if (typeof val === "string" && /[\u0590-\u05FF]/.test(val)) {
+        detectedMunicipalityField = key;
+        console.log("Fallback municipality field:", key, "=>", val);
+        return val;
+      }
+    }
+
+    return null;
+  }
+
+  // ========= עדכון הפאנל העליון =========
+  function showInfo(title, body) {
+    document.getElementById("info-title").textContent = title;
+    document.getElementById("info-body").textContent = body;
+  }
+</script>
+
 </body>
 </html>
