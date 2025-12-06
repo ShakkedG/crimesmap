@@ -4,8 +4,7 @@
   <meta charset="utf-8">
   <title>מפת פשיעה לפי רשויות מקומיות</title>
 
-  <!-- קודם: קובץ הדאטה crimeDB.js -->
-  <!-- חייב להכיל:  const crimeDB = { ... };  בלי export -->
+  <!-- קובץ הדאטה: חייב להכיל const crimeDB = { ... }; בלי export -->
   <script src="crimeDB.js"></script>
 
   <style>
@@ -51,16 +50,15 @@
     }
   </style>
 
-  <!-- קוד המפה -->
   <script type="text/javascript">
-    const MUNICIPAL_LAYER = "125"; // רשויות מקומיות
+    const MUNICIPAL_LAYER = "125"; // שכבת רשויות/יישובים שאתה משתמש בה
     const TOKEN = "ede9a5fd-7c23-432f-8ffb-d85feffa3f3c";
 
     let mapInitialized = false;
     const crimeIndex = {};
     let detectedMunicipalityField = null;
 
-    // --- נירמול שמות רשויות (מוריד "מועצה אזורית", "עיריית" וכו') ---
+    // --- נירמול שמות (מוריד "מועצה אזורית", "עיריית" וכו') ---
     function normalizeName(name) {
       let s = (name || "").toString().trim();
 
@@ -78,10 +76,10 @@
       return s;
     }
 
-    // --- בונה אינדקס מה-crimeDB לפי שם מנורמל ---
+    // --- בניית אינדקס שמות מה-crimeDB ---
     function buildCrimeIndex() {
       if (typeof crimeDB === "undefined") {
-        console.error("crimeDB לא מוגדר. ודא ש-crimeDB.js נטען לפני הסקריפט ושאין בו export.");
+        console.error("crimeDB לא מוגדר. בדוק ש-crimeDB.js נטען ושאין בו export.");
         return;
       }
 
@@ -93,14 +91,12 @@
       console.log("crimeIndex built:", Object.keys(crimeIndex).length, "entries");
     }
 
-    // --- חיפוש התאמה לרשות ב-crimeIndex עם קצת גמישות ---
+    // --- חיפוש רשות בדאטה עם קצת גמישות ---
     function findCrimeEntry(muniName) {
       const norm = normalizeName(muniName);
 
-      // התאמה מדויקת
       if (crimeIndex[norm]) return crimeIndex[norm];
 
-      // התאמה חלקית – אם אחת המחרוזות היא סיומת של השניה
       let best = null;
       for (const key in crimeIndex) {
         if (key === norm) return crimeIndex[key];
@@ -111,7 +107,7 @@
       return best;
     }
 
-    // --- יצירת המפה ורישום לאירוע CLICK ---
+    // --- יצירת מפה + הרשמה לאירוע CLICK ---
     function initGovMap() {
       buildCrimeIndex();
 
@@ -136,6 +132,18 @@
       console.log("GovMap ready (layer", MUNICIPAL_LAYER, ")");
     }
 
+    // --- המרה של מערך {FieldName, Value} ל-Object רגיל ---
+    function fieldsArrayToObject(arr) {
+      if (!Array.isArray(arr)) return arr;
+      const obj = {};
+      for (const f of arr) {
+        if (f && f.FieldName) {
+          obj[f.FieldName] = f.Value;
+        }
+      }
+      return obj;
+    }
+
     // --- קליק על המפה ---
     async function onMapClick(e) {
       if (!mapInitialized) return;
@@ -146,7 +154,7 @@
       const params = {
         LayerName: MUNICIPAL_LAYER,
         Point: { x, y },
-        Radius: 250 // רדיוס גדול יותר כדי לתפוס גם לחיצות קרובות לגבול
+        Radius: 250
       };
 
       try {
@@ -162,24 +170,28 @@
           [];
 
         if (!items.length) {
-          showInfo("לא נמצאה רשות מקומית", "אין רשות מקומית בנקודה הזו או שהשכבה אינה פעילה ברמת הזום הנוכחית.");
+          showInfo("לא נמצאה רשות / ישוב", "אין ישות מתאימה בנקודה הזו או שהשכבה אינה פעילה.");
           return;
         }
 
         const feature = items[0];
-        const attrs =
+
+        let attrs =
           feature.Attributes ||
           feature.attributes ||
           feature.fields ||
           feature.Fields ||
           feature;
 
-        console.log("feature attrs:", attrs);
+        // אם attrs הוא מערך של {FieldName, Value} – ממפים לאובייקט
+        attrs = fieldsArrayToObject(attrs);
+
+        console.log("feature attrs (after map):", attrs);
 
         const muniName = detectMunicipalityName(attrs);
 
         if (!muniName) {
-          showInfo("לא זוהה שם רשות", "לא נמצא שדה מתאים לשם רשות מקומית באטריביוטים.");
+          showInfo("לא זוהה שם ישוב/רשות", "לא נמצא שדה עברי שמתאים לשם.");
           return;
         }
 
@@ -187,19 +199,19 @@
 
         if (!crimeEntry) {
           showInfo(
-            `רשות מקומית: ${muniName}`,
-            "לא נמצאו נתוני פשיעה בקובץ crimeDB עבור רשות זו."
+            `שם מהשכבה: ${muniName}`,
+            "לא נמצאו נתוני פשיעה בקובץ crimeDB עבור שם זה.\nבדוק אם השם מופיע בעמודת \"ישוב סופי\" בקובץ האקסל."
           );
           return;
         }
 
-        const title = `רשות מקומית: ${crimeEntry.name}`;
+        const title = `יישוב / רשות: ${crimeEntry.name}`;
         const lines = [];
         const data = crimeEntry.data;
 
         if (typeof data === "object" && data !== null) {
           if (typeof data.total !== "undefined") {
-            lines.push(`סה"כ אירועים: ${data.total}`);
+            lines.push(`סה\"כ אירועים: ${data.total}`);
             lines.push("");
           }
 
@@ -221,7 +233,7 @@
       }
     }
 
-    // --- זיהוי שדה שם הרשות מתוך האטריביוטים ---
+    // --- זיהוי שם היישוב / רשות מתוך attrs (עכשיו זה Object של FieldName -> Value) ---
     function detectMunicipalityName(attrs) {
       if (!attrs) return null;
 
@@ -229,21 +241,25 @@
         return attrs[detectedMunicipalityField];
       }
 
-      // קודם: מנסים למצוא ערך שעבורו יש התאמה ב-crimeIndex
-      for (const key of Object.keys(attrs)) {
-        const val = attrs[key];
-        if (typeof val !== "string") continue;
-        if (!/[\u0590-\u05FF]/.test(val)) continue;
+      const CANDIDATE_FIELDS = [
+        "ישוב סופי",
+        "שם ישות",
+        "שם ישוב",
+        "שם יישוב",
+        "שם רשות",
+        "שם רשות מקומית"
+      ];
 
-        const norm = normalizeName(val);
-        if (crimeIndex[norm]) {
-          detectedMunicipalityField = key;
-          console.log("Detected municipality field:", key, "=>", val);
-          return val;
+      // קודם – שדות ידועים בשמות נפוצים
+      for (const field of CANDIDATE_FIELDS) {
+        if (attrs[field] && typeof attrs[field] === "string") {
+          detectedMunicipalityField = field;
+          console.log("Detected municipality field (by name):", field, "=>", attrs[field]);
+          return attrs[field];
         }
       }
 
-      // fallback: השדה העברי הראשון
+      // אם לא – חיפוש כללי על כל המפתחות (צריך להיות string בעברית)
       for (const key of Object.keys(attrs)) {
         const val = attrs[key];
         if (typeof val === "string" && /[\u0590-\u05FF]/.test(val)) {
@@ -256,29 +272,27 @@
       return null;
     }
 
-    // --- עדכון הפאנל ---
     function showInfo(title, body) {
       document.getElementById("info-title").textContent = title;
       document.getElementById("info-body").textContent = body;
     }
   </script>
 
-  <!-- טעינת GOVMAP בסוף, מפעיל initGovMap -->
+  <!-- GOVMAP נטען בסוף ומפעיל initGovMap -->
   <script
     src="https://www.govmap.gov.il/govmap/api/govmap.api.js"
     defer
     onload="initGovMap()">
   </script>
-
 </head>
 
 <body>
   <div id="map"></div>
 
   <div id="info-panel">
-    <div id="info-title">מפת פשיעה לפי רשות</div>
+    <div id="info-title">מפת פשיעה לפי רשות / ישוב</div>
     <div id="info-body">
-      לחץ על רשות מקומית במפה כדי לראות נתונים מהקובץ crimeDB.
+      לחץ על עצם בשכבת "רשויות מקומיות" כדי לראות את נתוני הפשיעה מהקובץ.
     </div>
   </div>
 </body>
