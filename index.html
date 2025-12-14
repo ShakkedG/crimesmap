@@ -2,10 +2,10 @@
 <html lang="he" dir="rtl">
 <head>
   <meta charset="utf-8" />
-  <title>מפת פשיעה – לפי רשות</title>
+  <title>מפת פשיעה – לפי רשות ולפי שנה (2020–2025)</title>
 
-  <!-- מסד נתונים של רשויות -->
-  <script src="crimeDB.js"></script>
+  <!-- הנתונים המאוחדים (שמור את הקובץ באותה תיקייה כמו ה-index) -->
+  <script src="crimeByYear_2020_2025.js"></script>
 
   <style>
     html, body {
@@ -26,8 +26,25 @@
       background: #fff;
       padding: 10px 14px;
       border-radius: 10px;
-      width: 380px;
+      width: 420px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+      font-size: 14px;
+    }
+
+    #controls {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    #controls label { font-weight: bold; }
+
+    #yearSelect {
+      padding: 6px 8px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
       font-size: 14px;
     }
 
@@ -40,8 +57,13 @@
     const TOKEN = "ede9a5fd-7c23-432f-8ffb-d85feffa3f3c";
 
     let mapInitialized = false;
-    const muniIndex = {};
     let detectedMunicipalityField = null;
+
+    // ברירת מחדל לשנה: 2025 אם קיימת, אחרת השנה הראשונה ברשימה
+    let currentYear = "2025";
+
+    // אינדקס עבור השנה הנבחרת בלבד: key(normalized) -> {name,data}
+    const muniIndex = {};
 
     function normalizeMunicipalityKey(name) {
       let s = (name ?? "").toString().trim();
@@ -57,11 +79,21 @@
       return s.toLowerCase();
     }
 
-    function buildIndex() {
-      for (const k in crimeDB) {
-        muniIndex[normalizeMunicipalityKey(k)] = { name: k, data: crimeDB[k] };
+    function buildIndexForYear(yearStr) {
+      // ניקוי אינדקס
+      for (const k in muniIndex) delete muniIndex[k];
+
+      const yearData = (window.crimeByYear || {})[yearStr];
+      if (!yearData) {
+        console.warn("No data for year:", yearStr);
+        return;
       }
-      console.log("muniIndex:", Object.keys(muniIndex).length);
+
+      for (const k in yearData) {
+        muniIndex[normalizeMunicipalityKey(k)] = { name: k, data: yearData[k] };
+      }
+
+      console.log("Year:", yearStr, "muniIndex size:", Object.keys(muniIndex).length);
     }
 
     function showInfo(title, body) {
@@ -73,6 +105,7 @@
       const lines = [];
       const d = entry.data;
 
+      lines.push(`שנה: ${currentYear}`);
       if (d.total !== undefined) {
         lines.push(`סה״כ אירועים: ${d.total}\n`);
       }
@@ -127,8 +160,40 @@
     }
 
     function initGovMap() {
-      buildIndex();
+      if (!window.crimeByYear) {
+        showInfo(
+          "שגיאה",
+          "crimeByYear לא נטען. ודא שהקובץ crimeByYear_2020_2025.js נמצא באותה תיקייה כמו index.html"
+        );
+        return;
+      }
 
+      // בניית רשימת שנים ל-dropdown
+      const years = Object.keys(window.crimeByYear).sort();
+      const sel = document.getElementById("yearSelect");
+      sel.innerHTML = "";
+
+      for (const y of years) {
+        const opt = document.createElement("option");
+        opt.value = y;
+        opt.textContent = y;
+        sel.appendChild(opt);
+      }
+
+      // ברירת מחדל: 2025 אם קיימת, אחרת הראשונה ברשימה
+      currentYear = years.includes("2025") ? "2025" : (years[0] || "2020");
+      sel.value = currentYear;
+
+      // בנה אינדקס לשנה הנבחרת
+      buildIndexForYear(currentYear);
+
+      sel.addEventListener("change", (e) => {
+        currentYear = e.target.value;
+        buildIndexForYear(currentYear);
+        showInfo("מפת פשיעה לפי רשות", `שנה נבחרת: ${currentYear}\nלחץ על רשות במפה כדי לראות נתונים`);
+      });
+
+      // יצירת המפה
       govmap.createMap("map", {
         token: TOKEN,
         layers: [MUNICIPAL_LAYER],
@@ -140,7 +205,7 @@
         onLoad: () => {
           mapInitialized = true;
           govmap.onEvent(govmap.events.CLICK).progress(onMapClick);
-          showInfo("מפת פשיעה לפי רשות", "לחץ על רשות במפה כדי לראות נתונים");
+          showInfo("מפת פשיעה לפי רשות", `שנה נבחרת: ${currentYear}\nלחץ על רשות במפה כדי לראות נתונים`);
         }
       });
     }
@@ -164,7 +229,7 @@
       const entry = muniIndex[key];
 
       if (!entry) {
-        showInfo("לא נמצאה התאמה", `שם מהשכבה: ${name}\nnormalize: ${key}`);
+        showInfo("לא נמצאה התאמה", `שנה: ${currentYear}\nשם מהשכבה: ${name}\nnormalize: ${key}`);
         return;
       }
 
@@ -183,8 +248,13 @@
   <div id="map"></div>
 
   <div id="info-panel">
+    <div id="controls">
+      <label for="yearSelect">שנה:</label>
+      <select id="yearSelect" aria-label="בחירת שנה"></select>
+    </div>
+
     <div id="info-title">מפת פשיעה לפי רשות</div>
-    <div id="info-body">טוען מפה...</div>
+    <div id="info-body">טוען נתונים...</div>
   </div>
 </body>
 </html>
