@@ -2,9 +2,9 @@
 <html lang="he" dir="rtl">
 <head>
   <meta charset="utf-8">
-  <title>מפת פשיעה לפי רשות / תחנת משטרה</title>
+  <title>מפת פשיעה – לפי רשות / תחנת משטרה</title>
 
-  <!-- DB files (must be in same folder) -->
+  <!-- מסדי נתונים -->
   <script src="crimeDB.js"></script>
   <script src="policeDB.js"></script>
 
@@ -13,149 +13,120 @@
       margin: 0;
       padding: 0;
       height: 100%;
-      overflow: hidden;
       font-family: Arial, sans-serif;
-      direction: rtl;
+      overflow: hidden;
     }
 
-    #map { width: 100%; height: 100%; }
+    #map {
+      width: 100%;
+      height: 100%;
+    }
 
     #info-panel {
       position: absolute;
       top: 10px;
       left: 10px;
       z-index: 9999;
-      background: rgba(255, 255, 255, 0.97);
-      border-radius: 10px;
+      background: #fff;
       padding: 10px 14px;
-      min-width: 300px;
-      max-width: 420px;
+      border-radius: 10px;
+      width: 380px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.25);
       font-size: 14px;
     }
 
     #mode-switch {
-      margin-bottom: 6px;
-      font-size: 13px;
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      align-items: center;
+      margin-bottom: 8px;
     }
-    #mode-switch label { cursor: pointer; user-select: none; }
 
     #info-title {
       font-weight: bold;
       margin-bottom: 6px;
-      font-size: 15px;
     }
 
     #info-body {
       white-space: pre-line;
-      line-height: 1.4;
-      max-height: 58vh;
+      max-height: 60vh;
       overflow-y: auto;
     }
-
-    .muted { opacity: 0.75; font-size: 12px; }
   </style>
 
-  <script type="text/javascript">
-    // GovMap layers
+  <script>
     const MUNICIPAL_LAYER = "125"; // רשויות מקומיות
     const STATION_LAYER   = "24";  // תחנות משטרה
     const TOKEN = "ede9a5fd-7c23-432f-8ffb-d85feffa3f3c";
 
+    let currentMode = "municipality";
     let mapInitialized = false;
-    let currentMode = "municipality"; // 'municipality' | 'station'
 
-    // Indexes
     const muniIndex = {};
     const stationIndex = {};
 
-    // Cache of which field holds the name
     let detectedMunicipalityField = null;
     let detectedStationField = null;
 
-    // ---------- Normalization ----------
+    /* =========================
+       נירמול שמות
+       ========================= */
+
     function normalizeMunicipalityKey(name) {
-      let s = (name || "").toString().trim();
+      let s = (name ?? "").toString().trim();
 
       s = s
-        .replace(/^מועצה\s+אזורית\s+/, "")
-        .replace(/^מועצה\s+מקומית\s+/, "")
-        .replace(/^עיריית\s+/, "")
-        .replace(/^עיריה\s+/, "");
+        .replace(/^עיריית\s+/g, "")
+        .replace(/^עיריה\s+/g, "")
+        .replace(/^מועצה\s+אזורית\s+/g, "")
+        .replace(/^מועצה\s+מקומית\s+/g, "");
 
-      s = s
-        .replace(/["׳״']/g, "")
-        .replace(/[\s\-]/g, "")
-        .toLowerCase();
-
-      return s;
-    }
-
-    // Stronger normalization for stations (handles invisible spaces, punctuation, etc.)
-    function normalizeStationKey(name) {
-      let s = (name || "").toString();
-
-      // convert NBSP / thin spaces to regular space
-      s = s.replace(/[\u00A0\u2000-\u200B\u202F\u205F\u3000]/g, " ");
-
-      // strip common prefixes (optional)
-      s = s
-        .replace(/^תחנת\s+משטרה\s+/g, "")
-        .replace(/^תחנת\s+/g, "")
-        .replace(/^משטרת\s+/g, "")
-        .replace(/^ת\.?מ\.?\s*/g, "")     // ת"מ / ת.מ.
-        .trim();
-
-      // unify dashes
-      s = s.replace(/[–—]/g, "-");
-
-      // remove quotes
       s = s.replace(/["׳״']/g, "");
-
-      // remove spaces and dashes entirely for stable key
       s = s.replace(/[\s\-]/g, "");
 
       return s.toLowerCase();
     }
 
-    // ---------- Build indexes ----------
+    function normalizeStationKey(name) {
+      let s = (name ?? "").toString();
+
+      // 🔥 קריטי: הסרת תווי כיווניות ובקרה (הבעיה שלך)
+      s = s.replace(/[\u200E\u200F\u202A-\u202E\u2066-\u2069]/g, "");
+
+      // רווחים חכמים → רווח רגיל
+      s = s.replace(/[\u00A0\u2000-\u200B\u202F\u205F\u3000]/g, " ");
+
+      s = s
+        .replace(/^תחנת\s+משטרה\s+/g, "")
+        .replace(/^תחנת\s+/g, "")
+        .replace(/^משטרת\s+/g, "")
+        .replace(/^ת\.?מ\.?\s*/g, "")
+        .trim();
+
+      s = s.replace(/[–—]/g, "-");
+      s = s.replace(/["׳״']/g, "");
+      s = s.replace(/[\s\-]/g, "");
+
+      return s.toLowerCase();
+    }
+
+    /* =========================
+       בניית אינדקסים
+       ========================= */
+
     function buildIndexes() {
-      // municipality DB
-      if (typeof crimeDB === "undefined") {
-        console.error("crimeDB is undefined. Ensure crimeDB.js defines: const crimeDB = {...};");
-      } else {
-        for (const key of Object.keys(crimeDB)) {
-          const norm = normalizeMunicipalityKey(key);
-          muniIndex[norm] = { name: key, data: crimeDB[key] };
-        }
-        console.log("muniIndex built:", Object.keys(muniIndex).length, "entries");
+      for (const k in crimeDB) {
+        muniIndex[normalizeMunicipalityKey(k)] = { name: k, data: crimeDB[k] };
       }
 
-      // station DB
-      if (typeof policeDB === "undefined") {
-        console.error("policeDB is undefined. Ensure policeDB.js defines: const policeDB = {...};");
-      } else {
-        for (const key of Object.keys(policeDB)) {
-          const norm = normalizeStationKey(key);
-          stationIndex[norm] = { name: key, data: policeDB[key] };
-        }
-        console.log("stationIndex built:", Object.keys(stationIndex).length, "entries");
+      for (const k in policeDB) {
+        stationIndex[normalizeStationKey(k)] = { name: k, data: policeDB[k] };
       }
+
+      console.log("muniIndex:", Object.keys(muniIndex).length);
+      console.log("stationIndex:", Object.keys(stationIndex).length);
     }
 
-    // ---------- Helpers ----------
-    function fieldsArrayToObject(attrs) {
-      if (!Array.isArray(attrs)) return attrs;
-      const obj = {};
-      for (const f of attrs) {
-        if (f && f.FieldName) obj[f.FieldName] = f.Value;
-      }
-      return obj;
-    }
+    /* =========================
+       עזרי UI
+       ========================= */
 
     function showInfo(title, body) {
       document.getElementById("info-title").textContent = title;
@@ -163,204 +134,166 @@
     }
 
     function showEntry(label, entry) {
-      const data = entry.data;
       const lines = [];
-      if (data && typeof data === "object") {
-        if (typeof data.total !== "undefined") {
-          lines.push(`סה"כ אירועים: ${data.total}`);
-          lines.push("");
-        }
-        if (data.breakdown && typeof data.breakdown === "object") {
-          lines.push("פירוט לפי קבוצת עבירה:\n");
-          for (const k of Object.keys(data.breakdown)) {
-            lines.push(`• ${k}: ${data.breakdown[k]}`);
-          }
-        }
-      } else {
-        lines.push(String(data));
+      const d = entry.data;
+
+      if (d.total !== undefined) {
+        lines.push(`סה״כ אירועים: ${d.total}\n`);
       }
+
+      if (d.breakdown) {
+        for (const k in d.breakdown) {
+          lines.push(`• ${k}: ${d.breakdown[k]}`);
+        }
+      }
+
       showInfo(`${label}: ${entry.name}`, lines.join("\n"));
     }
 
-    function pickFirstHebrewString(attrs) {
-      for (const k of Object.keys(attrs || {})) {
-        const v = attrs[k];
-        if (typeof v === "string" && /[\u0590-\u05FF]/.test(v)) return { key: k, value: v };
+    function fieldsToObject(fields) {
+      if (!Array.isArray(fields)) return fields;
+      const o = {};
+      for (const f of fields) o[f.FieldName] = f.Value;
+      return o;
+    }
+
+    function pickHebrewField(attrs) {
+      for (const k in attrs) {
+        if (typeof attrs[k] === "string" && /[\u0590-\u05FF]/.test(attrs[k])) {
+          return { key: k, value: attrs[k] };
+        }
       }
       return null;
     }
 
-    // ---------- Name detection ----------
+    /* =========================
+       זיהוי שמות
+       ========================= */
+
     function detectMunicipalityName(attrsRaw) {
-      const attrs = fieldsArrayToObject(attrsRaw);
-      if (!attrs) return null;
+      const attrs = fieldsToObject(attrsRaw);
 
       if (detectedMunicipalityField && attrs[detectedMunicipalityField]) {
         return attrs[detectedMunicipalityField];
       }
 
-      const candidates = ["שם רשות", "שם רשות מקומית", "ישוב סופי", "שם ישות", "שם ישוב", "שם יישוב"];
+      const candidates = ["שם רשות", "שם רשות מקומית", "שם ישוב", "ישוב סופי"];
       for (const c of candidates) {
-        if (typeof attrs[c] === "string" && attrs[c].trim()) {
+        if (attrs[c]) {
           detectedMunicipalityField = c;
           return attrs[c];
         }
       }
 
-      const any = pickFirstHebrewString(attrs);
-      if (any) { detectedMunicipalityField = any.key; return any.value; }
+      const any = pickHebrewField(attrs);
+      if (any) {
+        detectedMunicipalityField = any.key;
+        return any.value;
+      }
+
       return null;
     }
 
     function detectStationName(attrsRaw) {
-      const attrs = fieldsArrayToObject(attrsRaw);
-      if (!attrs) return null;
+      const attrs = fieldsToObject(attrsRaw);
 
       if (detectedStationField && attrs[detectedStationField]) {
         return attrs[detectedStationField];
       }
 
-      const candidates = ["שם תחנה", "שם תחנת משטרה", "תחנת משטרה", "שם ישות", "שם"];
+      const candidates = ["שם תחנה", "שם תחנת משטרה", "שם"];
       for (const c of candidates) {
-        if (typeof attrs[c] === "string" && attrs[c].trim()) {
+        if (attrs[c]) {
           detectedStationField = c;
           return attrs[c];
         }
       }
 
-      const any = pickFirstHebrewString(attrs);
-      if (any) { detectedStationField = any.key; return any.value; }
+      const any = pickHebrewField(attrs);
+      if (any) {
+        detectedStationField = any.key;
+        return any.value;
+      }
+
       return null;
     }
 
-    // ---------- GovMap init ----------
+    /* =========================
+       MAP
+       ========================= */
+
     function initGovMap() {
       buildIndexes();
 
       govmap.createMap("map", {
         token: TOKEN,
         layers: [MUNICIPAL_LAYER, STATION_LAYER],
-        background: 2,
         layersMode: 1,
+        background: 2,
         zoomButtons: true,
-        showXY: true,
         identifyOnClick: false,
         onLoad: () => {
           mapInitialized = true;
-          console.log("GovMap ready");
-
           govmap.onEvent(govmap.events.CLICK).progress(onMapClick);
-
-          // default
           setMode("municipality");
         }
       });
     }
 
-    // ---------- Mode + layer visibility ----------
     function setMode(mode) {
       currentMode = mode;
-
-      try {
-        if (mode === "municipality") {
-          govmap.setVisibleLayers([MUNICIPAL_LAYER], [STATION_LAYER]);
-          showInfo("מצב: רשות", "לחץ על רשות במפה כדי לראות נתונים.");
-        } else {
-          govmap.setVisibleLayers([STATION_LAYER], [MUNICIPAL_LAYER]);
-          showInfo("מצב: תחנת משטרה", "לחץ על תחנת משטרה במפה כדי לראות נתונים.");
-        }
-      } catch (e) {
-        console.warn("setVisibleLayers failed:", e);
-        showInfo(mode === "municipality" ? "מצב: רשות" : "מצב: תחנת משטרה", "לחץ על המפה כדי לראות נתונים.");
+      if (mode === "municipality") {
+        govmap.setVisibleLayers([MUNICIPAL_LAYER], [STATION_LAYER]);
+        showInfo("מצב: רשות", "לחץ על רשות במפה");
+      } else {
+        govmap.setVisibleLayers([STATION_LAYER], [MUNICIPAL_LAYER]);
+        showInfo("מצב: תחנת משטרה", "לחץ על תחנת משטרה");
       }
     }
 
-    // ---------- Click handler ----------
     async function onMapClick(e) {
       if (!mapInitialized) return;
 
-      const x = e.mapPoint.x;
-      const y = e.mapPoint.y;
+      const layer = currentMode === "municipality" ? MUNICIPAL_LAYER : STATION_LAYER;
 
-      const layerToQuery = (currentMode === "municipality") ? MUNICIPAL_LAYER : STATION_LAYER;
+      const resp = await govmap.getLayerData({
+        LayerName: layer,
+        Point: e.mapPoint,
+        Radius: 300
+      });
 
-      const params = {
-        LayerName: layerToQuery,
-        Point: { x, y },
-        Radius: 250
-      };
+      const items = resp.data || resp.Data || [];
+      if (!items.length) return;
 
-      try {
-        const resp = await govmap.getLayerData(params);
-        console.log("getLayerData:", resp);
+      const attrs = items[0].Fields || items[0].Attributes || items[0];
 
-        const items =
-          resp.data ||
-          resp.Data ||
-          resp.entities ||
-          resp.Entities ||
-          resp.features ||
-          [];
+      if (currentMode === "municipality") {
+        const name = detectMunicipalityName(attrs);
+        const key = normalizeMunicipalityKey(name);
+        const entry = muniIndex[key];
 
-        if (!items.length) {
-          showInfo("לא נמצאה ישות", "אין ישות מתאימה בנקודה הזו (נסה להתקרב/להגדיל זום).");
+        if (!entry) {
+          showInfo("לא נמצאה התאמה", `שם רשות: ${name}\nnormalize: ${key}`);
           return;
         }
+        showEntry("רשות", entry);
+      } else {
+        const name = detectStationName(attrs);
+        const key = normalizeStationKey(name);
+        const entry = stationIndex[key];
 
-        const feature = items[0];
-        const attrsRaw =
-          feature.Attributes ||
-          feature.attributes ||
-          feature.fields ||
-          feature.Fields ||
-          feature;
-
-        if (currentMode === "municipality") {
-          const name = detectMunicipalityName(attrsRaw);
-          if (!name) {
-            showInfo("לא זוהה שם רשות", "לא הצלחתי למצוא שדה שם באטריביוטים.");
-            return;
-          }
-
-          const key = normalizeMunicipalityKey(name);
-          const entry = muniIndex[key];
-
-          if (!entry) {
-            showInfo(`רשות: ${name}`, `לא נמצא ב-crimeDB\nnormalize: ${key}`);
-            return;
-          }
-
-          showEntry("רשות", entry);
-        } else {
-          const name = detectStationName(attrsRaw);
-          if (!name) {
-            showInfo("לא זוהה שם תחנה", "לא הצלחתי למצוא שדה שם באטריביוטים.");
-            return;
-          }
-
-          const key = normalizeStationKey(name);
-          const entry = stationIndex[key];
-
-          if (!entry) {
-            showInfo(
-              "לא נמצאה התאמה לתחנה",
-              `שם מהשכבה: ${name}\nnormalizeStationKey: ${key}\n\n` +
-              `בדוק שהשם הזה קיים ב-policeDB (אחרי נירמול).`
-            );
-            return;
-          }
-
-          showEntry("תחנת משטרה", entry);
+        if (!entry) {
+          showInfo(
+            "לא נמצאה התאמה",
+            `שם מהשכבה (raw): ${JSON.stringify(name)}\nnormalizeStationKey: ${key}`
+          );
+          return;
         }
-
-      } catch (err) {
-        console.error("getLayerData error:", err);
-        showInfo("שגיאה", err.message || String(err));
+        showEntry("תחנת משטרה", entry);
       }
     }
   </script>
 
-  <!-- GovMap API -->
   <script
     src="https://www.govmap.gov.il/govmap/api/govmap.api.js"
     defer
@@ -374,18 +307,17 @@
   <div id="info-panel">
     <div id="mode-switch">
       <label>
-        <input type="radio" name="mode" value="municipality" checked onclick="setMode('municipality')">
+        <input type="radio" name="mode" checked onclick="setMode('municipality')">
         לפי רשות
       </label>
       <label>
-        <input type="radio" name="mode" value="station" onclick="setMode('station')">
+        <input type="radio" name="mode" onclick="setMode('station')">
         לפי תחנת משטרה
       </label>
-      <span class="muted">השכבה הפעילה מתחלפת אוטומטית</span>
     </div>
 
     <div id="info-title">מפת פשיעה</div>
-    <div id="info-body">בחר מצב ואז לחץ על המפה.</div>
+    <div id="info-body">בחר מצב ולחץ על המפה</div>
   </div>
 </body>
 </html>
