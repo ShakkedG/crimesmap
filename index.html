@@ -17,10 +17,7 @@
       overflow: hidden;
     }
 
-    #map {
-      width: 100%;
-      height: 100%;
-    }
+    #map { width: 100%; height: 100%; }
 
     #info-panel {
       position: absolute;
@@ -35,38 +32,30 @@
       font-size: 14px;
     }
 
-    #mode-switch {
-      margin-bottom: 8px;
-    }
-
-    #info-title {
-      font-weight: bold;
-      margin-bottom: 6px;
-    }
-
-    #info-body {
-      white-space: pre-line;
-      max-height: 60vh;
-      overflow-y: auto;
-    }
+    #mode-switch { margin-bottom: 8px; }
+    #info-title { font-weight: bold; margin-bottom: 6px; }
+    #info-body  { white-space: pre-line; max-height: 60vh; overflow-y: auto; }
   </style>
 
   <script>
     const MUNICIPAL_LAYER = "125"; // רשויות מקומיות
-    const STATION_LAYER   = "24";  // תחנות משטרה
+    const STATION_LAYER   = "24";  // שכבת תחנות/מרחבים משטרתיים
     const TOKEN = "ede9a5fd-7c23-432f-8ffb-d85feffa3f3c";
 
     let currentMode = "municipality";
     let mapInitialized = false;
 
     const muniIndex = {};
-    const stationIndex = {};
+
+    // אינדקס אחד ליחידות משטרה (גם "תחנת" וגם "מרחב")
+    // key -> entry או מערך entries אם יש התנגשויות
+    const unitIndex = {};
 
     let detectedMunicipalityField = null;
     let detectedStationField = null;
 
     /* =========================
-       נירמול שמות
+       נירמול
        ========================= */
 
     function normalizeMunicipalityKey(name) {
@@ -84,44 +73,79 @@
       return s.toLowerCase();
     }
 
-    function normalizeStationKey(name) {
-      let s = (name ?? "").toString();
+    // תגים/שיוכים שמופיעים לרוב בסוף שם התחנה (להתעלם מהם)
+    const DROP_SUFFIX_TOKENS = new Set([
+      "דן", "ירקון", "גליל", "ציון", "שומרון",
+      "איילון", "החדש", "חדש",
+      "מרחב" // לפעמים מופיע כחלק מהשם
+    ]);
 
-      // 🔥 קריטי: הסרת תווי כיווניות ובקרה (הבעיה שלך)
-      s = s.replace(/[\u200E\u200F\u202A-\u202E\u2066-\u2069]/g, "");
+    function normalizeUnitKey(raw) {
+      let s = (raw ?? "").toString();
 
-      // רווחים חכמים → רווח רגיל
+      // ניקוי כיווניות/פורמט + ניקוד
+      s = s.normalize("NFKC")
+           .replace(/\p{Cf}/gu, "")
+           .replace(/\p{Mn}/gu, "");
+
+      // רווחים חכמים -> רווח רגיל
       s = s.replace(/[\u00A0\u2000-\u200B\u202F\u205F\u3000]/g, " ");
 
-      s = s
-        .replace(/^תחנת\s+משטרה\s+/g, "")
-        .replace(/^תחנת\s+/g, "")
-        .replace(/^משטרת\s+/g, "")
-        .replace(/^ת\.?מ\.?\s*/g, "")
-        .trim();
+      // להסיר קידומות (תחנת/מרחב/משטרת)
+      s = s.trim()
+           .replace(/^תחנת\s+משטרה\s+/g, "")
+           .replace(/^תחנת\s+/g, "")
+           .replace(/^מרחב\s+/g, "")
+           .replace(/^משטרת\s+/g, "")
+           .trim();
 
-      s = s.replace(/[–—]/g, "-");
-      s = s.replace(/["׳״']/g, "");
-      s = s.replace(/[\s\-]/g, "");
+      // ניקוי גרשיים ומקפים
+      s = s.replace(/[״"׳']/g, "")
+           .replace(/[–—-]/g, " ");
 
-      return s.toLowerCase();
+      // טוקנים
+      let parts = s.split(/\s+/).filter(Boolean);
+
+      // למחוק "מרחב" אם מופיע באמצע (למשל: "גבעתיים מרחב דן")
+      parts = parts.filter(p => p !== "מרחב");
+
+      // למחוק שיוכים בסוף
+      while (parts.length && DROP_SUFFIX_TOKENS.has(parts[parts.length - 1])) {
+        parts.pop();
+      }
+
+      return parts.join("").toLowerCase();
     }
 
     /* =========================
        בניית אינדקסים
        ========================= */
 
+    function addToUnitIndex(key, entry) {
+      if (!unitIndex[key]) unitIndex[key] = entry;
+      else if (Array.isArray(unitIndex[key])) unitIndex[key].push(entry);
+      else unitIndex[key] = [unitIndex[key], entry];
+    }
+
     function buildIndexes() {
+      // רשויות
       for (const k in crimeDB) {
         muniIndex[normalizeMunicipalityKey(k)] = { name: k, data: crimeDB[k] };
       }
 
+      // יחידות משטרה (גם תחנת וגם מרחב)
       for (const k in policeDB) {
-        stationIndex[normalizeStationKey(k)] = { name: k, data: policeDB[k] };
+        if (k === "Grand Total" || k === "(blank)" || k === "כל הארץ") continue;
+
+        const rawName = (k ?? "").toString().trim();
+        const key = normalizeUnitKey(rawName);
+        if (!key) continue;
+
+        addToUnitIndex(key, { name: rawName, data: policeDB[k] });
       }
 
       console.log("muniIndex:", Object.keys(muniIndex).length);
-      console.log("stationIndex:", Object.keys(stationIndex).length);
+      console.log("unitIndex:", Object.keys(unitIndex).length);
     }
 
     /* =========================
@@ -247,7 +271,7 @@
         showInfo("מצב: רשות", "לחץ על רשות במפה");
       } else {
         govmap.setVisibleLayers([STATION_LAYER], [MUNICIPAL_LAYER]);
-        showInfo("מצב: תחנת משטרה", "לחץ על תחנת משטרה");
+        showInfo("מצב: תחנת/מרחב", "לחץ על תחנה/מרחב במפה");
       }
     }
 
@@ -279,17 +303,28 @@
         showEntry("רשות", entry);
       } else {
         const name = detectStationName(attrs);
-        const key = normalizeStationKey(name);
-        const entry = stationIndex[key];
+        const raw = (name ?? "").toString().trim();
+        const key = normalizeUnitKey(raw);
+        const hit = unitIndex[key];
 
-        if (!entry) {
+        if (!hit) {
           showInfo(
             "לא נמצאה התאמה",
-            `שם מהשכבה (raw): ${JSON.stringify(name)}\nnormalizeStationKey: ${key}`
+            `שם מהשכבה (raw): ${JSON.stringify(raw)}\nkey: ${key}`
           );
           return;
         }
-        showEntry("תחנת משטרה", entry);
+
+        if (Array.isArray(hit)) {
+          showInfo(
+            "נמצאו כמה התאמות",
+            `שם מהשכבה: ${raw}\nkey: ${key}\n\n` +
+            hit.slice(0, 12).map(x => `- ${x.name}`).join("\n")
+          );
+          return;
+        }
+
+        showEntry("יחידה", hit);
       }
     }
   </script>
