@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
-  <meta charset="utf-8">
-  <title>מפת פשיעה – לפי רשות / תחנת משטרה</title>
+  <meta charset="utf-8" />
+  <title>מפת פשיעה – לפי רשות</title>
 
-  <!-- טוען את הדאטהבייסים -->
+  <!-- מסד נתונים של רשויות -->
   <script src="crimeDB.js"></script>
-  <script src="policeDB.js"></script>
 
   <style>
     html, body {
@@ -32,152 +31,65 @@
       font-size: 14px;
     }
 
-    #mode-switch { 
-      margin-bottom: 8px;
-      padding: 8px;
-      background: #f5f5f5;
-      border-radius: 5px;
-    }
-    
-    #mode-switch label {
-      margin-left: 15px;
-      cursor: pointer;
-    }
-    
-    #info-title { font-weight: bold; margin-bottom: 6px; font-size: 16px; }
+    #info-title { font-weight: bold; margin-bottom: 6px; }
     #info-body  { white-space: pre-line; max-height: 60vh; overflow-y: auto; }
-    
-    .debug-info {
-      background: #fff3cd;
-      padding: 8px;
-      margin-top: 8px;
-      border-radius: 4px;
-      font-size: 11px;
-      border: 1px solid #ffc107;
-      max-height: 300px;
-      overflow-y: auto;
-      direction: ltr;
-      text-align: left;
-    }
-    
-    #loading {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-      z-index: 10000;
-    }
   </style>
 
-  <script src="https://www.govmap.gov.il/govmap/api/govmap.api.js"></script>
-
   <script>
-    const MUNICIPAL_LAYER = "125";
-    const STATION_LAYER   = "24";
+    const MUNICIPAL_LAYER = "125"; // רשויות מקומיות
     const TOKEN = "ede9a5fd-7c23-432f-8ffb-d85feffa3f3c";
 
-    let currentMode = "municipality";
     let mapInitialized = false;
-
     const muniIndex = {};
-    const unitIndex = {};
-    
     let detectedMunicipalityField = null;
-    let detectedStationField = null;
 
-    /* נירמול רשויות */
     function normalizeMunicipalityKey(name) {
       let s = (name ?? "").toString().trim();
-      s = s.replace(/^עיריית\s+/g, "")
-           .replace(/^עיריה\s+/g, "")
-           .replace(/^מועצה\s+אזורית\s+/g, "")
-           .replace(/^מועצה\s+מקומית\s+/g, "");
+
+      s = s
+        .replace(/^עיריית\s+/g, "")
+        .replace(/^עיריה\s+/g, "")
+        .replace(/^מועצה\s+אזורית\s+/g, "")
+        .replace(/^מועצה\s+מקומית\s+/g, "");
+
       s = s.replace(/["׳״']/g, "");
       s = s.replace(/[\s\-]/g, "");
       return s.toLowerCase();
     }
 
-    /* נירמול תחנות */
-    function normalizeUnitKey(raw) {
-      if (!raw) return "";
-      
-      let s = raw.toString().trim();
-      
-      console.log("🔍 Raw name from map:", s);
-      
-      // ניקוי unicode
-      s = s.normalize("NFKC")
-           .replace(/\p{Cf}/gu, "")
-           .replace(/\p{Mn}/gu, "");
-      
-      // החלפת רווחים מיוחדים
-      s = s.replace(/[\u00A0\u2000-\u200B\u202F\u205F\u3000]/g, " ");
-      
-      // הסרת קידומות
-      s = s.replace(/^תחנת\s+משטרה\s+/gi, "")
-           .replace(/^תחנת\s+/gi, "")
-           .replace(/^מרחב\s+/gi, "")
-           .replace(/^משטרת\s+/gi, "")
-           .trim();
-      
-      // הסרת גרשיים, מקפים, רווחים
-      s = s.replace(/[״"׳']/g, "")
-           .replace(/[–—\-]/g, "")
-           .replace(/\s+/g, "")
-           .toLowerCase();
-      
-      console.log("🔑 Normalized key:", s);
-      
-      return s;
+    function buildIndex() {
+      for (const k in crimeDB) {
+        muniIndex[normalizeMunicipalityKey(k)] = { name: k, data: crimeDB[k] };
+      }
+      console.log("muniIndex:", Object.keys(muniIndex).length);
     }
 
-    /* בניית אינדקסים */
-    function buildIndexes() {
-      console.log("📋 Building indexes...");
-      
-      // רשויות
-      if (typeof crimeDB !== 'undefined') {
-        for (const k in crimeDB) {
-          muniIndex[normalizeMunicipalityKey(k)] = { name: k, data: crimeDB[k] };
-        }
-        console.log("✅ Municipality index:", Object.keys(muniIndex).length, "entries");
-      }
-      
-      // תחנות משטרה
-      if (typeof policeDB !== 'undefined') {
-        for (const k in policeDB) {
-          if (k === "Grand Total" || k === "(blank)" || k === "כל הארץ") continue;
-          
-          const rawName = k.toString().trim();
-          const key = normalizeUnitKey(rawName);
-          
-          if (!key) continue;
-          
-          if (!unitIndex[key]) {
-            unitIndex[key] = { name: rawName, data: policeDB[k] };
-          } else if (Array.isArray(unitIndex[key])) {
-            unitIndex[key].push({ name: rawName, data: policeDB[k] });
-          } else {
-            unitIndex[key] = [unitIndex[key], { name: rawName, data: policeDB[k] }];
-          }
-        }
-        console.log("✅ Police station index:", Object.keys(unitIndex).length, "entries");
-      }
+    function showInfo(title, body) {
+      document.getElementById("info-title").textContent = title;
+      document.getElementById("info-body").textContent = body;
     }
 
-    /* המרת Fields מ-array לאובייקט */
+    function showEntry(entry) {
+      const lines = [];
+      const d = entry.data;
+
+      if (d.total !== undefined) {
+        lines.push(`סה״כ אירועים: ${d.total}\n`);
+      }
+
+      if (d.breakdown) {
+        for (const k in d.breakdown) {
+          lines.push(`• ${k}: ${d.breakdown[k]}`);
+        }
+      }
+
+      showInfo(`רשות: ${entry.name}`, lines.join("\n"));
+    }
+
     function fieldsToObject(fields) {
       if (!Array.isArray(fields)) return fields;
       const o = {};
-      for (const f of fields) {
-        if (f.FieldName && f.Value !== undefined) {
-          o[f.FieldName] = f.Value;
-        }
-      }
+      for (const f of fields) o[f.FieldName] = f.Value;
       return o;
     }
 
@@ -190,244 +102,89 @@
       return null;
     }
 
-    /* זיהוי שם רשות */
     function detectMunicipalityName(attrsRaw) {
       const attrs = fieldsToObject(attrsRaw);
-      
-      console.log("🏛️ Municipality attributes:", attrs);
-      
+
       if (detectedMunicipalityField && attrs[detectedMunicipalityField]) {
         return attrs[detectedMunicipalityField];
       }
-      
-      const candidates = ["שם רשות", "שם רשות מקומית", "שם ישוב", "ישוב סופי", "SHEM_YISHUV"];
+
+      const candidates = ["שם רשות", "שם רשות מקומית", "שם ישוב", "ישוב סופי"];
       for (const c of candidates) {
         if (attrs[c]) {
           detectedMunicipalityField = c;
-          console.log(`✅ Found municipality field: ${c} = ${attrs[c]}`);
           return attrs[c];
         }
       }
-      
+
       const any = pickHebrewField(attrs);
       if (any) {
         detectedMunicipalityField = any.key;
         return any.value;
       }
-      
+
       return null;
     }
 
-    /* זיהוי שם תחנה */
-    function detectStationName(attrsRaw) {
-      const attrs = fieldsToObject(attrsRaw);
-      
-      console.log("🚓 Station attributes:", attrs);
-      
-      if (detectedStationField && attrs[detectedStationField]) {
-        return attrs[detectedStationField];
-      }
-      
-      const candidates = [
-        "שם תחנה", "שם תחנת משטרה", "שם", 
-        "SHEM_TACHANA", "NAME", "Station_Name",
-        "שם בעברית", "תחנת משטרה"
-      ];
-      
-      for (const c of candidates) {
-        if (attrs[c]) {
-          detectedStationField = c;
-          console.log(`✅ Found station field: ${c} = ${attrs[c]}`);
-          return attrs[c];
-        }
-      }
-      
-      const any = pickHebrewField(attrs);
-      if (any) {
-        detectedStationField = any.key;
-        console.log(`✅ Found Hebrew field: ${any.key} = ${any.value}`);
-        return any.value;
-      }
-      
-      return null;
-    }
-
-    /* UI */
-    function showInfo(title, body) {
-      document.getElementById("info-title").textContent = title;
-      document.getElementById("info-body").innerHTML = body;
-    }
-
-    function showEntry(label, entry) {
-      const lines = [];
-      const d = entry.data;
-
-      if (d.total !== undefined) {
-        lines.push(`<strong>סה״כ אירועים: ${d.total.toLocaleString()}</strong>\n`);
-      }
-
-      if (d.breakdown && Object.keys(d.breakdown).length > 0) {
-        lines.push("\n<strong>פירוט עבירות:</strong>");
-        const sorted = Object.entries(d.breakdown)
-          .sort((a, b) => b[1] - a[1])
-          .slice(0, 10);
-        
-        for (const [k, v] of sorted) {
-          lines.push(`• ${k}: ${v.toLocaleString()}`);
-        }
-      }
-
-      showInfo(`${label}: ${entry.name}`, lines.join("\n"));
-    }
-
-    /* MAP */
     function initGovMap() {
-      console.log("🚀 Initializing map...");
-      
-      buildIndexes();
+      buildIndex();
 
-      try {
-        govmap.createMap("map", {
-          token: TOKEN,
-          layers: [MUNICIPAL_LAYER, STATION_LAYER],
-          layersMode: 1,
-          background: 2,
-          zoomButtons: true,
-          identifyOnClick: false,
-          onLoad: () => {
-            console.log("✅ Map loaded!");
-            document.getElementById('loading').style.display = 'none';
-            mapInitialized = true;
-            govmap.onEvent(govmap.events.CLICK).progress(onMapClick);
-            setMode("municipality");
-          }
-        });
-      } catch (error) {
-        console.error("❌ Error:", error);
-        document.getElementById('loading').innerHTML = "שגיאה: " + error.message;
-      }
-    }
-
-    function setMode(mode) {
-      currentMode = mode;
-      if (mode === "municipality") {
-        govmap.setVisibleLayers([MUNICIPAL_LAYER], [STATION_LAYER]);
-        showInfo("מצב: רשות מקומית", "לחץ על רשות במפה");
-      } else {
-        govmap.setVisibleLayers([STATION_LAYER], [MUNICIPAL_LAYER]);
-        showInfo("מצב: תחנת משטרה", "לחץ על תחנה במפה");
-      }
+      govmap.createMap("map", {
+        token: TOKEN,
+        layers: [MUNICIPAL_LAYER],
+        layersMode: 1,
+        background: 2,
+        zoomButtons: true,
+        showXY: false,
+        identifyOnClick: false,
+        onLoad: () => {
+          mapInitialized = true;
+          govmap.onEvent(govmap.events.CLICK).progress(onMapClick);
+          showInfo("מפת פשיעה לפי רשות", "לחץ על רשות במפה כדי לראות נתונים");
+        }
+      });
     }
 
     async function onMapClick(e) {
       if (!mapInitialized) return;
 
-      const layer = currentMode === "municipality" ? MUNICIPAL_LAYER : STATION_LAYER;
+      const resp = await govmap.getLayerData({
+        LayerName: MUNICIPAL_LAYER,
+        Point: e.mapPoint,
+        Radius: 300
+      });
 
-      try {
-        const resp = await govmap.getLayerData({
-          LayerName: layer,
-          Point: e.mapPoint,
-          Radius: 300
-        });
+      const items = resp.data || resp.Data || [];
+      if (!items.length) return;
 
-        const items = resp.data || resp.Data || [];
-        if (!items.length) {
-          showInfo("לא נמצא", currentMode === "municipality" ? "אין רשות באזור זה" : "אין תחנה באזור זה");
-          return;
-        }
+      const attrs = items[0].Fields || items[0].Attributes || items[0];
+      const name = detectMunicipalityName(attrs);
 
-        const attrs = items[0].Fields || items[0].Attributes || items[0];
+      const key = normalizeMunicipalityKey(name);
+      const entry = muniIndex[key];
 
-        if (currentMode === "municipality") {
-          const name = detectMunicipalityName(attrs);
-          const key = normalizeMunicipalityKey(name);
-          const entry = muniIndex[key];
-
-          if (!entry) {
-            const debugInfo = `
-<div class="debug-info">
-<strong>🔍 Debug Info:</strong><br><br>
-<strong>Name from GovMap:</strong> ${name}<br>
-<strong>Normalized key:</strong> ${key}<br><br>
-<strong>All fields:</strong><br>
-<pre>${JSON.stringify(fieldsToObject(attrs), null, 2)}</pre><br>
-<strong>Sample keys in index:</strong><br>
-${Object.keys(muniIndex).slice(0, 10).join(", ")}
-</div>`;
-            
-            showInfo("❌ לא נמצאה התאמה", debugInfo);
-            return;
-          }
-          
-          showEntry("רשות", entry);
-          
-        } else {
-          const name = detectStationName(attrs);
-          const raw = (name ?? "").toString().trim();
-          const key = normalizeUnitKey(raw);
-          const hit = unitIndex[key];
-
-          if (!hit) {
-            const debugInfo = `
-<div class="debug-info">
-<strong>🔍 Debug Info:</strong><br><br>
-<strong>Name from GovMap:</strong> ${raw}<br>
-<strong>Normalized key:</strong> ${key}<br><br>
-<strong>All fields:</strong><br>
-<pre>${JSON.stringify(fieldsToObject(attrs), null, 2)}</pre><br>
-<strong>Sample keys in index:</strong><br>
-${Object.keys(unitIndex).slice(0, 15).join(", ")}
-</div>`;
-            
-            showInfo("❌ לא נמצאה התאמה", debugInfo);
-            return;
-          }
-
-          if (Array.isArray(hit)) {
-            showInfo("⚠️ כמה התאמות", `שם: ${raw}\n\n` + hit.map(x => `- ${x.name}`).join("\n"));
-            return;
-          }
-
-          showEntry("תחנת משטרה", hit);
-        }
-        
-      } catch (error) {
-        console.error("Error:", error);
-        showInfo("שגיאה", error.message);
+      if (!entry) {
+        showInfo("לא נמצאה התאמה", `שם מהשכבה: ${name}\nnormalize: ${key}`);
+        return;
       }
+
+      showEntry(entry);
     }
+  </script>
 
-    window.addEventListener('load', function() {
-      if (typeof govmap !== 'undefined') {
-        console.log("✅ All resources loaded");
-        initGovMap();
-      } else {
-        console.error("❌ govmap not loaded");
-        document.getElementById('loading').innerHTML = "שגיאה בטעינת GovMap";
-      }
-    });
+  <script
+    src="https://www.govmap.gov.il/govmap/api/govmap.api.js"
+    defer
+    onload="initGovMap()">
   </script>
 </head>
 
 <body>
-  <div id="loading">טוען מפה...</div>
   <div id="map"></div>
 
   <div id="info-panel">
-    <div id="mode-switch">
-      <label>
-        <input type="radio" name="mode" checked onclick="setMode('municipality')">
-        לפי רשות מקומית
-      </label>
-      <label>
-        <input type="radio" name="mode" onclick="setMode('station')">
-        לפי תחנת משטרה
-      </label>
-    </div>
-
-    <div id="info-title">מפת פשיעה</div>
-    <div id="info-body">ממתין לטעינה...</div>
+    <div id="info-title">מפת פשיעה לפי רשות</div>
+    <div id="info-body">טוען מפה...</div>
   </div>
 </body>
 </html>
