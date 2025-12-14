@@ -368,14 +368,24 @@
     }
 
     // -------- החלפת מצב רשות / תחנה --------
-    function setMode(mode) {
-      currentMode = mode;
-      if (mode === "municipality") {
-        showInfo("מצב תצוגה: רשות מקומית", "לחץ על רשות בשכבה כדי לראות את נתוני הפשיעה.");
-      } else {
-        showInfo("מצב תצוגה: תחנת משטרה", "לחץ על תחנת משטרה במפה כדי לראות את נתוני הפשיעה.");
-      }
+  function setMode(mode) {
+  currentMode = mode;
+
+  // מדליקים/מכבים שכבות בהתאם למצב
+  // הערה: setVisibleLayers מקבל 2 מערכים: [להדליק], [לכבות]
+  try {
+    if (mode === "municipality") {
+      govmap.setVisibleLayers([MUNICIPAL_LAYER], [STATION_LAYER]);
+      showInfo("מצב תצוגה: רשות מקומית", "השכבה הפעילה: רשויות מקומיות. לחץ על רשות כדי לראות נתונים.");
+    } else {
+      govmap.setVisibleLayers([STATION_LAYER], [MUNICIPAL_LAYER]);
+      showInfo("מצב תצוגה: תחנת משטרה", "השכבה הפעילה: תחנות משטרה. לחץ על תחנה כדי לראות נתונים.");
     }
+  } catch (e) {
+    console.warn("setVisibleLayers failed:", e);
+  }
+}
+
   </script>
 
   <!-- GOVMAP -->
