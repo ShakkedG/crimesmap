@@ -192,7 +192,7 @@
       if (!mapInitialized) return;
 
       const resp = await govmap.getLayerEntities({
-        layerName: MUNICIPAL_LAYER
+        LayerName: MUNICIPAL_LAYER
       });
 
       const entities = resp.entities || resp.data || [];
