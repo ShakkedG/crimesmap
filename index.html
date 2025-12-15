@@ -60,14 +60,17 @@
     // normalized -> { name, data }
     const muniIndex = {};
 
-    /* ===== נרמול שמות ===== */
+    /* ===== נרמול שמות (עם הגנה) ===== */
     function normalizeMunicipalityKey(name) {
-      let s = (name ?? "").toString().trim();
+      if (name == null) return "";
+      let s = String(name).trim();
+
       s = s
         .replace(/^עיריית\s+/g, "")
         .replace(/^עיריה\s+/g, "")
         .replace(/^מועצה\s+אזורית\s+/g, "")
         .replace(/^מועצה\s+מקומית\s+/g, "");
+
       s = s.replace(/["׳״']/g, "");
       s = s.replace(/[\s\-]/g, "");
       return s.toLowerCase();
@@ -76,6 +79,7 @@
     /* ===== בניית אינדקס לשנה ===== */
     function buildIndexForYear(year) {
       for (const k in muniIndex) delete muniIndex[k];
+
       const yearData = window.crimeByYear?.[year];
       if (!yearData) return;
 
@@ -121,25 +125,26 @@
       return o;
     }
 
-    function pickHebrewField(attrs) {
-      for (const k in attrs) {
-        if (typeof attrs[k] === "string" && /[\u0590-\u05FF]/.test(attrs[k])) {
-          return { key: k, value: attrs[k] };
-        }
-      }
-      return null;
-    }
-
     function detectMunicipalityName(attrsRaw) {
-      const attrs = fieldsToObject(attrsRaw);
+      if (!attrsRaw) return null;
+
+      const attrs = fieldsToObject(attrsRaw) || attrsRaw;
       const candidates = ["שם רשות", "שם רשות מקומית", "שם ישוב", "ישוב סופי"];
 
       for (const c of candidates) {
         if (attrs && attrs[c]) return attrs[c];
       }
 
-      const any = attrs ? pickHebrewField(attrs) : null;
-      return any ? any.value : null;
+      // fallback – כל מחרוזת בעברית
+      if (attrs && typeof attrs === "object") {
+        for (const k in attrs) {
+          if (typeof attrs[k] === "string" && /[\u0590-\u05FF]/.test(attrs[k])) {
+            return attrs[k];
+          }
+        }
+      }
+
+      return null;
     }
 
     /* ===== Init map ===== */
@@ -196,6 +201,7 @@
       if (!mapInitialized) return;
 
       const resp = await govmap.getLayerData({
+        LayerName: MUNICIPAL_LAYER,
         layerName: MUNICIPAL_LAYER,
         Point: e.mapPoint,
         Radius: 300
@@ -204,8 +210,19 @@
       const items = resp?.data || resp?.Data || [];
       if (!items.length) return;
 
-      const attrs = items[0].Fields || items[0].Attributes || items[0];
+      const first = items[0];
+      const attrs =
+        first.Fields || first.fields ||
+        first.Attributes || first.attributes ||
+        first;
+
       const name = detectMunicipalityName(attrs);
+      if (!name) {
+        showInfo("שגיאה בזיהוי", "לא נמצא שם רשות בלחיצה זו");
+        console.log("DEBUG attrs:", attrs);
+        return;
+      }
+
       const key = normalizeMunicipalityKey(name);
       const entry = muniIndex[key];
 
