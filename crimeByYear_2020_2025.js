@@ -1,1 +1,12463 @@
-window.crimeByYear = {"2020": {"כל הארץ": {"total": 132, "breakdown": {"Count of קבוצת עבירה": 132}}, "עבירות בטחון": {"total": 130, "breakdown": {"Count of קבוצת עבירה": 130}}, "עבירות כלפי המוסר": {"total": 143, "breakdown": {"Count of קבוצת עבירה": 143}}, "עבירות כלפי הרכוש": {"total": 219, "breakdown": {"Count of קבוצת עבירה": 219}}, "עבירות מין": {"total": 9, "breakdown": {"Count of קבוצת עבירה": 9}}, "עבירות מרמה": {"total": 16, "breakdown": {"Count of קבוצת עבירה": 16}}, "עבירות נגד גוף": {"total": 244, "breakdown": {"Count of קבוצת עבירה": 244}}, "עבירות סדר ציבורי": {"total": 582, "breakdown": {"Count of קבוצת עבירה": 582}}, "אבו גוש": {"total": 452, "breakdown": {"Count of קבוצת עבירה": 452}}, "עבירות נגד אדם": {"total": 2, "breakdown": {"Count of קבוצת עבירה": 2}}, "עבירות רשוי": {"total": 13, "breakdown": {"Count of קבוצת עבירה": 13}}, "עבירות תנועה": {"total": 31, "breakdown": {"Count of קבוצת עבירה": 31}}, "אבו סנאן": {"total": 508, "breakdown": {"Count of קבוצת עבירה": 508}}, "עבירות כלכליות": {"total": 3, "breakdown": {"Count of קבוצת עבירה": 3}}, "אבן יהודה": {"total": 345, "breakdown": {"Count of קבוצת עבירה": 345}}, "אום אל-פחם": {"total": 1920, "breakdown": {"Count of קבוצת עבירה": 1920}}, "סעיפי הגדרה": {"total": 2, "breakdown": {"Count of קבוצת עבירה": 2}}, "שאר עבירות": {"total": 1, "breakdown": {"Count of קבוצת עבירה": 1}}, "שגיאת הזנה": {"total": 1, "breakdown": {"Count of קבוצת עבירה": 1}}, "אופקים": {"total": 1352, "breakdown": {"Count of קבוצת עבירה": 1352}}, "אור יהודה": {"total": 1582, "breakdown": {"Count of קבוצת עבירה": 1582}}, "אור עקיבא": {"total": 908, "breakdown": {"Count of קבוצת עבירה": 908}}, "אורנית": {"total": 159, "breakdown": {"Count of קבוצת עבירה": 159}}, "אזור": {"total": 388, "breakdown": {"Count of קבוצת עבירה": 388}}, "אילת": {"total": 6093, "breakdown": {"Count of קבוצת עבירה": 6093}}, "עבירות מנהליות": {"total": 1, "breakdown": {"Count of קבוצת עבירה": 1}}, "אכסאל": {"total": 551, "breakdown": {"Count of קבוצת עבירה": 551}}, "אליכין": {"total": 96, "breakdown": {"Count of קבוצת עבירה": 96}}, "אלעד": {"total": 775, "breakdown": {"Count of קבוצת עבירה": 775}}, "אלפי מנשה": {"total": 105, "breakdown": {"Count of קבוצת עבירה": 105}}, "אלקנה": {"total": 48, "breakdown": {"Count of קבוצת עבירה": 48}}, "אעבלין": {"total": 488, "breakdown": {"Count of קבוצת עבירה": 488}}, "אפרת": {"total": 122, "breakdown": {"Count of קבוצת עבירה": 122}}, "אריאל": {"total": 624, "breakdown": {"Count of קבוצת עבירה": 624}}, "אשדוד": {"total": 10499, "breakdown": {"Count of קבוצת עבירה": 10499}}, "אשקלון": {"total": 7689, "breakdown": {"Count of קבוצת עבירה": 7689}}, "באקה אל-גרביה": {"total": 1258, "breakdown": {"Count of קבוצת עבירה": 1258}}, "באר יעקב": {"total": 605, "breakdown": {"Count of קבוצת עבירה": 605}}, "באר שבע": {"total": 16551, "breakdown": {"Count of קבוצת עבירה": 16551}}, "בועיינה נוג'יידאת": {"total": 290, "breakdown": {"Count of קבוצת עבירה": 290}}, "בוקעתא": {"total": 101, "breakdown": {"Count of קבוצת עבירה": 101}}, "ביענה": {"total": 383, "breakdown": {"Count of קבוצת עבירה": 383}}, "ביר אל מכסור": {"total": 216, "breakdown": {"Count of קבוצת עבירה": 216}}, "בית אל": {"total": 80, "breakdown": {"Count of קבוצת עבירה": 80}}, "בית אריה": {"total": 85, "breakdown": {"Count of קבוצת עבירה": 85}}, "בית ג'ן": {"total": 195, "breakdown": {"Count of קבוצת עבירה": 195}}, "בית דגן": {"total": 153, "breakdown": {"Count of קבוצת עבירה": 153}}, "בית שאן": {"total": 1111, "breakdown": {"Count of קבוצת עבירה": 1111}}, "בית שמש": {"total": 2997, "breakdown": {"Count of קבוצת עבירה": 2997}}, "ביתר עילית": {"total": 1006, "breakdown": {"Count of קבוצת עבירה": 1006}}, "בני ברק": {"total": 3810, "breakdown": {"Count of קבוצת עבירה": 3810}}, "בני עי''ש": {"total": 337, "breakdown": {"Count of קבוצת עבירה": 337}}, "בנימינה-גבעת עדה": {"total": 515, "breakdown": {"Count of קבוצת עבירה": 515}}, "בסמ''ה": {"total": 226, "breakdown": {"Count of קבוצת עבירה": 226}}, "בסמת טבעון": {"total": 236, "breakdown": {"Count of קבוצת עבירה": 236}}, "בת ים": {"total": 6972, "breakdown": {"Count of קבוצת עבירה": 6972}}, "ג'דיידה-מכר": {"total": 966, "breakdown": {"Count of קבוצת עבירה": 966}}, "ג'וליס": {"total": 119, "breakdown": {"Count of קבוצת עבירה": 119}}, "ג'יש": {"total": 63, "breakdown": {"Count of קבוצת עבירה": 63}}, "ג'לג'וליה": {"total": 580, "breakdown": {"Count of קבוצת עבירה": 580}}, "ג'סר א זרקא": {"total": 1531, "breakdown": {"Count of קבוצת עבירה": 1531}}, "ג'ת": {"total": 368, "breakdown": {"Count of קבוצת עבירה": 368}}, "גבעת זאב": {"total": 387, "breakdown": {"Count of קבוצת עבירה": 387}}, "גבעת שמואל": {"total": 544, "breakdown": {"Count of קבוצת עבירה": 544}}, "גבעתיים": {"total": 1573, "breakdown": {"Count of קבוצת עבירה": 1573}}, "גדרה": {"total": 625, "breakdown": {"Count of קבוצת עבירה": 625}}, "גן יבנה": {"total": 833, "breakdown": {"Count of קבוצת עבירה": 833}}, "גני תקווה": {"total": 377, "breakdown": {"Count of קבוצת עבירה": 377}}, "דאלית אל כרמל": {"total": 443, "breakdown": {"Count of קבוצת עבירה": 443}}, "דבוריה": {"total": 448, "breakdown": {"Count of קבוצת עבירה": 448}}, "דייר אל אסד": {"total": 658, "breakdown": {"Count of קבוצת עבירה": 658}}, "דייר חנא": {"total": 303, "breakdown": {"Count of קבוצת עבירה": 303}}, "דימונה": {"total": 2544, "breakdown": {"Count of קבוצת עבירה": 2544}}, "הוד השרון": {"total": 1479, "breakdown": {"Count of קבוצת עבירה": 1479}}, "הר אדר": {"total": 64, "breakdown": {"Count of קבוצת עבירה": 64}}, "הרצליה": {"total": 4207, "breakdown": {"Count of קבוצת עבירה": 4207}}, "זכרון יעקב": {"total": 505, "breakdown": {"Count of קבוצת עבירה": 505}}, "זמר": {"total": 280, "breakdown": {"Count of קבוצת עבירה": 280}}, "זרזיר": {"total": 367, "breakdown": {"Count of קבוצת עבירה": 367}}, "חדרה": {"total": 4764, "breakdown": {"Count of קבוצת עבירה": 4764}}, "חולון": {"total": 6848, "breakdown": {"Count of קבוצת עבירה": 6848}}, "חורה": {"total": 693, "breakdown": {"Count of קבוצת עבירה": 693}}, "חורפיש": {"total": 117, "breakdown": {"Count of קבוצת עבירה": 117}}, "חיפה": {"total": 14310, "breakdown": {"Count of קבוצת עבירה": 14310}}, "חצור הגלילית": {"total": 407, "breakdown": {"Count of קבוצת עבירה": 407}}, "חריש": {"total": 771, "breakdown": {"Count of קבוצת עבירה": 771}}, "טבריה": {"total": 2569, "breakdown": {"Count of קבוצת עבירה": 2569}}, "טובא זנגריה": {"total": 699, "breakdown": {"Count of קבוצת עבירה": 699}}, "טורעאן": {"total": 1222, "breakdown": {"Count of קבוצת עבירה": 1222}}, "טייבה": {"total": 2437, "breakdown": {"Count of קבוצת עבירה": 2437}}, "טירה": {"total": 2205, "breakdown": {"Count of קבוצת עבירה": 2205}}, "טירת כרמל": {"total": 1027, "breakdown": {"Count of קבוצת עבירה": 1027}}, "טמרה": {"total": 1830, "breakdown": {"Count of קבוצת עבירה": 1830}}, "יאנוח-ג'ת": {"total": 178, "breakdown": {"Count of קבוצת עבירה": 178}}, "יבנאל": {"total": 221, "breakdown": {"Count of קבוצת עבירה": 221}}, "יבנה": {"total": 1723, "breakdown": {"Count of קבוצת עבירה": 1723}}, "יהוד-מונוסון": {"total": 824, "breakdown": {"Count of קבוצת עבירה": 824}}, "יסוד המעלה": {"total": 86, "breakdown": {"Count of קבוצת עבירה": 86}}, "יפיע": {"total": 540, "breakdown": {"Count of קבוצת עבירה": 540}}, "יקנעם עילית": {"total": 607, "breakdown": {"Count of קבוצת עבירה": 607}}, "ירוחם": {"total": 583, "breakdown": {"Count of קבוצת עבירה": 583}}, "ירושלים": {"total": 34367, "breakdown": {"Count of קבוצת עבירה": 34367}}, "ירכא": {"total": 612, "breakdown": {"Count of קבוצת עבירה": 612}}, "ישוב פלסטיני": {"total": 7288, "breakdown": {"Count of קבוצת עבירה": 7288}}, "כאבול": {"total": 527, "breakdown": {"Count of קבוצת עבירה": 527}}, "כאוכב אבו אל היגא": {"total": 92, "breakdown": {"Count of קבוצת עבירה": 92}}, "כוכב יאיר": {"total": 257, "breakdown": {"Count of קבוצת עבירה": 257}}, "כסיפה": {"total": 601, "breakdown": {"Count of קבוצת עבירה": 601}}, "כסרא-סמיע": {"total": 223, "breakdown": {"Count of קבוצת עבירה": 223}}, "כעביה טבאש חג'אג'רה": {"total": 284, "breakdown": {"Count of קבוצת עבירה": 284}}, "כפר ברא": {"total": 205, "breakdown": {"Count of קבוצת עבירה": 205}}, "כפר ורדים": {"total": 96, "breakdown": {"Count of קבוצת עבירה": 96}}, "כפר יאסיף": {"total": 704, "breakdown": {"Count of קבוצת עבירה": 704}}, "כפר יונה": {"total": 886, "breakdown": {"Count of קבוצת עבירה": 886}}, "כפר כמא": {"total": 20, "breakdown": {"Count of קבוצת עבירה": 20}}, "כפר כנא": {"total": 953, "breakdown": {"Count of קבוצת עבירה": 953}}, "כפר מנדא": {"total": 599, "breakdown": {"Count of קבוצת עבירה": 599}}, "כפר סבא": {"total": 2887, "breakdown": {"Count of קבוצת עבירה": 2887}}, "כפר קאסם": {"total": 1264, "breakdown": {"Count of קבוצת עבירה": 1264}}, "כפר קרע": {"total": 799, "breakdown": {"Count of קבוצת עבירה": 799}}, "כפר שמריהו": {"total": 95, "breakdown": {"Count of קבוצת עבירה": 95}}, "כפר תבור": {"total": 70, "breakdown": {"Count of קבוצת עבירה": 70}}, "כרמיאל": {"total": 1758, "breakdown": {"Count of קבוצת עבירה": 1758}}, "להבים": {"total": 196, "breakdown": {"Count of קבוצת עבירה": 196}}, "לוד": {"total": 4466, "breakdown": {"Count of קבוצת עבירה": 4466}}, "לקיה": {"total": 484, "breakdown": {"Count of קבוצת עבירה": 484}}, "מבשרת ציון": {"total": 852, "breakdown": {"Count of קבוצת עבירה": 852}}, "מג'ד אל כרום": {"total": 714, "breakdown": {"Count of קבוצת עבירה": 714}}, "מג'דל שמס": {"total": 201, "breakdown": {"Count of קבוצת עבירה": 201}}, "מגאר": {"total": 514, "breakdown": {"Count of קבוצת עבירה": 514}}, "מגדל": {"total": 86, "breakdown": {"Count of קבוצת עבירה": 86}}, "מגדל העמק": {"total": 1073, "breakdown": {"Count of קבוצת עבירה": 1073}}, "מגדל תפן": {"total": 26, "breakdown": {"Count of קבוצת עבירה": 26}}, "מודיעין-מכבים-רעות": {"total": 1918, "breakdown": {"Count of קבוצת עבירה": 1918}}, "מודיעין עילית": {"total": 724, "breakdown": {"Count of קבוצת עבירה": 724}}, "מועצה אזורית אל-בטוף": {"total": 292, "breakdown": {"Count of קבוצת עבירה": 292}}, "מועצה אזורית אל קסום": {"total": 554, "breakdown": {"Count of קבוצת עבירה": 554}}, "מועצה אזורית אלונה": {"total": 55, "breakdown": {"Count of קבוצת עבירה": 55}}, "מועצה אזורית אשכול": {"total": 591, "breakdown": {"Count of קבוצת עבירה": 591}}, "מועצה אזורית באר טוביה": {"total": 1188, "breakdown": {"Count of קבוצת עבירה": 1188}}, "מועצה אזורית בוסתן-אל-מרג'": {"total": 313, "breakdown": {"Count of קבוצת עבירה": 313}}, "מועצה אזורית בני שמעון": {"total": 585, "breakdown": {"Count of קבוצת עבירה": 585}}, "מועצה אזורית ברנר": {"total": 158, "breakdown": {"Count of קבוצת עבירה": 158}}, "מועצה אזורית גדרות": {"total": 100, "breakdown": {"Count of קבוצת עבירה": 100}}, "מועצה אזורית גולן": {"total": 359, "breakdown": {"Count of קבוצת עבירה": 359}}, "מועצה אזורית גוש עציון": {"total": 558, "breakdown": {"Count of קבוצת עבירה": 558}}, "מועצה אזורית גזר": {"total": 848, "breakdown": {"Count of קבוצת עבירה": 848}}, "מועצה אזורית גן רווה": {"total": 193, "breakdown": {"Count of קבוצת עבירה": 193}}, "מועצה אזורית דרום השרון": {"total": 1012, "breakdown": {"Count of קבוצת עבירה": 1012}}, "מועצה אזורית הגלבוע": {"total": 968, "breakdown": {"Count of קבוצת עבירה": 968}}, "מועצה אזורית הגליל העליון": {"total": 624, "breakdown": {"Count of קבוצת עבירה": 624}}, "מועצה אזורית הגליל התחתון": {"total": 251, "breakdown": {"Count of קבוצת עבירה": 251}}, "מועצה אזורית הערבה התיכונה": {"total": 134, "breakdown": {"Count of קבוצת עבירה": 134}}, "מועצה אזורית הר חברון": {"total": 430, "breakdown": {"Count of קבוצת עבירה": 430}}, "מועצה אזורית זבולון": {"total": 457, "breakdown": {"Count of קבוצת עבירה": 457}}, "מועצה אזורית חבל אילות": {"total": 64, "breakdown": {"Count of קבוצת עבירה": 64}}, "מועצה אזורית חבל יבנה": {"total": 154, "breakdown": {"Count of קבוצת עבירה": 154}}, "מועצה אזורית חבל מודיעין": {"total": 876, "breakdown": {"Count of קבוצת עבירה": 876}}, "מועצה אזורית חוף אשקלון": {"total": 761, "breakdown": {"Count of קבוצת עבירה": 761}}, "מועצה אזורית חוף הכרמל": {"total": 1251, "breakdown": {"Count of קבוצת עבירה": 1251}}, "מועצה אזורית חוף השרון": {"total": 445, "breakdown": {"Count of קבוצת עבירה": 445}}, "מועצה אזורית יואב": {"total": 398, "breakdown": {"Count of קבוצת עבירה": 398}}, "מועצה אזורית לב השרון": {"total": 913, "breakdown": {"Count of קבוצת עבירה": 913}}, "מועצה אזורית לכיש": {"total": 695, "breakdown": {"Count of קבוצת עבירה": 695}}, "מועצה אזורית מבואות החרמון": {"total": 289, "breakdown": {"Count of קבוצת עבירה": 289}}, "מועצה אזורית מגידו": {"total": 460, "breakdown": {"Count of קבוצת עבירה": 460}}, "מועצה אזורית מגילות ים המלח": {"total": 121, "breakdown": {"Count of קבוצת עבירה": 121}}, "מועצה אזורית מטה אשר": {"total": 970, "breakdown": {"Count of קבוצת עבירה": 970}}, "מועצה אזורית מטה בנימין": {"total": 1543, "breakdown": {"Count of קבוצת עבירה": 1543}}, "מועצה אזורית מטה יהודה": {"total": 2331, "breakdown": {"Count of קבוצת עבירה": 2331}}, "מועצה אזורית מנשה": {"total": 671, "breakdown": {"Count of קבוצת עבירה": 671}}, "מועצה אזורית מעלה יוסף": {"total": 376, "breakdown": {"Count of קבוצת עבירה": 376}}, "מועצה אזורית מרום הגליל": {"total": 695, "breakdown": {"Count of קבוצת עבירה": 695}}, "מועצה אזורית מרחבים": {"total": 551, "breakdown": {"Count of קבוצת עבירה": 551}}, "מועצה אזורית משגב": {"total": 622, "breakdown": {"Count of קבוצת עבירה": 622}}, "מועצה אזורית נווה מדבר": {"total": 592, "breakdown": {"Count of קבוצת עבירה": 592}}, "מועצה אזורית נחל שורק": {"total": 176, "breakdown": {"Count of קבוצת עבירה": 176}}, "מועצה אזורית עמק הירדן": {"total": 353, "breakdown": {"Count of קבוצת עבירה": 353}}, "מועצה אזורית עמק המעיינות": {"total": 587, "breakdown": {"Count of קבוצת עבירה": 587}}, "מועצה אזורית עמק חפר": {"total": 1429, "breakdown": {"Count of קבוצת עבירה": 1429}}, "מועצה אזורית עמק יזרעאל": {"total": 980, "breakdown": {"Count of קבוצת עבירה": 980}}, "מועצה אזורית עמק לוד": {"total": 265, "breakdown": {"Count of קבוצת עבירה": 265}}, "מועצה אזורית ערבות הירדן": {"total": 238, "breakdown": {"Count of קבוצת עבירה": 238}}, "מועצה אזורית רמת נגב": {"total": 415, "breakdown": {"Count of קבוצת עבירה": 415}}, "מועצה אזורית שדות דן": {"total": 101, "breakdown": {"Count of קבוצת עבירה": 101}}, "מועצה אזורית שדות נגב": {"total": 371, "breakdown": {"Count of קבוצת עבירה": 371}}, "מועצה אזורית שומרון": {"total": 925, "breakdown": {"Count of קבוצת עבירה": 925}}, "מועצה אזורית שער הנגב": {"total": 319, "breakdown": {"Count of קבוצת עבירה": 319}}, "מועצה אזורית שפיר": {"total": 482, "breakdown": {"Count of קבוצת עבירה": 482}}, "מועצה אזורית תמר": {"total": 317, "breakdown": {"Count of קבוצת עבירה": 317}}, "מזכרת בתיה": {"total": 253, "breakdown": {"Count of קבוצת עבירה": 253}}, "מזרעה": {"total": 162, "breakdown": {"Count of קבוצת עבירה": 162}}, "מטולה": {"total": 55, "breakdown": {"Count of קבוצת עבירה": 55}}, "מיתר": {"total": 335, "breakdown": {"Count of קבוצת עבירה": 335}}, "מסעדה": {"total": 114, "breakdown": {"Count of קבוצת עבירה": 114}}, "מעיליא": {"total": 104, "breakdown": {"Count of קבוצת עבירה": 104}}, "מעלה אדומים": {"total": 1003, "breakdown": {"Count of קבוצת עבירה": 1003}}, "מעלה אפרים": {"total": 62, "breakdown": {"Count of קבוצת עבירה": 62}}, "מעלה עירון": {"total": 387, "breakdown": {"Count of קבוצת עבירה": 387}}, "מעלות-תרשיחא": {"total": 740, "breakdown": {"Count of קבוצת עבירה": 740}}, "מצפה רמון": {"total": 312, "breakdown": {"Count of קבוצת עבירה": 312}}, "מקום": {"total": 1041, "breakdown": {"Count of קבוצת עבירה": 1041}}, "מקום אחר": {"total": 13860, "breakdown": {"Count of קבוצת עבירה": 13860}}, "משהד": {"total": 189, "breakdown": {"Count of קבוצת עבירה": 189}}, "נאות חובב": {"total": 51, "breakdown": {"Count of קבוצת עבירה": 51}}, "נהריה": {"total": 2643, "breakdown": {"Count of קבוצת עבירה": 2643}}, "נוף הגליל": {"total": 2768, "breakdown": {"Count of קבוצת עבירה": 2768}}, "נחף": {"total": 447, "breakdown": {"Count of קבוצת עבירה": 447}}, "נמל תעופה בן גוריון": {"total": 467, "breakdown": {"Count of קבוצת עבירה": 467}}, "נס ציונה": {"total": 1129, "breakdown": {"Count of קבוצת עבירה": 1129}}, "נצרת": {"total": 3644, "breakdown": {"Count of קבוצת עבירה": 3644}}, "נשר": {"total": 759, "breakdown": {"Count of קבוצת עבירה": 759}}, "נתיבות": {"total": 1783, "breakdown": {"Count of קבוצת עבירה": 1783}}, "נתניה": {"total": 8260, "breakdown": {"Count of קבוצת עבירה": 8260}}, "סאג'ור": {"total": 109, "breakdown": {"Count of קבוצת עבירה": 109}}, "סביון": {"total": 129, "breakdown": {"Count of קבוצת עבירה": 129}}, "סח'נין": {"total": 1051, "breakdown": {"Count of קבוצת עבירה": 1051}}, "ע'ג'ר": {"total": 43, "breakdown": {"Count of קבוצת עבירה": 43}}, "עומר": {"total": 316, "breakdown": {"Count of קבוצת עבירה": 316}}, "עיילבון": {"total": 135, "breakdown": {"Count of קבוצת עבירה": 135}}, "עילוט": {"total": 246, "breakdown": {"Count of קבוצת עבירה": 246}}, "עין מאהל": {"total": 251, "breakdown": {"Count of קבוצת עבירה": 251}}, "עין קנייא": {"total": 16, "breakdown": {"Count of קבוצת עבירה": 16}}, "עכו": {"total": 3556, "breakdown": {"Count of קבוצת עבירה": 3556}}, "עמנואל": {"total": 175, "breakdown": {"Count of קבוצת עבירה": 175}}, "עספיא": {"total": 474, "breakdown": {"Count of קבוצת עבירה": 474}}, "עפולה": {"total": 2877, "breakdown": {"Count of קבוצת עבירה": 2877}}, "עראבה": {"total": 873, "breakdown": {"Count of קבוצת עבירה": 873}}, "ערד": {"total": 1588, "breakdown": {"Count of קבוצת עבירה": 1588}}, "ערערה": {"total": 653, "breakdown": {"Count of קבוצת עבירה": 653}}, "ערערה-בנגב": {"total": 1302, "breakdown": {"Count of קבוצת עבירה": 1302}}, "פוריידיס": {"total": 441, "breakdown": {"Count of קבוצת עבירה": 441}}, "פסוטה": {"total": 160, "breakdown": {"Count of קבוצת עבירה": 160}}, "פקיעין": {"total": 98, "breakdown": {"Count of קבוצת עבירה": 98}}, "פרדס חנה-כרכור": {"total": 1669, "breakdown": {"Count of קבוצת עבירה": 1669}}, "פרדסיה": {"total": 191, "breakdown": {"Count of קבוצת עבירה": 191}}, "פתח תקווה": {"total": 8450, "breakdown": {"Count of קבוצת עבירה": 8450}}, "צור הדסה": {"total": 198, "breakdown": {"Count of קבוצת עבירה": 198}}, "צפת": {"total": 1221, "breakdown": {"Count of קבוצת עבירה": 1221}}, "קדומים": {"total": 51, "breakdown": {"Count of קבוצת עבירה": 51}}, "קדימה צורן": {"total": 538, "breakdown": {"Count of קבוצת עבירה": 538}}, "קלנסווה": {"total": 1015, "breakdown": {"Count of קבוצת עבירה": 1015}}, "קצרין": {"total": 279, "breakdown": {"Count of קבוצת עבירה": 279}}, "קרית אונו": {"total": 789, "breakdown": {"Count of קבוצת עבירה": 789}}, "קרית ארבע": {"total": 303, "breakdown": {"Count of קבוצת עבירה": 303}}, "קרית אתא": {"total": 2312, "breakdown": {"Count of קבוצת עבירה": 2312}}, "קרית ביאליק": {"total": 1584, "breakdown": {"Count of קבוצת עבירה": 1584}}, "קרית גת": {"total": 3187, "breakdown": {"Count of קבוצת עבירה": 3187}}, "קרית טבעון": {"total": 494, "breakdown": {"Count of קבוצת עבירה": 494}}, "קרית ים": {"total": 1427, "breakdown": {"Count of קבוצת עבירה": 1427}}, "קרית יערים": {"total": 67, "breakdown": {"Count of קבוצת עבירה": 67}}, "קרית מוצקין": {"total": 1488, "breakdown": {"Count of קבוצת עבירה": 1488}}, "קרית מלאכי": {"total": 1672, "breakdown": {"Count of קבוצת עבירה": 1672}}, "קרית עקרון": {"total": 489, "breakdown": {"Count of קבוצת עבירה": 489}}, "קרית שמונה": {"total": 1084, "breakdown": {"Count of קבוצת עבירה": 1084}}, "קרני שומרון": {"total": 200, "breakdown": {"Count of קבוצת עבירה": 200}}, "ראמה": {"total": 232, "breakdown": {"Count of קבוצת עבירה": 232}}, "ראש העין": {"total": 2000, "breakdown": {"Count of קבוצת עבירה": 2000}}, "ראש פינה": {"total": 219, "breakdown": {"Count of קבוצת עבירה": 219}}, "ראשון לציון": {"total": 8549, "breakdown": {"Count of קבוצת עבירה": 8549}}, "רהט": {"total": 3767, "breakdown": {"Count of קבוצת עבירה": 3767}}, "רחובות": {"total": 3952, "breakdown": {"Count of קבוצת עבירה": 3952}}, "ריינה": {"total": 416, "breakdown": {"Count of קבוצת עבירה": 416}}, "רכסים": {"total": 169, "breakdown": {"Count of קבוצת עבירה": 169}}, "רמלה": {"total": 4500, "breakdown": {"Count of קבוצת עבירה": 4500}}, "רמת גן": {"total": 4992, "breakdown": {"Count of קבוצת עבירה": 4992}}, "רמת השרון": {"total": 1265, "breakdown": {"Count of קבוצת עבירה": 1265}}, "רמת ישי": {"total": 159, "breakdown": {"Count of קבוצת עבירה": 159}}, "רעננה": {"total": 1766, "breakdown": {"Count of קבוצת עבירה": 1766}}, "שבלי": {"total": 427, "breakdown": {"Count of קבוצת עבירה": 427}}, "שגב-שלום": {"total": 693, "breakdown": {"Count of קבוצת עבירה": 693}}, "שדרות": {"total": 1912, "breakdown": {"Count of קבוצת עבירה": 1912}}, "שוהם": {"total": 305, "breakdown": {"Count of קבוצת עבירה": 305}}, "שלומי": {"total": 224, "breakdown": {"Count of קבוצת עבירה": 224}}, "שעב": {"total": 219, "breakdown": {"Count of קבוצת עבירה": 219}}, "שפרעם": {"total": 2011, "breakdown": {"Count of קבוצת עבירה": 2011}}, "תל אביב יפו": {"total": 35198, "breakdown": {"Count of קבוצת עבירה": 35198}}, "תל מונד": {"total": 257, "breakdown": {"Count of קבוצת עבירה": 257}}, "תל שבע": {"total": 1396, "breakdown": {"Count of קבוצת עבירה": 1396}}, "Grand Total": {"total": 391532, "breakdown": {"Count of קבוצת עבירה": 391532}}}, "2021": {"כל הארץ": {"total": 178, "breakdown": {"Count of קבוצת עבירה": 178}}, "עבירות בטחון": {"total": 156, "breakdown": {"Count of קבוצת עבירה": 156}}, "עבירות כלפי המוסר": {"total": 78, "breakdown": {"Count of קבוצת עבירה": 78}}, "עבירות כלפי הרכוש": {"total": 238, "breakdown": {"Count of קבוצת עבירה": 238}}, "עבירות מין": {"total": 2, "breakdown": {"Count of קבוצת עבירה": 2}}, "עבירות מרמה": {"total": 19, "breakdown": {"Count of קבוצת עבירה": 19}}, "עבירות נגד אדם": {"total": 8, "breakdown": {"Count of קבוצת עבירה": 8}}, "עבירות נגד גוף": {"total": 244, "breakdown": {"Count of קבוצת עבירה": 244}}, "עבירות סדר ציבורי": {"total": 482, "breakdown": {"Count of קבוצת עבירה": 482}}, "עבירות רשוי": {"total": 15, "breakdown": {"Count of קבוצת עבירה": 15}}, "עבירות תנועה": {"total": 11, "breakdown": {"Count of קבוצת עבירה": 11}}, "שאר עבירות": {"total": 2, "breakdown": {"Count of קבוצת עבירה": 2}}, "אבו גוש": {"total": 450, "breakdown": {"Count of קבוצת עבירה": 450}}, "עבירות כלכליות": {"total": 7, "breakdown": {"Count of קבוצת עבירה": 7}}, "אבו סנאן": {"total": 508, "breakdown": {"Count of קבוצת עבירה": 508}}, "סעיפי הגדרה": {"total": 1, "breakdown": {"Count of קבוצת עבירה": 1}}, "אבן יהודה": {"total": 358, "breakdown": {"Count of קבוצת עבירה": 358}}, "אום אל-פחם": {"total": 1933, "breakdown": {"Count of קבוצת עבירה": 1933}}, "שגיאת הזנה": {"total": 1, "breakdown": {"Count of קבוצת עבירה": 1}}, "אופקים": {"total": 1454, "breakdown": {"Count of קבוצת עבירה": 1454}}, "אור יהודה": {"total": 1560, "breakdown": {"Count of קבוצת עבירה": 1560}}, "אור עקיבא": {"total": 899, "breakdown": {"Count of קבוצת עבירה": 899}}, "אורנית": {"total": 167, "breakdown": {"Count of קבוצת עבירה": 167}}, "אזור": {"total": 421, "breakdown": {"Count of קבוצת עבירה": 421}}, "אילת": {"total": 5909, "breakdown": {"Count of קבוצת עבירה": 5909}}, "עבירות מנהליות": {"total": 6, "breakdown": {"Count of קבוצת עבירה": 6}}, "אכסאל": {"total": 579, "breakdown": {"Count of קבוצת עבירה": 579}}, "אליכין": {"total": 99, "breakdown": {"Count of קבוצת עבירה": 99}}, "אלעד": {"total": 797, "breakdown": {"Count of קבוצת עבירה": 797}}, "אלפי מנשה": {"total": 148, "breakdown": {"Count of קבוצת עבירה": 148}}, "אלקנה": {"total": 44, "breakdown": {"Count of קבוצת עבירה": 44}}, "אעבלין": {"total": 471, "breakdown": {"Count of קבוצת עבירה": 471}}, "אפרת": {"total": 125, "breakdown": {"Count of קבוצת עבירה": 125}}, "אריאל": {"total": 746, "breakdown": {"Count of קבוצת עבירה": 746}}, "אשדוד": {"total": 10802, "breakdown": {"Count of קבוצת עבירה": 10802}}, "אשקלון": {"total": 8234, "breakdown": {"Count of קבוצת עבירה": 8234}}, "באקה אל-גרביה": {"total": 1388, "breakdown": {"Count of קבוצת עבירה": 1388}}, "באר יעקב": {"total": 735, "breakdown": {"Count of קבוצת עבירה": 735}}, "באר שבע": {"total": 18815, "breakdown": {"Count of קבוצת עבירה": 18815}}, "בועיינה נוג'יידאת": {"total": 224, "breakdown": {"Count of קבוצת עבירה": 224}}, "בוקעתא": {"total": 88, "breakdown": {"Count of קבוצת עבירה": 88}}, "ביענה": {"total": 438, "breakdown": {"Count of קבוצת עבירה": 438}}, "ביר אל מכסור": {"total": 218, "breakdown": {"Count of קבוצת עבירה": 218}}, "בית אל": {"total": 137, "breakdown": {"Count of קבוצת עבירה": 137}}, "בית אריה": {"total": 88, "breakdown": {"Count of קבוצת עבירה": 88}}, "בית ג'ן": {"total": 201, "breakdown": {"Count of קבוצת עבירה": 201}}, "בית דגן": {"total": 193, "breakdown": {"Count of קבוצת עבירה": 193}}, "בית שאן": {"total": 954, "breakdown": {"Count of קבוצת עבירה": 954}}, "בית שמש": {"total": 3454, "breakdown": {"Count of קבוצת עבירה": 3454}}, "ביתר עילית": {"total": 918, "breakdown": {"Count of קבוצת עבירה": 918}}, "בני ברק": {"total": 3912, "breakdown": {"Count of קבוצת עבירה": 3912}}, "בני עי''ש": {"total": 257, "breakdown": {"Count of קבוצת עבירה": 257}}, "בנימינה-גבעת עדה": {"total": 477, "breakdown": {"Count of קבוצת עבירה": 477}}, "בסמ''ה": {"total": 249, "breakdown": {"Count of קבוצת עבירה": 249}}, "בסמת טבעון": {"total": 290, "breakdown": {"Count of קבוצת עבירה": 290}}, "בת ים": {"total": 7390, "breakdown": {"Count of קבוצת עבירה": 7390}}, "ג'דיידה-מכר": {"total": 1093, "breakdown": {"Count of קבוצת עבירה": 1093}}, "ג'וליס": {"total": 178, "breakdown": {"Count of קבוצת עבירה": 178}}, "ג'יש": {"total": 70, "breakdown": {"Count of קבוצת עבירה": 70}}, "ג'לג'וליה": {"total": 482, "breakdown": {"Count of קבוצת עבירה": 482}}, "ג'סר א זרקא": {"total": 1636, "breakdown": {"Count of קבוצת עבירה": 1636}}, "ג'ת": {"total": 367, "breakdown": {"Count of קבוצת עבירה": 367}}, "גבעת זאב": {"total": 362, "breakdown": {"Count of קבוצת עבירה": 362}}, "גבעת שמואל": {"total": 544, "breakdown": {"Count of קבוצת עבירה": 544}}, "גבעתיים": {"total": 1464, "breakdown": {"Count of קבוצת עבירה": 1464}}, "גדרה": {"total": 661, "breakdown": {"Count of קבוצת עבירה": 661}}, "גן יבנה": {"total": 814, "breakdown": {"Count of קבוצת עבירה": 814}}, "גני תקווה": {"total": 438, "breakdown": {"Count of קבוצת עבירה": 438}}, "דאלית אל כרמל": {"total": 417, "breakdown": {"Count of קבוצת עבירה": 417}}, "דבוריה": {"total": 451, "breakdown": {"Count of קבוצת עבירה": 451}}, "דייר אל אסד": {"total": 556, "breakdown": {"Count of קבוצת עבירה": 556}}, "דייר חנא": {"total": 267, "breakdown": {"Count of קבוצת עבירה": 267}}, "דימונה": {"total": 2562, "breakdown": {"Count of קבוצת עבירה": 2562}}, "הוד השרון": {"total": 1520, "breakdown": {"Count of קבוצת עבירה": 1520}}, "הר אדר": {"total": 56, "breakdown": {"Count of קבוצת עבירה": 56}}, "הרצליה": {"total": 3801, "breakdown": {"Count of קבוצת עבירה": 3801}}, "זכרון יעקב": {"total": 656, "breakdown": {"Count of קבוצת עבירה": 656}}, "זמר": {"total": 249, "breakdown": {"Count of קבוצת עבירה": 249}}, "זרזיר": {"total": 495, "breakdown": {"Count of קבוצת עבירה": 495}}, "חדרה": {"total": 4617, "breakdown": {"Count of קבוצת עבירה": 4617}}, "חולון": {"total": 6732, "breakdown": {"Count of קבוצת עבירה": 6732}}, "חורה": {"total": 798, "breakdown": {"Count of קבוצת עבירה": 798}}, "חורפיש": {"total": 102, "breakdown": {"Count of קבוצת עבירה": 102}}, "חיפה": {"total": 14932, "breakdown": {"Count of קבוצת עבירה": 14932}}, "חצור הגלילית": {"total": 428, "breakdown": {"Count of קבוצת עבירה": 428}}, "חריש": {"total": 858, "breakdown": {"Count of קבוצת עבירה": 858}}, "טבריה": {"total": 2808, "breakdown": {"Count of קבוצת עבירה": 2808}}, "טובא זנגריה": {"total": 710, "breakdown": {"Count of קבוצת עבירה": 710}}, "טורעאן": {"total": 928, "breakdown": {"Count of קבוצת עבירה": 928}}, "טייבה": {"total": 2104, "breakdown": {"Count of קבוצת עבירה": 2104}}, "טירה": {"total": 1945, "breakdown": {"Count of קבוצת עבירה": 1945}}, "טירת כרמל": {"total": 853, "breakdown": {"Count of קבוצת עבירה": 853}}, "טמרה": {"total": 1789, "breakdown": {"Count of קבוצת עבירה": 1789}}, "יאנוח-ג'ת": {"total": 127, "breakdown": {"Count of קבוצת עבירה": 127}}, "יבנאל": {"total": 295, "breakdown": {"Count of קבוצת עבירה": 295}}, "יבנה": {"total": 1687, "breakdown": {"Count of קבוצת עבירה": 1687}}, "יהוד-מונוסון": {"total": 864, "breakdown": {"Count of קבוצת עבירה": 864}}, "יסוד המעלה": {"total": 63, "breakdown": {"Count of קבוצת עבירה": 63}}, "יפיע": {"total": 521, "breakdown": {"Count of קבוצת עבירה": 521}}, "יקנעם עילית": {"total": 566, "breakdown": {"Count of קבוצת עבירה": 566}}, "ירוחם": {"total": 648, "breakdown": {"Count of קבוצת עבירה": 648}}, "ירושלים": {"total": 38320, "breakdown": {"Count of קבוצת עבירה": 38320}}, "ירכא": {"total": 721, "breakdown": {"Count of קבוצת עבירה": 721}}, "ישוב פלסטיני": {"total": 8787, "breakdown": {"Count of קבוצת עבירה": 8787}}, "כאבול": {"total": 459, "breakdown": {"Count of קבוצת עבירה": 459}}, "כאוכב אבו אל היגא": {"total": 128, "breakdown": {"Count of קבוצת עבירה": 128}}, "כוכב יאיר": {"total": 182, "breakdown": {"Count of קבוצת עבירה": 182}}, "כסיפה": {"total": 544, "breakdown": {"Count of קבוצת עבירה": 544}}, "כסרא-סמיע": {"total": 135, "breakdown": {"Count of קבוצת עבירה": 135}}, "כעביה טבאש חג'אג'רה": {"total": 211, "breakdown": {"Count of קבוצת עבירה": 211}}, "כפר ברא": {"total": 211, "breakdown": {"Count of קבוצת עבירה": 211}}, "כפר ורדים": {"total": 116, "breakdown": {"Count of קבוצת עבירה": 116}}, "כפר יאסיף": {"total": 799, "breakdown": {"Count of קבוצת עבירה": 799}}, "כפר יונה": {"total": 962, "breakdown": {"Count of קבוצת עבירה": 962}}, "כפר כמא": {"total": 19, "breakdown": {"Count of קבוצת עבירה": 19}}, "כפר כנא": {"total": 999, "breakdown": {"Count of קבוצת עבירה": 999}}, "כפר מנדא": {"total": 887, "breakdown": {"Count of קבוצת עבירה": 887}}, "כפר סבא": {"total": 3261, "breakdown": {"Count of קבוצת עבירה": 3261}}, "כפר קאסם": {"total": 1268, "breakdown": {"Count of קבוצת עבירה": 1268}}, "כפר קרע": {"total": 712, "breakdown": {"Count of קבוצת עבירה": 712}}, "כפר שמריהו": {"total": 88, "breakdown": {"Count of קבוצת עבירה": 88}}, "כפר תבור": {"total": 74, "breakdown": {"Count of קבוצת עבירה": 74}}, "כרמיאל": {"total": 1547, "breakdown": {"Count of קבוצת עבירה": 1547}}, "להבים": {"total": 229, "breakdown": {"Count of קבוצת עבירה": 229}}, "לוד": {"total": 5837, "breakdown": {"Count of קבוצת עבירה": 5837}}, "לקיה": {"total": 537, "breakdown": {"Count of קבוצת עבירה": 537}}, "מבשרת ציון": {"total": 861, "breakdown": {"Count of קבוצת עבירה": 861}}, "מג'ד אל כרום": {"total": 860, "breakdown": {"Count of קבוצת עבירה": 860}}, "מג'דל שמס": {"total": 202, "breakdown": {"Count of קבוצת עבירה": 202}}, "מגאר": {"total": 432, "breakdown": {"Count of קבוצת עבירה": 432}}, "מגדל": {"total": 88, "breakdown": {"Count of קבוצת עבירה": 88}}, "מגדל העמק": {"total": 1163, "breakdown": {"Count of קבוצת עבירה": 1163}}, "מגדל תפן": {"total": 35, "breakdown": {"Count of קבוצת עבירה": 35}}, "מודיעין-מכבים-רעות": {"total": 1962, "breakdown": {"Count of קבוצת עבירה": 1962}}, "מודיעין עילית": {"total": 779, "breakdown": {"Count of קבוצת עבירה": 779}}, "מועצה אזורית אל-בטוף": {"total": 229, "breakdown": {"Count of קבוצת עבירה": 229}}, "מועצה אזורית אל קסום": {"total": 807, "breakdown": {"Count of קבוצת עבירה": 807}}, "מועצה אזורית אלונה": {"total": 65, "breakdown": {"Count of קבוצת עבירה": 65}}, "מועצה אזורית אשכול": {"total": 578, "breakdown": {"Count of קבוצת עבירה": 578}}, "מועצה אזורית באר טוביה": {"total": 1377, "breakdown": {"Count of קבוצת עבירה": 1377}}, "מועצה אזורית בוסתן-אל-מרג'": {"total": 282, "breakdown": {"Count of קבוצת עבירה": 282}}, "מועצה אזורית בני שמעון": {"total": 687, "breakdown": {"Count of קבוצת עבירה": 687}}, "מועצה אזורית ברנר": {"total": 176, "breakdown": {"Count of קבוצת עבירה": 176}}, "מועצה אזורית גדרות": {"total": 148, "breakdown": {"Count of קבוצת עבירה": 148}}, "מועצה אזורית גולן": {"total": 366, "breakdown": {"Count of קבוצת עבירה": 366}}, "מועצה אזורית גוש עציון": {"total": 572, "breakdown": {"Count of קבוצת עבירה": 572}}, "מועצה אזורית גזר": {"total": 909, "breakdown": {"Count of קבוצת עבירה": 909}}, "מועצה אזורית גן רווה": {"total": 224, "breakdown": {"Count of קבוצת עבירה": 224}}, "מועצה אזורית דרום השרון": {"total": 1009, "breakdown": {"Count of קבוצת עבירה": 1009}}, "מועצה אזורית הגלבוע": {"total": 976, "breakdown": {"Count of קבוצת עבירה": 976}}, "מועצה אזורית הגליל העליון": {"total": 551, "breakdown": {"Count of קבוצת עבירה": 551}}, "מועצה אזורית הגליל התחתון": {"total": 260, "breakdown": {"Count of קבוצת עבירה": 260}}, "מועצה אזורית הערבה התיכונה": {"total": 92, "breakdown": {"Count of קבוצת עבירה": 92}}, "מועצה אזורית הר חברון": {"total": 508, "breakdown": {"Count of קבוצת עבירה": 508}}, "מועצה אזורית זבולון": {"total": 547, "breakdown": {"Count of קבוצת עבירה": 547}}, "מועצה אזורית חבל אילות": {"total": 97, "breakdown": {"Count of קבוצת עבירה": 97}}, "מועצה אזורית חבל יבנה": {"total": 148, "breakdown": {"Count of קבוצת עבירה": 148}}, "מועצה אזורית חבל מודיעין": {"total": 890, "breakdown": {"Count of קבוצת עבירה": 890}}, "מועצה אזורית חוף אשקלון": {"total": 680, "breakdown": {"Count of קבוצת עבירה": 680}}, "מועצה אזורית חוף הכרמל": {"total": 1194, "breakdown": {"Count of קבוצת עבירה": 1194}}, "מועצה אזורית חוף השרון": {"total": 556, "breakdown": {"Count of קבוצת עבירה": 556}}, "מועצה אזורית יואב": {"total": 399, "breakdown": {"Count of קבוצת עבירה": 399}}, "מועצה אזורית לב השרון": {"total": 963, "breakdown": {"Count of קבוצת עבירה": 963}}, "מועצה אזורית לכיש": {"total": 568, "breakdown": {"Count of קבוצת עבירה": 568}}, "מועצה אזורית מבואות החרמון": {"total": 285, "breakdown": {"Count of קבוצת עבירה": 285}}, "מועצה אזורית מגידו": {"total": 499, "breakdown": {"Count of קבוצת עבירה": 499}}, "מועצה אזורית מגילות ים המלח": {"total": 124, "breakdown": {"Count of קבוצת עבירה": 124}}, "מועצה אזורית מטה אשר": {"total": 1122, "breakdown": {"Count of קבוצת עבירה": 1122}}, "מועצה אזורית מטה בנימין": {"total": 1592, "breakdown": {"Count of קבוצת עבירה": 1592}}, "מועצה אזורית מטה יהודה": {"total": 2049, "breakdown": {"Count of קבוצת עבירה": 2049}}, "מועצה אזורית מנשה": {"total": 678, "breakdown": {"Count of קבוצת עבירה": 678}}, "מועצה אזורית מעלה יוסף": {"total": 417, "breakdown": {"Count of קבוצת עבירה": 417}}, "מועצה אזורית מרום הגליל": {"total": 730, "breakdown": {"Count of קבוצת עבירה": 730}}, "מועצה אזורית מרחבים": {"total": 613, "breakdown": {"Count of קבוצת עבירה": 613}}, "מועצה אזורית משגב": {"total": 678, "breakdown": {"Count of קבוצת עבירה": 678}}, "מועצה אזורית נווה מדבר": {"total": 559, "breakdown": {"Count of קבוצת עבירה": 559}}, "מועצה אזורית נחל שורק": {"total": 145, "breakdown": {"Count of קבוצת עבירה": 145}}, "מועצה אזורית עמק הירדן": {"total": 400, "breakdown": {"Count of קבוצת עבירה": 400}}, "מועצה אזורית עמק המעיינות": {"total": 616, "breakdown": {"Count of קבוצת עבירה": 616}}, "מועצה אזורית עמק חפר": {"total": 1251, "breakdown": {"Count of קבוצת עבירה": 1251}}, "מועצה אזורית עמק יזרעאל": {"total": 1076, "breakdown": {"Count of קבוצת עבירה": 1076}}, "מועצה אזורית עמק לוד": {"total": 295, "breakdown": {"Count of קבוצת עבירה": 295}}, "מועצה אזורית ערבות הירדן": {"total": 253, "breakdown": {"Count of קבוצת עבירה": 253}}, "מועצה אזורית רמת נגב": {"total": 305, "breakdown": {"Count of קבוצת עבירה": 305}}, "מועצה אזורית שדות דן": {"total": 88, "breakdown": {"Count of קבוצת עבירה": 88}}, "מועצה אזורית שדות נגב": {"total": 412, "breakdown": {"Count of קבוצת עבירה": 412}}, "מועצה אזורית שומרון": {"total": 962, "breakdown": {"Count of קבוצת עבירה": 962}}, "מועצה אזורית שער הנגב": {"total": 365, "breakdown": {"Count of קבוצת עבירה": 365}}, "מועצה אזורית שפיר": {"total": 503, "breakdown": {"Count of קבוצת עבירה": 503}}, "מועצה אזורית תמר": {"total": 460, "breakdown": {"Count of קבוצת עבירה": 460}}, "מזכרת בתיה": {"total": 258, "breakdown": {"Count of קבוצת עבירה": 258}}, "מזרעה": {"total": 138, "breakdown": {"Count of קבוצת עבירה": 138}}, "מטולה": {"total": 39, "breakdown": {"Count of קבוצת עבירה": 39}}, "מיתר": {"total": 476, "breakdown": {"Count of קבוצת עבירה": 476}}, "מסעדה": {"total": 115, "breakdown": {"Count of קבוצת עבירה": 115}}, "מעיליא": {"total": 173, "breakdown": {"Count of קבוצת עבירה": 173}}, "מעלה אדומים": {"total": 981, "breakdown": {"Count of קבוצת עבירה": 981}}, "מעלה אפרים": {"total": 79, "breakdown": {"Count of קבוצת עבירה": 79}}, "מעלה עירון": {"total": 359, "breakdown": {"Count of קבוצת עבירה": 359}}, "מעלות-תרשיחא": {"total": 682, "breakdown": {"Count of קבוצת עבירה": 682}}, "מצפה רמון": {"total": 334, "breakdown": {"Count of קבוצת עבירה": 334}}, "מקום": {"total": 931, "breakdown": {"Count of קבוצת עבירה": 931}}, "מקום אחר": {"total": 17469, "breakdown": {"Count of קבוצת עבירה": 17469}}, "משהד": {"total": 230, "breakdown": {"Count of קבוצת עבירה": 230}}, "נאות חובב": {"total": 45, "breakdown": {"Count of קבוצת עבירה": 45}}, "נהריה": {"total": 2444, "breakdown": {"Count of קבוצת עבירה": 2444}}, "נוף הגליל": {"total": 2521, "breakdown": {"Count of קבוצת עבירה": 2521}}, "נחף": {"total": 553, "breakdown": {"Count of קבוצת עבירה": 553}}, "נמל תעופה בן גוריון": {"total": 925, "breakdown": {"Count of קבוצת עבירה": 925}}, "נס ציונה": {"total": 1130, "breakdown": {"Count of קבוצת עבירה": 1130}}, "נצרת": {"total": 3761, "breakdown": {"Count of קבוצת עבירה": 3761}}, "נשר": {"total": 803, "breakdown": {"Count of קבוצת עבירה": 803}}, "נתיבות": {"total": 1870, "breakdown": {"Count of קבוצת עבירה": 1870}}, "נתניה": {"total": 8731, "breakdown": {"Count of קבוצת עבירה": 8731}}, "סאג'ור": {"total": 145, "breakdown": {"Count of קבוצת עבירה": 145}}, "סביון": {"total": 119, "breakdown": {"Count of קבוצת עבירה": 119}}, "סח'נין": {"total": 1152, "breakdown": {"Count of קבוצת עבירה": 1152}}, "ע'ג'ר": {"total": 52, "breakdown": {"Count of קבוצת עבירה": 52}}, "עומר": {"total": 335, "breakdown": {"Count of קבוצת עבירה": 335}}, "עיילבון": {"total": 124, "breakdown": {"Count of קבוצת עבירה": 124}}, "עילוט": {"total": 287, "breakdown": {"Count of קבוצת עבירה": 287}}, "עין מאהל": {"total": 287, "breakdown": {"Count of קבוצת עבירה": 287}}, "עין קנייא": {"total": 50, "breakdown": {"Count of קבוצת עבירה": 50}}, "עכו": {"total": 3948, "breakdown": {"Count of קבוצת עבירה": 3948}}, "עמנואל": {"total": 141, "breakdown": {"Count of קבוצת עבירה": 141}}, "עספיא": {"total": 410, "breakdown": {"Count of קבוצת עבירה": 410}}, "עפולה": {"total": 3359, "breakdown": {"Count of קבוצת עבירה": 3359}}, "עראבה": {"total": 932, "breakdown": {"Count of קבוצת עבירה": 932}}, "ערד": {"total": 1509, "breakdown": {"Count of קבוצת עבירה": 1509}}, "ערערה": {"total": 610, "breakdown": {"Count of קבוצת עבירה": 610}}, "ערערה-בנגב": {"total": 1155, "breakdown": {"Count of קבוצת עבירה": 1155}}, "פוריידיס": {"total": 524, "breakdown": {"Count of קבוצת עבירה": 524}}, "פסוטה": {"total": 75, "breakdown": {"Count of קבוצת עבירה": 75}}, "פקיעין": {"total": 97, "breakdown": {"Count of קבוצת עבירה": 97}}, "פרדס חנה-כרכור": {"total": 1586, "breakdown": {"Count of קבוצת עבירה": 1586}}, "פרדסיה": {"total": 140, "breakdown": {"Count of קבוצת עבירה": 140}}, "פתח תקווה": {"total": 9313, "breakdown": {"Count of קבוצת עבירה": 9313}}, "צור הדסה": {"total": 124, "breakdown": {"Count of קבוצת עבירה": 124}}, "צפת": {"total": 1247, "breakdown": {"Count of קבוצת עבירה": 1247}}, "קדומים": {"total": 75, "breakdown": {"Count of קבוצת עבירה": 75}}, "קדימה צורן": {"total": 633, "breakdown": {"Count of קבוצת עבירה": 633}}, "קלנסווה": {"total": 1045, "breakdown": {"Count of קבוצת עבירה": 1045}}, "קצרין": {"total": 269, "breakdown": {"Count of קבוצת עבירה": 269}}, "קרית אונו": {"total": 807, "breakdown": {"Count of קבוצת עבירה": 807}}, "קרית ארבע": {"total": 272, "breakdown": {"Count of קבוצת עבירה": 272}}, "קרית אתא": {"total": 2252, "breakdown": {"Count of קבוצת עבירה": 2252}}, "קרית ביאליק": {"total": 1775, "breakdown": {"Count of קבוצת עבירה": 1775}}, "קרית גת": {"total": 3253, "breakdown": {"Count of קבוצת עבירה": 3253}}, "קרית טבעון": {"total": 548, "breakdown": {"Count of קבוצת עבירה": 548}}, "קרית ים": {"total": 1525, "breakdown": {"Count of קבוצת עבירה": 1525}}, "קרית יערים": {"total": 62, "breakdown": {"Count of קבוצת עבירה": 62}}, "קרית מוצקין": {"total": 1614, "breakdown": {"Count of קבוצת עבירה": 1614}}, "קרית מלאכי": {"total": 1714, "breakdown": {"Count of קבוצת עבירה": 1714}}, "קרית עקרון": {"total": 513, "breakdown": {"Count of קבוצת עבירה": 513}}, "קרית שמונה": {"total": 1034, "breakdown": {"Count of קבוצת עבירה": 1034}}, "קרני שומרון": {"total": 194, "breakdown": {"Count of קבוצת עבירה": 194}}, "ראמה": {"total": 218, "breakdown": {"Count of קבוצת עבירה": 218}}, "ראש העין": {"total": 2141, "breakdown": {"Count of קבוצת עבירה": 2141}}, "ראש פינה": {"total": 277, "breakdown": {"Count of קבוצת עבירה": 277}}, "ראשון לציון": {"total": 9695, "breakdown": {"Count of קבוצת עבירה": 9695}}, "רהט": {"total": 3901, "breakdown": {"Count of קבוצת עבירה": 3901}}, "רחובות": {"total": 4246, "breakdown": {"Count of קבוצת עבירה": 4246}}, "ריינה": {"total": 371, "breakdown": {"Count of קבוצת עבירה": 371}}, "רכסים": {"total": 209, "breakdown": {"Count of קבוצת עבירה": 209}}, "רמלה": {"total": 5228, "breakdown": {"Count of קבוצת עבירה": 5228}}, "רמת גן": {"total": 5049, "breakdown": {"Count of קבוצת עבירה": 5049}}, "רמת השרון": {"total": 1179, "breakdown": {"Count of קבוצת עבירה": 1179}}, "רמת ישי": {"total": 161, "breakdown": {"Count of קבוצת עבירה": 161}}, "רעננה": {"total": 1885, "breakdown": {"Count of קבוצת עבירה": 1885}}, "שבלי": {"total": 347, "breakdown": {"Count of קבוצת עבירה": 347}}, "שגב-שלום": {"total": 867, "breakdown": {"Count of קבוצת עבירה": 867}}, "שדרות": {"total": 1979, "breakdown": {"Count of קבוצת עבירה": 1979}}, "שוהם": {"total": 276, "breakdown": {"Count of קבוצת עבירה": 276}}, "שלומי": {"total": 207, "breakdown": {"Count of קבוצת עבירה": 207}}, "שעב": {"total": 297, "breakdown": {"Count of קבוצת עבירה": 297}}, "שפרעם": {"total": 2182, "breakdown": {"Count of קבוצת עבירה": 2182}}, "תל אביב יפו": {"total": 37158, "breakdown": {"Count of קבוצת עבירה": 37158}}, "תל מונד": {"total": 267, "breakdown": {"Count of קבוצת עבירה": 267}}, "תל שבע": {"total": 1264, "breakdown": {"Count of קבוצת עבירה": 1264}}, "Grand Total": {"total": 415329, "breakdown": {"Count of קבוצת עבירה": 415329}}}, "2022": {"כל הארץ": {"total": 316, "breakdown": {"Count of קבוצת עבירה": 316}}, "סעיפי הגדרה": {"total": 4, "breakdown": {"Count of קבוצת עבירה": 4}}, "עבירות בטחון": {"total": 137, "breakdown": {"Count of קבוצת עבירה": 137}}, "עבירות כלפי המוסר": {"total": 45, "breakdown": {"Count of קבוצת עבירה": 45}}, "עבירות כלפי הרכוש": {"total": 187, "breakdown": {"Count of קבוצת עבירה": 187}}, "עבירות מין": {"total": 12, "breakdown": {"Count of קבוצת עבירה": 12}}, "עבירות מנהליות": {"total": 15, "breakdown": {"Count of קבוצת עבירה": 15}}, "עבירות מרמה": {"total": 20, "breakdown": {"Count of קבוצת עבירה": 20}}, "עבירות נגד אדם": {"total": 9, "breakdown": {"Count of קבוצת עבירה": 9}}, "עבירות נגד גוף": {"total": 221, "breakdown": {"Count of קבוצת עבירה": 221}}, "עבירות סדר ציבורי": {"total": 431, "breakdown": {"Count of קבוצת עבירה": 431}}, "עבירות רשוי": {"total": 10, "breakdown": {"Count of קבוצת עבירה": 10}}, "עבירות תנועה": {"total": 6, "breakdown": {"Count of קבוצת עבירה": 6}}, "שאר עבירות": {"total": 5, "breakdown": {"Count of קבוצת עבירה": 5}}, "אבו גוש": {"total": 503, "breakdown": {"Count of קבוצת עבירה": 503}}, "עבירות כלכליות": {"total": 9, "breakdown": {"Count of קבוצת עבירה": 9}}, "אבו סנאן": {"total": 627, "breakdown": {"Count of קבוצת עבירה": 627}}, "אבן יהודה": {"total": 338, "breakdown": {"Count of קבוצת עבירה": 338}}, "אום אל-פחם": {"total": 2027, "breakdown": {"Count of קבוצת עבירה": 2027}}, "שגיאת הזנה": {"total": 11, "breakdown": {"Count of קבוצת עבירה": 11}}, "אופקים": {"total": 1700, "breakdown": {"Count of קבוצת עבירה": 1700}}, "אור יהודה": {"total": 1433, "breakdown": {"Count of קבוצת עבירה": 1433}}, "אור עקיבא": {"total": 1060, "breakdown": {"Count of קבוצת עבירה": 1060}}, "אורנית": {"total": 158, "breakdown": {"Count of קבוצת עבירה": 158}}, "אזור": {"total": 406, "breakdown": {"Count of קבוצת עבירה": 406}}, "אילת": {"total": 5348, "breakdown": {"Count of קבוצת עבירה": 5348}}, "אכסאל": {"total": 641, "breakdown": {"Count of קבוצת עבירה": 641}}, "אליכין": {"total": 52, "breakdown": {"Count of קבוצת עבירה": 52}}, "אלעד": {"total": 630, "breakdown": {"Count of קבוצת עבירה": 630}}, "אלפי מנשה": {"total": 129, "breakdown": {"Count of קבוצת עבירה": 129}}, "אלקנה": {"total": 44, "breakdown": {"Count of קבוצת עבירה": 44}}, "אעבלין": {"total": 467, "breakdown": {"Count of קבוצת עבירה": 467}}, "אפרת": {"total": 158, "breakdown": {"Count of קבוצת עבירה": 158}}, "אריאל": {"total": 746, "breakdown": {"Count of קבוצת עבירה": 746}}, "אשדוד": {"total": 9641, "breakdown": {"Count of קבוצת עבירה": 9641}}, "אשקלון": {"total": 8278, "breakdown": {"Count of קבוצת עבירה": 8278}}, "באקה אל-גרביה": {"total": 1352, "breakdown": {"Count of קבוצת עבירה": 1352}}, "באר יעקב": {"total": 885, "breakdown": {"Count of קבוצת עבירה": 885}}, "באר שבע": {"total": 18530, "breakdown": {"Count of קבוצת עבירה": 18530}}, "בועיינה נוג'יידאת": {"total": 315, "breakdown": {"Count of קבוצת עבירה": 315}}, "בוקעתא": {"total": 128, "breakdown": {"Count of קבוצת עבירה": 128}}, "ביענה": {"total": 441, "breakdown": {"Count of קבוצת עבירה": 441}}, "ביר אל מכסור": {"total": 214, "breakdown": {"Count of קבוצת עבירה": 214}}, "בית אל": {"total": 97, "breakdown": {"Count of קבוצת עבירה": 97}}, "בית אריה": {"total": 84, "breakdown": {"Count of קבוצת עבירה": 84}}, "בית ג'ן": {"total": 178, "breakdown": {"Count of קבוצת עבירה": 178}}, "בית דגן": {"total": 228, "breakdown": {"Count of קבוצת עבירה": 228}}, "בית שאן": {"total": 1128, "breakdown": {"Count of קבוצת עבירה": 1128}}, "בית שמש": {"total": 3534, "breakdown": {"Count of קבוצת עבירה": 3534}}, "ביתר עילית": {"total": 950, "breakdown": {"Count of קבוצת עבירה": 950}}, "בני ברק": {"total": 3797, "breakdown": {"Count of קבוצת עבירה": 3797}}, "בני עי''ש": {"total": 258, "breakdown": {"Count of קבוצת עבירה": 258}}, "בנימינה-גבעת עדה": {"total": 469, "breakdown": {"Count of קבוצת עבירה": 469}}, "בסמ''ה": {"total": 278, "breakdown": {"Count of קבוצת עבירה": 278}}, "בסמת טבעון": {"total": 318, "breakdown": {"Count of קבוצת עבירה": 318}}, "בת ים": {"total": 6965, "breakdown": {"Count of קבוצת עבירה": 6965}}, "ג'דיידה-מכר": {"total": 1306, "breakdown": {"Count of קבוצת עבירה": 1306}}, "ג'וליס": {"total": 197, "breakdown": {"Count of קבוצת עבירה": 197}}, "ג'יש": {"total": 129, "breakdown": {"Count of קבוצת עבירה": 129}}, "ג'לג'וליה": {"total": 679, "breakdown": {"Count of קבוצת עבירה": 679}}, "ג'סר א זרקא": {"total": 1620, "breakdown": {"Count of קבוצת עבירה": 1620}}, "ג'ת": {"total": 351, "breakdown": {"Count of קבוצת עבירה": 351}}, "גבעת זאב": {"total": 347, "breakdown": {"Count of קבוצת עבירה": 347}}, "גבעת שמואל": {"total": 681, "breakdown": {"Count of קבוצת עבירה": 681}}, "גבעתיים": {"total": 1513, "breakdown": {"Count of קבוצת עבירה": 1513}}, "גדרה": {"total": 703, "breakdown": {"Count of קבוצת עבירה": 703}}, "גן יבנה": {"total": 627, "breakdown": {"Count of קבוצת עבירה": 627}}, "גני תקווה": {"total": 437, "breakdown": {"Count of קבוצת עבירה": 437}}, "דאלית אל כרמל": {"total": 461, "breakdown": {"Count of קבוצת עבירה": 461}}, "דבוריה": {"total": 516, "breakdown": {"Count of קבוצת עבירה": 516}}, "דייר אל אסד": {"total": 453, "breakdown": {"Count of קבוצת עבירה": 453}}, "דייר חנא": {"total": 323, "breakdown": {"Count of קבוצת עבירה": 323}}, "דימונה": {"total": 2738, "breakdown": {"Count of קבוצת עבירה": 2738}}, "הוד השרון": {"total": 1761, "breakdown": {"Count of קבוצת עבירה": 1761}}, "הר אדר": {"total": 55, "breakdown": {"Count of קבוצת עבירה": 55}}, "הרצליה": {"total": 3972, "breakdown": {"Count of קבוצת עבירה": 3972}}, "זכרון יעקב": {"total": 672, "breakdown": {"Count of קבוצת עבירה": 672}}, "זמר": {"total": 326, "breakdown": {"Count of קבוצת עבירה": 326}}, "זרזיר": {"total": 497, "breakdown": {"Count of קבוצת עבירה": 497}}, "חדרה": {"total": 4865, "breakdown": {"Count of קבוצת עבירה": 4865}}, "חולון": {"total": 7374, "breakdown": {"Count of קבוצת עבירה": 7374}}, "חורה": {"total": 818, "breakdown": {"Count of קבוצת עבירה": 818}}, "חורפיש": {"total": 88, "breakdown": {"Count of קבוצת עבירה": 88}}, "חיפה": {"total": 14182, "breakdown": {"Count of קבוצת עבירה": 14182}}, "חצור הגלילית": {"total": 437, "breakdown": {"Count of קבוצת עבירה": 437}}, "חריש": {"total": 1003, "breakdown": {"Count of קבוצת עבירה": 1003}}, "טבריה": {"total": 3086, "breakdown": {"Count of קבוצת עבירה": 3086}}, "טובא זנגריה": {"total": 576, "breakdown": {"Count of קבוצת עבירה": 576}}, "טורעאן": {"total": 551, "breakdown": {"Count of קבוצת עבירה": 551}}, "טייבה": {"total": 2030, "breakdown": {"Count of קבוצת עבירה": 2030}}, "טירה": {"total": 1712, "breakdown": {"Count of קבוצת עבירה": 1712}}, "טירת כרמל": {"total": 883, "breakdown": {"Count of קבוצת עבירה": 883}}, "טמרה": {"total": 1931, "breakdown": {"Count of קבוצת עבירה": 1931}}, "יאנוח-ג'ת": {"total": 107, "breakdown": {"Count of קבוצת עבירה": 107}}, "יבנאל": {"total": 201, "breakdown": {"Count of קבוצת עבירה": 201}}, "יבנה": {"total": 1810, "breakdown": {"Count of קבוצת עבירה": 1810}}, "יהוד-מונוסון": {"total": 852, "breakdown": {"Count of קבוצת עבירה": 852}}, "יסוד המעלה": {"total": 26, "breakdown": {"Count of קבוצת עבירה": 26}}, "יפיע": {"total": 417, "breakdown": {"Count of קבוצת עבירה": 417}}, "יקנעם עילית": {"total": 547, "breakdown": {"Count of קבוצת עבירה": 547}}, "ירוחם": {"total": 595, "breakdown": {"Count of קבוצת עבירה": 595}}, "ירושלים": {"total": 35725, "breakdown": {"Count of קבוצת עבירה": 35725}}, "ירכא": {"total": 715, "breakdown": {"Count of קבוצת עבירה": 715}}, "ישוב פלסטיני": {"total": 9048, "breakdown": {"Count of קבוצת עבירה": 9048}}, "כאבול": {"total": 334, "breakdown": {"Count of קבוצת עבירה": 334}}, "כאוכב אבו אל היגא": {"total": 80, "breakdown": {"Count of קבוצת עבירה": 80}}, "כוכב יאיר": {"total": 155, "breakdown": {"Count of קבוצת עבירה": 155}}, "כסיפה": {"total": 673, "breakdown": {"Count of קבוצת עבירה": 673}}, "כסרא-סמיע": {"total": 140, "breakdown": {"Count of קבוצת עבירה": 140}}, "כעביה טבאש חג'אג'רה": {"total": 250, "breakdown": {"Count of קבוצת עבירה": 250}}, "כפר ברא": {"total": 142, "breakdown": {"Count of קבוצת עבירה": 142}}, "כפר ורדים": {"total": 108, "breakdown": {"Count of קבוצת עבירה": 108}}, "כפר יאסיף": {"total": 790, "breakdown": {"Count of קבוצת עבירה": 790}}, "כפר יונה": {"total": 909, "breakdown": {"Count of קבוצת עבירה": 909}}, "כפר כמא": {"total": 35, "breakdown": {"Count of קבוצת עבירה": 35}}, "כפר כנא": {"total": 1014, "breakdown": {"Count of קבוצת עבירה": 1014}}, "כפר מנדא": {"total": 663, "breakdown": {"Count of קבוצת עבירה": 663}}, "כפר סבא": {"total": 3628, "breakdown": {"Count of קבוצת עבירה": 3628}}, "כפר קאסם": {"total": 1145, "breakdown": {"Count of קבוצת עבירה": 1145}}, "כפר קרע": {"total": 853, "breakdown": {"Count of קבוצת עבירה": 853}}, "כפר שמריהו": {"total": 87, "breakdown": {"Count of קבוצת עבירה": 87}}, "כפר תבור": {"total": 77, "breakdown": {"Count of קבוצת עבירה": 77}}, "כרמיאל": {"total": 1545, "breakdown": {"Count of קבוצת עבירה": 1545}}, "להבים": {"total": 210, "breakdown": {"Count of קבוצת עבירה": 210}}, "לוד": {"total": 5667, "breakdown": {"Count of קבוצת עבירה": 5667}}, "לקיה": {"total": 683, "breakdown": {"Count of קבוצת עבירה": 683}}, "מבשרת ציון": {"total": 953, "breakdown": {"Count of קבוצת עבירה": 953}}, "מג'ד אל כרום": {"total": 835, "breakdown": {"Count of קבוצת עבירה": 835}}, "מג'דל שמס": {"total": 227, "breakdown": {"Count of קבוצת עבירה": 227}}, "מגאר": {"total": 483, "breakdown": {"Count of קבוצת עבירה": 483}}, "מגדל": {"total": 85, "breakdown": {"Count of קבוצת עבירה": 85}}, "מגדל העמק": {"total": 1168, "breakdown": {"Count of קבוצת עבירה": 1168}}, "מגדל תפן": {"total": 30, "breakdown": {"Count of קבוצת עבירה": 30}}, "מודיעין-מכבים-רעות": {"total": 1934, "breakdown": {"Count of קבוצת עבירה": 1934}}, "מודיעין עילית": {"total": 794, "breakdown": {"Count of קבוצת עבירה": 794}}, "מועצה אזורית אל-בטוף": {"total": 265, "breakdown": {"Count of קבוצת עבירה": 265}}, "מועצה אזורית אל קסום": {"total": 601, "breakdown": {"Count of קבוצת עבירה": 601}}, "מועצה אזורית אלונה": {"total": 44, "breakdown": {"Count of קבוצת עבירה": 44}}, "מועצה אזורית אשכול": {"total": 661, "breakdown": {"Count of קבוצת עבירה": 661}}, "מועצה אזורית באר טוביה": {"total": 1091, "breakdown": {"Count of קבוצת עבירה": 1091}}, "מועצה אזורית בוסתן-אל-מרג'": {"total": 240, "breakdown": {"Count of קבוצת עבירה": 240}}, "מועצה אזורית בני שמעון": {"total": 559, "breakdown": {"Count of קבוצת עבירה": 559}}, "מועצה אזורית ברנר": {"total": 163, "breakdown": {"Count of קבוצת עבירה": 163}}, "מועצה אזורית גדרות": {"total": 123, "breakdown": {"Count of קבוצת עבירה": 123}}, "מועצה אזורית גולן": {"total": 357, "breakdown": {"Count of קבוצת עבירה": 357}}, "מועצה אזורית גוש עציון": {"total": 692, "breakdown": {"Count of קבוצת עבירה": 692}}, "מועצה אזורית גזר": {"total": 803, "breakdown": {"Count of קבוצת עבירה": 803}}, "מועצה אזורית גן רווה": {"total": 209, "breakdown": {"Count of קבוצת עבירה": 209}}, "מועצה אזורית דרום השרון": {"total": 936, "breakdown": {"Count of קבוצת עבירה": 936}}, "מועצה אזורית הגלבוע": {"total": 1072, "breakdown": {"Count of קבוצת עבירה": 1072}}, "מועצה אזורית הגליל העליון": {"total": 505, "breakdown": {"Count of קבוצת עבירה": 505}}, "מועצה אזורית הגליל התחתון": {"total": 306, "breakdown": {"Count of קבוצת עבירה": 306}}, "מועצה אזורית הערבה התיכונה": {"total": 135, "breakdown": {"Count of קבוצת עבירה": 135}}, "מועצה אזורית הר חברון": {"total": 426, "breakdown": {"Count of קבוצת עבירה": 426}}, "מועצה אזורית זבולון": {"total": 378, "breakdown": {"Count of קבוצת עבירה": 378}}, "מועצה אזורית חבל אילות": {"total": 107, "breakdown": {"Count of קבוצת עבירה": 107}}, "מועצה אזורית חבל יבנה": {"total": 213, "breakdown": {"Count of קבוצת עבירה": 213}}, "מועצה אזורית חבל מודיעין": {"total": 956, "breakdown": {"Count of קבוצת עבירה": 956}}, "מועצה אזורית חוף אשקלון": {"total": 665, "breakdown": {"Count of קבוצת עבירה": 665}}, "מועצה אזורית חוף הכרמל": {"total": 1156, "breakdown": {"Count of קבוצת עבירה": 1156}}, "מועצה אזורית חוף השרון": {"total": 452, "breakdown": {"Count of קבוצת עבירה": 452}}, "מועצה אזורית יואב": {"total": 354, "breakdown": {"Count of קבוצת עבירה": 354}}, "מועצה אזורית לב השרון": {"total": 940, "breakdown": {"Count of קבוצת עבירה": 940}}, "מועצה אזורית לכיש": {"total": 540, "breakdown": {"Count of קבוצת עבירה": 540}}, "מועצה אזורית מבואות החרמון": {"total": 273, "breakdown": {"Count of קבוצת עבירה": 273}}, "מועצה אזורית מגידו": {"total": 394, "breakdown": {"Count of קבוצת עבירה": 394}}, "מועצה אזורית מגילות ים המלח": {"total": 91, "breakdown": {"Count of קבוצת עבירה": 91}}, "מועצה אזורית מטה אשר": {"total": 1133, "breakdown": {"Count of קבוצת עבירה": 1133}}, "מועצה אזורית מטה בנימין": {"total": 1450, "breakdown": {"Count of קבוצת עבירה": 1450}}, "מועצה אזורית מטה יהודה": {"total": 1726, "breakdown": {"Count of קבוצת עבירה": 1726}}, "מועצה אזורית מנשה": {"total": 662, "breakdown": {"Count of קבוצת עבירה": 662}}, "מועצה אזורית מעלה יוסף": {"total": 380, "breakdown": {"Count of קבוצת עבירה": 380}}, "מועצה אזורית מרום הגליל": {"total": 683, "breakdown": {"Count of קבוצת עבירה": 683}}, "מועצה אזורית מרחבים": {"total": 567, "breakdown": {"Count of קבוצת עבירה": 567}}, "מועצה אזורית משגב": {"total": 683, "breakdown": {"Count of קבוצת עבירה": 683}}, "מועצה אזורית נווה מדבר": {"total": 434, "breakdown": {"Count of קבוצת עבירה": 434}}, "מועצה אזורית נחל שורק": {"total": 99, "breakdown": {"Count of קבוצת עבירה": 99}}, "מועצה אזורית עמק הירדן": {"total": 399, "breakdown": {"Count of קבוצת עבירה": 399}}, "מועצה אזורית עמק המעיינות": {"total": 537, "breakdown": {"Count of קבוצת עבירה": 537}}, "מועצה אזורית עמק חפר": {"total": 1205, "breakdown": {"Count of קבוצת עבירה": 1205}}, "מועצה אזורית עמק יזרעאל": {"total": 959, "breakdown": {"Count of קבוצת עבירה": 959}}, "מועצה אזורית עמק לוד": {"total": 322, "breakdown": {"Count of קבוצת עבירה": 322}}, "מועצה אזורית ערבות הירדן": {"total": 303, "breakdown": {"Count of קבוצת עבירה": 303}}, "מועצה אזורית רמת נגב": {"total": 367, "breakdown": {"Count of קבוצת עבירה": 367}}, "מועצה אזורית שדות דן": {"total": 132, "breakdown": {"Count of קבוצת עבירה": 132}}, "מועצה אזורית שדות נגב": {"total": 318, "breakdown": {"Count of קבוצת עבירה": 318}}, "מועצה אזורית שומרון": {"total": 969, "breakdown": {"Count of קבוצת עבירה": 969}}, "מועצה אזורית שער הנגב": {"total": 340, "breakdown": {"Count of קבוצת עבירה": 340}}, "מועצה אזורית שפיר": {"total": 430, "breakdown": {"Count of קבוצת עבירה": 430}}, "מועצה אזורית תמר": {"total": 493, "breakdown": {"Count of קבוצת עבירה": 493}}, "מזכרת בתיה": {"total": 259, "breakdown": {"Count of קבוצת עבירה": 259}}, "מזרעה": {"total": 137, "breakdown": {"Count of קבוצת עבירה": 137}}, "מטולה": {"total": 53, "breakdown": {"Count of קבוצת עבירה": 53}}, "מיתר": {"total": 384, "breakdown": {"Count of קבוצת עבירה": 384}}, "מסעדה": {"total": 110, "breakdown": {"Count of קבוצת עבירה": 110}}, "מעיליא": {"total": 121, "breakdown": {"Count of קבוצת עבירה": 121}}, "מעלה אדומים": {"total": 1240, "breakdown": {"Count of קבוצת עבירה": 1240}}, "מעלה אפרים": {"total": 89, "breakdown": {"Count of קבוצת עבירה": 89}}, "מעלה עירון": {"total": 267, "breakdown": {"Count of קבוצת עבירה": 267}}, "מעלות-תרשיחא": {"total": 729, "breakdown": {"Count of קבוצת עבירה": 729}}, "מצפה רמון": {"total": 343, "breakdown": {"Count of קבוצת עבירה": 343}}, "מקום": {"total": 901, "breakdown": {"Count of קבוצת עבירה": 901}}, "מקום אחר": {"total": 18727, "breakdown": {"Count of קבוצת עבירה": 18727}}, "משהד": {"total": 198, "breakdown": {"Count of קבוצת עבירה": 198}}, "נאות חובב": {"total": 66, "breakdown": {"Count of קבוצת עבירה": 66}}, "נהריה": {"total": 2496, "breakdown": {"Count of קבוצת עבירה": 2496}}, "נוף הגליל": {"total": 2516, "breakdown": {"Count of קבוצת עבירה": 2516}}, "נחף": {"total": 445, "breakdown": {"Count of קבוצת עבירה": 445}}, "נמל תעופה בן גוריון": {"total": 1435, "breakdown": {"Count of קבוצת עבירה": 1435}}, "נס ציונה": {"total": 1148, "breakdown": {"Count of קבוצת עבירה": 1148}}, "נצרת": {"total": 3589, "breakdown": {"Count of קבוצת עבירה": 3589}}, "נשר": {"total": 934, "breakdown": {"Count of קבוצת עבירה": 934}}, "נתיבות": {"total": 1602, "breakdown": {"Count of קבוצת עבירה": 1602}}, "נתניה": {"total": 9141, "breakdown": {"Count of קבוצת עבירה": 9141}}, "סאג'ור": {"total": 132, "breakdown": {"Count of קבוצת עבירה": 132}}, "סביון": {"total": 182, "breakdown": {"Count of קבוצת עבירה": 182}}, "סח'נין": {"total": 1254, "breakdown": {"Count of קבוצת עבירה": 1254}}, "ע'ג'ר": {"total": 42, "breakdown": {"Count of קבוצת עבירה": 42}}, "עומר": {"total": 307, "breakdown": {"Count of קבוצת עבירה": 307}}, "עיילבון": {"total": 227, "breakdown": {"Count of קבוצת עבירה": 227}}, "עילוט": {"total": 239, "breakdown": {"Count of קבוצת עבירה": 239}}, "עין מאהל": {"total": 282, "breakdown": {"Count of קבוצת עבירה": 282}}, "עין קנייא": {"total": 46, "breakdown": {"Count of קבוצת עבירה": 46}}, "עכו": {"total": 4004, "breakdown": {"Count of קבוצת עבירה": 4004}}, "עמנואל": {"total": 104, "breakdown": {"Count of קבוצת עבירה": 104}}, "עספיא": {"total": 413, "breakdown": {"Count of קבוצת עבירה": 413}}, "עפולה": {"total": 3166, "breakdown": {"Count of קבוצת עבירה": 3166}}, "עראבה": {"total": 904, "breakdown": {"Count of קבוצת עבירה": 904}}, "ערד": {"total": 1387, "breakdown": {"Count of קבוצת עבירה": 1387}}, "ערערה": {"total": 641, "breakdown": {"Count of קבוצת עבירה": 641}}, "ערערה-בנגב": {"total": 987, "breakdown": {"Count of קבוצת עבירה": 987}}, "פוריידיס": {"total": 465, "breakdown": {"Count of קבוצת עבירה": 465}}, "פסוטה": {"total": 91, "breakdown": {"Count of קבוצת עבירה": 91}}, "פקיעין": {"total": 119, "breakdown": {"Count of קבוצת עבירה": 119}}, "פרדס חנה-כרכור": {"total": 1462, "breakdown": {"Count of קבוצת עבירה": 1462}}, "פרדסיה": {"total": 104, "breakdown": {"Count of קבוצת עבירה": 104}}, "פתח תקווה": {"total": 10335, "breakdown": {"Count of קבוצת עבירה": 10335}}, "צור הדסה": {"total": 147, "breakdown": {"Count of קבוצת עבירה": 147}}, "צפת": {"total": 1226, "breakdown": {"Count of קבוצת עבירה": 1226}}, "קדומים": {"total": 77, "breakdown": {"Count of קבוצת עבירה": 77}}, "קדימה צורן": {"total": 544, "breakdown": {"Count of קבוצת עבירה": 544}}, "קלנסווה": {"total": 815, "breakdown": {"Count of קבוצת עבירה": 815}}, "קצרין": {"total": 414, "breakdown": {"Count of קבוצת עבירה": 414}}, "קרית אונו": {"total": 1001, "breakdown": {"Count of קבוצת עבירה": 1001}}, "קרית ארבע": {"total": 268, "breakdown": {"Count of קבוצת עבירה": 268}}, "קרית אתא": {"total": 2356, "breakdown": {"Count of קבוצת עבירה": 2356}}, "קרית ביאליק": {"total": 1744, "breakdown": {"Count of קבוצת עבירה": 1744}}, "קרית גת": {"total": 3412, "breakdown": {"Count of קבוצת עבירה": 3412}}, "קרית טבעון": {"total": 597, "breakdown": {"Count of קבוצת עבירה": 597}}, "קרית ים": {"total": 1607, "breakdown": {"Count of קבוצת עבירה": 1607}}, "קרית יערים": {"total": 48, "breakdown": {"Count of קבוצת עבירה": 48}}, "קרית מוצקין": {"total": 1566, "breakdown": {"Count of קבוצת עבירה": 1566}}, "קרית מלאכי": {"total": 1566, "breakdown": {"Count of קבוצת עבירה": 1566}}, "קרית עקרון": {"total": 487, "breakdown": {"Count of קבוצת עבירה": 487}}, "קרית שמונה": {"total": 1192, "breakdown": {"Count of קבוצת עבירה": 1192}}, "קרני שומרון": {"total": 220, "breakdown": {"Count of קבוצת עבירה": 220}}, "ראמה": {"total": 239, "breakdown": {"Count of קבוצת עבירה": 239}}, "ראש העין": {"total": 2041, "breakdown": {"Count of קבוצת עבירה": 2041}}, "ראש פינה": {"total": 239, "breakdown": {"Count of קבוצת עבירה": 239}}, "ראשון לציון": {"total": 10079, "breakdown": {"Count of קבוצת עבירה": 10079}}, "רהט": {"total": 3529, "breakdown": {"Count of קבוצת עבירה": 3529}}, "רחובות": {"total": 4839, "breakdown": {"Count of קבוצת עבירה": 4839}}, "ריינה": {"total": 448, "breakdown": {"Count of קבוצת עבירה": 448}}, "רכסים": {"total": 200, "breakdown": {"Count of קבוצת עבירה": 200}}, "רמלה": {"total": 4811, "breakdown": {"Count of קבוצת עבירה": 4811}}, "רמת גן": {"total": 5593, "breakdown": {"Count of קבוצת עבירה": 5593}}, "רמת השרון": {"total": 1194, "breakdown": {"Count of קבוצת עבירה": 1194}}, "רמת ישי": {"total": 203, "breakdown": {"Count of קבוצת עבירה": 203}}, "רעננה": {"total": 2019, "breakdown": {"Count of קבוצת עבירה": 2019}}, "שבלי": {"total": 508, "breakdown": {"Count of קבוצת עבירה": 508}}, "שגב-שלום": {"total": 801, "breakdown": {"Count of קבוצת עבירה": 801}}, "שדרות": {"total": 2285, "breakdown": {"Count of קבוצת עבירה": 2285}}, "שוהם": {"total": 331, "breakdown": {"Count of קבוצת עבירה": 331}}, "שלומי": {"total": 246, "breakdown": {"Count of קבוצת עבירה": 246}}, "שעב": {"total": 274, "breakdown": {"Count of קבוצת עבירה": 274}}, "שער שומרון": {"total": 14, "breakdown": {"Count of קבוצת עבירה": 14}}, "שפרעם": {"total": 2020, "breakdown": {"Count of קבוצת עבירה": 2020}}, "תל אביב יפו": {"total": 36933, "breakdown": {"Count of קבוצת עבירה": 36933}}, "תל מונד": {"total": 289, "breakdown": {"Count of קבוצת עבירה": 289}}, "תל שבע": {"total": 1096, "breakdown": {"Count of קבוצת עבירה": 1096}}, "Grand Total": {"total": 414130, "breakdown": {"Count of קבוצת עבירה": 414130}}}, "2023": {"כל הארץ": {"total": 125, "breakdown": {"Count of StatisticGroup": 125}}, "עבירות בטחון": {"total": 87, "breakdown": {"Count of StatisticGroup": 87}}, "עבירות כלכליות": {"total": 6, "breakdown": {"Count of StatisticGroup": 6}}, "עבירות כלפי המוסר": {"total": 42, "breakdown": {"Count of StatisticGroup": 42}}, "עבירות כלפי הרכוש": {"total": 162, "breakdown": {"Count of StatisticGroup": 162}}, "עבירות מנהליות": {"total": 11, "breakdown": {"Count of StatisticGroup": 11}}, "עבירות מרמה": {"total": 14, "breakdown": {"Count of StatisticGroup": 14}}, "עבירות נגד גוף": {"total": 158, "breakdown": {"Count of StatisticGroup": 158}}, "עבירות סדר ציבורי": {"total": 387, "breakdown": {"Count of StatisticGroup": 387}}, "עבירות רשוי": {"total": 1, "breakdown": {"Count of StatisticGroup": 1}}, "אבו גוש": {"total": 336, "breakdown": {"Count of StatisticGroup": 336}}, "סעיפי הגדרה": {"total": 3, "breakdown": {"Count of StatisticGroup": 3}}, "עבירות מין": {"total": 4, "breakdown": {"Count of StatisticGroup": 4}}, "עבירות תנועה": {"total": 4, "breakdown": {"Count of StatisticGroup": 4}}, "אבו סנאן": {"total": 385, "breakdown": {"Count of StatisticGroup": 385}}, "עבירות נגד אדם": {"total": 3, "breakdown": {"Count of StatisticGroup": 3}}, "אבן יהודה": {"total": 244, "breakdown": {"Count of StatisticGroup": 244}}, "אום אל-פחם": {"total": 1630, "breakdown": {"Count of StatisticGroup": 1630}}, "שאר עבירות": {"total": 1, "breakdown": {"Count of StatisticGroup": 1}}, "אופקים": {"total": 1100, "breakdown": {"Count of StatisticGroup": 1100}}, "שגיאת הזנה": {"total": 2, "breakdown": {"Count of StatisticGroup": 2}}, "אור יהודה": {"total": 1300, "breakdown": {"Count of StatisticGroup": 1300}}, "אור עקיבא": {"total": 779, "breakdown": {"Count of StatisticGroup": 779}}, "אורנית": {"total": 97, "breakdown": {"Count of StatisticGroup": 97}}, "אזור": {"total": 356, "breakdown": {"Count of StatisticGroup": 356}}, "אילת": {"total": 4149, "breakdown": {"Count of StatisticGroup": 4149}}, "אכסאל": {"total": 524, "breakdown": {"Count of StatisticGroup": 524}}, "אליכין": {"total": 75, "breakdown": {"Count of StatisticGroup": 75}}, "אלעד": {"total": 538, "breakdown": {"Count of StatisticGroup": 538}}, "אלפי מנשה": {"total": 69, "breakdown": {"Count of StatisticGroup": 69}}, "אלקנה": {"total": 16, "breakdown": {"Count of StatisticGroup": 16}}, "אעבלין": {"total": 401, "breakdown": {"Count of StatisticGroup": 401}}, "אפרת": {"total": 126, "breakdown": {"Count of StatisticGroup": 126}}, "אריאל": {"total": 515, "breakdown": {"Count of StatisticGroup": 515}}, "אשדוד": {"total": 6806, "breakdown": {"Count of StatisticGroup": 6806}}, "אשקלון": {"total": 5978, "breakdown": {"Count of StatisticGroup": 5978}}, "באקה אל-גרביה": {"total": 931, "breakdown": {"Count of StatisticGroup": 931}}, "באר יעקב": {"total": 795, "breakdown": {"Count of StatisticGroup": 795}}, "באר שבע": {"total": 14166, "breakdown": {"Count of StatisticGroup": 14166}}, "בועיינה נוג'יידאת": {"total": 244, "breakdown": {"Count of StatisticGroup": 244}}, "בוקעתא": {"total": 92, "breakdown": {"Count of StatisticGroup": 92}}, "ביענה": {"total": 241, "breakdown": {"Count of StatisticGroup": 241}}, "ביר אל מכסור": {"total": 209, "breakdown": {"Count of StatisticGroup": 209}}, "בית אל": {"total": 53, "breakdown": {"Count of StatisticGroup": 53}}, "בית אריה": {"total": 106, "breakdown": {"Count of StatisticGroup": 106}}, "בית ג'ן": {"total": 110, "breakdown": {"Count of StatisticGroup": 110}}, "בית דגן": {"total": 158, "breakdown": {"Count of StatisticGroup": 158}}, "בית שאן": {"total": 944, "breakdown": {"Count of StatisticGroup": 944}}, "בית שמש": {"total": 2547, "breakdown": {"Count of StatisticGroup": 2547}}, "ביתר עילית": {"total": 804, "breakdown": {"Count of StatisticGroup": 804}}, "בני ברק": {"total": 2991, "breakdown": {"Count of StatisticGroup": 2991}}, "בני עי''ש": {"total": 155, "breakdown": {"Count of StatisticGroup": 155}}, "בנימינה-גבעת עדה": {"total": 354, "breakdown": {"Count of StatisticGroup": 354}}, "בסמ''ה": {"total": 778, "breakdown": {"Count of StatisticGroup": 778}}, "בסמת טבעון": {"total": 249, "breakdown": {"Count of StatisticGroup": 249}}, "בת ים": {"total": 5648, "breakdown": {"Count of StatisticGroup": 5648}}, "ג'דיידה-מכר": {"total": 870, "breakdown": {"Count of StatisticGroup": 870}}, "ג'וליס": {"total": 113, "breakdown": {"Count of StatisticGroup": 113}}, "ג'יש": {"total": 42, "breakdown": {"Count of StatisticGroup": 42}}, "ג'לג'וליה": {"total": 430, "breakdown": {"Count of StatisticGroup": 430}}, "ג'סר א זרקא": {"total": 1280, "breakdown": {"Count of StatisticGroup": 1280}}, "ג'ת": {"total": 202, "breakdown": {"Count of StatisticGroup": 202}}, "גבעת זאב": {"total": 332, "breakdown": {"Count of StatisticGroup": 332}}, "גבעת שמואל": {"total": 501, "breakdown": {"Count of StatisticGroup": 501}}, "גבעתיים": {"total": 1504, "breakdown": {"Count of StatisticGroup": 1504}}, "גדרה": {"total": 551, "breakdown": {"Count of StatisticGroup": 551}}, "גן יבנה": {"total": 499, "breakdown": {"Count of StatisticGroup": 499}}, "גני תקווה": {"total": 352, "breakdown": {"Count of StatisticGroup": 352}}, "דאלית אל כרמל": {"total": 349, "breakdown": {"Count of StatisticGroup": 349}}, "דבוריה": {"total": 284, "breakdown": {"Count of StatisticGroup": 284}}, "דייר אל אסד": {"total": 315, "breakdown": {"Count of StatisticGroup": 315}}, "דייר חנא": {"total": 287, "breakdown": {"Count of StatisticGroup": 287}}, "דימונה": {"total": 2054, "breakdown": {"Count of StatisticGroup": 2054}}, "הוד השרון": {"total": 1514, "breakdown": {"Count of StatisticGroup": 1514}}, "הר אדר": {"total": 34, "breakdown": {"Count of StatisticGroup": 34}}, "הרצליה": {"total": 3276, "breakdown": {"Count of StatisticGroup": 3276}}, "זכרון יעקב": {"total": 470, "breakdown": {"Count of StatisticGroup": 470}}, "זמר": {"total": 181, "breakdown": {"Count of StatisticGroup": 181}}, "זרזיר": {"total": 325, "breakdown": {"Count of StatisticGroup": 325}}, "חדרה": {"total": 3480, "breakdown": {"Count of StatisticGroup": 3480}}, "חולון": {"total": 6169, "breakdown": {"Count of StatisticGroup": 6169}}, "חורה": {"total": 683, "breakdown": {"Count of StatisticGroup": 683}}, "חורפיש": {"total": 80, "breakdown": {"Count of StatisticGroup": 80}}, "חיפה": {"total": 11582, "breakdown": {"Count of StatisticGroup": 11582}}, "חצור הגלילית": {"total": 343, "breakdown": {"Count of StatisticGroup": 343}}, "חריש": {"total": 783, "breakdown": {"Count of StatisticGroup": 783}}, "טבריה": {"total": 2391, "breakdown": {"Count of StatisticGroup": 2391}}, "טובא זנגריה": {"total": 408, "breakdown": {"Count of StatisticGroup": 408}}, "טורעאן": {"total": 521, "breakdown": {"Count of StatisticGroup": 521}}, "טייבה": {"total": 1859, "breakdown": {"Count of StatisticGroup": 1859}}, "טירה": {"total": 1230, "breakdown": {"Count of StatisticGroup": 1230}}, "טירת כרמל": {"total": 696, "breakdown": {"Count of StatisticGroup": 696}}, "טמרה": {"total": 1691, "breakdown": {"Count of StatisticGroup": 1691}}, "יאנוח-ג'ת": {"total": 69, "breakdown": {"Count of StatisticGroup": 69}}, "יבנאל": {"total": 143, "breakdown": {"Count of StatisticGroup": 143}}, "יבנה": {"total": 1612, "breakdown": {"Count of StatisticGroup": 1612}}, "יהוד-מונוסון": {"total": 683, "breakdown": {"Count of StatisticGroup": 683}}, "יסוד המעלה": {"total": 26, "breakdown": {"Count of StatisticGroup": 26}}, "יפיע": {"total": 295, "breakdown": {"Count of StatisticGroup": 295}}, "יקנעם עילית": {"total": 413, "breakdown": {"Count of StatisticGroup": 413}}, "ירוחם": {"total": 526, "breakdown": {"Count of StatisticGroup": 526}}, "ירושלים": {"total": 26553, "breakdown": {"Count of StatisticGroup": 26553}}, "ירכא": {"total": 501, "breakdown": {"Count of StatisticGroup": 501}}, "ישוב פלסטיני": {"total": 12349, "breakdown": {"Count of StatisticGroup": 12349}}, "כאבול": {"total": 356, "breakdown": {"Count of StatisticGroup": 356}}, "כאוכב אבו אל היגא": {"total": 68, "breakdown": {"Count of StatisticGroup": 68}}, "כוכב יאיר": {"total": 119, "breakdown": {"Count of StatisticGroup": 119}}, "כסיפה": {"total": 540, "breakdown": {"Count of StatisticGroup": 540}}, "כסרא-סמיע": {"total": 65, "breakdown": {"Count of StatisticGroup": 65}}, "כעביה טבאש חג'אג'רה": {"total": 195, "breakdown": {"Count of StatisticGroup": 195}}, "כפר ברא": {"total": 90, "breakdown": {"Count of StatisticGroup": 90}}, "כפר ורדים": {"total": 70, "breakdown": {"Count of StatisticGroup": 70}}, "כפר יאסיף": {"total": 592, "breakdown": {"Count of StatisticGroup": 592}}, "כפר יונה": {"total": 616, "breakdown": {"Count of StatisticGroup": 616}}, "כפר כמא": {"total": 34, "breakdown": {"Count of StatisticGroup": 34}}, "כפר כנא": {"total": 832, "breakdown": {"Count of StatisticGroup": 832}}, "כפר מנדא": {"total": 430, "breakdown": {"Count of StatisticGroup": 430}}, "כפר סבא": {"total": 2948, "breakdown": {"Count of StatisticGroup": 2948}}, "כפר קאסם": {"total": 902, "breakdown": {"Count of StatisticGroup": 902}}, "כפר קרע": {"total": 803, "breakdown": {"Count of StatisticGroup": 803}}, "כפר שמריהו": {"total": 46, "breakdown": {"Count of StatisticGroup": 46}}, "כפר תבור": {"total": 99, "breakdown": {"Count of StatisticGroup": 99}}, "כרמיאל": {"total": 1134, "breakdown": {"Count of StatisticGroup": 1134}}, "להבים": {"total": 115, "breakdown": {"Count of StatisticGroup": 115}}, "לוד": {"total": 4243, "breakdown": {"Count of StatisticGroup": 4243}}, "לקיה": {"total": 487, "breakdown": {"Count of StatisticGroup": 487}}, "מבשרת ציון": {"total": 678, "breakdown": {"Count of StatisticGroup": 678}}, "מג'ד אל כרום": {"total": 662, "breakdown": {"Count of StatisticGroup": 662}}, "מג'דל שמס": {"total": 202, "breakdown": {"Count of StatisticGroup": 202}}, "מגאר": {"total": 398, "breakdown": {"Count of StatisticGroup": 398}}, "מגדל": {"total": 76, "breakdown": {"Count of StatisticGroup": 76}}, "מגדל העמק": {"total": 939, "breakdown": {"Count of StatisticGroup": 939}}, "מגדל תפן": {"total": 12, "breakdown": {"Count of StatisticGroup": 12}}, "מודיעין-מכבים-רעות": {"total": 1631, "breakdown": {"Count of StatisticGroup": 1631}}, "מודיעין עילית": {"total": 548, "breakdown": {"Count of StatisticGroup": 548}}, "מועצה אזורית אל-בטוף": {"total": 316, "breakdown": {"Count of StatisticGroup": 316}}, "מועצה אזורית אל קסום": {"total": 605, "breakdown": {"Count of StatisticGroup": 605}}, "מועצה אזורית אלונה": {"total": 29, "breakdown": {"Count of StatisticGroup": 29}}, "מועצה אזורית אשכול": {"total": 1363, "breakdown": {"Count of StatisticGroup": 1363}}, "מועצה אזורית באר טוביה": {"total": 1055, "breakdown": {"Count of StatisticGroup": 1055}}, "מועצה אזורית בוסתן-אל-מרג'": {"total": 266, "breakdown": {"Count of StatisticGroup": 266}}, "מועצה אזורית בני שמעון": {"total": 598, "breakdown": {"Count of StatisticGroup": 598}}, "מועצה אזורית ברנר": {"total": 188, "breakdown": {"Count of StatisticGroup": 188}}, "מועצה אזורית גדרות": {"total": 132, "breakdown": {"Count of StatisticGroup": 132}}, "מועצה אזורית גולן": {"total": 378, "breakdown": {"Count of StatisticGroup": 378}}, "מועצה אזורית גוש עציון": {"total": 638, "breakdown": {"Count of StatisticGroup": 638}}, "מועצה אזורית גזר": {"total": 736, "breakdown": {"Count of StatisticGroup": 736}}, "מועצה אזורית גן רווה": {"total": 238, "breakdown": {"Count of StatisticGroup": 238}}, "מועצה אזורית דרום השרון": {"total": 769, "breakdown": {"Count of StatisticGroup": 769}}, "מועצה אזורית הגלבוע": {"total": 889, "breakdown": {"Count of StatisticGroup": 889}}, "מועצה אזורית הגליל העליון": {"total": 366, "breakdown": {"Count of StatisticGroup": 366}}, "מועצה אזורית הגליל התחתון": {"total": 234, "breakdown": {"Count of StatisticGroup": 234}}, "מועצה אזורית הערבה התיכונה": {"total": 101, "breakdown": {"Count of StatisticGroup": 101}}, "מועצה אזורית הר חברון": {"total": 489, "breakdown": {"Count of StatisticGroup": 489}}, "מועצה אזורית זבולון": {"total": 350, "breakdown": {"Count of StatisticGroup": 350}}, "מועצה אזורית חבל אילות": {"total": 102, "breakdown": {"Count of StatisticGroup": 102}}, "מועצה אזורית חבל יבנה": {"total": 128, "breakdown": {"Count of StatisticGroup": 128}}, "מועצה אזורית חבל מודיעין": {"total": 753, "breakdown": {"Count of StatisticGroup": 753}}, "מועצה אזורית חוף אשקלון": {"total": 599, "breakdown": {"Count of StatisticGroup": 599}}, "מועצה אזורית חוף הכרמל": {"total": 1064, "breakdown": {"Count of StatisticGroup": 1064}}, "מועצה אזורית חוף השרון": {"total": 592, "breakdown": {"Count of StatisticGroup": 592}}, "מועצה אזורית יואב": {"total": 274, "breakdown": {"Count of StatisticGroup": 274}}, "מועצה אזורית לב השרון": {"total": 760, "breakdown": {"Count of StatisticGroup": 760}}, "מועצה אזורית לכיש": {"total": 493, "breakdown": {"Count of StatisticGroup": 493}}, "מועצה אזורית מבואות החרמון": {"total": 253, "breakdown": {"Count of StatisticGroup": 253}}, "מועצה אזורית מגידו": {"total": 339, "breakdown": {"Count of StatisticGroup": 339}}, "מועצה אזורית מגילות ים המלח": {"total": 59, "breakdown": {"Count of StatisticGroup": 59}}, "מועצה אזורית מטה אשר": {"total": 972, "breakdown": {"Count of StatisticGroup": 972}}, "מועצה אזורית מטה בנימין": {"total": 1360, "breakdown": {"Count of StatisticGroup": 1360}}, "מועצה אזורית מטה יהודה": {"total": 1567, "breakdown": {"Count of StatisticGroup": 1567}}, "מועצה אזורית מנשה": {"total": 628, "breakdown": {"Count of StatisticGroup": 628}}, "מועצה אזורית מעלה יוסף": {"total": 327, "breakdown": {"Count of StatisticGroup": 327}}, "מועצה אזורית מרום הגליל": {"total": 576, "breakdown": {"Count of StatisticGroup": 576}}, "מועצה אזורית מרחבים": {"total": 496, "breakdown": {"Count of StatisticGroup": 496}}, "מועצה אזורית משגב": {"total": 568, "breakdown": {"Count of StatisticGroup": 568}}, "מועצה אזורית נווה מדבר": {"total": 407, "breakdown": {"Count of StatisticGroup": 407}}, "מועצה אזורית נחל שורק": {"total": 129, "breakdown": {"Count of StatisticGroup": 129}}, "מועצה אזורית עמק הירדן": {"total": 325, "breakdown": {"Count of StatisticGroup": 325}}, "מועצה אזורית עמק המעיינות": {"total": 464, "breakdown": {"Count of StatisticGroup": 464}}, "מועצה אזורית עמק חפר": {"total": 1163, "breakdown": {"Count of StatisticGroup": 1163}}, "מועצה אזורית עמק יזרעאל": {"total": 909, "breakdown": {"Count of StatisticGroup": 909}}, "מועצה אזורית עמק לוד": {"total": 212, "breakdown": {"Count of StatisticGroup": 212}}, "מועצה אזורית ערבות הירדן": {"total": 281, "breakdown": {"Count of StatisticGroup": 281}}, "מועצה אזורית רמת נגב": {"total": 378, "breakdown": {"Count of StatisticGroup": 378}}, "מועצה אזורית שדות דן": {"total": 166, "breakdown": {"Count of StatisticGroup": 166}}, "מועצה אזורית שדות נגב": {"total": 336, "breakdown": {"Count of StatisticGroup": 336}}, "מועצה אזורית שומרון": {"total": 754, "breakdown": {"Count of StatisticGroup": 754}}, "מועצה אזורית שער הנגב": {"total": 475, "breakdown": {"Count of StatisticGroup": 475}}, "מועצה אזורית שפיר": {"total": 425, "breakdown": {"Count of StatisticGroup": 425}}, "מועצה אזורית תמר": {"total": 346, "breakdown": {"Count of StatisticGroup": 346}}, "מזכרת בתיה": {"total": 214, "breakdown": {"Count of StatisticGroup": 214}}, "מזרעה": {"total": 89, "breakdown": {"Count of StatisticGroup": 89}}, "מטולה": {"total": 36, "breakdown": {"Count of StatisticGroup": 36}}, "מיתר": {"total": 365, "breakdown": {"Count of StatisticGroup": 365}}, "מסעדה": {"total": 113, "breakdown": {"Count of StatisticGroup": 113}}, "מעיליא": {"total": 64, "breakdown": {"Count of StatisticGroup": 64}}, "מעלה אדומים": {"total": 869, "breakdown": {"Count of StatisticGroup": 869}}, "מעלה אפרים": {"total": 28, "breakdown": {"Count of StatisticGroup": 28}}, "מעלה עירון": {"total": 214, "breakdown": {"Count of StatisticGroup": 214}}, "מעלות-תרשיחא": {"total": 468, "breakdown": {"Count of StatisticGroup": 468}}, "מצפה רמון": {"total": 299, "breakdown": {"Count of StatisticGroup": 299}}, "מקום": {"total": 861, "breakdown": {"Count of StatisticGroup": 861}}, "מקום אחר": {"total": 23839, "breakdown": {"Count of StatisticGroup": 23839}}, "משהד": {"total": 152, "breakdown": {"Count of StatisticGroup": 152}}, "נאות חובב": {"total": 41, "breakdown": {"Count of StatisticGroup": 41}}, "נהריה": {"total": 1806, "breakdown": {"Count of StatisticGroup": 1806}}, "נוף הגליל": {"total": 1759, "breakdown": {"Count of StatisticGroup": 1759}}, "נחף": {"total": 333, "breakdown": {"Count of StatisticGroup": 333}}, "נמל תעופה בן גוריון": {"total": 839, "breakdown": {"Count of StatisticGroup": 839}}, "נס ציונה": {"total": 966, "breakdown": {"Count of StatisticGroup": 966}}, "נצרת": {"total": 2625, "breakdown": {"Count of StatisticGroup": 2625}}, "נשר": {"total": 785, "breakdown": {"Count of StatisticGroup": 785}}, "נתיבות": {"total": 1285, "breakdown": {"Count of StatisticGroup": 1285}}, "נתניה": {"total": 7512, "breakdown": {"Count of StatisticGroup": 7512}}, "סאג'ור": {"total": 100, "breakdown": {"Count of StatisticGroup": 100}}, "סביון": {"total": 60, "breakdown": {"Count of StatisticGroup": 60}}, "סח'נין": {"total": 1076, "breakdown": {"Count of StatisticGroup": 1076}}, "ע'ג'ר": {"total": 26, "breakdown": {"Count of StatisticGroup": 26}}, "עומר": {"total": 259, "breakdown": {"Count of StatisticGroup": 259}}, "עיילבון": {"total": 143, "breakdown": {"Count of StatisticGroup": 143}}, "עילוט": {"total": 176, "breakdown": {"Count of StatisticGroup": 176}}, "עין מאהל": {"total": 226, "breakdown": {"Count of StatisticGroup": 226}}, "עין קנייא": {"total": 40, "breakdown": {"Count of StatisticGroup": 40}}, "עכו": {"total": 2719, "breakdown": {"Count of StatisticGroup": 2719}}, "עמנואל": {"total": 100, "breakdown": {"Count of StatisticGroup": 100}}, "עספיא": {"total": 280, "breakdown": {"Count of StatisticGroup": 280}}, "עפולה": {"total": 2314, "breakdown": {"Count of StatisticGroup": 2314}}, "עראבה": {"total": 731, "breakdown": {"Count of StatisticGroup": 731}}, "ערד": {"total": 1189, "breakdown": {"Count of StatisticGroup": 1189}}, "ערערה": {"total": 669, "breakdown": {"Count of StatisticGroup": 669}}, "ערערה-בנגב": {"total": 910, "breakdown": {"Count of StatisticGroup": 910}}, "פוריידיס": {"total": 456, "breakdown": {"Count of StatisticGroup": 456}}, "פסוטה": {"total": 39, "breakdown": {"Count of StatisticGroup": 39}}, "פקיעין": {"total": 52, "breakdown": {"Count of StatisticGroup": 52}}, "פרדס חנה-כרכור": {"total": 1165, "breakdown": {"Count of StatisticGroup": 1165}}, "פרדסיה": {"total": 85, "breakdown": {"Count of StatisticGroup": 85}}, "פתח תקווה": {"total": 7219, "breakdown": {"Count of StatisticGroup": 7219}}, "צור הדסה": {"total": 112, "breakdown": {"Count of StatisticGroup": 112}}, "צפת": {"total": 905, "breakdown": {"Count of StatisticGroup": 905}}, "קדומים": {"total": 51, "breakdown": {"Count of StatisticGroup": 51}}, "קדימה צורן": {"total": 440, "breakdown": {"Count of StatisticGroup": 440}}, "קלנסווה": {"total": 721, "breakdown": {"Count of StatisticGroup": 721}}, "קצרין": {"total": 284, "breakdown": {"Count of StatisticGroup": 284}}, "קרית אונו": {"total": 786, "breakdown": {"Count of StatisticGroup": 786}}, "קרית ארבע": {"total": 212, "breakdown": {"Count of StatisticGroup": 212}}, "קרית אתא": {"total": 2039, "breakdown": {"Count of StatisticGroup": 2039}}, "קרית ביאליק": {"total": 1417, "breakdown": {"Count of StatisticGroup": 1417}}, "קרית גת": {"total": 2739, "breakdown": {"Count of StatisticGroup": 2739}}, "קרית טבעון": {"total": 352, "breakdown": {"Count of StatisticGroup": 352}}, "קרית ים": {"total": 1437, "breakdown": {"Count of StatisticGroup": 1437}}, "קרית יערים": {"total": 52, "breakdown": {"Count of StatisticGroup": 52}}, "קרית מוצקין": {"total": 1245, "breakdown": {"Count of StatisticGroup": 1245}}, "קרית מלאכי": {"total": 1151, "breakdown": {"Count of StatisticGroup": 1151}}, "קרית עקרון": {"total": 385, "breakdown": {"Count of StatisticGroup": 385}}, "קרית שמונה": {"total": 846, "breakdown": {"Count of StatisticGroup": 846}}, "קרני שומרון": {"total": 113, "breakdown": {"Count of StatisticGroup": 113}}, "ראמה": {"total": 173, "breakdown": {"Count of StatisticGroup": 173}}, "ראש העין": {"total": 1607, "breakdown": {"Count of StatisticGroup": 1607}}, "ראש פינה": {"total": 166, "breakdown": {"Count of StatisticGroup": 166}}, "ראשון לציון": {"total": 7324, "breakdown": {"Count of StatisticGroup": 7324}}, "רהט": {"total": 2625, "breakdown": {"Count of StatisticGroup": 2625}}, "רחובות": {"total": 3815, "breakdown": {"Count of StatisticGroup": 3815}}, "ריינה": {"total": 372, "breakdown": {"Count of StatisticGroup": 372}}, "רכסים": {"total": 187, "breakdown": {"Count of StatisticGroup": 187}}, "רמלה": {"total": 4251, "breakdown": {"Count of StatisticGroup": 4251}}, "רמת גן": {"total": 4951, "breakdown": {"Count of StatisticGroup": 4951}}, "רמת השרון": {"total": 1056, "breakdown": {"Count of StatisticGroup": 1056}}, "רמת ישי": {"total": 164, "breakdown": {"Count of StatisticGroup": 164}}, "רעננה": {"total": 1735, "breakdown": {"Count of StatisticGroup": 1735}}, "שבלי": {"total": 378, "breakdown": {"Count of StatisticGroup": 378}}, "שגב-שלום": {"total": 578, "breakdown": {"Count of StatisticGroup": 578}}, "שדרות": {"total": 1381, "breakdown": {"Count of StatisticGroup": 1381}}, "שוהם": {"total": 349, "breakdown": {"Count of StatisticGroup": 349}}, "שלומי": {"total": 139, "breakdown": {"Count of StatisticGroup": 139}}, "שעב": {"total": 242, "breakdown": {"Count of StatisticGroup": 242}}, "שער שומרון": {"total": 87, "breakdown": {"Count of StatisticGroup": 87}}, "שפרעם": {"total": 1614, "breakdown": {"Count of StatisticGroup": 1614}}, "תל אביב יפו": {"total": 28246, "breakdown": {"Count of StatisticGroup": 28246}}, "תל מונד": {"total": 221, "breakdown": {"Count of StatisticGroup": 221}}, "תל שבע": {"total": 874, "breakdown": {"Count of StatisticGroup": 874}}, "Grand Total": {"total": 339743, "breakdown": {"Count of StatisticGroup": 339743}}}, "2025": {"כל הארץ": {"total": 200, "breakdown": {"עבירות בטחון": 21, "עבירות כלכליות": 3, "עבירות כלפי המוסר": 4, "עבירות כלפי הרכוש": 67, "עבירות מין": 4, "עבירות מרמה": 11, "עבירות נגד גוף": 38, "עבירות סדר ציבורי": 51, "עבירות רשוי": 1}}, "אבו גוש": {"total": 336, "breakdown": {"עבירות בטחון": 9, "עבירות כלכליות": 4, "עבירות כלפי המוסר": 4, "עבירות כלפי הרכוש": 60, "עבירות מין": 4, "עבירות מרמה": 13, "עבירות נגד אדם": 2, "עבירות נגד גוף": 90, "עבירות סדר ציבורי": 147, "עבירות רשוי": 1, "עבירות תנועה": 2}}, "אבו סנאן": {"total": 368, "breakdown": {"סעיפי הגדרה": 1, "עבירות בטחון": 24, "עבירות כלכליות": 10, "עבירות כלפי המוסר": 34, "עבירות כלפי הרכוש": 64, "עבירות מין": 3, "עבירות מרמה": 20, "עבירות נגד אדם": 4, "עבירות נגד גוף": 64, "עבירות סדר ציבורי": 143, "שגיאת הזנה": 1}}, "אבן יהודה": {"total": 209, "breakdown": {"עבירות כלכליות": 2, "עבירות כלפי המוסר": 4, "עבירות כלפי הרכוש": 77, "עבירות מין": 6, "עבירות מרמה": 11, "עבירות נגד גוף": 29, "עבירות סדר ציבורי": 75, "עבירות רשוי": 3, "עבירות תנועה": 2}}, "אום אל-פחם": {"total": 1506, "breakdown": {"סעיפי הגדרה": 1, "עבירות בטחון": 146, "עבירות כלכליות": 30, "עבירות כלפי המוסר": 49, "עבירות כלפי הרכוש": 366, "עבירות מין": 5, "עבירות מרמה": 48, "עבירות נגד אדם": 10, "עבירות נגד גוף": 231, "עבירות סדר ציבורי": 598, "עבירות רשוי": 4, "עבירות תנועה": 15, "שאר עבירות": 2, "שגיאת הזנה": 1}}, "אופקים": {"total": 1192, "breakdown": {"עבירות בטחון": 9, "עבירות כלכליות": 15, "עבירות כלפי המוסר": 68, "עבירות כלפי הרכוש": 333, "עבירות מין": 25, "עבירות מנהליות": 1, "עבירות מרמה": 56, "עבירות נגד אדם": 3, "עבירות נגד גוף": 175, "עבירות סדר ציבורי": 493, "עבירות רשוי": 3, "עבירות תנועה": 8, "שגיאת הזנה": 3}}, "אור יהודה": {"total": 1263, "breakdown": {"סעיפי הגדרה": 1, "עבירות בטחון": 6, "עבירות כלכליות": 6, "עבירות כלפי המוסר": 63, "עבירות כלפי הרכוש": 370, "עבירות מין": 33, "עבירות מרמה": 68, "עבירות נגד אדם": 6, "עבירות נגד גוף": 253, "עבירות סדר ציבורי": 427, "עבירות רשוי": 12, "עבירות תנועה": 16, "שגיאת הזנה": 2}}, "אור עקיבא": {"total": 655, "breakdown": {"עבירות בטחון": 9, "עבירות כלכליות": 15, "עבירות כלפי המוסר": 38, "עבירות כלפי הרכוש": 214, "עבירות מין": 12, "עבירות מרמה": 34, "עבירות נגד גוף": 148, "עבירות סדר ציבורי": 178, "עבירות רשוי": 2, "עבירות תנועה": 4, "שגיאת הזנה": 1}}, "אורנית": {"total": 90, "breakdown": {"עבירות בטחון": 3, "עבירות כלפי המוסר": 4, "עבירות כלפי הרכוש": 17, "עבירות מין": 2, "עבירות מרמה": 10, "עבירות נגד גוף": 22, "עבירות סדר ציבורי": 32}}, "אזור": {"total": 330, "breakdown": {"עבירות בטחון": 1, "עבירות כלכליות": 6, "עבירות כלפי המוסר": 8, "עבירות כלפי הרכוש": 118, "עבירות מין": 6, "עבירות מרמה": 16, "עבירות נגד גוף": 58, "עבירות סדר ציבורי": 102, "עבירות רשוי": 5, "עבירות תנועה": 9, "שגיאת הזנה": 1}}, "אילת": {"total": 4536, "breakdown": {"סעיפי הגדרה": 3, "עבירות בטחון": 31, "עבירות כלכליות": 72, "עבירות כלפי המוסר": 337, "עבירות כלפי הרכוש": 1124, "עבירות מין": 88, "עבירות מנהליות": 1, "עבירות מרמה": 162, "עבירות נגד אדם": 10, "עבירות נגד גוף": 899, "עבירות סדר ציבורי": 1709, "עבירות רשוי": 32, "עבירות תנועה": 53, "שגיאת הזנה": 15}}, "אכסאל": {"total": 703, "breakdown": {"סעיפי הגדרה": 1, "עבירות בטחון": 35, "עבירות כלכליות": 7, "עבירות כלפי המוסר": 29, "עבירות כלפי הרכוש": 132, "עבירות מין": 3, "עבירות מנהליות": 1, "עבירות מרמה": 27, "עבירות נגד אדם": 4, "עבירות נגד גוף": 115, "עבירות סדר ציבורי": 338, "עבירות תנועה": 10, "שאר עבירות": 1}}, "אליכין": {"total": 61, "breakdown": {"עבירות כלכליות": 1, "עבירות כלפי המוסר": 5, "עבירות כלפי הרכוש": 19, "עבירות מין": 1, "עבירות מרמה": 5, "עבירות נגד גוף": 7, "עבירות סדר ציבורי": 23}}, "אלעד": {"total": 549, "breakdown": {"סעיפי הגדרה": 1, "עבירות בטחון": 2, "עבירות כלכליות": 8, "עבירות כלפי המוסר": 11, "עבירות כלפי הרכוש": 131, "עבירות מין": 26, "עבירות מרמה": 22, "עבירות נגד אדם": 1, "עבירות נגד גוף": 109, "עבירות סדר ציבורי": 231, "עבירות רשוי": 1, "עבירות תנועה": 3, "שגיאת הזנה": 3}}, "אלפי מנשה": {"total": 96, "breakdown": {"עבירות בטחון": 4, "עבירות כלפי המוסר": 3, "עבירות כלפי הרכוש": 17, "עבירות מין": 5, "עבירות מרמה": 13, "עבירות נגד גוף": 18, "עבירות סדר ציבורי": 31, "עבירות תנועה": 3, "שגיאת הזנה": 2}}, "אלקנה": {"total": 23, "breakdown": {"עבירות בטחון": 1, "עבירות כלפי הרכוש": 5, "עבירות מין": 1, "עבירות מרמה": 2, "עבירות נגד גוף": 4, "עבירות סדר ציבורי": 10}}, "אעבלין": {"total": 438, "breakdown": {"עבירות בטחון": 37, "עבירות כלכליות": 3, "עבירות כלפי המוסר": 8, "עבירות כלפי הרכוש": 95, "עבירות מין": 2, "עבירות מרמה": 15, "עבירות נגד אדם": 3, "עבירות נגד גוף": 60, "עבירות סדר ציבורי": 206, "עבירות רשוי": 3, "עבירות תנועה": 5, "שגיאת הזנה": 1}}, "אפרת": {"total": 66, "breakdown": {"עבירות בטחון": 7, "עבירות כלפי המוסר": 2, "עבירות כלפי הרכוש": 14, "עבירות מין": 8, "עבירות מרמה": 6, "עבירות נגד גוף": 8, "עבירות סדר ציבורי": 20, "שגיאת הזנה": 1}}, "אריאל": {"total": 471, "breakdown": {"עבירות בטחון": 18, "עבירות כלכליות": 2, "עבירות כלפי המוסר": 30, "עבירות כלפי הרכוש": 63, "עבירות מין": 11, "עבירות מרמה": 50, "עבירות נגד גוף": 122, "עבירות סדר ציבורי": 163, "עבירות רשוי": 4, "עבירות תנועה": 2, "שגיאת הזנה": 6}}, "אשדוד": {"total": 7689, "breakdown": {"סעיפי הגדרה": 9, "עבירות בטחון": 51, "עבירות כלכליות": 115, "עבירות כלפי המוסר": 301, "עבירות כלפי הרכוש": 2249, "עבירות מין": 150, "עבירות מרמה": 477, "עבירות נגד אדם": 8, "עבירות נגד גוף": 1483, "עבירות סדר ציבורי": 2760, "עבירות רשוי": 29, "עבירות תנועה": 50, "שגיאת הזנה": 7}}, "אשקלון": {"total": 6349, "breakdown": {"סעיפי הגדרה": 7, "עבירות בטחון": 51, "עבירות כלכליות": 107, "עבירות כלפי המוסר": 311, "עבירות כלפי הרכוש": 1932, "עבירות מין": 114, "עבירות מנהליות": 1, "עבירות מרמה": 378, "עבירות נגד אדם": 16, "עבירות נגד גוף": 1189, "עבירות סדר ציבורי": 2119, "עבירות רשוי": 37, "עבירות תנועה": 47, "שגיאת הזנה": 40}}, "באקה אל-גרביה": {"total": 879, "breakdown": {"סעיפי הגדרה": 3, "עבירות בטחון": 27, "עבירות כלכליות": 5, "עבירות כלפי המוסר": 56, "עבירות כלפי הרכוש": 181, "עבירות מין": 1, "עבירות מרמה": 41, "עבירות נגד אדם": 4, "עבירות נגד גוף": 142, "עבירות סדר ציבורי": 400, "עבירות רשוי": 4, "עבירות תנועה": 15}}, "באר יעקב": {"total": 703, "breakdown": {"עבירות בטחון": 4, "עבירות כלכליות": 6, "עבירות כלפי המוסר": 49, "עבירות כלפי הרכוש": 244, "עבירות מין": 30, "עבירות מרמה": 24, "עבירות נגד גוף": 108, "עבירות סדר ציבורי": 226, "עבירות תנועה": 10, "שגיאת הזנה": 2}}, "באר שבע": {"total": 12681, "breakdown": {"סעיפי הגדרה": 3, "עבירות בטחון": 73, "עבירות כלכליות": 202, "עבירות כלפי המוסר": 364, "עבירות כלפי הרכוש": 4095, "עבירות מין": 221, "עבירות מנהליות": 18, "עבירות מרמה": 621, "עבירות נגד אדם": 22, "עבירות נגד גוף": 2330, "עבירות סדר ציבורי": 4587, "עבירות רשוי": 42, "עבירות תנועה": 92, "שגיאת הזנה": 11}}, "בועיינה נוג'יידאת": {"total": 268, "breakdown": {"עבירות בטחון": 9, "עבירות כלכליות": 1, "עבירות כלפי הרכוש": 58, "עבירות מין": 2, "עבירות מרמה": 9, "עבירות נגד אדם": 2, "עבירות נגד גוף": 48, "עבירות סדר ציבורי": 135, "עבירות תנועה": 4}}, "בוקעתא": {"total": 101, "breakdown": {"סעיפי הגדרה": 1, "עבירות בטחון": 6, "עבירות כלפי הרכוש": 14, "עבירות מרמה": 7, "עבירות נגד גוף": 24, "עבירות סדר ציבורי": 41, "עבירות רשוי": 1, "עבירות תנועה": 7}}, "ביענה": {"total": 240, "breakdown": {"עבירות בטחון": 5, "עבירות כלכליות": 14, "עבירות כלפי המוסר": 8, "עבירות כלפי הרכוש": 31, "עבירות מין": 2, "עבירות מרמה": 9, "עבירות נגד גוף": 42, "עבירות סדר ציבורי": 126, "עבירות רשוי": 2, "שגיאת הזנה": 1}}, "ביר אל מכסור": {"total": 272, "breakdown": {"סעיפי הגדרה": 1, "עבירות בטחון": 12, "עבירות כלפי המוסר": 1, "עבירות כלפי הרכוש": 66, "עבירות מין": 1, "עבירות מרמה": 9, "עבירות נגד גוף": 43, "עבירות סדר ציבורי": 137, "עבירות רשוי": 1, "עבירות תנועה": 1}}, "בית אל": {"total": 59, "breakdown": {"עבירות בטחון": 7, "עבירות כלפי הרכוש": 15, "עבירות מין": 3, "עבירות מרמה": 7, "עבירות נגד גוף": 10, "עבירות סדר ציבורי": 17}}, "בית אריה": {"total": 73, "breakdown": {"עבירות בטחון": 3, "עבירות כלפי המוסר": 5, "עבירות כלפי הרכוש": 24, "עבירות מין": 2, "עבירות מרמה": 9, "עבירות נגד גוף": 9, "עבירות סדר ציבורי": 20, "שגיאת הזנה": 1}}, "בית ג'ן": {"total": 101, "breakdown": {"עבירות בטחון": 5, "עבירות כלכליות": 2, "עבירות כלפי הרכוש": 18, "עבירות מרמה": 15, "עבירות נגד גוף": 18, "עבירות סדר ציבורי": 37, "עבירות תנועה": 6}}, "בית דגן": {"total": 146, "breakdown": {"סעיפי הגדרה": 1, "עבירות כלכליות": 2, "עבירות כלפי המוסר": 7, "עבירות כלפי הרכוש": 51, "עבירות מין": 1, "עבירות מרמה": 10, "עבירות נגד גוף": 24, "עבירות סדר ציבורי": 49, "עבירות תנועה": 1}}, "בית שאן": {"total": 907, "breakdown": {"עבירות בטחון": 17, "עבירות כלכליות": 19, "עבירות כלפי המוסר": 104, "עבירות כלפי הרכוש": 194, "עבירות מין": 20, "עבירות מרמה": 26, "עבירות נגד אדם": 1, "עבירות נגד גוף": 127, "עבירות סדר ציבורי": 394, "עבירות רשוי": 2, "עבירות תנועה": 2, "שגיאת הזנה": 1}}, "בית שמש": {"total": 2483, "breakdown": {"סעיפי הגדרה": 5, "עבירות בטחון": 22, "עבירות כלכליות": 27, "עבירות כלפי המוסר": 104, "עבירות כלפי הרכוש": 544, "עבירות מין": 123, "עבירות מרמה": 163, "עבירות נגד גוף": 470, "עבירות סדר ציבורי": 1004, "עבירות תנועה": 18, "שאר עבירות": 1, "שגיאת הזנה": 2}}, "ביתר עילית": {"total": 607, "breakdown": {"עבירות בטחון": 35, "עבירות כלכליות": 5, "עבירות כלפי המוסר": 10, "עבירות כלפי הרכוש": 138, "עבירות מין": 36, "עבירות מנהליות": 1, "עבירות מרמה": 40, "עבירות נגד גוף": 114, "עבירות סדר ציבורי": 219, "עבירות רשוי": 2, "עבירות תנועה": 7}}, "בני ברק": {"total": 3139, "breakdown": {"סעיפי הגדרה": 2, "עבירות בטחון": 28, "עבירות כלכליות": 49, "עבירות כלפי המוסר": 102, "עבירות כלפי הרכוש": 1070, "עבירות מין": 125, "עבירות מנהליות": 1, "עבירות מרמה": 157, "עבירות נגד אדם": 8, "עבירות נגד גוף": 505, "עבירות סדר ציבורי": 1052, "עבירות רשוי": 17, "עבירות תנועה": 19, "שאר עבירות": 2, "שגיאת הזנה": 2}}, "בני עי''ש": {"total": 184, "breakdown": {"עבירות כלפי המוסר": 4, "עבירות כלפי הרכוש": 43, "עבירות מין": 6, "עבירות מרמה": 6, "עבירות נגד גוף": 28, "עבירות סדר ציבורי": 97}}, "בנימינה-גבעת עדה": {"total": 379, "breakdown": {"עבירות בטחון": 3, "עבירות כלכליות": 2, "עבירות כלפי המוסר": 6, "עבירות כלפי הרכוש": 191, "עבירות מין": 11, "עבירות מרמה": 14, "עבירות נגד גוף": 33, "עבירות סדר ציבורי": 118, "עבירות תנועה": 1}}, "בסמ''ה": {"total": 256, "breakdown": {"עבירות בטחון": 55, "עבירות כלכליות": 4, "עבירות כלפי המוסר": 8, "עבירות כלפי הרכוש": 55, "עבירות מין": 1, "עבירות מרמה": 8, "עבירות נגד אדם": 2, "עבירות נגד גוף": 34, "עבירות סדר ציבורי": 81, "עבירות תנועה": 6, "שאר עבירות": 2}}, "בסמת טבעון": {"total": 283, "breakdown": {"עבירות בטחון": 20, "עבירות כלכליות": 2, "עבירות כלפי המוסר": 25, "עבירות כלפי הרכוש": 37, "עבירות מרמה": 2, "עבירות נגד אדם": 1, "עבירות נגד גוף": 44, "עבירות סדר ציבורי": 146, "עבירות רשוי": 2, "עבירות תנועה": 4}}, "בת ים": {"total": 6034, "breakdown": {"סעיפי הגדרה": 6, "עבירות בטחון": 26, "עבירות כלכליות": 160, "עבירות כלפי המוסר": 282, "עבירות כלפי הרכוש": 2274, "עבירות מין": 77, "עבירות מנהליות": 2, "עבירות מרמה": 435, "עבירות נגד אדם": 8, "עבירות נגד גוף": 964, "עבירות סדר ציבורי": 1748, "עבירות רשוי": 8, "עבירות תנועה": 41, "שגיאת הזנה": 3}}, "ג'דיידה-מכר": {"total": 749, "breakdown": {"סעיפי הגדרה": 1, "עבירות בטחון": 57, "עבירות כלכליות": 15, "עבירות כלפי המוסר": 87, "עבירות כלפי הרכוש": 150, "עבירות מין": 3, "עבירות מרמה": 17, "עבירות נגד גוף": 115, "עבירות סדר ציבורי": 295, "עבירות רשוי": 4, "עבירות תנועה": 5}}, "ג'וליס": {"total": 100, "breakdown": {"עבירות בטחון": 3, "עבירות כלפי המוסר": 2, "עבירות כלפי הרכוש": 17, "עבירות מרמה": 6, "עבירות נגד גוף": 16, "עבירות סדר ציבורי": 55, "עבירות רשוי": 1}}, "ג'יש": {"total": 59, "breakdown": {"עבירות בטחון": 5, "עבירות כלכליות": 1, "עבירות כלפי הרכוש": 16, "עבירות מין": 1, "עבירות מרמה": 1, "עבירות נגד גוף": 9, "עבירות סדר ציבורי": 26}}, "ג'לג'וליה": {"total": 328, "breakdown": {"עבירות בטחון": 37, "עבירות כלכליות": 3, "עבירות כלפי המוסר": 20, "עבירות כלפי הרכוש": 56, "עבירות מין": 5, "עבירות מרמה": 17, "עבירות נגד אדם": 2, "עבירות נגד גוף": 69, "עבירות סדר ציבורי": 117, "עבירות תנועה": 2}}, "ג'סר א זרקא": {"total": 1114, "breakdown": {"סעיפי הגדרה": 3, "עבירות בטחון": 74, "עבירות כלכליות": 2, "עבירות כלפי המוסר": 132, "עבירות כלפי הרכוש": 271, "עבירות מין": 9, "עבירות מרמה": 8, "עבירות נגד אדם": 6, "עבירות נגד גוף": 208, "עבירות סדר ציבורי": 397, "עבירות רשוי": 1, "עבירות תנועה": 3}}, "ג'ת": {"total": 152, "breakdown": {"עבירות בטחון": 10, "עבירות כלפי המוסר": 3, "עבירות כלפי הרכוש": 33, "עבירות מרמה": 2, "עבירות נגד גוף": 31, "עבירות סדר ציבורי": 71, "עבירות תנועה": 2}}, "גבעת זאב": {"total": 340, "breakdown": {"עבירות בטחון": 15, "עבירות כלכליות": 2, "עבירות כלפי המוסר": 10, "עבירות כלפי הרכוש": 80, "עבירות מין": 13, "עבירות מרמה": 13, "עבירות נגד אדם": 2, "עבירות נגד גוף": 53, "עבירות סדר ציבורי": 143, "עבירות רשוי": 1, "עבירות תנועה": 8}}, "גבעת שמואל": {"total": 578, "breakdown": {"עבירות כלכליות": 5, "עבירות כלפי המוסר": 5, "עבירות כלפי הרכוש": 248, "עבירות מין": 25, "עבירות מרמה": 35, "עבירות נגד גוף": 74, "עבירות סדר ציבורי": 177, "עבירות רשוי": 1, "עבירות תנועה": 7, "שאר עבירות": 1}}, "גבעתיים": {"total": 1339, "breakdown": {"עבירות בטחון": 6, "עבירות כלכליות": 25, "עבירות כלפי המוסר": 77, "עבירות כלפי הרכוש": 649, "עבירות מין": 19, "עבירות מרמה": 84, "עבירות נגד אדם": 1, "עבירות נגד גוף": 123, "עבירות סדר ציבורי": 340, "עבירות תנועה": 14, "שגיאת הזנה": 1}}, "גדרה": {"total": 529, "breakdown": {"עבירות בטחון": 3, "עבירות כלכליות": 6, "עבירות כלפי המוסר": 15, "עבירות כלפי הרכוש": 176, "עבירות מין": 7, "עבירות מרמה": 29, "עבירות נגד אדם": 1, "עבירות נגד גוף": 79, "עבירות סדר ציבורי": 200, "עבירות רשוי": 3, "עבירות תנועה": 10}}, "גן יבנה": {"total": 542, "breakdown": {"עבירות בטחון": 1, "עבירות כלכליות": 3, "עבירות כלפי המוסר": 13, "עבירות כלפי הרכוש": 169, "עבירות מין": 9, "עבירות מרמה": 29, "עבירות נגד גוף": 90, "עבירות סדר ציבורי": 218, "עבירות רשוי": 1, "עבירות תנועה": 7, "שגיאת הזנה": 2}}, "גני תקווה": {"total": 283, "breakdown": {"עבירות בטחון": 3, "עבירות כלכליות": 3, "עבירות כלפי המוסר": 8, "עבירות כלפי הרכוש": 98, "עבירות מין": 7, "עבירות מרמה": 25, "עבירות נגד אדם": 2, "עבירות נגד גוף": 46, "עבירות סדר ציבורי": 85, "עבירות תנועה": 6}}, "דאלית אל כרמל": {"total": 326, "breakdown": {"עבירות בטחון": 5, "עבירות כלכליות": 3, "עבירות כלפי המוסר": 18, "עבירות כלפי הרכוש": 65, "עבירות מין": 3, "עבירות מנהליות": 1, "עבירות מרמה": 17, "עבירות נגד אדם": 1, "עבירות נגד גוף": 60, "עבירות סדר ציבורי": 136, "עבירות רשוי": 5, "עבירות תנועה": 11, "שגיאת הזנה": 1}}, "דבוריה": {"total": 449, "breakdown": {"עבירות בטחון": 32, "עבירות כלכליות": 1, "עבירות כלפי המוסר": 11, "עבירות כלפי הרכוש": 79, "עבירות מין": 4, "עבירות מרמה": 10, "עבירות נגד אדם": 1, "עבירות נגד גוף": 64, "עבירות סדר ציבורי": 237, "עבירות רשוי": 2, "עבירות תנועה": 7, "שאר עבירות": 1}}, "דייר אל אסד": {"total": 396, "breakdown": {"עבירות בטחון": 18, "עבירות כלכליות": 16, "עבירות כלפי המוסר": 31, "עבירות כלפי הרכוש": 62, "עבירות מין": 5, "עבירות מרמה": 20, "עבירות נגד אדם": 3, "עבירות נגד גוף": 66, "עבירות סדר ציבורי": 173, "עבירות רשוי": 1, "עבירות תנועה": 1}}, "דייר חנא": {"total": 278, "breakdown": {"סעיפי הגדרה": 1, "עבירות בטחון": 17, "עבירות כלכליות": 3, "עבירות כלפי הרכוש": 75, "עבירות מרמה": 22, "עבירות נגד אדם": 3, "עבירות נגד גוף": 32, "עבירות סדר ציבורי": 124, "עבירות תנועה": 1}}, "דימונה": {"total": 1539, "breakdown": {"עבירות בטחון": 30, "עבירות כלכליות": 12, "עבירות כלפי המוסר": 85, "עבירות כלפי הרכוש": 457, "עבירות מין": 35, "עבירות מנהליות": 1, "עבירות מרמה": 84, "עבירות נגד אדם": 3, "עבירות נגד גוף": 298, "עבירות סדר ציבורי": 525, "עבירות רשוי": 4, "עבירות תנועה": 4, "שגיאת הזנה": 1}}, "הוד השרון": {"total": 1570, "breakdown": {"עבירות בטחון": 4, "עבירות כלכליות": 12, "עבירות כלפי המוסר": 41, "עבירות כלפי הרכוש": 730, "עבירות מין": 24, "עבירות מרמה": 73, "עבירות נגד אדם": 1, "עבירות נגד גוף": 166, "עבירות סדר ציבורי": 499, "עבירות רשוי": 4, "עבירות תנועה": 14, "שגיאת הזנה": 2}}, "הר אדר": {"total": 25, "breakdown": {"עבירות כלפי הרכוש": 3, "עבירות מין": 1, "עבירות מרמה": 5, "עבירות נגד גוף": 7, "עבירות סדר ציבורי": 9}}, "הרצליה": {"total": 2944, "breakdown": {"סעיפי הגדרה": 2, "עבירות בטחון": 16, "עבירות כלכליות": 50, "עבירות כלפי המוסר": 119, "עבירות כלפי הרכוש": 1230, "עבירות מין": 53, "עבירות מנהליות": 1, "עבירות מרמה": 133, "עבירות נגד אדם": 7, "עבירות נגד גוף": 470, "עבירות סדר ציבורי": 845, "עבירות רשוי": 1, "עבירות תנועה": 17}}, "זכרון יעקב": {"total": 446, "breakdown": {"סעיפי הגדרה": 2, "עבירות בטחון": 5, "עבירות כלכליות": 5, "עבירות כלפי המוסר": 15, "עבירות כלפי הרכוש": 153, "עבירות מין": 17, "עבירות מרמה": 19, "עבירות נגד גוף": 71, "עבירות סדר ציבורי": 155, "שגיאת הזנה": 4}}, "זמר": {"total": 129, "breakdown": {"עבירות בטחון": 5, "עבירות כלכליות": 1, "עבירות כלפי המוסר": 4, "עבירות כלפי הרכוש": 30, "עבירות מין": 1, "עבירות מרמה": 5, "עבירות נגד אדם": 1, "עבירות נגד גוף": 22, "עבירות סדר ציבורי": 58, "עבירות רשוי": 2}}, "זרזיר": {"total": 327, "breakdown": {"עבירות בטחון": 35, "עבירות כלכליות": 3, "עבירות כלפי המוסר": 16, "עבירות כלפי הרכוש": 53, "עבירות מין": 4, "עבירות מרמה": 8, "עבירות נגד אדם": 1, "עבירות נגד גוף": 70, "עבירות סדר ציבורי": 133, "עבירות תנועה": 4}}, "חדרה": {"total": 3134, "breakdown": {"סעיפי הגדרה": 4, "עבירות בטחון": 15, "עבירות כלכליות": 77, "עבירות כלפי המוסר": 128, "עבירות כלפי הרכוש": 1132, "עבירות מין": 84, "עבירות מנהליות": 2, "עבירות מרמה": 149, "עבירות נגד אדם": 4, "עבירות נגד גוף": 599, "עבירות סדר ציבורי": 889, "עבירות רשוי": 15, "עבירות תנועה": 26, "שאר עבירות": 1, "שגיאת הזנה": 9}}, "חולון": {"total": 6154, "breakdown": {"סעיפי הגדרה": 5, "עבירות בטחון": 29, "עבירות כלכליות": 140, "עבירות כלפי המוסר": 294, "עבירות כלפי הרכוש": 2309, "עבירות מין": 112, "עבירות מרמה": 317, "עבירות נגד אדם": 13, "עבירות נגד גוף": 998, "עבירות סדר ציבורי": 1836, "עבירות רשוי": 4, "עבירות תנועה": 96, "שגיאת הזנה": 1}}, "חורה": {"total": 710, "breakdown": {"סעיפי הגדרה": 2, "עבירות בטחון": 55, "עבירות כלכליות": 10, "עבירות כלפי המוסר": 1, "עבירות כלפי הרכוש": 133, "עבירות מין": 1, "עבירות מרמה": 22, "עבירות נגד אדם": 1, "עבירות נגד גוף": 141, "עבירות סדר ציבורי": 330, "עבירות רשוי": 4, "עבירות תנועה": 9, "שגיאת הזנה": 1}}, "חורפיש": {"total": 80, "breakdown": {"עבירות בטחון": 1, "עבירות כלכליות": 1, "עבירות כלפי הרכוש": 15, "עבירות מין": 1, "עבירות מרמה": 10, "עבירות נגד גוף": 23, "עבירות סדר ציבורי": 29}}, "חיפה": {"total": 9520, "breakdown": {"סעיפי הגדרה": 4, "עבירות בטחון": 54, "עבירות כלכליות": 237, "עבירות כלפי המוסר": 427, "עבירות כלפי הרכוש": 3460, "עבירות מין": 147, "עבירות מנהליות": 4, "עבירות מרמה": 701, "עבירות נגד אדם": 15, "עבירות נגד גוף": 1580, "עבירות סדר ציבורי": 2790, "עבירות רשוי": 47, "עבירות תנועה": 39, "שגיאת הזנה": 15}}, "חצור הגלילית": {"total": 240, "breakdown": {"סעיפי הגדרה": 1, "עבירות בטחון": 2, "עבירות כלכליות": 4, "עבירות כלפי המוסר": 23, "עבירות כלפי הרכוש": 53, "עבירות מין": 5, "עבירות מרמה": 6, "עבירות נגד גוף": 49, "עבירות סדר ציבורי": 93, "עבירות תנועה": 3, "שגיאת הזנה": 1}}, "חריש": {"total": 678, "breakdown": {"עבירות בטחון": 6, "עבירות כלכליות": 5, "עבירות כלפי המוסר": 23, "עבירות כלפי הרכוש": 196, "עבירות מין": 32, "עבירות מרמה": 38, "עבירות נגד גוף": 153, "עבירות סדר ציבורי": 221, "עבירות רשוי": 1, "עבירות תנועה": 2, "שגיאת הזנה": 1}}, "טבריה": {"total": 2135, "breakdown": {"סעיפי הגדרה": 2, "עבירות בטחון": 8, "עבירות כלכליות": 30, "עבירות כלפי המוסר": 62, "עבירות כלפי הרכוש": 611, "עבירות מין": 70, "עבירות מרמה": 76, "עבירות נגד אדם": 7, "עבירות נגד גוף": 455, "עבירות סדר ציבורי": 797, "עבירות רשוי": 2, "עבירות תנועה": 10, "שגיאת הזנה": 5}}, "טובא זנגריה": {"total": 479, "breakdown": {"סעיפי הגדרה": 1, "עבירות בטחון": 75, "עבירות כלכליות": 6, "עבירות כלפי המוסר": 7, "עבירות כלפי הרכוש": 70, "עבירות מין": 3, "עבירות מרמה": 8, "עבירות נגד אדם": 3, "עבירות נגד גוף": 66, "עבירות סדר ציבורי": 228, "עבירות רשוי": 2, "עבירות תנועה": 10}}, "טורעאן": {"total": 390, "breakdown": {"עבירות בטחון": 30, "עבירות כלכליות": 2, "עבירות כלפי המוסר": 5, "עבירות כלפי הרכוש": 80, "עבירות מין": 7, "עבירות מרמה": 17, "עבירות נגד אדם": 1, "עבירות נגד גוף": 50, "עבירות סדר ציבורי": 196, "עבירות תנועה": 2}}, "טייבה": {"total": 1573, "breakdown": {"עבירות בטחון": 97, "עבירות כלכליות": 11, "עבירות כלפי המוסר": 91, "עבירות כלפי הרכוש": 291, "עבירות מין": 11, "עבירות מרמה": 86, "עבירות נגד אדם": 9, "עבירות נגד גוף": 249, "עבירות סדר ציבורי": 696, "עבירות רשוי": 11, "עבירות תנועה": 19, "שאר עבירות": 1, "שגיאת הזנה": 1}}, "טירה": {"total": 1227, "breakdown": {"סעיפי הגדרה": 1, "עבירות בטחון": 41, "עבירות כלכליות": 5, "עבירות כלפי המוסר": 30, "עבירות כלפי הרכוש": 190, "עבירות מין": 5, "עבירות מרמה": 54, "עבירות נגד אדם": 11, "עבירות נגד גוף": 223, "עבירות סדר ציבורי": 642, "עבירות רשוי": 19, "עבירות תנועה": 4, "שאר עבירות": 1, "שגיאת הזנה": 1}}, "טירת כרמל": {"total": 779, "breakdown": {"עבירות בטחון": 6, "עבירות כלכליות": 11, "עבירות כלפי המוסר": 127, "עבירות כלפי הרכוש": 174, "עבירות מין": 19, "עבירות מנהליות": 1, "עבירות מרמה": 28, "עבירות נגד אדם": 3, "עבירות נגד גוף": 151, "עבירות סדר ציבורי": 248, "עבירות רשוי": 2, "עבירות תנועה": 5, "שגיאת הזנה": 4}}, "טמרה": {"total": 1743, "breakdown": {"סעיפי הגדרה": 4, "עבירות בטחון": 125, "עבירות כלכליות": 12, "עבירות כלפי המוסר": 31, "עבירות כלפי הרכוש": 407, "עבירות מין": 7, "עבירות מרמה": 62, "עבירות נגד אדם": 18, "עבירות נגד גוף": 239, "עבירות סדר ציבורי": 799, "עבירות רשוי": 5, "עבירות תנועה": 32, "שאר עבירות": 1, "שגיאת הזנה": 1}}, "יאנוח-ג'ת": {"total": 76, "breakdown": {"עבירות בטחון": 1, "עבירות כלפי הרכוש": 25, "עבירות מרמה": 7, "עבירות נגד גוף": 18, "עבירות סדר ציבורי": 24, "עבירות רשוי": 1}}, "יבנאל": {"total": 232, "breakdown": {"עבירות כלכליות": 1, "עבירות כלפי המוסר": 1, "עבירות כלפי הרכוש": 55, "עבירות מין": 9, "עבירות מרמה": 1, "עבירות נגד גוף": 52, "עבירות סדר ציבורי": 112, "שגיאת הזנה": 1}}, "יבנה": {"total": 1363, "breakdown": {"סעיפי הגדרה": 2, "עבירות בטחון": 6, "עבירות כלכליות": 41, "עבירות כלפי המוסר": 68, "עבירות כלפי הרכוש": 443, "עבירות מין": 35, "עבירות מרמה": 85, "עבירות נגד אדם": 2, "עבירות נגד גוף": 203, "עבירות סדר ציבורי": 440, "עבירות רשוי": 3, "עבירות תנועה": 32, "שגיאת הזנה": 3}}, "יהוד-מונוסון": {"total": 773, "breakdown": {"עבירות בטחון": 1, "עבירות כלכליות": 6, "עבירות כלפי המוסר": 39, "עבירות כלפי הרכוש": 263, "עבירות מין": 9, "עבירות מרמה": 36, "עבירות נגד גוף": 113, "עבירות סדר ציבורי": 291, "עבירות רשוי": 1, "עבירות תנועה": 13, "שגיאת הזנה": 1}}, "יסוד המעלה": {"total": 50, "breakdown": {"עבירות בטחון": 2, "עבירות כלפי המוסר": 29, "עבירות כלפי הרכוש": 6, "עבירות מין": 2, "עבירות נגד גוף": 4, "עבירות סדר ציבורי": 7}}, "יפיע": {"total": 405, "breakdown": {"עבירות בטחון": 41, "עבירות כלכליות": 9, "עבירות כלפי המוסר": 20, "עבירות כלפי הרכוש": 85, "עבירות מרמה": 15, "עבירות נגד אדם": 5, "עבירות נגד גוף": 64, "עבירות סדר ציבורי": 163, "עבירות רשוי": 1, "עבירות תנועה": 2}}, "יקנעם עילית": {"total": 341, "breakdown": {"עבירות בטחון": 3, "עבירות כלכליות": 1, "עבירות כלפי המוסר": 12, "עבירות כלפי הרכוש": 115, "עבירות מין": 6, "עבירות מרמה": 35, "עבירות נגד גוף": 45, "עבירות סדר ציבורי": 121, "עבירות רשוי": 1, "עבירות תנועה": 1, "שגיאת הזנה": 1}}, "ירוחם": {"total": 412, "breakdown": {"עבירות בטחון": 2, "עבירות כלכליות": 2, "עבירות כלפי המוסר": 13, "עבירות כלפי הרכוש": 202, "עבירות מין": 6, "עבירות מרמה": 8, "עבירות נגד אדם": 1, "עבירות נגד גוף": 46, "עבירות סדר ציבורי": 122, "עבירות רשוי": 5, "עבירות תנועה": 3, "שגיאת הזנה": 2}}, "ירושלים": {"total": 22852, "breakdown": {"סעיפי הגדרה": 53, "עבירות בטחון": 837, "עבירות כלכליות": 341, "עבירות כלפי המוסר": 922, "עבירות כלפי הרכוש": 6221, "עבירות מין": 622, "עבירות מנהליות": 23, "עבירות מרמה": 1259, "עבירות נגד אדם": 60, "עבירות נגד גוף": 4116, "עבירות סדר ציבורי": 8082, "עבירות רשוי": 53, "עבירות תנועה": 210, "שאר עבירות": 7, "שגיאת הזנה": 46}}, "ירכא": {"total": 440, "breakdown": {"סעיפי הגדרה": 1, "עבירות בטחון": 26, "עבירות כלכליות": 9, "עבירות כלפי המוסר": 40, "עבירות כלפי הרכוש": 103, "עבירות מין": 5, "עבירות מרמה": 26, "עבירות נגד אדם": 3, "עבירות נגד גוף": 72, "עבירות סדר ציבורי": 144, "עבירות רשוי": 3, "עבירות תנועה": 7, "שגיאת הזנה": 1}}, "ישוב פלסטיני": {"total": 7576, "breakdown": {"סעיפי הגדרה": 27, "עבירות בטחון": 4908, "עבירות כלכליות": 136, "עבירות כלפי המוסר": 59, "עבירות כלפי הרכוש": 935, "עבירות מין": 17, "עבירות מנהליות": 3, "עבירות מרמה": 108, "עבירות נגד אדם": 60, "עבירות נגד גוף": 300, "עבירות סדר ציבורי": 870, "עבירות רשוי": 34, "עבירות תנועה": 61, "שאר עבירות": 58}}, "כאבול": {"total": 484, "breakdown": {"עבירות בטחון": 22, "עבירות כלכליות": 5, "עבירות כלפי המוסר": 4, "עבירות כלפי הרכוש": 138, "עבירות מין": 5, "עבירות מנהליות": 1, "עבירות מרמה": 22, "עבירות נגד אדם": 3, "עבירות נגד גוף": 70, "עבירות סדר ציבורי": 209, "עבירות רשוי": 3, "עבירות תנועה": 2}}, "כאוכב אבו אל היגא": {"total": 56, "breakdown": {"עבירות בטחון": 2, "עבירות כלפי המוסר": 1, "עבירות כלפי הרכוש": 15, "עבירות מרמה": 3, "עבירות נגד גוף": 9, "עבירות סדר ציבורי": 26}}, "כוכב יאיר": {"total": 73, "breakdown": {"עבירות כלכליות": 1, "עבירות כלפי המוסר": 1, "עבירות כלפי הרכוש": 28, "עבירות מין": 4, "עבירות מרמה": 4, "עבירות נגד גוף": 5, "עבירות סדר ציבורי": 30}}, "כסיפה": {"total": 498, "breakdown": {"עבירות בטחון": 18, "עבירות כלכליות": 3, "עבירות כלפי המוסר": 3, "עבירות כלפי הרכוש": 73, "עבירות מין": 1, "עבירות מרמה": 14, "עבירות נגד אדם": 3, "עבירות נגד גוף": 84, "עבירות סדר ציבורי": 283, "עבירות רשוי": 10, "עבירות תנועה": 2, "שאר עבירות": 1, "שגיאת הזנה": 3}}, "כסרא-סמיע": {"total": 65, "breakdown": {"עבירות בטחון": 3, "עבירות כלכליות": 2, "עבירות כלפי הרכוש": 8, "עבירות מין": 2, "עבירות מרמה": 3, "עבירות נגד גוף": 16, "עבירות סדר ציבורי": 31}}, "כעביה טבאש חג'אג'רה": {"total": 185, "breakdown": {"עבירות בטחון": 20, "עבירות כלפי המוסר": 4, "עבירות כלפי הרכוש": 41, "עבירות מין": 5, "עבירות מרמה": 10, "עבירות נגד אדם": 1, "עבירות נגד גוף": 25, "עבירות סדר ציבורי": 76, "עבירות תנועה": 3}}, "כפר ברא": {"total": 131, "breakdown": {"עבירות בטחון": 16, "עבירות כלכליות": 2, "עבירות כלפי הרכוש": 22, "עבירות מרמה": 5, "עבירות נגד אדם": 1, "עבירות נגד גוף": 25, "עבירות סדר ציבורי": 59, "עבירות רשוי": 1}}, "כפר ורדים": {"total": 44, "breakdown": {"עבירות כלפי המוסר": 3, "עבירות כלפי הרכוש": 8, "עבירות מין": 2, "עבירות מרמה": 3, "עבירות נגד גוף": 12, "עבירות סדר ציבורי": 16}}, "כפר יאסיף": {"total": 562, "breakdown": {"סעיפי הגדרה": 5, "עבירות בטחון": 19, "עבירות כלכליות": 5, "עבירות כלפי המוסר": 89, "עבירות כלפי הרכוש": 86, "עבירות מין": 5, "עבירות מרמה": 16, "עבירות נגד אדם": 1, "עבירות נגד גוף": 86, "עבירות סדר ציבורי": 240, "עבירות רשוי": 3, "עבירות תנועה": 6, "שגיאת הזנה": 1}}, "כפר יונה": {"total": 650, "breakdown": {"סעיפי הגדרה": 2, "עבירות בטחון": 3, "עבירות כלכליות": 3, "עבירות כלפי המוסר": 25, "עבירות כלפי הרכוש": 221, "עבירות מין": 12, "עבירות מרמה": 25, "עבירות נגד גוף": 111, "עבירות סדר ציבורי": 234, "עבירות רשוי": 3, "עבירות תנועה": 9, "שגיאת הזנה": 2}}, "כפר כמא": {"total": 11, "breakdown": {"עבירות בטחון": 1, "עבירות כלפי הרכוש": 3, "עבירות מרמה": 1, "עבירות נגד גוף": 2, "עבירות סדר ציבורי": 4}}, "כפר כנא": {"total": 690, "breakdown": {"סעיפי הגדרה": 3, "עבירות בטחון": 52, "עבירות כלכליות": 9, "עבירות כלפי המוסר": 38, "עבירות כלפי הרכוש": 89, "עבירות מין": 2, "עבירות מרמה": 32, "עבירות נגד אדם": 5, "עבירות נגד גוף": 76, "עבירות סדר ציבורי": 374, "עבירות רשוי": 2, "עבירות תנועה": 8}}, "כפר מנדא": {"total": 577, "breakdown": {"סעיפי הגדרה": 1, "עבירות בטחון": 34, "עבירות כלכליות": 15, "עבירות כלפי המוסר": 14, "עבירות כלפי הרכוש": 119, "עבירות מין": 7, "עבירות מרמה": 26, "עבירות נגד אדם": 6, "עבירות נגד גוף": 102, "עבירות סדר ציבורי": 247, "עבירות תנועה": 6}}, "כפר סבא": {"total": 2513, "breakdown": {"עבירות בטחון": 5, "עבירות כלכליות": 45, "עבירות כלפי המוסר": 40, "עבירות כלפי הרכוש": 1205, "עבירות מין": 60, "עבירות מרמה": 156, "עבירות נגד אדם": 1, "עבירות נגד גוף": 301, "עבירות סדר ציבורי": 641, "עבירות רשוי": 2, "עבירות תנועה": 42, "שאר עבירות": 1, "שגיאת הזנה": 14}}, "כפר קאסם": {"total": 730, "breakdown": {"עבירות בטחון": 40, "עבירות כלכליות": 15, "עבירות כלפי המוסר": 22, "עבירות כלפי הרכוש": 128, "עבירות מין": 4, "עבירות מרמה": 64, "עבירות נגד אדם": 4, "עבירות נגד גוף": 119, "עבירות סדר ציבורי": 325, "עבירות רשוי": 7, "עבירות תנועה": 2}}, "כפר קרע": {"total": 741, "breakdown": {"עבירות בטחון": 43, "עבירות כלכליות": 6, "עבירות כלפי המוסר": 32, "עבירות כלפי הרכוש": 188, "עבירות מין": 4, "עבירות מרמה": 15, "עבירות נגד אדם": 10, "עבירות נגד גוף": 114, "עבירות סדר ציבורי": 306, "עבירות רשוי": 5, "עבירות תנועה": 17, "שגיאת הזנה": 1}}, "כפר שמריהו": {"total": 33, "breakdown": {"עבירות כלפי המוסר": 2, "עבירות כלפי הרכוש": 5, "עבירות מין": 2, "עבירות מרמה": 2, "עבירות נגד גוף": 5, "עבירות סדר ציבורי": 17}}, "כפר תבור": {"total": 82, "breakdown": {"עבירות בטחון": 1, "עבירות כלפי המוסר": 2, "עבירות כלפי הרכוש": 23, "עבירות מין": 2, "עבירות מרמה": 4, "עבירות נגד גוף": 19, "עבירות סדר ציבורי": 28, "עבירות תנועה": 3}}, "כרמיאל": {"total": 1189, "breakdown": {"עבירות בטחון": 9, "עבירות כלכליות": 35, "עבירות כלפי המוסר": 40, "עבירות כלפי הרכוש": 320, "עבירות מין": 33, "עבירות מרמה": 106, "עבירות נגד אדם": 1, "עבירות נגד גוף": 227, "עבירות סדר ציבורי": 405, "עבירות רשוי": 3, "עבירות תנועה": 9, "שגיאת הזנה": 1}}, "להבים": {"total": 85, "breakdown": {"עבירות בטחון": 2, "עבירות כלכליות": 4, "עבירות כלפי הרכוש": 43, "עבירות מרמה": 8, "עבירות נגד גוף": 5, "עבירות סדר ציבורי": 23}}, "לוד": {"total": 3548, "breakdown": {"סעיפי הגדרה": 3, "עבירות בטחון": 128, "עבירות כלכליות": 64, "עבירות כלפי המוסר": 150, "עבירות כלפי הרכוש": 1140, "עבירות מין": 118, "עבירות מרמה": 188, "עבירות נגד אדם": 19, "עבירות נגד גוף": 484, "עבירות סדר ציבורי": 1194, "עבירות רשוי": 26, "עבירות תנועה": 22, "שאר עבירות": 4, "שגיאת הזנה": 8}}, "לקיה": {"total": 503, "breakdown": {"עבירות בטחון": 59, "עבירות כלכליות": 5, "עבירות כלפי המוסר": 4, "עבירות כלפי הרכוש": 89, "עבירות מין": 3, "עבירות מרמה": 17, "עבירות נגד אדם": 6, "עבירות נגד גוף": 50, "עבירות סדר ציבורי": 261, "עבירות רשוי": 2, "עבירות תנועה": 6, "שגיאת הזנה": 1}}, "מבשרת ציון": {"total": 645, "breakdown": {"עבירות בטחון": 5, "עבירות כלכליות": 7, "עבירות כלפי המוסר": 36, "עבירות כלפי הרכוש": 190, "עבירות מין": 10, "עבירות מרמה": 50, "עבירות נגד אדם": 2, "עבירות נגד גוף": 103, "עבירות סדר ציבורי": 227, "עבירות תנועה": 15}}, "מג'ד אל כרום": {"total": 517, "breakdown": {"סעיפי הגדרה": 1, "עבירות בטחון": 26, "עבירות כלכליות": 16, "עבירות כלפי המוסר": 26, "עבירות כלפי הרכוש": 98, "עבירות מין": 3, "עבירות מרמה": 31, "עבירות נגד אדם": 1, "עבירות נגד גוף": 89, "עבירות סדר ציבורי": 222, "עבירות רשוי": 1, "עבירות תנועה": 2, "שגיאת הזנה": 1}}, "מג'דל שמס": {"total": 200, "breakdown": {"סעיפי הגדרה": 2, "עבירות בטחון": 7, "עבירות כלפי המוסר": 7, "עבירות כלפי הרכוש": 35, "עבירות מין": 2, "עבירות מרמה": 13, "עבירות נגד גוף": 33, "עבירות סדר ציבורי": 98, "עבירות תנועה": 3}}, "מגאר": {"total": 344, "breakdown": {"עבירות בטחון": 9, "עבירות כלכליות": 11, "עבירות כלפי המוסר": 11, "עבירות כלפי הרכוש": 70, "עבירות מין": 6, "עבירות מרמה": 23, "עבירות נגד גוף": 59, "עבירות סדר ציבורי": 153, "עבירות רשוי": 1, "שגיאת הזנה": 1}}, "מגדל": {"total": 64, "breakdown": {"עבירות כלפי המוסר": 4, "עבירות כלפי הרכוש": 15, "עבירות מין": 1, "עבירות מרמה": 3, "עבירות נגד גוף": 8, "עבירות סדר ציבורי": 33}}, "מגדל העמק": {"total": 739, "breakdown": {"עבירות בטחון": 12, "עבירות כלכליות": 3, "עבירות כלפי המוסר": 27, "עבירות כלפי הרכוש": 193, "עבירות מין": 14, "עבירות מרמה": 56, "עבירות נגד אדם": 1, "עבירות נגד גוף": 143, "עבירות סדר ציבורי": 278, "עבירות רשוי": 2, "עבירות תנועה": 6, "שגיאת הזנה": 4}}, "מגדל תפן": {"total": 14, "breakdown": {"עבירות כלכליות": 1, "עבירות כלפי המוסר": 1, "עבירות כלפי הרכוש": 3, "עבירות מרמה": 2, "עבירות סדר ציבורי": 7}}, "מודיעין-מכבים-רעות": {"total": 1468, "breakdown": {"סעיפי הגדרה": 6, "עבירות בטחון": 23, "עבירות כלכליות": 25, "עבירות כלפי המוסר": 63, "עבירות כלפי הרכוש": 693, "עבירות מין": 29, "עבירות מרמה": 92, "עבירות נגד אדם": 2, "עבירות נגד גוף": 145, "עבירות סדר ציבורי": 357, "עבירות רשוי": 2, "עבירות תנועה": 25, "שגיאת הזנה": 6}}, "מודיעין עילית": {"total": 497, "breakdown": {"עבירות בטחון": 34, "עבירות כלכליות": 1, "עבירות כלפי המוסר": 10, "עבירות כלפי הרכוש": 165, "עבירות מין": 40, "עבירות מרמה": 22, "עבירות נגד אדם": 1, "עבירות נגד גוף": 93, "עבירות סדר ציבורי": 122, "עבירות רשוי": 6, "עבירות תנועה": 3}}, "מועצה אזורית אל-בטוף": {"total": 248, "breakdown": {"סעיפי הגדרה": 1, "עבירות בטחון": 17, "עבירות כלכליות": 2, "עבירות כלפי הרכוש": 51, "עבירות מרמה": 4, "עבירות נגד גוף": 50, "עבירות סדר ציבורי": 121, "עבירות רשוי": 2}}, "מועצה אזורית אל קסום": {"total": 595, "breakdown": {"עבירות בטחון": 40, "עבירות כלכליות": 1, "עבירות כלפי המוסר": 1, "עבירות כלפי הרכוש": 139, "עבירות מין": 4, "עבירות מרמה": 14, "עבירות נגד אדם": 3, "עבירות נגד גוף": 134, "עבירות סדר ציבורי": 252, "עבירות רשוי": 2, "עבירות תנועה": 5}}, "מועצה אזורית אלונה": {"total": 48, "breakdown": {"עבירות כלכליות": 1, "עבירות כלפי המוסר": 2, "עבירות כלפי הרכוש": 30, "עבירות מרמה": 2, "עבירות נגד גוף": 2, "עבירות סדר ציבורי": 10, "עבירות רשוי": 1}}, "מועצה אזורית אשכול": {"total": 324, "breakdown": {"סעיפי הגדרה": 1, "עבירות בטחון": 34, "עבירות כלכליות": 8, "עבירות כלפי המוסר": 50, "עבירות כלפי הרכוש": 90, "עבירות מין": 4, "עבירות מרמה": 21, "עבירות נגד אדם": 2, "עבירות נגד גוף": 28, "עבירות סדר ציבורי": 81, "עבירות רשוי": 3, "עבירות תנועה": 1, "שגיאת הזנה": 1}}, "מועצה אזורית באר טוביה": {"total": 630, "breakdown": {"עבירות בטחון": 2, "עבירות כלכליות": 5, "עבירות כלפי המוסר": 20, "עבירות כלפי הרכוש": 218, "עבירות מין": 16, "עבירות מרמה": 25, "עבירות נגד אדם": 3, "עבירות נגד גוף": 108, "עבירות סדר ציבורי": 219, "עבירות רשוי": 10, "עבירות תנועה": 2, "שאר עבירות": 1, "שגיאת הזנה": 1}}, "מועצה אזורית בוסתן-אל-מרג'": {"total": 217, "breakdown": {"עבירות בטחון": 12, "עבירות כלכליות": 6, "עבירות כלפי המוסר": 6, "עבירות כלפי הרכוש": 39, "עבירות מין": 2, "עבירות מרמה": 20, "עבירות נגד אדם": 1, "עבירות נגד גוף": 38, "עבירות סדר ציבורי": 91, "עבירות רשוי": 2}}, "מועצה אזורית בני שמעון": {"total": 370, "breakdown": {"עבירות בטחון": 7, "עבירות כלכליות": 1, "עבירות כלפי המוסר": 10, "עבירות כלפי הרכוש": 161, "עבירות מין": 6, "עבירות מרמה": 12, "עבירות נגד אדם": 3, "עבירות נגד גוף": 36, "עבירות סדר ציבורי": 125, "עבירות רשוי": 1, "עבירות תנועה": 5, "שאר עבירות": 2, "שגיאת הזנה": 1}}, "מועצה אזורית ברנר": {"total": 166, "breakdown": {"עבירות בטחון": 2, "עבירות כלכליות": 2, "עבירות כלפי המוסר": 28, "עבירות כלפי הרכוש": 52, "עבירות מין": 2, "עבירות מרמה": 9, "עבירות נגד גוף": 12, "עבירות סדר ציבורי": 49, "עבירות רשוי": 3, "עבירות תנועה": 6, "שגיאת הזנה": 1}}, "מועצה אזורית גדרות": {"total": 48, "breakdown": {"עבירות כלפי המוסר": 1, "עבירות כלפי הרכוש": 24, "עבירות מין": 2, "עבירות מרמה": 3, "עבירות נגד גוף": 5, "עבירות סדר ציבורי": 13}}, "מועצה אזורית גולן": {"total": 239, "breakdown": {"עבירות בטחון": 2, "עבירות כלפי המוסר": 8, "עבירות כלפי הרכוש": 63, "עבירות מין": 17, "עבירות מנהליות": 1, "עבירות מרמה": 13, "עבירות נגד אדם": 1, "עבירות נגד גוף": 45, "עבירות סדר ציבורי": 86, "עבירות תנועה": 3}}, "מועצה אזורית גוש עציון": {"total": 300, "breakdown": {"סעיפי הגדרה": 2, "עבירות בטחון": 37, "עבירות כלכליות": 3, "עבירות כלפי המוסר": 1, "עבירות כלפי הרכוש": 69, "עבירות מין": 3, "עבירות מנהליות": 1, "עבירות מרמה": 24, "עבירות נגד גוף": 41, "עבירות סדר ציבורי": 113, "עבירות רשוי": 1, "עבירות תנועה": 3, "שגיאת הזנה": 2}}, "מועצה אזורית גזר": {"total": 453, "breakdown": {"סעיפי הגדרה": 2, "עבירות בטחון": 11, "עבירות כלכליות": 6, "עבירות כלפי המוסר": 8, "עבירות כלפי הרכוש": 183, "עבירות מין": 12, "עבירות מרמה": 21, "עבירות נגד אדם": 2, "עבירות נגד גוף": 68, "עבירות סדר ציבורי": 139, "עבירות רשוי": 1}}, "מועצה אזורית גן רווה": {"total": 136, "breakdown": {"עבירות כלכליות": 3, "עבירות כלפי המוסר": 3, "עבירות כלפי הרכוש": 57, "עבירות מין": 5, "עבירות מרמה": 7, "עבירות נגד גוף": 20, "עבירות סדר ציבורי": 39, "עבירות רשוי": 1, "עבירות תנועה": 1}}, "מועצה אזורית דרום השרון": {"total": 555, "breakdown": {"עבירות בטחון": 4, "עבירות כלכליות": 5, "עבירות כלפי המוסר": 23, "עבירות כלפי הרכוש": 207, "עבירות מין": 9, "עבירות מרמה": 44, "עבירות נגד אדם": 2, "עבירות נגד גוף": 91, "עבירות סדר ציבורי": 162, "עבירות רשוי": 3, "עבירות תנועה": 3, "שגיאת הזנה": 2}}, "מועצה אזורית הגלבוע": {"total": 655, "breakdown": {"סעיפי הגדרה": 1, "עבירות בטחון": 49, "עבירות כלכליות": 15, "עבירות כלפי המוסר": 31, "עבירות כלפי הרכוש": 149, "עבירות מין": 15, "עבירות מנהליות": 2, "עבירות מרמה": 22, "עבירות נגד אדם": 2, "עבירות נגד גוף": 100, "עבירות סדר ציבורי": 264, "עבירות רשוי": 4, "שאר עבירות": 1}}, "מועצה אזורית הגליל העליון": {"total": 305, "breakdown": {"עבירות בטחון": 4, "עבירות כלכליות": 7, "עבירות כלפי המוסר": 47, "עבירות כלפי הרכוש": 95, "עבירות מין": 5, "עבירות מנהליות": 2, "עבירות מרמה": 20, "עבירות נגד גוף": 32, "עבירות סדר ציבורי": 85, "עבירות רשוי": 1, "עבירות תנועה": 6, "שאר עבירות": 1}}, "מועצה אזורית הגליל התחתון": {"total": 163, "breakdown": {"עבירות כלכליות": 1, "עבירות כלפי המוסר": 1, "עבירות כלפי הרכוש": 64, "עבירות מין": 6, "עבירות מרמה": 6, "עבירות נגד גוף": 29, "עבירות סדר ציבורי": 54, "עבירות תנועה": 2}}, "מועצה אזורית הערבה התיכונה": {"total": 97, "breakdown": {"עבירות כלפי המוסר": 2, "עבירות כלפי הרכוש": 61, "עבירות מין": 1, "עבירות מרמה": 1, "עבירות נגד גוף": 8, "עבירות סדר ציבורי": 23, "עבירות רשוי": 1}}, "מועצה אזורית הר חברון": {"total": 287, "breakdown": {"עבירות בטחון": 33, "עבירות כלכליות": 1, "עבירות כלפי המוסר": 2, "עבירות כלפי הרכוש": 56, "עבירות מין": 7, "עבירות מנהליות": 1, "עבירות מרמה": 9, "עבירות נגד אדם": 4, "עבירות נגד גוף": 58, "עבירות סדר ציבורי": 111, "עבירות תנועה": 3, "שאר עבירות": 1, "שגיאת הזנה": 1}}, "מועצה אזורית זבולון": {"total": 286, "breakdown": {"עבירות בטחון": 26, "עבירות כלכליות": 1, "עבירות כלפי המוסר": 11, "עבירות כלפי הרכוש": 94, "עבירות מין": 6, "עבירות מרמה": 9, "עבירות נגד אדם": 2, "עבירות נגד גוף": 33, "עבירות סדר ציבורי": 101, "עבירות רשוי": 2, "עבירות תנועה": 1}}, "מועצה אזורית חבל אילות": {"total": 91, "breakdown": {"עבירות כלכליות": 1, "עבירות כלפי המוסר": 3, "עבירות כלפי הרכוש": 47, "עבירות מין": 2, "עבירות מרמה": 3, "עבירות נגד גוף": 10, "עבירות סדר ציבורי": 21, "עבירות רשוי": 2, "עבירות תנועה": 2}}, "מועצה אזורית חבל יבנה": {"total": 83, "breakdown": {"עבירות בטחון": 1, "עבירות כלכליות": 1, "עבירות כלפי המוסר": 1, "עבירות כלפי הרכוש": 32, "עבירות מין": 2, "עבירות מרמה": 7, "עבירות נגד גוף": 14, "עבירות סדר ציבורי": 24, "עבירות תנועה": 1}}, "מועצה אזורית חבל מודיעין": {"total": 506, "breakdown": {"סעיפי הגדרה": 1, "עבירות בטחון": 5, "עבירות כלכליות": 5, "עבירות כלפי המוסר": 17, "עבירות כלפי הרכוש": 225, "עבירות מין": 11, "עבירות מנהליות": 1, "עבירות מרמה": 15, "עבירות נגד אדם": 3, "עבירות נגד גוף": 65, "עבירות סדר ציבורי": 144, "עבירות רשוי": 10, "עבירות תנועה": 2, "שגיאת הזנה": 2}}, "מועצה אזורית חוף אשקלון": {"total": 486, "breakdown": {"סעיפי הגדרה": 1, "עבירות בטחון": 9, "עבירות כלכליות": 7, "עבירות כלפי המוסר": 16, "עבירות כלפי הרכוש": 173, "עבירות מין": 10, "עבירות מרמה": 27, "עבירות נגד גוף": 74, "עבירות סדר ציבורי": 162, "עבירות רשוי": 3, "עבירות תנועה": 2, "שאר עבירות": 1, "שגיאת הזנה": 1}}, "מועצה אזורית חוף הכרמל": {"total": 813, "breakdown": {"סעיפי הגדרה": 1, "עבירות בטחון": 8, "עבירות כלכליות": 14, "עבירות כלפי המוסר": 25, "עבירות כלפי הרכוש": 391, "עבירות מין": 13, "עבירות מרמה": 35, "עבירות נגד אדם": 3, "עבירות נגד גוף": 86, "עבירות סדר ציבורי": 221, "עבירות רשוי": 7, "עבירות תנועה": 8, "שגיאת הזנה": 1}}, "מועצה אזורית חוף השרון": {"total": 360, "breakdown": {"עבירות כלכליות": 5, "עבירות כלפי המוסר": 8, "עבירות כלפי הרכוש": 152, "עבירות מין": 15, "עבירות מנהליות": 1, "עבירות מרמה": 19, "עבירות נגד גוף": 42, "עבירות סדר ציבורי": 107, "עבירות רשוי": 8, "עבירות תנועה": 1, "שגיאת הזנה": 2}}, "מועצה אזורית יואב": {"total": 160, "breakdown": {"עבירות כלכליות": 1, "עבירות כלפי הרכוש": 95, "עבירות מין": 2, "עבירות מרמה": 6, "עבירות נגד גוף": 10, "עבירות סדר ציבורי": 43, "עבירות רשוי": 1, "עבירות תנועה": 2}}, "מועצה אזורית לב השרון": {"total": 479, "breakdown": {"עבירות בטחון": 1, "עבירות כלכליות": 6, "עבירות כלפי המוסר": 15, "עבירות כלפי הרכוש": 131, "עבירות מין": 12, "עבירות מרמה": 26, "עבירות נגד גוף": 61, "עבירות סדר ציבורי": 222, "עבירות רשוי": 3, "עבירות תנועה": 1, "שגיאת הזנה": 1}}, "מועצה אזורית לכיש": {"total": 333, "breakdown": {"עבירות בטחון": 10, "עבירות כלכליות": 6, "עבירות כלפי המוסר": 4, "עבירות כלפי הרכוש": 162, "עבירות מין": 8, "עבירות מנהליות": 1, "עבירות מרמה": 14, "עבירות נגד גוף": 30, "עבירות סדר ציבורי": 95, "עבירות רשוי": 1, "שאר עבירות": 1, "שגיאת הזנה": 1}}, "מועצה אזורית מבואות החרמון": {"total": 168, "breakdown": {"סעיפי הגדרה": 1, "עבירות בטחון": 1, "עבירות כלפי המוסר": 38, "עבירות כלפי הרכוש": 42, "עבירות מין": 1, "עבירות מנהליות": 1, "עבירות מרמה": 5, "עבירות נגד גוף": 21, "עבירות סדר ציבורי": 55, "עבירות רשוי": 1, "עבירות תנועה": 1, "שגיאת הזנה": 1}}, "מועצה אזורית מגידו": {"total": 227, "breakdown": {"עבירות בטחון": 3, "עבירות כלכליות": 2, "עבירות כלפי המוסר": 22, "עבירות כלפי הרכוש": 68, "עבירות מין": 7, "עבירות מרמה": 11, "עבירות נגד גוף": 26, "עבירות סדר ציבורי": 82, "עבירות רשוי": 2, "עבירות תנועה": 4}}, "מועצה אזורית מגילות ים המלח": {"total": 40, "breakdown": {"עבירות בטחון": 4, "עבירות כלפי המוסר": 1, "עבירות כלפי הרכוש": 14, "עבירות מין": 1, "עבירות מרמה": 1, "עבירות נגד גוף": 3, "עבירות סדר ציבורי": 16}}, "מועצה אזורית מטה אשר": {"total": 895, "breakdown": {"עבירות בטחון": 26, "עבירות כלכליות": 7, "עבירות כלפי המוסר": 43, "עבירות כלפי הרכוש": 235, "עבירות מין": 27, "עבירות מרמה": 25, "עבירות נגד אדם": 4, "עבירות נגד גוף": 107, "עבירות סדר ציבורי": 401, "עבירות רשוי": 5, "עבירות תנועה": 11, "שגיאת הזנה": 4}}, "מועצה אזורית מטה בנימין": {"total": 867, "breakdown": {"סעיפי הגדרה": 5, "עבירות בטחון": 54, "עבירות כלכליות": 4, "עבירות כלפי המוסר": 71, "עבירות כלפי הרכוש": 207, "עבירות מין": 28, "עבירות מרמה": 62, "עבירות נגד אדם": 3, "עבירות נגד גוף": 139, "עבירות סדר ציבורי": 281, "עבירות רשוי": 2, "עבירות תנועה": 4, "שאר עבירות": 1, "שגיאת הזנה": 6}}, "מועצה אזורית מטה יהודה": {"total": 960, "breakdown": {"סעיפי הגדרה": 2, "עבירות בטחון": 15, "עבירות כלכליות": 10, "עבירות כלפי המוסר": 23, "עבירות כלפי הרכוש": 315, "עבירות מין": 31, "עבירות מנהליות": 1, "עבירות מרמה": 61, "עבירות נגד אדם": 3, "עבירות נגד גוף": 135, "עבירות סדר ציבורי": 348, "עבירות רשוי": 6, "עבירות תנועה": 8, "שאר עבירות": 1, "שגיאת הזנה": 1}}, "מועצה אזורית מנשה": {"total": 347, "breakdown": {"עבירות בטחון": 6, "עבירות כלכליות": 2, "עבירות כלפי המוסר": 15, "עבירות כלפי הרכוש": 123, "עבירות מין": 14, "עבירות מרמה": 17, "עבירות נגד אדם": 2, "עבירות נגד גוף": 64, "עבירות סדר ציבורי": 97, "עבירות תנועה": 5, "שגיאת הזנה": 2}}, "מועצה אזורית מעלה יוסף": {"total": 148, "breakdown": {"עבירות בטחון": 1, "עבירות כלפי המוסר": 11, "עבירות כלפי הרכוש": 38, "עבירות מין": 5, "עבירות מרמה": 4, "עבירות נגד גוף": 31, "עבירות סדר ציבורי": 58}}, "מועצה אזורית מרום הגליל": {"total": 394, "breakdown": {"עבירות בטחון": 6, "עבירות כלכליות": 2, "עבירות כלפי המוסר": 36, "עבירות כלפי הרכוש": 98, "עבירות מין": 15, "עבירות מנהליות": 1, "עבירות מרמה": 11, "עבירות נגד גוף": 67, "עבירות סדר ציבורי": 154, "עבירות רשוי": 4}}, "מועצה אזורית מרחבים": {"total": 436, "breakdown": {"עבירות בטחון": 2, "עבירות כלכליות": 2, "עבירות כלפי המוסר": 15, "עבירות כלפי הרכוש": 204, "עבירות מין": 5, "עבירות מרמה": 17, "עבירות נגד אדם": 1, "עבירות נגד גוף": 38, "עבירות סדר ציבורי": 147, "עבירות רשוי": 2, "עבירות תנועה": 3}}, "מועצה אזורית משגב": {"total": 416, "breakdown": {"עבירות בטחון": 12, "עבירות כלכליות": 2, "עבירות כלפי המוסר": 9, "עבירות כלפי הרכוש": 157, "עבירות מין": 4, "עבירות מרמה": 24, "עבירות נגד גוף": 59, "עבירות סדר ציבורי": 143, "עבירות רשוי": 2, "עבירות תנועה": 2, "שגיאת הזנה": 2}}, "מועצה אזורית נווה מדבר": {"total": 457, "breakdown": {"עבירות בטחון": 18, "עבירות כלכליות": 1, "עבירות כלפי המוסר": 19, "עבירות כלפי הרכוש": 65, "עבירות מנהליות": 2, "עבירות מרמה": 1, "עבירות נגד אדם": 1, "עבירות נגד גוף": 38, "עבירות סדר ציבורי": 307, "עבירות רשוי": 4, "עבירות תנועה": 1}}, "מועצה אזורית נחל שורק": {"total": 109, "breakdown": {"עבירות בטחון": 2, "עבירות כלכליות": 2, "עבירות כלפי המוסר": 2, "עבירות כלפי הרכוש": 41, "עבירות מין": 2, "עבירות מרמה": 2, "עבירות נגד אדם": 1, "עבירות נגד גוף": 21, "עבירות סדר ציבורי": 34, "עבירות רשוי": 2}}, "מועצה אזורית עמק הירדן": {"total": 245, "breakdown": {"עבירות בטחון": 1, "עבירות כלכליות": 1, "עבירות כלפי המוסר": 6, "עבירות כלפי הרכוש": 90, "עבירות מין": 2, "עבירות מנהליות": 1, "עבירות מרמה": 9, "עבירות נגד אדם": 4, "עבירות נגד גוף": 47, "עבירות סדר ציבורי": 79, "עבירות רשוי": 3, "עבירות תנועה": 2}}, "מועצה אזורית עמק המעיינות": {"total": 314, "breakdown": {"סעיפי הגדרה": 1, "עבירות בטחון": 3, "עבירות כלכליות": 1, "עבירות כלפי המוסר": 11, "עבירות כלפי הרכוש": 72, "עבירות מין": 9, "עבירות מנהליות": 1, "עבירות מרמה": 5, "עבירות נגד אדם": 2, "עבירות נגד גוף": 44, "עבירות סדר ציבורי": 161, "עבירות רשוי": 1, "שאר עבירות": 2, "שגיאת הזנה": 1}}, "מועצה אזורית עמק חפר": {"total": 795, "breakdown": {"עבירות בטחון": 1, "עבירות כלכליות": 7, "עבירות כלפי המוסר": 5, "עבירות כלפי הרכוש": 375, "עבירות מין": 6, "עבירות מנהליות": 6, "עבירות מרמה": 45, "עבירות נגד אדם": 3, "עבירות נגד גוף": 87, "עבירות סדר ציבורי": 234, "עבירות רשוי": 9, "עבירות תנועה": 8, "שגיאת הזנה": 9}}, "מועצה אזורית עמק יזרעאל": {"total": 670, "breakdown": {"סעיפי הגדרה": 6, "עבירות בטחון": 17, "עבירות כלכליות": 2, "עבירות כלפי המוסר": 13, "עבירות כלפי הרכוש": 283, "עבירות מין": 17, "עבירות מרמה": 23, "עבירות נגד גוף": 77, "עבירות סדר ציבורי": 225, "עבירות תנועה": 5, "שגיאת הזנה": 2}}, "מועצה אזורית עמק לוד": {"total": 181, "breakdown": {"עבירות בטחון": 1, "עבירות כלכליות": 2, "עבירות כלפי הרכוש": 58, "עבירות מין": 3, "עבירות מרמה": 11, "עבירות נגד גוף": 33, "עבירות סדר ציבורי": 68, "עבירות רשוי": 4, "שגיאת הזנה": 1}}, "מועצה אזורית ערבות הירדן": {"total": 173, "breakdown": {"סעיפי הגדרה": 1, "עבירות בטחון": 83, "עבירות כלפי המוסר": 2, "עבירות כלפי הרכוש": 30, "עבירות מין": 2, "עבירות מרמה": 6, "עבירות נגד גוף": 22, "עבירות סדר ציבורי": 24, "עבירות רשוי": 1, "שגיאת הזנה": 2}}, "מועצה אזורית רמת נגב": {"total": 182, "breakdown": {"עבירות בטחון": 5, "עבירות כלכליות": 4, "עבירות כלפי המוסר": 5, "עבירות כלפי הרכוש": 94, "עבירות מין": 4, "עבירות מרמה": 6, "עבירות נגד גוף": 11, "עבירות סדר ציבורי": 52, "שגיאת הזנה": 1}}, "מועצה אזורית שדות דן": {"total": 93, "breakdown": {"עבירות כלכליות": 3, "עבירות כלפי המוסר": 1, "עבירות כלפי הרכוש": 32, "עבירות מין": 2, "עבירות מרמה": 8, "עבירות נגד גוף": 15, "עבירות סדר ציבורי": 30, "עבירות רשוי": 1, "שגיאת הזנה": 1}}, "מועצה אזורית שדות נגב": {"total": 276, "breakdown": {"סעיפי הגדרה": 1, "עבירות בטחון": 3, "עבירות כלכליות": 1, "עבירות כלפי המוסר": 21, "עבירות כלפי הרכוש": 91, "עבירות מין": 3, "עבירות מרמה": 13, "עבירות נגד גוף": 30, "עבירות סדר ציבורי": 97, "עבירות תנועה": 16}}, "מועצה אזורית שומרון": {"total": 393, "breakdown": {"עבירות בטחון": 43, "עבירות כלכליות": 4, "עבירות כלפי המוסר": 24, "עבירות כלפי הרכוש": 109, "עבירות מין": 17, "עבירות מרמה": 21, "עבירות נגד אדם": 4, "עבירות נגד גוף": 55, "עבירות סדר ציבורי": 105, "עבירות תנועה": 9, "שגיאת הזנה": 2}}, "מועצה אזורית שער הנגב": {"total": 159, "breakdown": {"עבירות בטחון": 6, "עבירות כלכליות": 1, "עבירות כלפי המוסר": 13, "עבירות כלפי הרכוש": 50, "עבירות מין": 4, "עבירות מנהליות": 1, "עבירות מרמה": 6, "עבירות נגד גוף": 21, "עבירות סדר ציבורי": 53, "עבירות רשוי": 2, "עבירות תנועה": 1, "שגיאת הזנה": 1}}, "מועצה אזורית שפיר": {"total": 322, "breakdown": {"סעיפי הגדרה": 2, "עבירות בטחון": 1, "עבירות כלכליות": 3, "עבירות כלפי המוסר": 17, "עבירות כלפי הרכוש": 127, "עבירות מין": 4, "עבירות מרמה": 14, "עבירות נגד גוף": 39, "עבירות סדר ציבורי": 106, "עבירות רשוי": 2, "עבירות תנועה": 6, "שאר עבירות": 1}}, "מועצה אזורית תמר": {"total": 267, "breakdown": {"עבירות בטחון": 6, "עבירות כלכליות": 5, "עבירות כלפי המוסר": 6, "עבירות כלפי הרכוש": 110, "עבירות מין": 8, "עבירות מרמה": 9, "עבירות נגד אדם": 2, "עבירות נגד גוף": 41, "עבירות סדר ציבורי": 77, "עבירות תנועה": 3}}, "מזכרת בתיה": {"total": 255, "breakdown": {"סעיפי הגדרה": 1, "עבירות בטחון": 2, "עבירות כלכליות": 3, "עבירות כלפי המוסר": 7, "עבירות כלפי הרכוש": 104, "עבירות מין": 7, "עבירות מרמה": 16, "עבירות נגד גוף": 32, "עבירות סדר ציבורי": 74, "עבירות רשוי": 2, "עבירות תנועה": 6, "שגיאת הזנה": 1}}, "מזרעה": {"total": 93, "breakdown": {"עבירות בטחון": 3, "עבירות כלכליות": 3, "עבירות כלפי המוסר": 7, "עבירות כלפי הרכוש": 15, "עבירות מרמה": 3, "עבירות נגד גוף": 20, "עבירות סדר ציבורי": 42}}, "מטולה": {"total": 11, "breakdown": {"עבירות כלפי הרכוש": 4, "עבירות מרמה": 1, "עבירות סדר ציבורי": 6}}, "מיתר": {"total": 273, "breakdown": {"עבירות בטחון": 18, "עבירות כלכליות": 4, "עבירות כלפי המוסר": 9, "עבירות כלפי הרכוש": 62, "עבירות מין": 5, "עבירות מרמה": 25, "עבירות נגד אדם": 1, "עבירות נגד גוף": 21, "עבירות סדר ציבורי": 119, "עבירות תנועה": 9}}, "מסעדה": {"total": 95, "breakdown": {"עבירות בטחון": 1, "עבירות כלכליות": 2, "עבירות כלפי המוסר": 2, "עבירות כלפי הרכוש": 24, "עבירות מין": 2, "עבירות מרמה": 4, "עבירות נגד גוף": 15, "עבירות סדר ציבורי": 41, "עבירות תנועה": 4}}, "מעיליא": {"total": 41, "breakdown": {"עבירות כלכליות": 1, "עבירות כלפי המוסר": 4, "עבירות כלפי הרכוש": 8, "עבירות מין": 1, "עבירות מרמה": 1, "עבירות נגד גוף": 7, "עבירות סדר ציבורי": 19}}, "מעלה אדומים": {"total": 826, "breakdown": {"סעיפי הגדרה": 1, "עבירות בטחון": 35, "עבירות כלכליות": 4, "עבירות כלפי המוסר": 45, "עבירות כלפי הרכוש": 190, "עבירות מין": 25, "עבירות מרמה": 72, "עבירות נגד אדם": 7, "עבירות נגד גוף": 166, "עבירות סדר ציבורי": 272, "עבירות רשוי": 2, "עבירות תנועה": 4, "שאר עבירות": 1, "שגיאת הזנה": 2}}, "מעלה אפרים": {"total": 45, "breakdown": {"עבירות בטחון": 4, "עבירות כלפי המוסר": 1, "עבירות כלפי הרכוש": 19, "עבירות מרמה": 5, "עבירות נגד גוף": 4, "עבירות סדר ציבורי": 12}}, "מעלה עירון": {"total": 246, "breakdown": {"סעיפי הגדרה": 1, "עבירות בטחון": 25, "עבירות כלכליות": 4, "עבירות כלפי המוסר": 6, "עבירות כלפי הרכוש": 51, "עבירות מין": 3, "עבירות מרמה": 8, "עבירות נגד אדם": 3, "עבירות נגד גוף": 44, "עבירות סדר ציבורי": 99, "עבירות תנועה": 1, "שאר עבירות": 1}}, "מעלות-תרשיחא": {"total": 447, "breakdown": {"עבירות בטחון": 9, "עבירות כלכליות": 7, "עבירות כלפי המוסר": 45, "עבירות כלפי הרכוש": 119, "עבירות מין": 2, "עבירות מרמה": 39, "עבירות נגד אדם": 2, "עבירות נגד גוף": 78, "עבירות סדר ציבורי": 144, "עבירות תנועה": 1, "שגיאת הזנה": 1}}, "מצפה רמון": {"total": 211, "breakdown": {"עבירות בטחון": 2, "עבירות כלכליות": 2, "עבירות כלפי המוסר": 3, "עבירות כלפי הרכוש": 74, "עבירות מין": 2, "עבירות מנהליות": 1, "עבירות מרמה": 7, "עבירות נגד גוף": 68, "עבירות סדר ציבורי": 51, "עבירות רשוי": 1}}, "מקום": {"total": 417, "breakdown": {"סעיפי הגדרה": 1, "עבירות בטחון": 46, "עבירות כלכליות": 2, "עבירות כלפי המוסר": 25, "עבירות כלפי הרכוש": 74, "עבירות מין": 2, "עבירות מרמה": 14, "עבירות נגד אדם": 2, "עבירות נגד גוף": 81, "עבירות סדר ציבורי": 169, "עבירות תנועה": 1}}, "מקום אחר": {"total": 14136, "breakdown": {"סעיפי הגדרה": 31, "עבירות בטחון": 2043, "עבירות כלכליות": 159, "עבירות כלפי המוסר": 801, "עבירות כלפי הרכוש": 3806, "עבירות מין": 166, "עבירות מנהליות": 39, "עבירות מרמה": 422, "עבירות נגד אדם": 146, "עבירות נגד גוף": 1668, "עבירות סדר ציבורי": 4248, "עבירות רשוי": 160, "עבירות תנועה": 392, "שאר עבירות": 46, "שגיאת הזנה": 9}}, "משהד": {"total": 132, "breakdown": {"סעיפי הגדרה": 3, "עבירות בטחון": 6, "עבירות כלכליות": 1, "עבירות כלפי המוסר": 5, "עבירות כלפי הרכוש": 15, "עבירות מרמה": 15, "עבירות נגד אדם": 1, "עבירות נגד גוף": 26, "עבירות סדר ציבורי": 57, "עבירות רשוי": 2, "עבירות תנועה": 1}}, "נאות חובב": {"total": 48, "breakdown": {"עבירות בטחון": 2, "עבירות כלפי המוסר": 3, "עבירות כלפי הרכוש": 25, "עבירות מרמה": 1, "עבירות נגד אדם": 3, "עבירות נגד גוף": 4, "עבירות סדר ציבורי": 8, "עבירות תנועה": 2}}, "נהריה": {"total": 1747, "breakdown": {"סעיפי הגדרה": 1, "עבירות בטחון": 18, "עבירות כלכליות": 18, "עבירות כלפי המוסר": 163, "עבירות כלפי הרכוש": 467, "עבירות מין": 30, "עבירות מרמה": 100, "עבירות נגד אדם": 4, "עבירות נגד גוף": 357, "עבירות סדר ציבורי": 570, "עבירות רשוי": 9, "עבירות תנועה": 3, "שגיאת הזנה": 7}}, "נוף הגליל": {"total": 1907, "breakdown": {"סעיפי הגדרה": 1, "עבירות בטחון": 16, "עבירות כלכליות": 50, "עבירות כלפי המוסר": 101, "עבירות כלפי הרכוש": 470, "עבירות מין": 44, "עבירות מנהליות": 1, "עבירות מרמה": 90, "עבירות נגד אדם": 2, "עבירות נגד גוף": 349, "עבירות סדר ציבורי": 765, "עבירות רשוי": 7, "עבירות תנועה": 10, "שגיאת הזנה": 1}}, "נחף": {"total": 360, "breakdown": {"סעיפי הגדרה": 1, "עבירות בטחון": 17, "עבירות כלכליות": 10, "עבירות כלפי המוסר": 5, "עבירות כלפי הרכוש": 51, "עבירות מין": 4, "עבירות מרמה": 8, "עבירות נגד אדם": 2, "עבירות נגד גוף": 74, "עבירות סדר ציבורי": 186, "עבירות תנועה": 2}}, "נמל תעופה בן גוריון": {"total": 775, "breakdown": {"סעיפי הגדרה": 2, "עבירות בטחון": 13, "עבירות כלכליות": 7, "עבירות כלפי המוסר": 98, "עבירות כלפי הרכוש": 242, "עבירות מין": 9, "עבירות מנהליות": 1, "עבירות מרמה": 23, "עבירות נגד גוף": 42, "עבירות סדר ציבורי": 327, "עבירות רשוי": 5, "עבירות תנועה": 6}}, "נס ציונה": {"total": 898, "breakdown": {"סעיפי הגדרה": 1, "עבירות בטחון": 3, "עבירות כלכליות": 17, "עבירות כלפי המוסר": 17, "עבירות כלפי הרכוש": 366, "עבירות מין": 34, "עבירות מרמה": 59, "עבירות נגד גוף": 121, "עבירות סדר ציבורי": 269, "עבירות רשוי": 1, "עבירות תנועה": 10}}, "נצרת": {"total": 2884, "breakdown": {"עבירות בטחון": 170, "עבירות כלכליות": 50, "עבירות כלפי המוסר": 136, "עבירות כלפי הרכוש": 617, "עבירות מין": 13, "עבירות מרמה": 128, "עבירות נגד אדם": 15, "עבירות נגד גוף": 447, "עבירות סדר ציבורי": 1278, "עבירות רשוי": 7, "עבירות תנועה": 23}}, "נשר": {"total": 583, "breakdown": {"עבירות בטחון": 6, "עבירות כלכליות": 21, "עבירות כלפי המוסר": 27, "עבירות כלפי הרכוש": 193, "עבירות מין": 12, "עבירות מרמה": 64, "עבירות נגד אדם": 1, "עבירות נגד גוף": 104, "עבירות סדר ציבורי": 149, "עבירות רשוי": 3, "עבירות תנועה": 2, "שגיאת הזנה": 1}}, "נתיבות": {"total": 1407, "breakdown": {"סעיפי הגדרה": 1, "עבירות בטחון": 9, "עבירות כלכליות": 13, "עבירות כלפי המוסר": 61, "עבירות כלפי הרכוש": 387, "עבירות מין": 41, "עבירות מנהליות": 1, "עבירות מרמה": 92, "עבירות נגד אדם": 7, "עבירות נגד גוף": 256, "עבירות סדר ציבורי": 516, "עבירות רשוי": 3, "עבירות תנועה": 12, "שגיאת הזנה": 8}}, "נתניה": {"total": 6596, "breakdown": {"סעיפי הגדרה": 15, "עבירות בטחון": 35, "עבירות כלכליות": 144, "עבירות כלפי המוסר": 191, "עבירות כלפי הרכוש": 2754, "עבירות מין": 98, "עבירות מנהליות": 1, "עבירות מרמה": 354, "עבירות נגד אדם": 9, "עבירות נגד גוף": 1136, "עבירות סדר ציבורי": 1783, "עבירות רשוי": 18, "עבירות תנועה": 39, "שאר עבירות": 1, "שגיאת הזנה": 18}}, "סאג'ור": {"total": 115, "breakdown": {"עבירות בטחון": 4, "עבירות כלכליות": 1, "עבירות כלפי המוסר": 11, "עבירות כלפי הרכוש": 29, "עבירות מרמה": 5, "עבירות נגד גוף": 15, "עבירות סדר ציבורי": 49, "עבירות תנועה": 1}}, "סביון": {"total": 68, "breakdown": {"עבירות כלכליות": 2, "עבירות כלפי המוסר": 3, "עבירות כלפי הרכוש": 20, "עבירות מרמה": 10, "עבירות נגד גוף": 8, "עבירות סדר ציבורי": 24, "עבירות רשוי": 1}}, "סח'נין": {"total": 1022, "breakdown": {"סעיפי הגדרה": 2, "עבירות בטחון": 50, "עבירות כלכליות": 22, "עבירות כלפי המוסר": 14, "עבירות כלפי הרכוש": 236, "עבירות מין": 6, "עבירות מנהליות": 1, "עבירות מרמה": 57, "עבירות נגד אדם": 5, "עבירות נגד גוף": 137, "עבירות סדר ציבורי": 481, "עבירות רשוי": 5, "עבירות תנועה": 6}}, "ע'ג'ר": {"total": 12, "breakdown": {"עבירות כלפי הרכוש": 2, "עבירות מרמה": 2, "עבירות נגד גוף": 1, "עבירות סדר ציבורי": 7}}, "עומר": {"total": 230, "breakdown": {"עבירות בטחון": 2, "עבירות כלכליות": 4, "עבירות כלפי הרכוש": 89, "עבירות מין": 3, "עבירות מרמה": 27, "עבירות נגד גוף": 20, "עבירות סדר ציבורי": 85}}, "עיילבון": {"total": 169, "breakdown": {"סעיפי הגדרה": 3, "עבירות בטחון": 8, "עבירות כלכליות": 1, "עבירות כלפי המוסר": 3, "עבירות כלפי הרכוש": 44, "עבירות מרמה": 6, "עבירות נגד אדם": 3, "עבירות נגד גוף": 27, "עבירות סדר ציבורי": 73, "עבירות רשוי": 1}}, "עילוט": {"total": 179, "breakdown": {"עבירות בטחון": 11, "עבירות כלכליות": 1, "עבירות כלפי המוסר": 4, "עבירות כלפי הרכוש": 36, "עבירות מין": 4, "עבירות מרמה": 6, "עבירות נגד אדם": 2, "עבירות נגד גוף": 24, "עבירות סדר ציבורי": 87, "עבירות רשוי": 1, "עבירות תנועה": 2, "שאר עבירות": 1}}, "עין מאהל": {"total": 275, "breakdown": {"עבירות בטחון": 12, "עבירות כלכליות": 24, "עבירות כלפי המוסר": 6, "עבירות כלפי הרכוש": 54, "עבירות מין": 3, "עבירות מרמה": 11, "עבירות נגד אדם": 1, "עבירות נגד גוף": 50, "עבירות סדר ציבורי": 109, "עבירות רשוי": 3, "עבירות תנועה": 2}}, "עין קנייא": {"total": 11, "breakdown": {"עבירות כלפי המוסר": 1, "עבירות כלפי הרכוש": 5, "עבירות מרמה": 1, "עבירות נגד גוף": 1, "עבירות סדר ציבורי": 3}}, "עכו": {"total": 2191, "breakdown": {"סעיפי הגדרה": 4, "עבירות בטחון": 39, "עבירות כלכליות": 28, "עבירות כלפי המוסר": 168, "עבירות כלפי הרכוש": 669, "עבירות מין": 23, "עבירות מרמה": 74, "עבירות נגד אדם": 6, "עבירות נגד גוף": 435, "עבירות סדר ציבורי": 722, "עבירות רשוי": 10, "עבירות תנועה": 10, "שגיאת הזנה": 3}}, "עמנואל": {"total": 114, "breakdown": {"עבירות בטחון": 2, "עבירות כלכליות": 1, "עבירות כלפי המוסר": 14, "עבירות כלפי הרכוש": 28, "עבירות מין": 3, "עבירות מרמה": 2, "עבירות נגד גוף": 24, "עבירות סדר ציבורי": 39, "שגיאת הזנה": 1}}, "עספיא": {"total": 268, "breakdown": {"סעיפי הגדרה": 1, "עבירות בטחון": 14, "עבירות כלכליות": 2, "עבירות כלפי המוסר": 18, "עבירות כלפי הרכוש": 58, "עבירות מין": 6, "עבירות מרמה": 23, "עבירות נגד אדם": 2, "עבירות נגד גוף": 37, "עבירות סדר ציבורי": 106, "עבירות רשוי": 1}}, "עפולה": {"total": 2158, "breakdown": {"סעיפי הגדרה": 1, "עבירות בטחון": 21, "עבירות כלכליות": 50, "עבירות כלפי המוסר": 95, "עבירות כלפי הרכוש": 658, "עבירות מין": 48, "עבירות מרמה": 115, "עבירות נגד אדם": 4, "עבירות נגד גוף": 385, "עבירות סדר ציבורי": 755, "עבירות רשוי": 4, "עבירות תנועה": 7, "שאר עבירות": 3, "שגיאת הזנה": 12}}, "עראבה": {"total": 646, "breakdown": {"סעיפי הגדרה": 1, "עבירות בטחון": 32, "עבירות כלכליות": 5, "עבירות כלפי המוסר": 2, "עבירות כלפי הרכוש": 143, "עבירות מין": 6, "עבירות מרמה": 40, "עבירות נגד אדם": 5, "עבירות נגד גוף": 101, "עבירות סדר ציבורי": 294, "עבירות רשוי": 2, "עבירות תנועה": 9, "שגיאת הזנה": 6}}, "ערד": {"total": 1158, "breakdown": {"עבירות בטחון": 9, "עבירות כלכליות": 14, "עבירות כלפי המוסר": 35, "עבירות כלפי הרכוש": 282, "עבירות מין": 16, "עבירות מרמה": 79, "עבירות נגד אדם": 1, "עבירות נגד גוף": 210, "עבירות סדר ציבורי": 499, "עבירות תנועה": 8, "שגיאת הזנה": 5}}, "ערערה": {"total": 671, "breakdown": {"עבירות בטחון": 52, "עבירות כלכליות": 6, "עבירות כלפי המוסר": 15, "עבירות כלפי הרכוש": 182, "עבירות מין": 5, "עבירות מרמה": 20, "עבירות נגד אדם": 2, "עבירות נגד גוף": 116, "עבירות סדר ציבורי": 258, "עבירות רשוי": 1, "עבירות תנועה": 13, "שגיאת הזנה": 1}}, "ערערה-בנגב": {"total": 1158, "breakdown": {"עבירות בטחון": 146, "עבירות כלכליות": 6, "עבירות כלפי המוסר": 14, "עבירות כלפי הרכוש": 200, "עבירות מין": 8, "עבירות מרמה": 12, "עבירות נגד אדם": 10, "עבירות נגד גוף": 154, "עבירות סדר ציבורי": 593, "עבירות רשוי": 6, "עבירות תנועה": 8, "שגיאת הזנה": 1}}, "פוריידיס": {"total": 485, "breakdown": {"עבירות בטחון": 25, "עבירות כלפי המוסר": 13, "עבירות כלפי הרכוש": 128, "עבירות מין": 2, "עבירות מרמה": 13, "עבירות נגד גוף": 64, "עבירות סדר ציבורי": 240}}, "פסוטה": {"total": 56, "breakdown": {"עבירות כלפי המוסר": 4, "עבירות כלפי הרכוש": 13, "עבירות מין": 2, "עבירות מנהליות": 1, "עבירות מרמה": 5, "עבירות נגד גוף": 10, "עבירות סדר ציבורי": 21}}, "פקיעין": {"total": 45, "breakdown": {"עבירות בטחון": 2, "עבירות כלכליות": 1, "עבירות כלפי הרכוש": 10, "עבירות מין": 2, "עבירות מרמה": 2, "עבירות נגד גוף": 7, "עבירות סדר ציבורי": 21}}, "פרדס חנה-כרכור": {"total": 1057, "breakdown": {"סעיפי הגדרה": 4, "עבירות בטחון": 11, "עבירות כלכליות": 8, "עבירות כלפי המוסר": 45, "עבירות כלפי הרכוש": 383, "עבירות מין": 27, "עבירות מרמה": 41, "עבירות נגד אדם": 1, "עבירות נגד גוף": 168, "עבירות סדר ציבורי": 354, "עבירות רשוי": 5, "עבירות תנועה": 3, "שגיאת הזנה": 7}}, "פרדסיה": {"total": 135, "breakdown": {"עבירות בטחון": 2, "עבירות כלכליות": 3, "עבירות כלפי המוסר": 20, "עבירות כלפי הרכוש": 44, "עבירות מין": 3, "עבירות מרמה": 10, "עבירות נגד גוף": 13, "עבירות סדר ציבורי": 38, "שגיאת הזנה": 2}}, "פתח תקווה": {"total": 6572, "breakdown": {"סעיפי הגדרה": 6, "עבירות בטחון": 24, "עבירות כלכליות": 153, "עבירות כלפי המוסר": 218, "עבירות כלפי הרכוש": 2730, "עבירות מין": 123, "עבירות מנהליות": 4, "עבירות מרמה": 495, "עבירות נגד אדם": 10, "עבירות נגד גוף": 1000, "עבירות סדר ציבורי": 1723, "עבירות רשוי": 6, "עבירות תנועה": 58, "שגיאת הזנה": 22}}, "צור הדסה": {"total": 109, "breakdown": {"עבירות כלכליות": 1, "עבירות כלפי המוסר": 13, "עבירות כלפי הרכוש": 27, "עבירות מין": 5, "עבירות מרמה": 7, "עבירות נגד גוף": 12, "עבירות סדר ציבורי": 44}}, "צפת": {"total": 865, "breakdown": {"עבירות בטחון": 11, "עבירות כלכליות": 11, "עבירות כלפי המוסר": 45, "עבירות כלפי הרכוש": 178, "עבירות מין": 38, "עבירות מרמה": 44, "עבירות נגד אדם": 1, "עבירות נגד גוף": 208, "עבירות סדר ציבורי": 325, "עבירות תנועה": 4}}, "קדומים": {"total": 45, "breakdown": {"עבירות בטחון": 1, "עבירות כלכליות": 1, "עבירות כלפי הרכוש": 9, "עבירות מין": 4, "עבירות מרמה": 2, "עבירות נגד גוף": 7, "עבירות סדר ציבורי": 21}}, "קדימה צורן": {"total": 379, "breakdown": {"עבירות בטחון": 2, "עבירות כלכליות": 10, "עבירות כלפי המוסר": 14, "עבירות כלפי הרכוש": 106, "עבירות מין": 5, "עבירות מרמה": 25, "עבירות נגד גוף": 68, "עבירות סדר ציבורי": 149}}, "קלנסווה": {"total": 761, "breakdown": {"סעיפי הגדרה": 1, "עבירות בטחון": 38, "עבירות כלכליות": 10, "עבירות כלפי המוסר": 16, "עבירות כלפי הרכוש": 192, "עבירות מין": 7, "עבירות מנהליות": 1, "עבירות מרמה": 23, "עבירות נגד אדם": 4, "עבירות נגד גוף": 127, "עבירות סדר ציבורי": 330, "עבירות רשוי": 3, "עבירות תנועה": 8, "שגיאת הזנה": 1}}, "קצרין": {"total": 267, "breakdown": {"עבירות כלכליות": 3, "עבירות כלפי המוסר": 22, "עבירות כלפי הרכוש": 61, "עבירות מין": 14, "עבירות מנהליות": 1, "עבירות מרמה": 17, "עבירות נגד אדם": 2, "עבירות נגד גוף": 42, "עבירות סדר ציבורי": 101, "עבירות תנועה": 3, "שגיאת הזנה": 1}}, "קרית אונו": {"total": 900, "breakdown": {"סעיפי הגדרה": 3, "עבירות בטחון": 2, "עבירות כלכליות": 16, "עבירות כלפי המוסר": 9, "עבירות כלפי הרכוש": 330, "עבירות מין": 15, "עבירות מרמה": 78, "עבירות נגד אדם": 1, "עבירות נגד גוף": 136, "עבירות סדר ציבורי": 295, "עבירות תנועה": 15}}, "קרית ארבע": {"total": 151, "breakdown": {"עבירות בטחון": 1, "עבירות כלכליות": 4, "עבירות כלפי המוסר": 4, "עבירות כלפי הרכוש": 39, "עבירות מין": 4, "עבירות מרמה": 8, "עבירות נגד גוף": 30, "עבירות סדר ציבורי": 57, "עבירות רשוי": 1, "עבירות תנועה": 3}}, "קרית אתא": {"total": 1590, "breakdown": {"סעיפי הגדרה": 1, "עבירות בטחון": 13, "עבירות כלכליות": 27, "עבירות כלפי המוסר": 143, "עבירות כלפי הרכוש": 489, "עבירות מין": 39, "עבירות מרמה": 99, "עבירות נגד אדם": 5, "עבירות נגד גוף": 250, "עבירות סדר ציבורי": 509, "עבירות רשוי": 3, "עבירות תנועה": 9, "שגיאת הזנה": 3}}, "קרית ביאליק": {"total": 1066, "breakdown": {"סעיפי הגדרה": 3, "עבירות בטחון": 5, "עבירות כלכליות": 35, "עבירות כלפי המוסר": 35, "עבירות כלפי הרכוש": 368, "עבירות מין": 18, "עבירות מרמה": 92, "עבירות נגד אדם": 3, "עבירות נגד גוף": 193, "עבירות סדר ציבורי": 306, "עבירות רשוי": 5, "שגיאת הזנה": 3}}, "קרית גת": {"total": 2491, "breakdown": {"סעיפי הגדרה": 1, "עבירות בטחון": 19, "עבירות כלכליות": 62, "עבירות כלפי המוסר": 111, "עבירות כלפי הרכוש": 682, "עבירות מין": 54, "עבירות מרמה": 119, "עבירות נגד אדם": 5, "עבירות נגד גוף": 507, "עבירות סדר ציבורי": 902, "עבירות רשוי": 12, "עבירות תנועה": 15, "שגיאת הזנה": 2}}, "קרית טבעון": {"total": 317, "breakdown": {"עבירות בטחון": 1, "עבירות כלכליות": 8, "עבירות כלפי המוסר": 16, "עבירות כלפי הרכוש": 142, "עבירות מין": 6, "עבירות מרמה": 15, "עבירות נגד אדם": 1, "עבירות נגד גוף": 40, "עבירות סדר ציבורי": 87, "שגיאת הזנה": 1}}, "קרית ים": {"total": 1212, "breakdown": {"עבירות בטחון": 16, "עבירות כלכליות": 37, "עבירות כלפי המוסר": 100, "עבירות כלפי הרכוש": 396, "עבירות מין": 18, "עבירות מרמה": 94, "עבירות נגד אדם": 2, "עבירות נגד גוף": 218, "עבירות סדר ציבורי": 318, "עבירות רשוי": 3, "עבירות תנועה": 5, "שגיאת הזנה": 5}}, "קרית יערים": {"total": 54, "breakdown": {"עבירות בטחון": 2, "עבירות כלפי הרכוש": 21, "עבירות מין": 4, "עבירות מרמה": 2, "עבירות נגד גוף": 9, "עבירות סדר ציבורי": 14, "עבירות תנועה": 1, "שגיאת הזנה": 1}}, "קרית מוצקין": {"total": 1005, "breakdown": {"עבירות בטחון": 7, "עבירות כלכליות": 25, "עבירות כלפי המוסר": 54, "עבירות כלפי הרכוש": 322, "עבירות מין": 24, "עבירות מרמה": 84, "עבירות נגד אדם": 1, "עבירות נגד גוף": 183, "עבירות סדר ציבורי": 296, "עבירות רשוי": 4, "שאר עבירות": 1, "שגיאת הזנה": 4}}, "קרית מלאכי": {"total": 1244, "breakdown": {"עבירות בטחון": 11, "עבירות כלכליות": 28, "עבירות כלפי המוסר": 52, "עבירות כלפי הרכוש": 329, "עבירות מין": 27, "עבירות מנהליות": 1, "עבירות מרמה": 58, "עבירות נגד אדם": 5, "עבירות נגד גוף": 251, "עבירות סדר ציבורי": 468, "עבירות רשוי": 4, "עבירות תנועה": 7, "שגיאת הזנה": 3}}, "קרית עקרון": {"total": 426, "breakdown": {"עבירות בטחון": 1, "עבירות כלכליות": 5, "עבירות כלפי המוסר": 6, "עבירות כלפי הרכוש": 185, "עבירות מין": 12, "עבירות מרמה": 14, "עבירות נגד אדם": 2, "עבירות נגד גוף": 61, "עבירות סדר ציבורי": 131, "עבירות רשוי": 1, "עבירות תנועה": 7, "שגיאת הזנה": 1}}, "קרית שמונה": {"total": 644, "breakdown": {"עבירות בטחון": 7, "עבירות כלכליות": 3, "עבירות כלפי המוסר": 19, "עבירות כלפי הרכוש": 163, "עבירות מין": 21, "עבירות מרמה": 56, "עבירות נגד גוף": 127, "עבירות סדר ציבורי": 244, "עבירות תנועה": 1, "שגיאת הזנה": 3}}, "קרני שומרון": {"total": 142, "breakdown": {"עבירות בטחון": 7, "עבירות כלכליות": 1, "עבירות כלפי המוסר": 3, "עבירות כלפי הרכוש": 20, "עבירות מין": 7, "עבירות מרמה": 16, "עבירות נגד גוף": 28, "עבירות סדר ציבורי": 59, "עבירות תנועה": 1}}, "ראמה": {"total": 182, "breakdown": {"עבירות בטחון": 11, "עבירות כלכליות": 3, "עבירות כלפי המוסר": 22, "עבירות כלפי הרכוש": 46, "עבירות מין": 1, "עבירות מרמה": 10, "עבירות נגד אדם": 1, "עבירות נגד גוף": 18, "עבירות סדר ציבורי": 66, "עבירות תנועה": 4}}, "ראש העין": {"total": 1527, "breakdown": {"סעיפי הגדרה": 3, "עבירות בטחון": 7, "עבירות כלכליות": 21, "עבירות כלפי המוסר": 32, "עבירות כלפי הרכוש": 527, "עבירות מין": 41, "עבירות מנהליות": 1, "עבירות מרמה": 74, "עבירות נגד אדם": 2, "עבירות נגד גוף": 269, "עבירות סדר ציבורי": 521, "עבירות רשוי": 2, "עבירות תנועה": 17, "שאר עבירות": 1, "שגיאת הזנה": 9}}, "ראש פינה": {"total": 166, "breakdown": {"עבירות בטחון": 4, "עבירות כלכליות": 8, "עבירות כלפי המוסר": 21, "עבירות כלפי הרכוש": 36, "עבירות מין": 2, "עבירות מרמה": 11, "עבירות נגד גוף": 25, "עבירות סדר ציבורי": 59}}, "ראשון לציון": {"total": 7490, "breakdown": {"סעיפי הגדרה": 15, "עבירות בטחון": 38, "עבירות כלכליות": 214, "עבירות כלפי המוסר": 201, "עבירות כלפי הרכוש": 3047, "עבירות מין": 144, "עבירות מרמה": 536, "עבירות נגד אדם": 12, "עבירות נגד גוף": 1171, "עבירות סדר ציבורי": 1960, "עבירות רשוי": 24, "עבירות תנועה": 93, "שאר עבירות": 1, "שגיאת הזנה": 34}}, "רהט": {"total": 3168, "breakdown": {"סעיפי הגדרה": 3, "עבירות בטחון": 180, "עבירות כלכליות": 30, "עבירות כלפי המוסר": 62, "עבירות כלפי הרכוש": 626, "עבירות מין": 22, "עבירות מרמה": 139, "עבירות נגד אדם": 25, "עבירות נגד גוף": 482, "עבירות סדר ציבורי": 1534, "עבירות רשוי": 26, "עבירות תנועה": 36, "שאר עבירות": 1, "שגיאת הזנה": 2}}, "רחובות": {"total": 3589, "breakdown": {"סעיפי הגדרה": 4, "עבירות בטחון": 18, "עבירות כלכליות": 82, "עבירות כלפי המוסר": 76, "עבירות כלפי הרכוש": 1313, "עבירות מין": 103, "עבירות מנהליות": 3, "עבירות מרמה": 226, "עבירות נגד אדם": 5, "עבירות נגד גוף": 587, "עבירות סדר ציבורי": 1111, "עבירות רשוי": 8, "עבירות תנועה": 39, "שגיאת הזנה": 14}}, "ריינה": {"total": 441, "breakdown": {"עבירות בטחון": 34, "עבירות כלכליות": 4, "עבירות כלפי המוסר": 7, "עבירות כלפי הרכוש": 105, "עבירות מין": 3, "עבירות מרמה": 17, "עבירות נגד גוף": 81, "עבירות סדר ציבורי": 187, "עבירות רשוי": 1, "עבירות תנועה": 2}}, "רכסים": {"total": 95, "breakdown": {"עבירות בטחון": 1, "עבירות כלכליות": 3, "עבירות כלפי המוסר": 1, "עבירות כלפי הרכוש": 29, "עבירות מין": 7, "עבירות מנהליות": 1, "עבירות מרמה": 6, "עבירות נגד גוף": 21, "עבירות סדר ציבורי": 26}}, "רמלה": {"total": 3592, "breakdown": {"סעיפי הגדרה": 3, "עבירות בטחון": 104, "עבירות כלכליות": 44, "עבירות כלפי המוסר": 125, "עבירות כלפי הרכוש": 1179, "עבירות מין": 83, "עבירות מנהליות": 2, "עבירות מרמה": 154, "עבירות נגד אדם": 11, "עבירות נגד גוף": 640, "עבירות סדר ציבורי": 1175, "עבירות רשוי": 26, "עבירות תנועה": 37, "שאר עבירות": 1, "שגיאת הזנה": 8}}, "רמת גן": {"total": 4619, "breakdown": {"סעיפי הגדרה": 6, "עבירות בטחון": 14, "עבירות כלכליות": 93, "עבירות כלפי המוסר": 224, "עבירות כלפי הרכוש": 1978, "עבירות מין": 85, "עבירות מרמה": 278, "עבירות נגד אדם": 3, "עבירות נגד גוף": 577, "עבירות סדר ציבורי": 1317, "עבירות רשוי": 5, "עבירות תנועה": 35, "שגיאת הזנה": 4}}, "רמת השרון": {"total": 1009, "breakdown": {"סעיפי הגדרה": 4, "עבירות בטחון": 3, "עבירות כלכליות": 13, "עבירות כלפי המוסר": 59, "עבירות כלפי הרכוש": 425, "עבירות מין": 24, "עבירות מרמה": 64, "עבירות נגד אדם": 1, "עבירות נגד גוף": 108, "עבירות סדר ציבורי": 287, "עבירות רשוי": 1, "עבירות תנועה": 20}}, "רמת ישי": {"total": 103, "breakdown": {"עבירות כלכליות": 2, "עבירות כלפי המוסר": 4, "עבירות כלפי הרכוש": 33, "עבירות מרמה": 6, "עבירות נגד גוף": 13, "עבירות סדר ציבורי": 44, "עבירות רשוי": 1}}, "רעננה": {"total": 1455, "breakdown": {"סעיפי הגדרה": 1, "עבירות בטחון": 4, "עבירות כלכליות": 17, "עבירות כלפי המוסר": 48, "עבירות כלפי הרכוש": 685, "עבירות מין": 16, "עבירות מרמה": 75, "עבירות נגד אדם": 2, "עבירות נגד גוף": 187, "עבירות סדר ציבורי": 403, "עבירות רשוי": 4, "עבירות תנועה": 12, "שאר עבירות": 1}}, "שבלי": {"total": 437, "breakdown": {"סעיפי הגדרה": 1, "עבירות בטחון": 51, "עבירות כלכליות": 3, "עבירות כלפי המוסר": 29, "עבירות כלפי הרכוש": 69, "עבירות מין": 4, "עבירות מרמה": 11, "עבירות נגד גוף": 65, "עבירות סדר ציבורי": 200, "עבירות תנועה": 4}}, "שגב-שלום": {"total": 699, "breakdown": {"עבירות בטחון": 62, "עבירות כלכליות": 10, "עבירות כלפי המוסר": 31, "עבירות כלפי הרכוש": 89, "עבירות מין": 1, "עבירות מרמה": 14, "עבירות נגד אדם": 5, "עבירות נגד גוף": 68, "עבירות סדר ציבורי": 405, "עבירות רשוי": 2, "עבירות תנועה": 11, "שגיאת הזנה": 1}}, "שדרות": {"total": 1308, "breakdown": {"עבירות בטחון": 9, "עבירות כלכליות": 14, "עבירות כלפי המוסר": 72, "עבירות כלפי הרכוש": 261, "עבירות מין": 33, "עבירות מרמה": 77, "עבירות נגד אדם": 2, "עבירות נגד גוף": 307, "עבירות סדר ציבורי": 511, "עבירות רשוי": 11, "עבירות תנועה": 6, "שגיאת הזנה": 5}}, "שוהם": {"total": 245, "breakdown": {"עבירות בטחון": 1, "עבירות כלכליות": 3, "עבירות כלפי המוסר": 4, "עבירות כלפי הרכוש": 108, "עבירות מין": 6, "עבירות מרמה": 17, "עבירות נגד גוף": 35, "עבירות סדר ציבורי": 66, "עבירות רשוי": 1, "שגיאת הזנה": 4}}, "שלומי": {"total": 130, "breakdown": {"סעיפי הגדרה": 1, "עבירות בטחון": 3, "עבירות כלכליות": 3, "עבירות כלפי המוסר": 11, "עבירות כלפי הרכוש": 32, "עבירות מין": 2, "עבירות מרמה": 7, "עבירות נגד גוף": 18, "עבירות סדר ציבורי": 52, "שגיאת הזנה": 1}}, "שעב": {"total": 337, "breakdown": {"עבירות בטחון": 23, "עבירות כלכליות": 5, "עבירות כלפי המוסר": 5, "עבירות כלפי הרכוש": 95, "עבירות מין": 1, "עבירות מרמה": 9, "עבירות נגד אדם": 1, "עבירות נגד גוף": 52, "עבירות סדר ציבורי": 143, "עבירות רשוי": 1, "עבירות תנועה": 2}}, "שער שומרון": {"total": 79, "breakdown": {"עבירות בטחון": 2, "עבירות כלכליות": 2, "עבירות כלפי המוסר": 1, "עבירות כלפי הרכוש": 16, "עבירות מין": 2, "עבירות מרמה": 8, "עבירות נגד גוף": 23, "עבירות סדר ציבורי": 23, "עבירות תנועה": 1, "שגיאת הזנה": 1}}, "שפרעם": {"total": 1443, "breakdown": {"עבירות בטחון": 67, "עבירות כלכליות": 31, "עבירות כלפי המוסר": 44, "עבירות כלפי הרכוש": 367, "עבירות מין": 6, "עבירות מרמה": 76, "עבירות נגד אדם": 8, "עבירות נגד גוף": 198, "עבירות סדר ציבורי": 627, "עבירות תנועה": 15, "שאר עבירות": 2, "שגיאת הזנה": 2}}, "תל אביב יפו": {"total": 27782, "breakdown": {"סעיפי הגדרה": 22, "עבירות בטחון": 175, "עבירות כלכליות": 393, "עבירות כלפי המוסר": 1412, "עבירות כלפי הרכוש": 14622, "עבירות מין": 354, "עבירות מנהליות": 2, "עבירות מרמה": 1092, "עבירות נגד אדם": 53, "עבירות נגד גוף": 3047, "עבירות סדר ציבורי": 6251, "עבירות רשוי": 96, "עבירות תנועה": 255, "שאר עבירות": 2, "שגיאת הזנה": 6}}, "תל מונד": {"total": 232, "breakdown": {"עבירות בטחון": 1, "עבירות כלכליות": 2, "עבירות כלפי הרכוש": 66, "עבירות מין": 5, "עבירות מרמה": 10, "עבירות נגד גוף": 39, "עבירות סדר ציבורי": 106, "עבירות רשוי": 1, "עבירות תנועה": 1, "שגיאת הזנה": 1}}, "תל שבע": {"total": 939, "breakdown": {"סעיפי הגדרה": 1, "עבירות בטחון": 112, "עבירות כלכליות": 4, "עבירות כלפי המוסר": 52, "עבירות כלפי הרכוש": 167, "עבירות מין": 4, "עבירות מרמה": 23, "עבירות נגד אדם": 7, "עבירות נגד גוף": 163, "עבירות סדר ציבורי": 395, "עבירות רשוי": 1, "עבירות תנועה": 8, "שגיאת הזנה": 2}}, "Grand Total": {"total": 299697, "breakdown": {}}}};
+window.crimeByYear = {
+  "2020": {
+    "כל הארץ": {
+      "total": 132,
+      "breakdown": {
+        "Count of קבוצת עבירה": 132
+      }
+    },
+    "עבירות בטחון": {
+      "total": 130,
+      "breakdown": {
+        "Count of קבוצת עבירה": 130
+      }
+    },
+    "עבירות כלפי המוסר": {
+      "total": 143,
+      "breakdown": {
+        "Count of קבוצת עבירה": 143
+      }
+    },
+    "עבירות כלפי הרכוש": {
+      "total": 219,
+      "breakdown": {
+        "Count of קבוצת עבירה": 219
+      }
+    },
+    "עבירות מין": {
+      "total": 9,
+      "breakdown": {
+        "Count of קבוצת עבירה": 9
+      }
+    },
+    "עבירות מרמה": {
+      "total": 16,
+      "breakdown": {
+        "Count of קבוצת עבירה": 16
+      }
+    },
+    "עבירות נגד גוף": {
+      "total": 244,
+      "breakdown": {
+        "Count of קבוצת עבירה": 244
+      }
+    },
+    "עבירות סדר ציבורי": {
+      "total": 582,
+      "breakdown": {
+        "Count of קבוצת עבירה": 582
+      }
+    },
+    "אבו גוש": {
+      "total": 452,
+      "breakdown": {
+        "Count of קבוצת עבירה": 452
+      }
+    },
+    "עבירות נגד אדם": {
+      "total": 2,
+      "breakdown": {
+        "Count of קבוצת עבירה": 2
+      }
+    },
+    "עבירות רשוי": {
+      "total": 13,
+      "breakdown": {
+        "Count of קבוצת עבירה": 13
+      }
+    },
+    "עבירות תנועה": {
+      "total": 31,
+      "breakdown": {
+        "Count of קבוצת עבירה": 31
+      }
+    },
+    "אבו סנאן": {
+      "total": 508,
+      "breakdown": {
+        "Count of קבוצת עבירה": 508
+      }
+    },
+    "עבירות כלכליות": {
+      "total": 3,
+      "breakdown": {
+        "Count of קבוצת עבירה": 3
+      }
+    },
+    "אבן יהודה": {
+      "total": 345,
+      "breakdown": {
+        "Count of קבוצת עבירה": 345
+      }
+    },
+    "אום אל-פחם": {
+      "total": 1920,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1920
+      }
+    },
+    "סעיפי הגדרה": {
+      "total": 2,
+      "breakdown": {
+        "Count of קבוצת עבירה": 2
+      }
+    },
+    "שאר עבירות": {
+      "total": 1,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1
+      }
+    },
+    "שגיאת הזנה": {
+      "total": 1,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1
+      }
+    },
+    "אופקים": {
+      "total": 1352,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1352
+      }
+    },
+    "אור יהודה": {
+      "total": 1582,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1582
+      }
+    },
+    "אור עקיבא": {
+      "total": 908,
+      "breakdown": {
+        "Count of קבוצת עבירה": 908
+      }
+    },
+    "אורנית": {
+      "total": 159,
+      "breakdown": {
+        "Count of קבוצת עבירה": 159
+      }
+    },
+    "אזור": {
+      "total": 388,
+      "breakdown": {
+        "Count of קבוצת עבירה": 388
+      }
+    },
+    "אילת": {
+      "total": 6093,
+      "breakdown": {
+        "Count of קבוצת עבירה": 6093
+      }
+    },
+    "עבירות מנהליות": {
+      "total": 1,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1
+      }
+    },
+    "אכסאל": {
+      "total": 551,
+      "breakdown": {
+        "Count of קבוצת עבירה": 551
+      }
+    },
+    "אליכין": {
+      "total": 96,
+      "breakdown": {
+        "Count of קבוצת עבירה": 96
+      }
+    },
+    "אלעד": {
+      "total": 775,
+      "breakdown": {
+        "Count of קבוצת עבירה": 775
+      }
+    },
+    "אלפי מנשה": {
+      "total": 105,
+      "breakdown": {
+        "Count of קבוצת עבירה": 105
+      }
+    },
+    "אלקנה": {
+      "total": 48,
+      "breakdown": {
+        "Count of קבוצת עבירה": 48
+      }
+    },
+    "אעבלין": {
+      "total": 488,
+      "breakdown": {
+        "Count of קבוצת עבירה": 488
+      }
+    },
+    "אפרת": {
+      "total": 122,
+      "breakdown": {
+        "Count of קבוצת עבירה": 122
+      }
+    },
+    "אריאל": {
+      "total": 624,
+      "breakdown": {
+        "Count of קבוצת עבירה": 624
+      }
+    },
+    "אשדוד": {
+      "total": 10499,
+      "breakdown": {
+        "Count of קבוצת עבירה": 10499
+      }
+    },
+    "אשקלון": {
+      "total": 7689,
+      "breakdown": {
+        "Count of קבוצת עבירה": 7689
+      }
+    },
+    "באקה אל-גרביה": {
+      "total": 1258,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1258
+      }
+    },
+    "באר יעקב": {
+      "total": 605,
+      "breakdown": {
+        "Count of קבוצת עבירה": 605
+      }
+    },
+    "באר שבע": {
+      "total": 16551,
+      "breakdown": {
+        "Count of קבוצת עבירה": 16551
+      }
+    },
+    "בועיינה נוג'יידאת": {
+      "total": 290,
+      "breakdown": {
+        "Count of קבוצת עבירה": 290
+      }
+    },
+    "בוקעתא": {
+      "total": 101,
+      "breakdown": {
+        "Count of קבוצת עבירה": 101
+      }
+    },
+    "ביענה": {
+      "total": 383,
+      "breakdown": {
+        "Count of קבוצת עבירה": 383
+      }
+    },
+    "ביר אל מכסור": {
+      "total": 216,
+      "breakdown": {
+        "Count of קבוצת עבירה": 216
+      }
+    },
+    "בית אל": {
+      "total": 80,
+      "breakdown": {
+        "Count of קבוצת עבירה": 80
+      }
+    },
+    "בית אריה": {
+      "total": 85,
+      "breakdown": {
+        "Count of קבוצת עבירה": 85
+      }
+    },
+    "בית ג'ן": {
+      "total": 195,
+      "breakdown": {
+        "Count of קבוצת עבירה": 195
+      }
+    },
+    "בית דגן": {
+      "total": 153,
+      "breakdown": {
+        "Count of קבוצת עבירה": 153
+      }
+    },
+    "בית שאן": {
+      "total": 1111,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1111
+      }
+    },
+    "בית שמש": {
+      "total": 2997,
+      "breakdown": {
+        "Count of קבוצת עבירה": 2997
+      }
+    },
+    "ביתר עילית": {
+      "total": 1006,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1006
+      }
+    },
+    "בני ברק": {
+      "total": 3810,
+      "breakdown": {
+        "Count of קבוצת עבירה": 3810
+      }
+    },
+    "בני עי''ש": {
+      "total": 337,
+      "breakdown": {
+        "Count of קבוצת עבירה": 337
+      }
+    },
+    "בנימינה-גבעת עדה": {
+      "total": 515,
+      "breakdown": {
+        "Count of קבוצת עבירה": 515
+      }
+    },
+    "בסמ''ה": {
+      "total": 226,
+      "breakdown": {
+        "Count of קבוצת עבירה": 226
+      }
+    },
+    "בסמת טבעון": {
+      "total": 236,
+      "breakdown": {
+        "Count of קבוצת עבירה": 236
+      }
+    },
+    "בת ים": {
+      "total": 6972,
+      "breakdown": {
+        "Count of קבוצת עבירה": 6972
+      }
+    },
+    "ג'דיידה-מכר": {
+      "total": 966,
+      "breakdown": {
+        "Count of קבוצת עבירה": 966
+      }
+    },
+    "ג'וליס": {
+      "total": 119,
+      "breakdown": {
+        "Count of קבוצת עבירה": 119
+      }
+    },
+    "ג'יש": {
+      "total": 63,
+      "breakdown": {
+        "Count of קבוצת עבירה": 63
+      }
+    },
+    "ג'לג'וליה": {
+      "total": 580,
+      "breakdown": {
+        "Count of קבוצת עבירה": 580
+      }
+    },
+    "ג'סר א זרקא": {
+      "total": 1531,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1531
+      }
+    },
+    "ג'ת": {
+      "total": 368,
+      "breakdown": {
+        "Count of קבוצת עבירה": 368
+      }
+    },
+    "גבעת זאב": {
+      "total": 387,
+      "breakdown": {
+        "Count of קבוצת עבירה": 387
+      }
+    },
+    "גבעת שמואל": {
+      "total": 544,
+      "breakdown": {
+        "Count of קבוצת עבירה": 544
+      }
+    },
+    "גבעתיים": {
+      "total": 1573,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1573
+      }
+    },
+    "גדרה": {
+      "total": 625,
+      "breakdown": {
+        "Count of קבוצת עבירה": 625
+      }
+    },
+    "גן יבנה": {
+      "total": 833,
+      "breakdown": {
+        "Count of קבוצת עבירה": 833
+      }
+    },
+    "גני תקווה": {
+      "total": 377,
+      "breakdown": {
+        "Count of קבוצת עבירה": 377
+      }
+    },
+    "דאלית אל כרמל": {
+      "total": 443,
+      "breakdown": {
+        "Count of קבוצת עבירה": 443
+      }
+    },
+    "דבוריה": {
+      "total": 448,
+      "breakdown": {
+        "Count of קבוצת עבירה": 448
+      }
+    },
+    "דייר אל אסד": {
+      "total": 658,
+      "breakdown": {
+        "Count of קבוצת עבירה": 658
+      }
+    },
+    "דייר חנא": {
+      "total": 303,
+      "breakdown": {
+        "Count of קבוצת עבירה": 303
+      }
+    },
+    "דימונה": {
+      "total": 2544,
+      "breakdown": {
+        "Count of קבוצת עבירה": 2544
+      }
+    },
+    "הוד השרון": {
+      "total": 1479,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1479
+      }
+    },
+    "הר אדר": {
+      "total": 64,
+      "breakdown": {
+        "Count of קבוצת עבירה": 64
+      }
+    },
+    "הרצליה": {
+      "total": 4207,
+      "breakdown": {
+        "Count of קבוצת עבירה": 4207
+      }
+    },
+    "זכרון יעקב": {
+      "total": 505,
+      "breakdown": {
+        "Count of קבוצת עבירה": 505
+      }
+    },
+    "זמר": {
+      "total": 280,
+      "breakdown": {
+        "Count of קבוצת עבירה": 280
+      }
+    },
+    "זרזיר": {
+      "total": 367,
+      "breakdown": {
+        "Count of קבוצת עבירה": 367
+      }
+    },
+    "חדרה": {
+      "total": 4764,
+      "breakdown": {
+        "Count of קבוצת עבירה": 4764
+      }
+    },
+    "חולון": {
+      "total": 6848,
+      "breakdown": {
+        "Count of קבוצת עבירה": 6848
+      }
+    },
+    "חורה": {
+      "total": 693,
+      "breakdown": {
+        "Count of קבוצת עבירה": 693
+      }
+    },
+    "חורפיש": {
+      "total": 117,
+      "breakdown": {
+        "Count of קבוצת עבירה": 117
+      }
+    },
+    "חיפה": {
+      "total": 14310,
+      "breakdown": {
+        "Count of קבוצת עבירה": 14310
+      }
+    },
+    "חצור הגלילית": {
+      "total": 407,
+      "breakdown": {
+        "Count of קבוצת עבירה": 407
+      }
+    },
+    "חריש": {
+      "total": 771,
+      "breakdown": {
+        "Count of קבוצת עבירה": 771
+      }
+    },
+    "טבריה": {
+      "total": 2569,
+      "breakdown": {
+        "Count of קבוצת עבירה": 2569
+      }
+    },
+    "טובא זנגריה": {
+      "total": 699,
+      "breakdown": {
+        "Count of קבוצת עבירה": 699
+      }
+    },
+    "טורעאן": {
+      "total": 1222,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1222
+      }
+    },
+    "טייבה": {
+      "total": 2437,
+      "breakdown": {
+        "Count of קבוצת עבירה": 2437
+      }
+    },
+    "טירה": {
+      "total": 2205,
+      "breakdown": {
+        "Count of קבוצת עבירה": 2205
+      }
+    },
+    "טירת כרמל": {
+      "total": 1027,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1027
+      }
+    },
+    "טמרה": {
+      "total": 1830,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1830
+      }
+    },
+    "יאנוח-ג'ת": {
+      "total": 178,
+      "breakdown": {
+        "Count of קבוצת עבירה": 178
+      }
+    },
+    "יבנאל": {
+      "total": 221,
+      "breakdown": {
+        "Count of קבוצת עבירה": 221
+      }
+    },
+    "יבנה": {
+      "total": 1723,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1723
+      }
+    },
+    "יהוד-מונוסון": {
+      "total": 824,
+      "breakdown": {
+        "Count of קבוצת עבירה": 824
+      }
+    },
+    "יסוד המעלה": {
+      "total": 86,
+      "breakdown": {
+        "Count of קבוצת עבירה": 86
+      }
+    },
+    "יפיע": {
+      "total": 540,
+      "breakdown": {
+        "Count of קבוצת עבירה": 540
+      }
+    },
+    "יקנעם עילית": {
+      "total": 607,
+      "breakdown": {
+        "Count of קבוצת עבירה": 607
+      }
+    },
+    "ירוחם": {
+      "total": 583,
+      "breakdown": {
+        "Count of קבוצת עבירה": 583
+      }
+    },
+    "ירושלים": {
+      "total": 34367,
+      "breakdown": {
+        "Count of קבוצת עבירה": 34367
+      }
+    },
+    "ירכא": {
+      "total": 612,
+      "breakdown": {
+        "Count of קבוצת עבירה": 612
+      }
+    },
+    "ישוב פלסטיני": {
+      "total": 7288,
+      "breakdown": {
+        "Count of קבוצת עבירה": 7288
+      }
+    },
+    "כאבול": {
+      "total": 527,
+      "breakdown": {
+        "Count of קבוצת עבירה": 527
+      }
+    },
+    "כאוכב אבו אל היגא": {
+      "total": 92,
+      "breakdown": {
+        "Count of קבוצת עבירה": 92
+      }
+    },
+    "כוכב יאיר": {
+      "total": 257,
+      "breakdown": {
+        "Count of קבוצת עבירה": 257
+      }
+    },
+    "כסיפה": {
+      "total": 601,
+      "breakdown": {
+        "Count of קבוצת עבירה": 601
+      }
+    },
+    "כסרא-סמיע": {
+      "total": 223,
+      "breakdown": {
+        "Count of קבוצת עבירה": 223
+      }
+    },
+    "כעביה טבאש חג'אג'רה": {
+      "total": 284,
+      "breakdown": {
+        "Count of קבוצת עבירה": 284
+      }
+    },
+    "כפר ברא": {
+      "total": 205,
+      "breakdown": {
+        "Count of קבוצת עבירה": 205
+      }
+    },
+    "כפר ורדים": {
+      "total": 96,
+      "breakdown": {
+        "Count of קבוצת עבירה": 96
+      }
+    },
+    "כפר יאסיף": {
+      "total": 704,
+      "breakdown": {
+        "Count of קבוצת עבירה": 704
+      }
+    },
+    "כפר יונה": {
+      "total": 886,
+      "breakdown": {
+        "Count of קבוצת עבירה": 886
+      }
+    },
+    "כפר כמא": {
+      "total": 20,
+      "breakdown": {
+        "Count of קבוצת עבירה": 20
+      }
+    },
+    "כפר כנא": {
+      "total": 953,
+      "breakdown": {
+        "Count of קבוצת עבירה": 953
+      }
+    },
+    "כפר מנדא": {
+      "total": 599,
+      "breakdown": {
+        "Count of קבוצת עבירה": 599
+      }
+    },
+    "כפר סבא": {
+      "total": 2887,
+      "breakdown": {
+        "Count of קבוצת עבירה": 2887
+      }
+    },
+    "כפר קאסם": {
+      "total": 1264,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1264
+      }
+    },
+    "כפר קרע": {
+      "total": 799,
+      "breakdown": {
+        "Count of קבוצת עבירה": 799
+      }
+    },
+    "כפר שמריהו": {
+      "total": 95,
+      "breakdown": {
+        "Count of קבוצת עבירה": 95
+      }
+    },
+    "כפר תבור": {
+      "total": 70,
+      "breakdown": {
+        "Count of קבוצת עבירה": 70
+      }
+    },
+    "כרמיאל": {
+      "total": 1758,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1758
+      }
+    },
+    "להבים": {
+      "total": 196,
+      "breakdown": {
+        "Count of קבוצת עבירה": 196
+      }
+    },
+    "לוד": {
+      "total": 4466,
+      "breakdown": {
+        "Count of קבוצת עבירה": 4466
+      }
+    },
+    "לקיה": {
+      "total": 484,
+      "breakdown": {
+        "Count of קבוצת עבירה": 484
+      }
+    },
+    "מבשרת ציון": {
+      "total": 852,
+      "breakdown": {
+        "Count of קבוצת עבירה": 852
+      }
+    },
+    "מג'ד אל כרום": {
+      "total": 714,
+      "breakdown": {
+        "Count of קבוצת עבירה": 714
+      }
+    },
+    "מג'דל שמס": {
+      "total": 201,
+      "breakdown": {
+        "Count of קבוצת עבירה": 201
+      }
+    },
+    "מגאר": {
+      "total": 514,
+      "breakdown": {
+        "Count of קבוצת עבירה": 514
+      }
+    },
+    "מגדל": {
+      "total": 86,
+      "breakdown": {
+        "Count of קבוצת עבירה": 86
+      }
+    },
+    "מגדל העמק": {
+      "total": 1073,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1073
+      }
+    },
+    "מגדל תפן": {
+      "total": 26,
+      "breakdown": {
+        "Count of קבוצת עבירה": 26
+      }
+    },
+    "מודיעין-מכבים-רעות": {
+      "total": 1918,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1918
+      }
+    },
+    "מודיעין עילית": {
+      "total": 724,
+      "breakdown": {
+        "Count of קבוצת עבירה": 724
+      }
+    },
+    "מועצה אזורית אל-בטוף": {
+      "total": 292,
+      "breakdown": {
+        "Count of קבוצת עבירה": 292
+      }
+    },
+    "מועצה אזורית אל קסום": {
+      "total": 554,
+      "breakdown": {
+        "Count of קבוצת עבירה": 554
+      }
+    },
+    "מועצה אזורית אלונה": {
+      "total": 55,
+      "breakdown": {
+        "Count of קבוצת עבירה": 55
+      }
+    },
+    "מועצה אזורית אשכול": {
+      "total": 591,
+      "breakdown": {
+        "Count of קבוצת עבירה": 591
+      }
+    },
+    "מועצה אזורית באר טוביה": {
+      "total": 1188,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1188
+      }
+    },
+    "מועצה אזורית בוסתן-אל-מרג'": {
+      "total": 313,
+      "breakdown": {
+        "Count of קבוצת עבירה": 313
+      }
+    },
+    "מועצה אזורית בני שמעון": {
+      "total": 585,
+      "breakdown": {
+        "Count of קבוצת עבירה": 585
+      }
+    },
+    "מועצה אזורית ברנר": {
+      "total": 158,
+      "breakdown": {
+        "Count of קבוצת עבירה": 158
+      }
+    },
+    "מועצה אזורית גדרות": {
+      "total": 100,
+      "breakdown": {
+        "Count of קבוצת עבירה": 100
+      }
+    },
+    "מועצה אזורית גולן": {
+      "total": 359,
+      "breakdown": {
+        "Count of קבוצת עבירה": 359
+      }
+    },
+    "מועצה אזורית גוש עציון": {
+      "total": 558,
+      "breakdown": {
+        "Count of קבוצת עבירה": 558
+      }
+    },
+    "מועצה אזורית גזר": {
+      "total": 848,
+      "breakdown": {
+        "Count of קבוצת עבירה": 848
+      }
+    },
+    "מועצה אזורית גן רווה": {
+      "total": 193,
+      "breakdown": {
+        "Count of קבוצת עבירה": 193
+      }
+    },
+    "מועצה אזורית דרום השרון": {
+      "total": 1012,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1012
+      }
+    },
+    "מועצה אזורית הגלבוע": {
+      "total": 968,
+      "breakdown": {
+        "Count of קבוצת עבירה": 968
+      }
+    },
+    "מועצה אזורית הגליל העליון": {
+      "total": 624,
+      "breakdown": {
+        "Count of קבוצת עבירה": 624
+      }
+    },
+    "מועצה אזורית הגליל התחתון": {
+      "total": 251,
+      "breakdown": {
+        "Count of קבוצת עבירה": 251
+      }
+    },
+    "מועצה אזורית הערבה התיכונה": {
+      "total": 134,
+      "breakdown": {
+        "Count of קבוצת עבירה": 134
+      }
+    },
+    "מועצה אזורית הר חברון": {
+      "total": 430,
+      "breakdown": {
+        "Count of קבוצת עבירה": 430
+      }
+    },
+    "מועצה אזורית זבולון": {
+      "total": 457,
+      "breakdown": {
+        "Count of קבוצת עבירה": 457
+      }
+    },
+    "מועצה אזורית חבל אילות": {
+      "total": 64,
+      "breakdown": {
+        "Count of קבוצת עבירה": 64
+      }
+    },
+    "מועצה אזורית חבל יבנה": {
+      "total": 154,
+      "breakdown": {
+        "Count of קבוצת עבירה": 154
+      }
+    },
+    "מועצה אזורית חבל מודיעין": {
+      "total": 876,
+      "breakdown": {
+        "Count of קבוצת עבירה": 876
+      }
+    },
+    "מועצה אזורית חוף אשקלון": {
+      "total": 761,
+      "breakdown": {
+        "Count of קבוצת עבירה": 761
+      }
+    },
+    "מועצה אזורית חוף הכרמל": {
+      "total": 1251,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1251
+      }
+    },
+    "מועצה אזורית חוף השרון": {
+      "total": 445,
+      "breakdown": {
+        "Count of קבוצת עבירה": 445
+      }
+    },
+    "מועצה אזורית יואב": {
+      "total": 398,
+      "breakdown": {
+        "Count of קבוצת עבירה": 398
+      }
+    },
+    "מועצה אזורית לב השרון": {
+      "total": 913,
+      "breakdown": {
+        "Count of קבוצת עבירה": 913
+      }
+    },
+    "מועצה אזורית לכיש": {
+      "total": 695,
+      "breakdown": {
+        "Count of קבוצת עבירה": 695
+      }
+    },
+    "מועצה אזורית מבואות החרמון": {
+      "total": 289,
+      "breakdown": {
+        "Count of קבוצת עבירה": 289
+      }
+    },
+    "מועצה אזורית מגידו": {
+      "total": 460,
+      "breakdown": {
+        "Count of קבוצת עבירה": 460
+      }
+    },
+    "מועצה אזורית מגילות ים המלח": {
+      "total": 121,
+      "breakdown": {
+        "Count of קבוצת עבירה": 121
+      }
+    },
+    "מועצה אזורית מטה אשר": {
+      "total": 970,
+      "breakdown": {
+        "Count of קבוצת עבירה": 970
+      }
+    },
+    "מועצה אזורית מטה בנימין": {
+      "total": 1543,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1543
+      }
+    },
+    "מועצה אזורית מטה יהודה": {
+      "total": 2331,
+      "breakdown": {
+        "Count of קבוצת עבירה": 2331
+      }
+    },
+    "מועצה אזורית מנשה": {
+      "total": 671,
+      "breakdown": {
+        "Count of קבוצת עבירה": 671
+      }
+    },
+    "מועצה אזורית מעלה יוסף": {
+      "total": 376,
+      "breakdown": {
+        "Count of קבוצת עבירה": 376
+      }
+    },
+    "מועצה אזורית מרום הגליל": {
+      "total": 695,
+      "breakdown": {
+        "Count of קבוצת עבירה": 695
+      }
+    },
+    "מועצה אזורית מרחבים": {
+      "total": 551,
+      "breakdown": {
+        "Count of קבוצת עבירה": 551
+      }
+    },
+    "מועצה אזורית משגב": {
+      "total": 622,
+      "breakdown": {
+        "Count of קבוצת עבירה": 622
+      }
+    },
+    "מועצה אזורית נווה מדבר": {
+      "total": 592,
+      "breakdown": {
+        "Count of קבוצת עבירה": 592
+      }
+    },
+    "מועצה אזורית נחל שורק": {
+      "total": 176,
+      "breakdown": {
+        "Count of קבוצת עבירה": 176
+      }
+    },
+    "מועצה אזורית עמק הירדן": {
+      "total": 353,
+      "breakdown": {
+        "Count of קבוצת עבירה": 353
+      }
+    },
+    "מועצה אזורית עמק המעיינות": {
+      "total": 587,
+      "breakdown": {
+        "Count of קבוצת עבירה": 587
+      }
+    },
+    "מועצה אזורית עמק חפר": {
+      "total": 1429,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1429
+      }
+    },
+    "מועצה אזורית עמק יזרעאל": {
+      "total": 980,
+      "breakdown": {
+        "Count of קבוצת עבירה": 980
+      }
+    },
+    "מועצה אזורית עמק לוד": {
+      "total": 265,
+      "breakdown": {
+        "Count of קבוצת עבירה": 265
+      }
+    },
+    "מועצה אזורית ערבות הירדן": {
+      "total": 238,
+      "breakdown": {
+        "Count of קבוצת עבירה": 238
+      }
+    },
+    "מועצה אזורית רמת נגב": {
+      "total": 415,
+      "breakdown": {
+        "Count of קבוצת עבירה": 415
+      }
+    },
+    "מועצה אזורית שדות דן": {
+      "total": 101,
+      "breakdown": {
+        "Count of קבוצת עבירה": 101
+      }
+    },
+    "מועצה אזורית שדות נגב": {
+      "total": 371,
+      "breakdown": {
+        "Count of קבוצת עבירה": 371
+      }
+    },
+    "מועצה אזורית שומרון": {
+      "total": 925,
+      "breakdown": {
+        "Count of קבוצת עבירה": 925
+      }
+    },
+    "מועצה אזורית שער הנגב": {
+      "total": 319,
+      "breakdown": {
+        "Count of קבוצת עבירה": 319
+      }
+    },
+    "מועצה אזורית שפיר": {
+      "total": 482,
+      "breakdown": {
+        "Count of קבוצת עבירה": 482
+      }
+    },
+    "מועצה אזורית תמר": {
+      "total": 317,
+      "breakdown": {
+        "Count of קבוצת עבירה": 317
+      }
+    },
+    "מזכרת בתיה": {
+      "total": 253,
+      "breakdown": {
+        "Count of קבוצת עבירה": 253
+      }
+    },
+    "מזרעה": {
+      "total": 162,
+      "breakdown": {
+        "Count of קבוצת עבירה": 162
+      }
+    },
+    "מטולה": {
+      "total": 55,
+      "breakdown": {
+        "Count of קבוצת עבירה": 55
+      }
+    },
+    "מיתר": {
+      "total": 335,
+      "breakdown": {
+        "Count of קבוצת עבירה": 335
+      }
+    },
+    "מסעדה": {
+      "total": 114,
+      "breakdown": {
+        "Count of קבוצת עבירה": 114
+      }
+    },
+    "מעיליא": {
+      "total": 104,
+      "breakdown": {
+        "Count of קבוצת עבירה": 104
+      }
+    },
+    "מעלה אדומים": {
+      "total": 1003,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1003
+      }
+    },
+    "מעלה אפרים": {
+      "total": 62,
+      "breakdown": {
+        "Count of קבוצת עבירה": 62
+      }
+    },
+    "מעלה עירון": {
+      "total": 387,
+      "breakdown": {
+        "Count of קבוצת עבירה": 387
+      }
+    },
+    "מעלות-תרשיחא": {
+      "total": 740,
+      "breakdown": {
+        "Count of קבוצת עבירה": 740
+      }
+    },
+    "מצפה רמון": {
+      "total": 312,
+      "breakdown": {
+        "Count of קבוצת עבירה": 312
+      }
+    },
+    "מקום": {
+      "total": 1041,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1041
+      }
+    },
+    "מקום אחר": {
+      "total": 13860,
+      "breakdown": {
+        "Count of קבוצת עבירה": 13860
+      }
+    },
+    "משהד": {
+      "total": 189,
+      "breakdown": {
+        "Count of קבוצת עבירה": 189
+      }
+    },
+    "נאות חובב": {
+      "total": 51,
+      "breakdown": {
+        "Count of קבוצת עבירה": 51
+      }
+    },
+    "נהריה": {
+      "total": 2643,
+      "breakdown": {
+        "Count of קבוצת עבירה": 2643
+      }
+    },
+    "נוף הגליל": {
+      "total": 2768,
+      "breakdown": {
+        "Count of קבוצת עבירה": 2768
+      }
+    },
+    "נחף": {
+      "total": 447,
+      "breakdown": {
+        "Count of קבוצת עבירה": 447
+      }
+    },
+    "נמל תעופה בן גוריון": {
+      "total": 467,
+      "breakdown": {
+        "Count of קבוצת עבירה": 467
+      }
+    },
+    "נס ציונה": {
+      "total": 1129,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1129
+      }
+    },
+    "נצרת": {
+      "total": 3644,
+      "breakdown": {
+        "Count of קבוצת עבירה": 3644
+      }
+    },
+    "נשר": {
+      "total": 759,
+      "breakdown": {
+        "Count of קבוצת עבירה": 759
+      }
+    },
+    "נתיבות": {
+      "total": 1783,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1783
+      }
+    },
+    "נתניה": {
+      "total": 8260,
+      "breakdown": {
+        "Count of קבוצת עבירה": 8260
+      }
+    },
+    "סאג'ור": {
+      "total": 109,
+      "breakdown": {
+        "Count of קבוצת עבירה": 109
+      }
+    },
+    "סביון": {
+      "total": 129,
+      "breakdown": {
+        "Count of קבוצת עבירה": 129
+      }
+    },
+    "סח'נין": {
+      "total": 1051,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1051
+      }
+    },
+    "ע'ג'ר": {
+      "total": 43,
+      "breakdown": {
+        "Count of קבוצת עבירה": 43
+      }
+    },
+    "עומר": {
+      "total": 316,
+      "breakdown": {
+        "Count of קבוצת עבירה": 316
+      }
+    },
+    "עיילבון": {
+      "total": 135,
+      "breakdown": {
+        "Count of קבוצת עבירה": 135
+      }
+    },
+    "עילוט": {
+      "total": 246,
+      "breakdown": {
+        "Count of קבוצת עבירה": 246
+      }
+    },
+    "עין מאהל": {
+      "total": 251,
+      "breakdown": {
+        "Count of קבוצת עבירה": 251
+      }
+    },
+    "עין קנייא": {
+      "total": 16,
+      "breakdown": {
+        "Count of קבוצת עבירה": 16
+      }
+    },
+    "עכו": {
+      "total": 3556,
+      "breakdown": {
+        "Count of קבוצת עבירה": 3556
+      }
+    },
+    "עמנואל": {
+      "total": 175,
+      "breakdown": {
+        "Count of קבוצת עבירה": 175
+      }
+    },
+    "עספיא": {
+      "total": 474,
+      "breakdown": {
+        "Count of קבוצת עבירה": 474
+      }
+    },
+    "עפולה": {
+      "total": 2877,
+      "breakdown": {
+        "Count of קבוצת עבירה": 2877
+      }
+    },
+    "עראבה": {
+      "total": 873,
+      "breakdown": {
+        "Count of קבוצת עבירה": 873
+      }
+    },
+    "ערד": {
+      "total": 1588,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1588
+      }
+    },
+    "ערערה": {
+      "total": 653,
+      "breakdown": {
+        "Count of קבוצת עבירה": 653
+      }
+    },
+    "ערערה-בנגב": {
+      "total": 1302,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1302
+      }
+    },
+    "פוריידיס": {
+      "total": 441,
+      "breakdown": {
+        "Count of קבוצת עבירה": 441
+      }
+    },
+    "פסוטה": {
+      "total": 160,
+      "breakdown": {
+        "Count of קבוצת עבירה": 160
+      }
+    },
+    "פקיעין": {
+      "total": 98,
+      "breakdown": {
+        "Count of קבוצת עבירה": 98
+      }
+    },
+    "פרדס חנה-כרכור": {
+      "total": 1669,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1669
+      }
+    },
+    "פרדסיה": {
+      "total": 191,
+      "breakdown": {
+        "Count of קבוצת עבירה": 191
+      }
+    },
+    "פתח תקווה": {
+      "total": 8450,
+      "breakdown": {
+        "Count of קבוצת עבירה": 8450
+      }
+    },
+    "צור הדסה": {
+      "total": 198,
+      "breakdown": {
+        "Count of קבוצת עבירה": 198
+      }
+    },
+    "צפת": {
+      "total": 1221,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1221
+      }
+    },
+    "קדומים": {
+      "total": 51,
+      "breakdown": {
+        "Count of קבוצת עבירה": 51
+      }
+    },
+    "קדימה צורן": {
+      "total": 538,
+      "breakdown": {
+        "Count of קבוצת עבירה": 538
+      }
+    },
+    "קלנסווה": {
+      "total": 1015,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1015
+      }
+    },
+    "קצרין": {
+      "total": 279,
+      "breakdown": {
+        "Count of קבוצת עבירה": 279
+      }
+    },
+    "קרית אונו": {
+      "total": 789,
+      "breakdown": {
+        "Count of קבוצת עבירה": 789
+      }
+    },
+    "קרית ארבע": {
+      "total": 303,
+      "breakdown": {
+        "Count of קבוצת עבירה": 303
+      }
+    },
+    "קרית אתא": {
+      "total": 2312,
+      "breakdown": {
+        "Count of קבוצת עבירה": 2312
+      }
+    },
+    "קרית ביאליק": {
+      "total": 1584,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1584
+      }
+    },
+    "קרית גת": {
+      "total": 3187,
+      "breakdown": {
+        "Count of קבוצת עבירה": 3187
+      }
+    },
+    "קרית טבעון": {
+      "total": 494,
+      "breakdown": {
+        "Count of קבוצת עבירה": 494
+      }
+    },
+    "קרית ים": {
+      "total": 1427,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1427
+      }
+    },
+    "קרית יערים": {
+      "total": 67,
+      "breakdown": {
+        "Count of קבוצת עבירה": 67
+      }
+    },
+    "קרית מוצקין": {
+      "total": 1488,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1488
+      }
+    },
+    "קרית מלאכי": {
+      "total": 1672,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1672
+      }
+    },
+    "קרית עקרון": {
+      "total": 489,
+      "breakdown": {
+        "Count of קבוצת עבירה": 489
+      }
+    },
+    "קרית שמונה": {
+      "total": 1084,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1084
+      }
+    },
+    "קרני שומרון": {
+      "total": 200,
+      "breakdown": {
+        "Count of קבוצת עבירה": 200
+      }
+    },
+    "ראמה": {
+      "total": 232,
+      "breakdown": {
+        "Count of קבוצת עבירה": 232
+      }
+    },
+    "ראש העין": {
+      "total": 2000,
+      "breakdown": {
+        "Count of קבוצת עבירה": 2000
+      }
+    },
+    "ראש פינה": {
+      "total": 219,
+      "breakdown": {
+        "Count of קבוצת עבירה": 219
+      }
+    },
+    "ראשון לציון": {
+      "total": 8549,
+      "breakdown": {
+        "Count of קבוצת עבירה": 8549
+      }
+    },
+    "רהט": {
+      "total": 3767,
+      "breakdown": {
+        "Count of קבוצת עבירה": 3767
+      }
+    },
+    "רחובות": {
+      "total": 3952,
+      "breakdown": {
+        "Count of קבוצת עבירה": 3952
+      }
+    },
+    "ריינה": {
+      "total": 416,
+      "breakdown": {
+        "Count of קבוצת עבירה": 416
+      }
+    },
+    "רכסים": {
+      "total": 169,
+      "breakdown": {
+        "Count of קבוצת עבירה": 169
+      }
+    },
+    "רמלה": {
+      "total": 4500,
+      "breakdown": {
+        "Count of קבוצת עבירה": 4500
+      }
+    },
+    "רמת גן": {
+      "total": 4992,
+      "breakdown": {
+        "Count of קבוצת עבירה": 4992
+      }
+    },
+    "רמת השרון": {
+      "total": 1265,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1265
+      }
+    },
+    "רמת ישי": {
+      "total": 159,
+      "breakdown": {
+        "Count of קבוצת עבירה": 159
+      }
+    },
+    "רעננה": {
+      "total": 1766,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1766
+      }
+    },
+    "שבלי": {
+      "total": 427,
+      "breakdown": {
+        "Count of קבוצת עבירה": 427
+      }
+    },
+    "שגב-שלום": {
+      "total": 693,
+      "breakdown": {
+        "Count of קבוצת עבירה": 693
+      }
+    },
+    "שדרות": {
+      "total": 1912,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1912
+      }
+    },
+    "שוהם": {
+      "total": 305,
+      "breakdown": {
+        "Count of קבוצת עבירה": 305
+      }
+    },
+    "שלומי": {
+      "total": 224,
+      "breakdown": {
+        "Count of קבוצת עבירה": 224
+      }
+    },
+    "שעב": {
+      "total": 219,
+      "breakdown": {
+        "Count of קבוצת עבירה": 219
+      }
+    },
+    "שפרעם": {
+      "total": 2011,
+      "breakdown": {
+        "Count of קבוצת עבירה": 2011
+      }
+    },
+    "תל אביב יפו": {
+      "total": 35198,
+      "breakdown": {
+        "Count of קבוצת עבירה": 35198
+      }
+    },
+    "תל מונד": {
+      "total": 257,
+      "breakdown": {
+        "Count of קבוצת עבירה": 257
+      }
+    },
+    "תל שבע": {
+      "total": 1396,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1396
+      }
+    },
+    "Grand Total": {
+      "total": 391532,
+      "breakdown": {
+        "Count of קבוצת עבירה": 391532
+      }
+    }
+  },
+  "2021": {
+    "כל הארץ": {
+      "total": 178,
+      "breakdown": {
+        "Count of קבוצת עבירה": 178
+      }
+    },
+    "עבירות בטחון": {
+      "total": 156,
+      "breakdown": {
+        "Count of קבוצת עבירה": 156
+      }
+    },
+    "עבירות כלפי המוסר": {
+      "total": 78,
+      "breakdown": {
+        "Count of קבוצת עבירה": 78
+      }
+    },
+    "עבירות כלפי הרכוש": {
+      "total": 238,
+      "breakdown": {
+        "Count of קבוצת עבירה": 238
+      }
+    },
+    "עבירות מין": {
+      "total": 2,
+      "breakdown": {
+        "Count of קבוצת עבירה": 2
+      }
+    },
+    "עבירות מרמה": {
+      "total": 19,
+      "breakdown": {
+        "Count of קבוצת עבירה": 19
+      }
+    },
+    "עבירות נגד אדם": {
+      "total": 8,
+      "breakdown": {
+        "Count of קבוצת עבירה": 8
+      }
+    },
+    "עבירות נגד גוף": {
+      "total": 244,
+      "breakdown": {
+        "Count of קבוצת עבירה": 244
+      }
+    },
+    "עבירות סדר ציבורי": {
+      "total": 482,
+      "breakdown": {
+        "Count of קבוצת עבירה": 482
+      }
+    },
+    "עבירות רשוי": {
+      "total": 15,
+      "breakdown": {
+        "Count of קבוצת עבירה": 15
+      }
+    },
+    "עבירות תנועה": {
+      "total": 11,
+      "breakdown": {
+        "Count of קבוצת עבירה": 11
+      }
+    },
+    "שאר עבירות": {
+      "total": 2,
+      "breakdown": {
+        "Count of קבוצת עבירה": 2
+      }
+    },
+    "אבו גוש": {
+      "total": 450,
+      "breakdown": {
+        "Count of קבוצת עבירה": 450
+      }
+    },
+    "עבירות כלכליות": {
+      "total": 7,
+      "breakdown": {
+        "Count of קבוצת עבירה": 7
+      }
+    },
+    "אבו סנאן": {
+      "total": 508,
+      "breakdown": {
+        "Count of קבוצת עבירה": 508
+      }
+    },
+    "סעיפי הגדרה": {
+      "total": 1,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1
+      }
+    },
+    "אבן יהודה": {
+      "total": 358,
+      "breakdown": {
+        "Count of קבוצת עבירה": 358
+      }
+    },
+    "אום אל-פחם": {
+      "total": 1933,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1933
+      }
+    },
+    "שגיאת הזנה": {
+      "total": 1,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1
+      }
+    },
+    "אופקים": {
+      "total": 1454,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1454
+      }
+    },
+    "אור יהודה": {
+      "total": 1560,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1560
+      }
+    },
+    "אור עקיבא": {
+      "total": 899,
+      "breakdown": {
+        "Count of קבוצת עבירה": 899
+      }
+    },
+    "אורנית": {
+      "total": 167,
+      "breakdown": {
+        "Count of קבוצת עבירה": 167
+      }
+    },
+    "אזור": {
+      "total": 421,
+      "breakdown": {
+        "Count of קבוצת עבירה": 421
+      }
+    },
+    "אילת": {
+      "total": 5909,
+      "breakdown": {
+        "Count of קבוצת עבירה": 5909
+      }
+    },
+    "עבירות מנהליות": {
+      "total": 6,
+      "breakdown": {
+        "Count of קבוצת עבירה": 6
+      }
+    },
+    "אכסאל": {
+      "total": 579,
+      "breakdown": {
+        "Count of קבוצת עבירה": 579
+      }
+    },
+    "אליכין": {
+      "total": 99,
+      "breakdown": {
+        "Count of קבוצת עבירה": 99
+      }
+    },
+    "אלעד": {
+      "total": 797,
+      "breakdown": {
+        "Count of קבוצת עבירה": 797
+      }
+    },
+    "אלפי מנשה": {
+      "total": 148,
+      "breakdown": {
+        "Count of קבוצת עבירה": 148
+      }
+    },
+    "אלקנה": {
+      "total": 44,
+      "breakdown": {
+        "Count of קבוצת עבירה": 44
+      }
+    },
+    "אעבלין": {
+      "total": 471,
+      "breakdown": {
+        "Count of קבוצת עבירה": 471
+      }
+    },
+    "אפרת": {
+      "total": 125,
+      "breakdown": {
+        "Count of קבוצת עבירה": 125
+      }
+    },
+    "אריאל": {
+      "total": 746,
+      "breakdown": {
+        "Count of קבוצת עבירה": 746
+      }
+    },
+    "אשדוד": {
+      "total": 10802,
+      "breakdown": {
+        "Count of קבוצת עבירה": 10802
+      }
+    },
+    "אשקלון": {
+      "total": 8234,
+      "breakdown": {
+        "Count of קבוצת עבירה": 8234
+      }
+    },
+    "באקה אל-גרביה": {
+      "total": 1388,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1388
+      }
+    },
+    "באר יעקב": {
+      "total": 735,
+      "breakdown": {
+        "Count of קבוצת עבירה": 735
+      }
+    },
+    "באר שבע": {
+      "total": 18815,
+      "breakdown": {
+        "Count of קבוצת עבירה": 18815
+      }
+    },
+    "בועיינה נוג'יידאת": {
+      "total": 224,
+      "breakdown": {
+        "Count of קבוצת עבירה": 224
+      }
+    },
+    "בוקעתא": {
+      "total": 88,
+      "breakdown": {
+        "Count of קבוצת עבירה": 88
+      }
+    },
+    "ביענה": {
+      "total": 438,
+      "breakdown": {
+        "Count of קבוצת עבירה": 438
+      }
+    },
+    "ביר אל מכסור": {
+      "total": 218,
+      "breakdown": {
+        "Count of קבוצת עבירה": 218
+      }
+    },
+    "בית אל": {
+      "total": 137,
+      "breakdown": {
+        "Count of קבוצת עבירה": 137
+      }
+    },
+    "בית אריה": {
+      "total": 88,
+      "breakdown": {
+        "Count of קבוצת עבירה": 88
+      }
+    },
+    "בית ג'ן": {
+      "total": 201,
+      "breakdown": {
+        "Count of קבוצת עבירה": 201
+      }
+    },
+    "בית דגן": {
+      "total": 193,
+      "breakdown": {
+        "Count of קבוצת עבירה": 193
+      }
+    },
+    "בית שאן": {
+      "total": 954,
+      "breakdown": {
+        "Count of קבוצת עבירה": 954
+      }
+    },
+    "בית שמש": {
+      "total": 3454,
+      "breakdown": {
+        "Count of קבוצת עבירה": 3454
+      }
+    },
+    "ביתר עילית": {
+      "total": 918,
+      "breakdown": {
+        "Count of קבוצת עבירה": 918
+      }
+    },
+    "בני ברק": {
+      "total": 3912,
+      "breakdown": {
+        "Count of קבוצת עבירה": 3912
+      }
+    },
+    "בני עי''ש": {
+      "total": 257,
+      "breakdown": {
+        "Count of קבוצת עבירה": 257
+      }
+    },
+    "בנימינה-גבעת עדה": {
+      "total": 477,
+      "breakdown": {
+        "Count of קבוצת עבירה": 477
+      }
+    },
+    "בסמ''ה": {
+      "total": 249,
+      "breakdown": {
+        "Count of קבוצת עבירה": 249
+      }
+    },
+    "בסמת טבעון": {
+      "total": 290,
+      "breakdown": {
+        "Count of קבוצת עבירה": 290
+      }
+    },
+    "בת ים": {
+      "total": 7390,
+      "breakdown": {
+        "Count of קבוצת עבירה": 7390
+      }
+    },
+    "ג'דיידה-מכר": {
+      "total": 1093,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1093
+      }
+    },
+    "ג'וליס": {
+      "total": 178,
+      "breakdown": {
+        "Count of קבוצת עבירה": 178
+      }
+    },
+    "ג'יש": {
+      "total": 70,
+      "breakdown": {
+        "Count of קבוצת עבירה": 70
+      }
+    },
+    "ג'לג'וליה": {
+      "total": 482,
+      "breakdown": {
+        "Count of קבוצת עבירה": 482
+      }
+    },
+    "ג'סר א זרקא": {
+      "total": 1636,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1636
+      }
+    },
+    "ג'ת": {
+      "total": 367,
+      "breakdown": {
+        "Count of קבוצת עבירה": 367
+      }
+    },
+    "גבעת זאב": {
+      "total": 362,
+      "breakdown": {
+        "Count of קבוצת עבירה": 362
+      }
+    },
+    "גבעת שמואל": {
+      "total": 544,
+      "breakdown": {
+        "Count of קבוצת עבירה": 544
+      }
+    },
+    "גבעתיים": {
+      "total": 1464,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1464
+      }
+    },
+    "גדרה": {
+      "total": 661,
+      "breakdown": {
+        "Count of קבוצת עבירה": 661
+      }
+    },
+    "גן יבנה": {
+      "total": 814,
+      "breakdown": {
+        "Count of קבוצת עבירה": 814
+      }
+    },
+    "גני תקווה": {
+      "total": 438,
+      "breakdown": {
+        "Count of קבוצת עבירה": 438
+      }
+    },
+    "דאלית אל כרמל": {
+      "total": 417,
+      "breakdown": {
+        "Count of קבוצת עבירה": 417
+      }
+    },
+    "דבוריה": {
+      "total": 451,
+      "breakdown": {
+        "Count of קבוצת עבירה": 451
+      }
+    },
+    "דייר אל אסד": {
+      "total": 556,
+      "breakdown": {
+        "Count of קבוצת עבירה": 556
+      }
+    },
+    "דייר חנא": {
+      "total": 267,
+      "breakdown": {
+        "Count of קבוצת עבירה": 267
+      }
+    },
+    "דימונה": {
+      "total": 2562,
+      "breakdown": {
+        "Count of קבוצת עבירה": 2562
+      }
+    },
+    "הוד השרון": {
+      "total": 1520,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1520
+      }
+    },
+    "הר אדר": {
+      "total": 56,
+      "breakdown": {
+        "Count of קבוצת עבירה": 56
+      }
+    },
+    "הרצליה": {
+      "total": 3801,
+      "breakdown": {
+        "Count of קבוצת עבירה": 3801
+      }
+    },
+    "זכרון יעקב": {
+      "total": 656,
+      "breakdown": {
+        "Count of קבוצת עבירה": 656
+      }
+    },
+    "זמר": {
+      "total": 249,
+      "breakdown": {
+        "Count of קבוצת עבירה": 249
+      }
+    },
+    "זרזיר": {
+      "total": 495,
+      "breakdown": {
+        "Count of קבוצת עבירה": 495
+      }
+    },
+    "חדרה": {
+      "total": 4617,
+      "breakdown": {
+        "Count of קבוצת עבירה": 4617
+      }
+    },
+    "חולון": {
+      "total": 6732,
+      "breakdown": {
+        "Count of קבוצת עבירה": 6732
+      }
+    },
+    "חורה": {
+      "total": 798,
+      "breakdown": {
+        "Count of קבוצת עבירה": 798
+      }
+    },
+    "חורפיש": {
+      "total": 102,
+      "breakdown": {
+        "Count of קבוצת עבירה": 102
+      }
+    },
+    "חיפה": {
+      "total": 14932,
+      "breakdown": {
+        "Count of קבוצת עבירה": 14932
+      }
+    },
+    "חצור הגלילית": {
+      "total": 428,
+      "breakdown": {
+        "Count of קבוצת עבירה": 428
+      }
+    },
+    "חריש": {
+      "total": 858,
+      "breakdown": {
+        "Count of קבוצת עבירה": 858
+      }
+    },
+    "טבריה": {
+      "total": 2808,
+      "breakdown": {
+        "Count of קבוצת עבירה": 2808
+      }
+    },
+    "טובא זנגריה": {
+      "total": 710,
+      "breakdown": {
+        "Count of קבוצת עבירה": 710
+      }
+    },
+    "טורעאן": {
+      "total": 928,
+      "breakdown": {
+        "Count of קבוצת עבירה": 928
+      }
+    },
+    "טייבה": {
+      "total": 2104,
+      "breakdown": {
+        "Count of קבוצת עבירה": 2104
+      }
+    },
+    "טירה": {
+      "total": 1945,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1945
+      }
+    },
+    "טירת כרמל": {
+      "total": 853,
+      "breakdown": {
+        "Count of קבוצת עבירה": 853
+      }
+    },
+    "טמרה": {
+      "total": 1789,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1789
+      }
+    },
+    "יאנוח-ג'ת": {
+      "total": 127,
+      "breakdown": {
+        "Count of קבוצת עבירה": 127
+      }
+    },
+    "יבנאל": {
+      "total": 295,
+      "breakdown": {
+        "Count of קבוצת עבירה": 295
+      }
+    },
+    "יבנה": {
+      "total": 1687,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1687
+      }
+    },
+    "יהוד-מונוסון": {
+      "total": 864,
+      "breakdown": {
+        "Count of קבוצת עבירה": 864
+      }
+    },
+    "יסוד המעלה": {
+      "total": 63,
+      "breakdown": {
+        "Count of קבוצת עבירה": 63
+      }
+    },
+    "יפיע": {
+      "total": 521,
+      "breakdown": {
+        "Count of קבוצת עבירה": 521
+      }
+    },
+    "יקנעם עילית": {
+      "total": 566,
+      "breakdown": {
+        "Count of קבוצת עבירה": 566
+      }
+    },
+    "ירוחם": {
+      "total": 648,
+      "breakdown": {
+        "Count of קבוצת עבירה": 648
+      }
+    },
+    "ירושלים": {
+      "total": 38320,
+      "breakdown": {
+        "Count of קבוצת עבירה": 38320
+      }
+    },
+    "ירכא": {
+      "total": 721,
+      "breakdown": {
+        "Count of קבוצת עבירה": 721
+      }
+    },
+    "ישוב פלסטיני": {
+      "total": 8787,
+      "breakdown": {
+        "Count of קבוצת עבירה": 8787
+      }
+    },
+    "כאבול": {
+      "total": 459,
+      "breakdown": {
+        "Count of קבוצת עבירה": 459
+      }
+    },
+    "כאוכב אבו אל היגא": {
+      "total": 128,
+      "breakdown": {
+        "Count of קבוצת עבירה": 128
+      }
+    },
+    "כוכב יאיר": {
+      "total": 182,
+      "breakdown": {
+        "Count of קבוצת עבירה": 182
+      }
+    },
+    "כסיפה": {
+      "total": 544,
+      "breakdown": {
+        "Count of קבוצת עבירה": 544
+      }
+    },
+    "כסרא-סמיע": {
+      "total": 135,
+      "breakdown": {
+        "Count of קבוצת עבירה": 135
+      }
+    },
+    "כעביה טבאש חג'אג'רה": {
+      "total": 211,
+      "breakdown": {
+        "Count of קבוצת עבירה": 211
+      }
+    },
+    "כפר ברא": {
+      "total": 211,
+      "breakdown": {
+        "Count of קבוצת עבירה": 211
+      }
+    },
+    "כפר ורדים": {
+      "total": 116,
+      "breakdown": {
+        "Count of קבוצת עבירה": 116
+      }
+    },
+    "כפר יאסיף": {
+      "total": 799,
+      "breakdown": {
+        "Count of קבוצת עבירה": 799
+      }
+    },
+    "כפר יונה": {
+      "total": 962,
+      "breakdown": {
+        "Count of קבוצת עבירה": 962
+      }
+    },
+    "כפר כמא": {
+      "total": 19,
+      "breakdown": {
+        "Count of קבוצת עבירה": 19
+      }
+    },
+    "כפר כנא": {
+      "total": 999,
+      "breakdown": {
+        "Count of קבוצת עבירה": 999
+      }
+    },
+    "כפר מנדא": {
+      "total": 887,
+      "breakdown": {
+        "Count of קבוצת עבירה": 887
+      }
+    },
+    "כפר סבא": {
+      "total": 3261,
+      "breakdown": {
+        "Count of קבוצת עבירה": 3261
+      }
+    },
+    "כפר קאסם": {
+      "total": 1268,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1268
+      }
+    },
+    "כפר קרע": {
+      "total": 712,
+      "breakdown": {
+        "Count of קבוצת עבירה": 712
+      }
+    },
+    "כפר שמריהו": {
+      "total": 88,
+      "breakdown": {
+        "Count of קבוצת עבירה": 88
+      }
+    },
+    "כפר תבור": {
+      "total": 74,
+      "breakdown": {
+        "Count of קבוצת עבירה": 74
+      }
+    },
+    "כרמיאל": {
+      "total": 1547,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1547
+      }
+    },
+    "להבים": {
+      "total": 229,
+      "breakdown": {
+        "Count of קבוצת עבירה": 229
+      }
+    },
+    "לוד": {
+      "total": 5837,
+      "breakdown": {
+        "Count of קבוצת עבירה": 5837
+      }
+    },
+    "לקיה": {
+      "total": 537,
+      "breakdown": {
+        "Count of קבוצת עבירה": 537
+      }
+    },
+    "מבשרת ציון": {
+      "total": 861,
+      "breakdown": {
+        "Count of קבוצת עבירה": 861
+      }
+    },
+    "מג'ד אל כרום": {
+      "total": 860,
+      "breakdown": {
+        "Count of קבוצת עבירה": 860
+      }
+    },
+    "מג'דל שמס": {
+      "total": 202,
+      "breakdown": {
+        "Count of קבוצת עבירה": 202
+      }
+    },
+    "מגאר": {
+      "total": 432,
+      "breakdown": {
+        "Count of קבוצת עבירה": 432
+      }
+    },
+    "מגדל": {
+      "total": 88,
+      "breakdown": {
+        "Count of קבוצת עבירה": 88
+      }
+    },
+    "מגדל העמק": {
+      "total": 1163,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1163
+      }
+    },
+    "מגדל תפן": {
+      "total": 35,
+      "breakdown": {
+        "Count of קבוצת עבירה": 35
+      }
+    },
+    "מודיעין-מכבים-רעות": {
+      "total": 1962,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1962
+      }
+    },
+    "מודיעין עילית": {
+      "total": 779,
+      "breakdown": {
+        "Count of קבוצת עבירה": 779
+      }
+    },
+    "מועצה אזורית אל-בטוף": {
+      "total": 229,
+      "breakdown": {
+        "Count of קבוצת עבירה": 229
+      }
+    },
+    "מועצה אזורית אל קסום": {
+      "total": 807,
+      "breakdown": {
+        "Count of קבוצת עבירה": 807
+      }
+    },
+    "מועצה אזורית אלונה": {
+      "total": 65,
+      "breakdown": {
+        "Count of קבוצת עבירה": 65
+      }
+    },
+    "מועצה אזורית אשכול": {
+      "total": 578,
+      "breakdown": {
+        "Count of קבוצת עבירה": 578
+      }
+    },
+    "מועצה אזורית באר טוביה": {
+      "total": 1377,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1377
+      }
+    },
+    "מועצה אזורית בוסתן-אל-מרג'": {
+      "total": 282,
+      "breakdown": {
+        "Count of קבוצת עבירה": 282
+      }
+    },
+    "מועצה אזורית בני שמעון": {
+      "total": 687,
+      "breakdown": {
+        "Count of קבוצת עבירה": 687
+      }
+    },
+    "מועצה אזורית ברנר": {
+      "total": 176,
+      "breakdown": {
+        "Count of קבוצת עבירה": 176
+      }
+    },
+    "מועצה אזורית גדרות": {
+      "total": 148,
+      "breakdown": {
+        "Count of קבוצת עבירה": 148
+      }
+    },
+    "מועצה אזורית גולן": {
+      "total": 366,
+      "breakdown": {
+        "Count of קבוצת עבירה": 366
+      }
+    },
+    "מועצה אזורית גוש עציון": {
+      "total": 572,
+      "breakdown": {
+        "Count of קבוצת עבירה": 572
+      }
+    },
+    "מועצה אזורית גזר": {
+      "total": 909,
+      "breakdown": {
+        "Count of קבוצת עבירה": 909
+      }
+    },
+    "מועצה אזורית גן רווה": {
+      "total": 224,
+      "breakdown": {
+        "Count of קבוצת עבירה": 224
+      }
+    },
+    "מועצה אזורית דרום השרון": {
+      "total": 1009,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1009
+      }
+    },
+    "מועצה אזורית הגלבוע": {
+      "total": 976,
+      "breakdown": {
+        "Count of קבוצת עבירה": 976
+      }
+    },
+    "מועצה אזורית הגליל העליון": {
+      "total": 551,
+      "breakdown": {
+        "Count of קבוצת עבירה": 551
+      }
+    },
+    "מועצה אזורית הגליל התחתון": {
+      "total": 260,
+      "breakdown": {
+        "Count of קבוצת עבירה": 260
+      }
+    },
+    "מועצה אזורית הערבה התיכונה": {
+      "total": 92,
+      "breakdown": {
+        "Count of קבוצת עבירה": 92
+      }
+    },
+    "מועצה אזורית הר חברון": {
+      "total": 508,
+      "breakdown": {
+        "Count of קבוצת עבירה": 508
+      }
+    },
+    "מועצה אזורית זבולון": {
+      "total": 547,
+      "breakdown": {
+        "Count of קבוצת עבירה": 547
+      }
+    },
+    "מועצה אזורית חבל אילות": {
+      "total": 97,
+      "breakdown": {
+        "Count of קבוצת עבירה": 97
+      }
+    },
+    "מועצה אזורית חבל יבנה": {
+      "total": 148,
+      "breakdown": {
+        "Count of קבוצת עבירה": 148
+      }
+    },
+    "מועצה אזורית חבל מודיעין": {
+      "total": 890,
+      "breakdown": {
+        "Count of קבוצת עבירה": 890
+      }
+    },
+    "מועצה אזורית חוף אשקלון": {
+      "total": 680,
+      "breakdown": {
+        "Count of קבוצת עבירה": 680
+      }
+    },
+    "מועצה אזורית חוף הכרמל": {
+      "total": 1194,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1194
+      }
+    },
+    "מועצה אזורית חוף השרון": {
+      "total": 556,
+      "breakdown": {
+        "Count of קבוצת עבירה": 556
+      }
+    },
+    "מועצה אזורית יואב": {
+      "total": 399,
+      "breakdown": {
+        "Count of קבוצת עבירה": 399
+      }
+    },
+    "מועצה אזורית לב השרון": {
+      "total": 963,
+      "breakdown": {
+        "Count of קבוצת עבירה": 963
+      }
+    },
+    "מועצה אזורית לכיש": {
+      "total": 568,
+      "breakdown": {
+        "Count of קבוצת עבירה": 568
+      }
+    },
+    "מועצה אזורית מבואות החרמון": {
+      "total": 285,
+      "breakdown": {
+        "Count of קבוצת עבירה": 285
+      }
+    },
+    "מועצה אזורית מגידו": {
+      "total": 499,
+      "breakdown": {
+        "Count of קבוצת עבירה": 499
+      }
+    },
+    "מועצה אזורית מגילות ים המלח": {
+      "total": 124,
+      "breakdown": {
+        "Count of קבוצת עבירה": 124
+      }
+    },
+    "מועצה אזורית מטה אשר": {
+      "total": 1122,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1122
+      }
+    },
+    "מועצה אזורית מטה בנימין": {
+      "total": 1592,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1592
+      }
+    },
+    "מועצה אזורית מטה יהודה": {
+      "total": 2049,
+      "breakdown": {
+        "Count of קבוצת עבירה": 2049
+      }
+    },
+    "מועצה אזורית מנשה": {
+      "total": 678,
+      "breakdown": {
+        "Count of קבוצת עבירה": 678
+      }
+    },
+    "מועצה אזורית מעלה יוסף": {
+      "total": 417,
+      "breakdown": {
+        "Count of קבוצת עבירה": 417
+      }
+    },
+    "מועצה אזורית מרום הגליל": {
+      "total": 730,
+      "breakdown": {
+        "Count of קבוצת עבירה": 730
+      }
+    },
+    "מועצה אזורית מרחבים": {
+      "total": 613,
+      "breakdown": {
+        "Count of קבוצת עבירה": 613
+      }
+    },
+    "מועצה אזורית משגב": {
+      "total": 678,
+      "breakdown": {
+        "Count of קבוצת עבירה": 678
+      }
+    },
+    "מועצה אזורית נווה מדבר": {
+      "total": 559,
+      "breakdown": {
+        "Count of קבוצת עבירה": 559
+      }
+    },
+    "מועצה אזורית נחל שורק": {
+      "total": 145,
+      "breakdown": {
+        "Count of קבוצת עבירה": 145
+      }
+    },
+    "מועצה אזורית עמק הירדן": {
+      "total": 400,
+      "breakdown": {
+        "Count of קבוצת עבירה": 400
+      }
+    },
+    "מועצה אזורית עמק המעיינות": {
+      "total": 616,
+      "breakdown": {
+        "Count of קבוצת עבירה": 616
+      }
+    },
+    "מועצה אזורית עמק חפר": {
+      "total": 1251,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1251
+      }
+    },
+    "מועצה אזורית עמק יזרעאל": {
+      "total": 1076,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1076
+      }
+    },
+    "מועצה אזורית עמק לוד": {
+      "total": 295,
+      "breakdown": {
+        "Count of קבוצת עבירה": 295
+      }
+    },
+    "מועצה אזורית ערבות הירדן": {
+      "total": 253,
+      "breakdown": {
+        "Count of קבוצת עבירה": 253
+      }
+    },
+    "מועצה אזורית רמת נגב": {
+      "total": 305,
+      "breakdown": {
+        "Count of קבוצת עבירה": 305
+      }
+    },
+    "מועצה אזורית שדות דן": {
+      "total": 88,
+      "breakdown": {
+        "Count of קבוצת עבירה": 88
+      }
+    },
+    "מועצה אזורית שדות נגב": {
+      "total": 412,
+      "breakdown": {
+        "Count of קבוצת עבירה": 412
+      }
+    },
+    "מועצה אזורית שומרון": {
+      "total": 962,
+      "breakdown": {
+        "Count of קבוצת עבירה": 962
+      }
+    },
+    "מועצה אזורית שער הנגב": {
+      "total": 365,
+      "breakdown": {
+        "Count of קבוצת עבירה": 365
+      }
+    },
+    "מועצה אזורית שפיר": {
+      "total": 503,
+      "breakdown": {
+        "Count of קבוצת עבירה": 503
+      }
+    },
+    "מועצה אזורית תמר": {
+      "total": 460,
+      "breakdown": {
+        "Count of קבוצת עבירה": 460
+      }
+    },
+    "מזכרת בתיה": {
+      "total": 258,
+      "breakdown": {
+        "Count of קבוצת עבירה": 258
+      }
+    },
+    "מזרעה": {
+      "total": 138,
+      "breakdown": {
+        "Count of קבוצת עבירה": 138
+      }
+    },
+    "מטולה": {
+      "total": 39,
+      "breakdown": {
+        "Count of קבוצת עבירה": 39
+      }
+    },
+    "מיתר": {
+      "total": 476,
+      "breakdown": {
+        "Count of קבוצת עבירה": 476
+      }
+    },
+    "מסעדה": {
+      "total": 115,
+      "breakdown": {
+        "Count of קבוצת עבירה": 115
+      }
+    },
+    "מעיליא": {
+      "total": 173,
+      "breakdown": {
+        "Count of קבוצת עבירה": 173
+      }
+    },
+    "מעלה אדומים": {
+      "total": 981,
+      "breakdown": {
+        "Count of קבוצת עבירה": 981
+      }
+    },
+    "מעלה אפרים": {
+      "total": 79,
+      "breakdown": {
+        "Count of קבוצת עבירה": 79
+      }
+    },
+    "מעלה עירון": {
+      "total": 359,
+      "breakdown": {
+        "Count of קבוצת עבירה": 359
+      }
+    },
+    "מעלות-תרשיחא": {
+      "total": 682,
+      "breakdown": {
+        "Count of קבוצת עבירה": 682
+      }
+    },
+    "מצפה רמון": {
+      "total": 334,
+      "breakdown": {
+        "Count of קבוצת עבירה": 334
+      }
+    },
+    "מקום": {
+      "total": 931,
+      "breakdown": {
+        "Count of קבוצת עבירה": 931
+      }
+    },
+    "מקום אחר": {
+      "total": 17469,
+      "breakdown": {
+        "Count of קבוצת עבירה": 17469
+      }
+    },
+    "משהד": {
+      "total": 230,
+      "breakdown": {
+        "Count of קבוצת עבירה": 230
+      }
+    },
+    "נאות חובב": {
+      "total": 45,
+      "breakdown": {
+        "Count of קבוצת עבירה": 45
+      }
+    },
+    "נהריה": {
+      "total": 2444,
+      "breakdown": {
+        "Count of קבוצת עבירה": 2444
+      }
+    },
+    "נוף הגליל": {
+      "total": 2521,
+      "breakdown": {
+        "Count of קבוצת עבירה": 2521
+      }
+    },
+    "נחף": {
+      "total": 553,
+      "breakdown": {
+        "Count of קבוצת עבירה": 553
+      }
+    },
+    "נמל תעופה בן גוריון": {
+      "total": 925,
+      "breakdown": {
+        "Count of קבוצת עבירה": 925
+      }
+    },
+    "נס ציונה": {
+      "total": 1130,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1130
+      }
+    },
+    "נצרת": {
+      "total": 3761,
+      "breakdown": {
+        "Count of קבוצת עבירה": 3761
+      }
+    },
+    "נשר": {
+      "total": 803,
+      "breakdown": {
+        "Count of קבוצת עבירה": 803
+      }
+    },
+    "נתיבות": {
+      "total": 1870,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1870
+      }
+    },
+    "נתניה": {
+      "total": 8731,
+      "breakdown": {
+        "Count of קבוצת עבירה": 8731
+      }
+    },
+    "סאג'ור": {
+      "total": 145,
+      "breakdown": {
+        "Count of קבוצת עבירה": 145
+      }
+    },
+    "סביון": {
+      "total": 119,
+      "breakdown": {
+        "Count of קבוצת עבירה": 119
+      }
+    },
+    "סח'נין": {
+      "total": 1152,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1152
+      }
+    },
+    "ע'ג'ר": {
+      "total": 52,
+      "breakdown": {
+        "Count of קבוצת עבירה": 52
+      }
+    },
+    "עומר": {
+      "total": 335,
+      "breakdown": {
+        "Count of קבוצת עבירה": 335
+      }
+    },
+    "עיילבון": {
+      "total": 124,
+      "breakdown": {
+        "Count of קבוצת עבירה": 124
+      }
+    },
+    "עילוט": {
+      "total": 287,
+      "breakdown": {
+        "Count of קבוצת עבירה": 287
+      }
+    },
+    "עין מאהל": {
+      "total": 287,
+      "breakdown": {
+        "Count of קבוצת עבירה": 287
+      }
+    },
+    "עין קנייא": {
+      "total": 50,
+      "breakdown": {
+        "Count of קבוצת עבירה": 50
+      }
+    },
+    "עכו": {
+      "total": 3948,
+      "breakdown": {
+        "Count of קבוצת עבירה": 3948
+      }
+    },
+    "עמנואל": {
+      "total": 141,
+      "breakdown": {
+        "Count of קבוצת עבירה": 141
+      }
+    },
+    "עספיא": {
+      "total": 410,
+      "breakdown": {
+        "Count of קבוצת עבירה": 410
+      }
+    },
+    "עפולה": {
+      "total": 3359,
+      "breakdown": {
+        "Count of קבוצת עבירה": 3359
+      }
+    },
+    "עראבה": {
+      "total": 932,
+      "breakdown": {
+        "Count of קבוצת עבירה": 932
+      }
+    },
+    "ערד": {
+      "total": 1509,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1509
+      }
+    },
+    "ערערה": {
+      "total": 610,
+      "breakdown": {
+        "Count of קבוצת עבירה": 610
+      }
+    },
+    "ערערה-בנגב": {
+      "total": 1155,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1155
+      }
+    },
+    "פוריידיס": {
+      "total": 524,
+      "breakdown": {
+        "Count of קבוצת עבירה": 524
+      }
+    },
+    "פסוטה": {
+      "total": 75,
+      "breakdown": {
+        "Count of קבוצת עבירה": 75
+      }
+    },
+    "פקיעין": {
+      "total": 97,
+      "breakdown": {
+        "Count of קבוצת עבירה": 97
+      }
+    },
+    "פרדס חנה-כרכור": {
+      "total": 1586,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1586
+      }
+    },
+    "פרדסיה": {
+      "total": 140,
+      "breakdown": {
+        "Count of קבוצת עבירה": 140
+      }
+    },
+    "פתח תקווה": {
+      "total": 9313,
+      "breakdown": {
+        "Count of קבוצת עבירה": 9313
+      }
+    },
+    "צור הדסה": {
+      "total": 124,
+      "breakdown": {
+        "Count of קבוצת עבירה": 124
+      }
+    },
+    "צפת": {
+      "total": 1247,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1247
+      }
+    },
+    "קדומים": {
+      "total": 75,
+      "breakdown": {
+        "Count of קבוצת עבירה": 75
+      }
+    },
+    "קדימה צורן": {
+      "total": 633,
+      "breakdown": {
+        "Count of קבוצת עבירה": 633
+      }
+    },
+    "קלנסווה": {
+      "total": 1045,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1045
+      }
+    },
+    "קצרין": {
+      "total": 269,
+      "breakdown": {
+        "Count of קבוצת עבירה": 269
+      }
+    },
+    "קרית אונו": {
+      "total": 807,
+      "breakdown": {
+        "Count of קבוצת עבירה": 807
+      }
+    },
+    "קרית ארבע": {
+      "total": 272,
+      "breakdown": {
+        "Count of קבוצת עבירה": 272
+      }
+    },
+    "קרית אתא": {
+      "total": 2252,
+      "breakdown": {
+        "Count of קבוצת עבירה": 2252
+      }
+    },
+    "קרית ביאליק": {
+      "total": 1775,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1775
+      }
+    },
+    "קרית גת": {
+      "total": 3253,
+      "breakdown": {
+        "Count of קבוצת עבירה": 3253
+      }
+    },
+    "קרית טבעון": {
+      "total": 548,
+      "breakdown": {
+        "Count of קבוצת עבירה": 548
+      }
+    },
+    "קרית ים": {
+      "total": 1525,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1525
+      }
+    },
+    "קרית יערים": {
+      "total": 62,
+      "breakdown": {
+        "Count of קבוצת עבירה": 62
+      }
+    },
+    "קרית מוצקין": {
+      "total": 1614,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1614
+      }
+    },
+    "קרית מלאכי": {
+      "total": 1714,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1714
+      }
+    },
+    "קרית עקרון": {
+      "total": 513,
+      "breakdown": {
+        "Count of קבוצת עבירה": 513
+      }
+    },
+    "קרית שמונה": {
+      "total": 1034,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1034
+      }
+    },
+    "קרני שומרון": {
+      "total": 194,
+      "breakdown": {
+        "Count of קבוצת עבירה": 194
+      }
+    },
+    "ראמה": {
+      "total": 218,
+      "breakdown": {
+        "Count of קבוצת עבירה": 218
+      }
+    },
+    "ראש העין": {
+      "total": 2141,
+      "breakdown": {
+        "Count of קבוצת עבירה": 2141
+      }
+    },
+    "ראש פינה": {
+      "total": 277,
+      "breakdown": {
+        "Count of קבוצת עבירה": 277
+      }
+    },
+    "ראשון לציון": {
+      "total": 9695,
+      "breakdown": {
+        "Count of קבוצת עבירה": 9695
+      }
+    },
+    "רהט": {
+      "total": 3901,
+      "breakdown": {
+        "Count of קבוצת עבירה": 3901
+      }
+    },
+    "רחובות": {
+      "total": 4246,
+      "breakdown": {
+        "Count of קבוצת עבירה": 4246
+      }
+    },
+    "ריינה": {
+      "total": 371,
+      "breakdown": {
+        "Count of קבוצת עבירה": 371
+      }
+    },
+    "רכסים": {
+      "total": 209,
+      "breakdown": {
+        "Count of קבוצת עבירה": 209
+      }
+    },
+    "רמלה": {
+      "total": 5228,
+      "breakdown": {
+        "Count of קבוצת עבירה": 5228
+      }
+    },
+    "רמת גן": {
+      "total": 5049,
+      "breakdown": {
+        "Count of קבוצת עבירה": 5049
+      }
+    },
+    "רמת השרון": {
+      "total": 1179,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1179
+      }
+    },
+    "רמת ישי": {
+      "total": 161,
+      "breakdown": {
+        "Count of קבוצת עבירה": 161
+      }
+    },
+    "רעננה": {
+      "total": 1885,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1885
+      }
+    },
+    "שבלי": {
+      "total": 347,
+      "breakdown": {
+        "Count of קבוצת עבירה": 347
+      }
+    },
+    "שגב-שלום": {
+      "total": 867,
+      "breakdown": {
+        "Count of קבוצת עבירה": 867
+      }
+    },
+    "שדרות": {
+      "total": 1979,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1979
+      }
+    },
+    "שוהם": {
+      "total": 276,
+      "breakdown": {
+        "Count of קבוצת עבירה": 276
+      }
+    },
+    "שלומי": {
+      "total": 207,
+      "breakdown": {
+        "Count of קבוצת עבירה": 207
+      }
+    },
+    "שעב": {
+      "total": 297,
+      "breakdown": {
+        "Count of קבוצת עבירה": 297
+      }
+    },
+    "שפרעם": {
+      "total": 2182,
+      "breakdown": {
+        "Count of קבוצת עבירה": 2182
+      }
+    },
+    "תל אביב יפו": {
+      "total": 37158,
+      "breakdown": {
+        "Count of קבוצת עבירה": 37158
+      }
+    },
+    "תל מונד": {
+      "total": 267,
+      "breakdown": {
+        "Count of קבוצת עבירה": 267
+      }
+    },
+    "תל שבע": {
+      "total": 1264,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1264
+      }
+    },
+    "Grand Total": {
+      "total": 415329,
+      "breakdown": {
+        "Count of קבוצת עבירה": 415329
+      }
+    }
+  },
+  "2022": {
+    "כל הארץ": {
+      "total": 316,
+      "breakdown": {
+        "Count of קבוצת עבירה": 316
+      }
+    },
+    "סעיפי הגדרה": {
+      "total": 4,
+      "breakdown": {
+        "Count of קבוצת עבירה": 4
+      }
+    },
+    "עבירות בטחון": {
+      "total": 137,
+      "breakdown": {
+        "Count of קבוצת עבירה": 137
+      }
+    },
+    "עבירות כלפי המוסר": {
+      "total": 45,
+      "breakdown": {
+        "Count of קבוצת עבירה": 45
+      }
+    },
+    "עבירות כלפי הרכוש": {
+      "total": 187,
+      "breakdown": {
+        "Count of קבוצת עבירה": 187
+      }
+    },
+    "עבירות מין": {
+      "total": 12,
+      "breakdown": {
+        "Count of קבוצת עבירה": 12
+      }
+    },
+    "עבירות מנהליות": {
+      "total": 15,
+      "breakdown": {
+        "Count of קבוצת עבירה": 15
+      }
+    },
+    "עבירות מרמה": {
+      "total": 20,
+      "breakdown": {
+        "Count of קבוצת עבירה": 20
+      }
+    },
+    "עבירות נגד אדם": {
+      "total": 9,
+      "breakdown": {
+        "Count of קבוצת עבירה": 9
+      }
+    },
+    "עבירות נגד גוף": {
+      "total": 221,
+      "breakdown": {
+        "Count of קבוצת עבירה": 221
+      }
+    },
+    "עבירות סדר ציבורי": {
+      "total": 431,
+      "breakdown": {
+        "Count of קבוצת עבירה": 431
+      }
+    },
+    "עבירות רשוי": {
+      "total": 10,
+      "breakdown": {
+        "Count of קבוצת עבירה": 10
+      }
+    },
+    "עבירות תנועה": {
+      "total": 6,
+      "breakdown": {
+        "Count of קבוצת עבירה": 6
+      }
+    },
+    "שאר עבירות": {
+      "total": 5,
+      "breakdown": {
+        "Count of קבוצת עבירה": 5
+      }
+    },
+    "אבו גוש": {
+      "total": 503,
+      "breakdown": {
+        "Count of קבוצת עבירה": 503
+      }
+    },
+    "עבירות כלכליות": {
+      "total": 9,
+      "breakdown": {
+        "Count of קבוצת עבירה": 9
+      }
+    },
+    "אבו סנאן": {
+      "total": 627,
+      "breakdown": {
+        "Count of קבוצת עבירה": 627
+      }
+    },
+    "אבן יהודה": {
+      "total": 338,
+      "breakdown": {
+        "Count of קבוצת עבירה": 338
+      }
+    },
+    "אום אל-פחם": {
+      "total": 2027,
+      "breakdown": {
+        "Count of קבוצת עבירה": 2027
+      }
+    },
+    "שגיאת הזנה": {
+      "total": 11,
+      "breakdown": {
+        "Count of קבוצת עבירה": 11
+      }
+    },
+    "אופקים": {
+      "total": 1700,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1700
+      }
+    },
+    "אור יהודה": {
+      "total": 1433,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1433
+      }
+    },
+    "אור עקיבא": {
+      "total": 1060,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1060
+      }
+    },
+    "אורנית": {
+      "total": 158,
+      "breakdown": {
+        "Count of קבוצת עבירה": 158
+      }
+    },
+    "אזור": {
+      "total": 406,
+      "breakdown": {
+        "Count of קבוצת עבירה": 406
+      }
+    },
+    "אילת": {
+      "total": 5348,
+      "breakdown": {
+        "Count of קבוצת עבירה": 5348
+      }
+    },
+    "אכסאל": {
+      "total": 641,
+      "breakdown": {
+        "Count of קבוצת עבירה": 641
+      }
+    },
+    "אליכין": {
+      "total": 52,
+      "breakdown": {
+        "Count of קבוצת עבירה": 52
+      }
+    },
+    "אלעד": {
+      "total": 630,
+      "breakdown": {
+        "Count of קבוצת עבירה": 630
+      }
+    },
+    "אלפי מנשה": {
+      "total": 129,
+      "breakdown": {
+        "Count of קבוצת עבירה": 129
+      }
+    },
+    "אלקנה": {
+      "total": 44,
+      "breakdown": {
+        "Count of קבוצת עבירה": 44
+      }
+    },
+    "אעבלין": {
+      "total": 467,
+      "breakdown": {
+        "Count of קבוצת עבירה": 467
+      }
+    },
+    "אפרת": {
+      "total": 158,
+      "breakdown": {
+        "Count of קבוצת עבירה": 158
+      }
+    },
+    "אריאל": {
+      "total": 746,
+      "breakdown": {
+        "Count of קבוצת עבירה": 746
+      }
+    },
+    "אשדוד": {
+      "total": 9641,
+      "breakdown": {
+        "Count of קבוצת עבירה": 9641
+      }
+    },
+    "אשקלון": {
+      "total": 8278,
+      "breakdown": {
+        "Count of קבוצת עבירה": 8278
+      }
+    },
+    "באקה אל-גרביה": {
+      "total": 1352,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1352
+      }
+    },
+    "באר יעקב": {
+      "total": 885,
+      "breakdown": {
+        "Count of קבוצת עבירה": 885
+      }
+    },
+    "באר שבע": {
+      "total": 18530,
+      "breakdown": {
+        "Count of קבוצת עבירה": 18530
+      }
+    },
+    "בועיינה נוג'יידאת": {
+      "total": 315,
+      "breakdown": {
+        "Count of קבוצת עבירה": 315
+      }
+    },
+    "בוקעתא": {
+      "total": 128,
+      "breakdown": {
+        "Count of קבוצת עבירה": 128
+      }
+    },
+    "ביענה": {
+      "total": 441,
+      "breakdown": {
+        "Count of קבוצת עבירה": 441
+      }
+    },
+    "ביר אל מכסור": {
+      "total": 214,
+      "breakdown": {
+        "Count of קבוצת עבירה": 214
+      }
+    },
+    "בית אל": {
+      "total": 97,
+      "breakdown": {
+        "Count of קבוצת עבירה": 97
+      }
+    },
+    "בית אריה": {
+      "total": 84,
+      "breakdown": {
+        "Count of קבוצת עבירה": 84
+      }
+    },
+    "בית ג'ן": {
+      "total": 178,
+      "breakdown": {
+        "Count of קבוצת עבירה": 178
+      }
+    },
+    "בית דגן": {
+      "total": 228,
+      "breakdown": {
+        "Count of קבוצת עבירה": 228
+      }
+    },
+    "בית שאן": {
+      "total": 1128,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1128
+      }
+    },
+    "בית שמש": {
+      "total": 3534,
+      "breakdown": {
+        "Count of קבוצת עבירה": 3534
+      }
+    },
+    "ביתר עילית": {
+      "total": 950,
+      "breakdown": {
+        "Count of קבוצת עבירה": 950
+      }
+    },
+    "בני ברק": {
+      "total": 3797,
+      "breakdown": {
+        "Count of קבוצת עבירה": 3797
+      }
+    },
+    "בני עי''ש": {
+      "total": 258,
+      "breakdown": {
+        "Count of קבוצת עבירה": 258
+      }
+    },
+    "בנימינה-גבעת עדה": {
+      "total": 469,
+      "breakdown": {
+        "Count of קבוצת עבירה": 469
+      }
+    },
+    "בסמ''ה": {
+      "total": 278,
+      "breakdown": {
+        "Count of קבוצת עבירה": 278
+      }
+    },
+    "בסמת טבעון": {
+      "total": 318,
+      "breakdown": {
+        "Count of קבוצת עבירה": 318
+      }
+    },
+    "בת ים": {
+      "total": 6965,
+      "breakdown": {
+        "Count of קבוצת עבירה": 6965
+      }
+    },
+    "ג'דיידה-מכר": {
+      "total": 1306,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1306
+      }
+    },
+    "ג'וליס": {
+      "total": 197,
+      "breakdown": {
+        "Count of קבוצת עבירה": 197
+      }
+    },
+    "ג'יש": {
+      "total": 129,
+      "breakdown": {
+        "Count of קבוצת עבירה": 129
+      }
+    },
+    "ג'לג'וליה": {
+      "total": 679,
+      "breakdown": {
+        "Count of קבוצת עבירה": 679
+      }
+    },
+    "ג'סר א זרקא": {
+      "total": 1620,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1620
+      }
+    },
+    "ג'ת": {
+      "total": 351,
+      "breakdown": {
+        "Count of קבוצת עבירה": 351
+      }
+    },
+    "גבעת זאב": {
+      "total": 347,
+      "breakdown": {
+        "Count of קבוצת עבירה": 347
+      }
+    },
+    "גבעת שמואל": {
+      "total": 681,
+      "breakdown": {
+        "Count of קבוצת עבירה": 681
+      }
+    },
+    "גבעתיים": {
+      "total": 1513,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1513
+      }
+    },
+    "גדרה": {
+      "total": 703,
+      "breakdown": {
+        "Count of קבוצת עבירה": 703
+      }
+    },
+    "גן יבנה": {
+      "total": 627,
+      "breakdown": {
+        "Count of קבוצת עבירה": 627
+      }
+    },
+    "גני תקווה": {
+      "total": 437,
+      "breakdown": {
+        "Count of קבוצת עבירה": 437
+      }
+    },
+    "דאלית אל כרמל": {
+      "total": 461,
+      "breakdown": {
+        "Count of קבוצת עבירה": 461
+      }
+    },
+    "דבוריה": {
+      "total": 516,
+      "breakdown": {
+        "Count of קבוצת עבירה": 516
+      }
+    },
+    "דייר אל אסד": {
+      "total": 453,
+      "breakdown": {
+        "Count of קבוצת עבירה": 453
+      }
+    },
+    "דייר חנא": {
+      "total": 323,
+      "breakdown": {
+        "Count of קבוצת עבירה": 323
+      }
+    },
+    "דימונה": {
+      "total": 2738,
+      "breakdown": {
+        "Count of קבוצת עבירה": 2738
+      }
+    },
+    "הוד השרון": {
+      "total": 1761,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1761
+      }
+    },
+    "הר אדר": {
+      "total": 55,
+      "breakdown": {
+        "Count of קבוצת עבירה": 55
+      }
+    },
+    "הרצליה": {
+      "total": 3972,
+      "breakdown": {
+        "Count of קבוצת עבירה": 3972
+      }
+    },
+    "זכרון יעקב": {
+      "total": 672,
+      "breakdown": {
+        "Count of קבוצת עבירה": 672
+      }
+    },
+    "זמר": {
+      "total": 326,
+      "breakdown": {
+        "Count of קבוצת עבירה": 326
+      }
+    },
+    "זרזיר": {
+      "total": 497,
+      "breakdown": {
+        "Count of קבוצת עבירה": 497
+      }
+    },
+    "חדרה": {
+      "total": 4865,
+      "breakdown": {
+        "Count of קבוצת עבירה": 4865
+      }
+    },
+    "חולון": {
+      "total": 7374,
+      "breakdown": {
+        "Count of קבוצת עבירה": 7374
+      }
+    },
+    "חורה": {
+      "total": 818,
+      "breakdown": {
+        "Count of קבוצת עבירה": 818
+      }
+    },
+    "חורפיש": {
+      "total": 88,
+      "breakdown": {
+        "Count of קבוצת עבירה": 88
+      }
+    },
+    "חיפה": {
+      "total": 14182,
+      "breakdown": {
+        "Count of קבוצת עבירה": 14182
+      }
+    },
+    "חצור הגלילית": {
+      "total": 437,
+      "breakdown": {
+        "Count of קבוצת עבירה": 437
+      }
+    },
+    "חריש": {
+      "total": 1003,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1003
+      }
+    },
+    "טבריה": {
+      "total": 3086,
+      "breakdown": {
+        "Count of קבוצת עבירה": 3086
+      }
+    },
+    "טובא זנגריה": {
+      "total": 576,
+      "breakdown": {
+        "Count of קבוצת עבירה": 576
+      }
+    },
+    "טורעאן": {
+      "total": 551,
+      "breakdown": {
+        "Count of קבוצת עבירה": 551
+      }
+    },
+    "טייבה": {
+      "total": 2030,
+      "breakdown": {
+        "Count of קבוצת עבירה": 2030
+      }
+    },
+    "טירה": {
+      "total": 1712,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1712
+      }
+    },
+    "טירת כרמל": {
+      "total": 883,
+      "breakdown": {
+        "Count of קבוצת עבירה": 883
+      }
+    },
+    "טמרה": {
+      "total": 1931,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1931
+      }
+    },
+    "יאנוח-ג'ת": {
+      "total": 107,
+      "breakdown": {
+        "Count of קבוצת עבירה": 107
+      }
+    },
+    "יבנאל": {
+      "total": 201,
+      "breakdown": {
+        "Count of קבוצת עבירה": 201
+      }
+    },
+    "יבנה": {
+      "total": 1810,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1810
+      }
+    },
+    "יהוד-מונוסון": {
+      "total": 852,
+      "breakdown": {
+        "Count of קבוצת עבירה": 852
+      }
+    },
+    "יסוד המעלה": {
+      "total": 26,
+      "breakdown": {
+        "Count of קבוצת עבירה": 26
+      }
+    },
+    "יפיע": {
+      "total": 417,
+      "breakdown": {
+        "Count of קבוצת עבירה": 417
+      }
+    },
+    "יקנעם עילית": {
+      "total": 547,
+      "breakdown": {
+        "Count of קבוצת עבירה": 547
+      }
+    },
+    "ירוחם": {
+      "total": 595,
+      "breakdown": {
+        "Count of קבוצת עבירה": 595
+      }
+    },
+    "ירושלים": {
+      "total": 35725,
+      "breakdown": {
+        "Count of קבוצת עבירה": 35725
+      }
+    },
+    "ירכא": {
+      "total": 715,
+      "breakdown": {
+        "Count of קבוצת עבירה": 715
+      }
+    },
+    "ישוב פלסטיני": {
+      "total": 9048,
+      "breakdown": {
+        "Count of קבוצת עבירה": 9048
+      }
+    },
+    "כאבול": {
+      "total": 334,
+      "breakdown": {
+        "Count of קבוצת עבירה": 334
+      }
+    },
+    "כאוכב אבו אל היגא": {
+      "total": 80,
+      "breakdown": {
+        "Count of קבוצת עבירה": 80
+      }
+    },
+    "כוכב יאיר": {
+      "total": 155,
+      "breakdown": {
+        "Count of קבוצת עבירה": 155
+      }
+    },
+    "כסיפה": {
+      "total": 673,
+      "breakdown": {
+        "Count of קבוצת עבירה": 673
+      }
+    },
+    "כסרא-סמיע": {
+      "total": 140,
+      "breakdown": {
+        "Count of קבוצת עבירה": 140
+      }
+    },
+    "כעביה טבאש חג'אג'רה": {
+      "total": 250,
+      "breakdown": {
+        "Count of קבוצת עבירה": 250
+      }
+    },
+    "כפר ברא": {
+      "total": 142,
+      "breakdown": {
+        "Count of קבוצת עבירה": 142
+      }
+    },
+    "כפר ורדים": {
+      "total": 108,
+      "breakdown": {
+        "Count of קבוצת עבירה": 108
+      }
+    },
+    "כפר יאסיף": {
+      "total": 790,
+      "breakdown": {
+        "Count of קבוצת עבירה": 790
+      }
+    },
+    "כפר יונה": {
+      "total": 909,
+      "breakdown": {
+        "Count of קבוצת עבירה": 909
+      }
+    },
+    "כפר כמא": {
+      "total": 35,
+      "breakdown": {
+        "Count of קבוצת עבירה": 35
+      }
+    },
+    "כפר כנא": {
+      "total": 1014,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1014
+      }
+    },
+    "כפר מנדא": {
+      "total": 663,
+      "breakdown": {
+        "Count of קבוצת עבירה": 663
+      }
+    },
+    "כפר סבא": {
+      "total": 3628,
+      "breakdown": {
+        "Count of קבוצת עבירה": 3628
+      }
+    },
+    "כפר קאסם": {
+      "total": 1145,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1145
+      }
+    },
+    "כפר קרע": {
+      "total": 853,
+      "breakdown": {
+        "Count of קבוצת עבירה": 853
+      }
+    },
+    "כפר שמריהו": {
+      "total": 87,
+      "breakdown": {
+        "Count of קבוצת עבירה": 87
+      }
+    },
+    "כפר תבור": {
+      "total": 77,
+      "breakdown": {
+        "Count of קבוצת עבירה": 77
+      }
+    },
+    "כרמיאל": {
+      "total": 1545,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1545
+      }
+    },
+    "להבים": {
+      "total": 210,
+      "breakdown": {
+        "Count of קבוצת עבירה": 210
+      }
+    },
+    "לוד": {
+      "total": 5667,
+      "breakdown": {
+        "Count of קבוצת עבירה": 5667
+      }
+    },
+    "לקיה": {
+      "total": 683,
+      "breakdown": {
+        "Count of קבוצת עבירה": 683
+      }
+    },
+    "מבשרת ציון": {
+      "total": 953,
+      "breakdown": {
+        "Count of קבוצת עבירה": 953
+      }
+    },
+    "מג'ד אל כרום": {
+      "total": 835,
+      "breakdown": {
+        "Count of קבוצת עבירה": 835
+      }
+    },
+    "מג'דל שמס": {
+      "total": 227,
+      "breakdown": {
+        "Count of קבוצת עבירה": 227
+      }
+    },
+    "מגאר": {
+      "total": 483,
+      "breakdown": {
+        "Count of קבוצת עבירה": 483
+      }
+    },
+    "מגדל": {
+      "total": 85,
+      "breakdown": {
+        "Count of קבוצת עבירה": 85
+      }
+    },
+    "מגדל העמק": {
+      "total": 1168,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1168
+      }
+    },
+    "מגדל תפן": {
+      "total": 30,
+      "breakdown": {
+        "Count of קבוצת עבירה": 30
+      }
+    },
+    "מודיעין-מכבים-רעות": {
+      "total": 1934,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1934
+      }
+    },
+    "מודיעין עילית": {
+      "total": 794,
+      "breakdown": {
+        "Count of קבוצת עבירה": 794
+      }
+    },
+    "מועצה אזורית אל-בטוף": {
+      "total": 265,
+      "breakdown": {
+        "Count of קבוצת עבירה": 265
+      }
+    },
+    "מועצה אזורית אל קסום": {
+      "total": 601,
+      "breakdown": {
+        "Count of קבוצת עבירה": 601
+      }
+    },
+    "מועצה אזורית אלונה": {
+      "total": 44,
+      "breakdown": {
+        "Count of קבוצת עבירה": 44
+      }
+    },
+    "מועצה אזורית אשכול": {
+      "total": 661,
+      "breakdown": {
+        "Count of קבוצת עבירה": 661
+      }
+    },
+    "מועצה אזורית באר טוביה": {
+      "total": 1091,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1091
+      }
+    },
+    "מועצה אזורית בוסתן-אל-מרג'": {
+      "total": 240,
+      "breakdown": {
+        "Count of קבוצת עבירה": 240
+      }
+    },
+    "מועצה אזורית בני שמעון": {
+      "total": 559,
+      "breakdown": {
+        "Count of קבוצת עבירה": 559
+      }
+    },
+    "מועצה אזורית ברנר": {
+      "total": 163,
+      "breakdown": {
+        "Count of קבוצת עבירה": 163
+      }
+    },
+    "מועצה אזורית גדרות": {
+      "total": 123,
+      "breakdown": {
+        "Count of קבוצת עבירה": 123
+      }
+    },
+    "מועצה אזורית גולן": {
+      "total": 357,
+      "breakdown": {
+        "Count of קבוצת עבירה": 357
+      }
+    },
+    "מועצה אזורית גוש עציון": {
+      "total": 692,
+      "breakdown": {
+        "Count of קבוצת עבירה": 692
+      }
+    },
+    "מועצה אזורית גזר": {
+      "total": 803,
+      "breakdown": {
+        "Count of קבוצת עבירה": 803
+      }
+    },
+    "מועצה אזורית גן רווה": {
+      "total": 209,
+      "breakdown": {
+        "Count of קבוצת עבירה": 209
+      }
+    },
+    "מועצה אזורית דרום השרון": {
+      "total": 936,
+      "breakdown": {
+        "Count of קבוצת עבירה": 936
+      }
+    },
+    "מועצה אזורית הגלבוע": {
+      "total": 1072,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1072
+      }
+    },
+    "מועצה אזורית הגליל העליון": {
+      "total": 505,
+      "breakdown": {
+        "Count of קבוצת עבירה": 505
+      }
+    },
+    "מועצה אזורית הגליל התחתון": {
+      "total": 306,
+      "breakdown": {
+        "Count of קבוצת עבירה": 306
+      }
+    },
+    "מועצה אזורית הערבה התיכונה": {
+      "total": 135,
+      "breakdown": {
+        "Count of קבוצת עבירה": 135
+      }
+    },
+    "מועצה אזורית הר חברון": {
+      "total": 426,
+      "breakdown": {
+        "Count of קבוצת עבירה": 426
+      }
+    },
+    "מועצה אזורית זבולון": {
+      "total": 378,
+      "breakdown": {
+        "Count of קבוצת עבירה": 378
+      }
+    },
+    "מועצה אזורית חבל אילות": {
+      "total": 107,
+      "breakdown": {
+        "Count of קבוצת עבירה": 107
+      }
+    },
+    "מועצה אזורית חבל יבנה": {
+      "total": 213,
+      "breakdown": {
+        "Count of קבוצת עבירה": 213
+      }
+    },
+    "מועצה אזורית חבל מודיעין": {
+      "total": 956,
+      "breakdown": {
+        "Count of קבוצת עבירה": 956
+      }
+    },
+    "מועצה אזורית חוף אשקלון": {
+      "total": 665,
+      "breakdown": {
+        "Count of קבוצת עבירה": 665
+      }
+    },
+    "מועצה אזורית חוף הכרמל": {
+      "total": 1156,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1156
+      }
+    },
+    "מועצה אזורית חוף השרון": {
+      "total": 452,
+      "breakdown": {
+        "Count of קבוצת עבירה": 452
+      }
+    },
+    "מועצה אזורית יואב": {
+      "total": 354,
+      "breakdown": {
+        "Count of קבוצת עבירה": 354
+      }
+    },
+    "מועצה אזורית לב השרון": {
+      "total": 940,
+      "breakdown": {
+        "Count of קבוצת עבירה": 940
+      }
+    },
+    "מועצה אזורית לכיש": {
+      "total": 540,
+      "breakdown": {
+        "Count of קבוצת עבירה": 540
+      }
+    },
+    "מועצה אזורית מבואות החרמון": {
+      "total": 273,
+      "breakdown": {
+        "Count of קבוצת עבירה": 273
+      }
+    },
+    "מועצה אזורית מגידו": {
+      "total": 394,
+      "breakdown": {
+        "Count of קבוצת עבירה": 394
+      }
+    },
+    "מועצה אזורית מגילות ים המלח": {
+      "total": 91,
+      "breakdown": {
+        "Count of קבוצת עבירה": 91
+      }
+    },
+    "מועצה אזורית מטה אשר": {
+      "total": 1133,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1133
+      }
+    },
+    "מועצה אזורית מטה בנימין": {
+      "total": 1450,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1450
+      }
+    },
+    "מועצה אזורית מטה יהודה": {
+      "total": 1726,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1726
+      }
+    },
+    "מועצה אזורית מנשה": {
+      "total": 662,
+      "breakdown": {
+        "Count of קבוצת עבירה": 662
+      }
+    },
+    "מועצה אזורית מעלה יוסף": {
+      "total": 380,
+      "breakdown": {
+        "Count of קבוצת עבירה": 380
+      }
+    },
+    "מועצה אזורית מרום הגליל": {
+      "total": 683,
+      "breakdown": {
+        "Count of קבוצת עבירה": 683
+      }
+    },
+    "מועצה אזורית מרחבים": {
+      "total": 567,
+      "breakdown": {
+        "Count of קבוצת עבירה": 567
+      }
+    },
+    "מועצה אזורית משגב": {
+      "total": 683,
+      "breakdown": {
+        "Count of קבוצת עבירה": 683
+      }
+    },
+    "מועצה אזורית נווה מדבר": {
+      "total": 434,
+      "breakdown": {
+        "Count of קבוצת עבירה": 434
+      }
+    },
+    "מועצה אזורית נחל שורק": {
+      "total": 99,
+      "breakdown": {
+        "Count of קבוצת עבירה": 99
+      }
+    },
+    "מועצה אזורית עמק הירדן": {
+      "total": 399,
+      "breakdown": {
+        "Count of קבוצת עבירה": 399
+      }
+    },
+    "מועצה אזורית עמק המעיינות": {
+      "total": 537,
+      "breakdown": {
+        "Count of קבוצת עבירה": 537
+      }
+    },
+    "מועצה אזורית עמק חפר": {
+      "total": 1205,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1205
+      }
+    },
+    "מועצה אזורית עמק יזרעאל": {
+      "total": 959,
+      "breakdown": {
+        "Count of קבוצת עבירה": 959
+      }
+    },
+    "מועצה אזורית עמק לוד": {
+      "total": 322,
+      "breakdown": {
+        "Count of קבוצת עבירה": 322
+      }
+    },
+    "מועצה אזורית ערבות הירדן": {
+      "total": 303,
+      "breakdown": {
+        "Count of קבוצת עבירה": 303
+      }
+    },
+    "מועצה אזורית רמת נגב": {
+      "total": 367,
+      "breakdown": {
+        "Count of קבוצת עבירה": 367
+      }
+    },
+    "מועצה אזורית שדות דן": {
+      "total": 132,
+      "breakdown": {
+        "Count of קבוצת עבירה": 132
+      }
+    },
+    "מועצה אזורית שדות נגב": {
+      "total": 318,
+      "breakdown": {
+        "Count of קבוצת עבירה": 318
+      }
+    },
+    "מועצה אזורית שומרון": {
+      "total": 969,
+      "breakdown": {
+        "Count of קבוצת עבירה": 969
+      }
+    },
+    "מועצה אזורית שער הנגב": {
+      "total": 340,
+      "breakdown": {
+        "Count of קבוצת עבירה": 340
+      }
+    },
+    "מועצה אזורית שפיר": {
+      "total": 430,
+      "breakdown": {
+        "Count of קבוצת עבירה": 430
+      }
+    },
+    "מועצה אזורית תמר": {
+      "total": 493,
+      "breakdown": {
+        "Count of קבוצת עבירה": 493
+      }
+    },
+    "מזכרת בתיה": {
+      "total": 259,
+      "breakdown": {
+        "Count of קבוצת עבירה": 259
+      }
+    },
+    "מזרעה": {
+      "total": 137,
+      "breakdown": {
+        "Count of קבוצת עבירה": 137
+      }
+    },
+    "מטולה": {
+      "total": 53,
+      "breakdown": {
+        "Count of קבוצת עבירה": 53
+      }
+    },
+    "מיתר": {
+      "total": 384,
+      "breakdown": {
+        "Count of קבוצת עבירה": 384
+      }
+    },
+    "מסעדה": {
+      "total": 110,
+      "breakdown": {
+        "Count of קבוצת עבירה": 110
+      }
+    },
+    "מעיליא": {
+      "total": 121,
+      "breakdown": {
+        "Count of קבוצת עבירה": 121
+      }
+    },
+    "מעלה אדומים": {
+      "total": 1240,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1240
+      }
+    },
+    "מעלה אפרים": {
+      "total": 89,
+      "breakdown": {
+        "Count of קבוצת עבירה": 89
+      }
+    },
+    "מעלה עירון": {
+      "total": 267,
+      "breakdown": {
+        "Count of קבוצת עבירה": 267
+      }
+    },
+    "מעלות-תרשיחא": {
+      "total": 729,
+      "breakdown": {
+        "Count of קבוצת עבירה": 729
+      }
+    },
+    "מצפה רמון": {
+      "total": 343,
+      "breakdown": {
+        "Count of קבוצת עבירה": 343
+      }
+    },
+    "מקום": {
+      "total": 901,
+      "breakdown": {
+        "Count of קבוצת עבירה": 901
+      }
+    },
+    "מקום אחר": {
+      "total": 18727,
+      "breakdown": {
+        "Count of קבוצת עבירה": 18727
+      }
+    },
+    "משהד": {
+      "total": 198,
+      "breakdown": {
+        "Count of קבוצת עבירה": 198
+      }
+    },
+    "נאות חובב": {
+      "total": 66,
+      "breakdown": {
+        "Count of קבוצת עבירה": 66
+      }
+    },
+    "נהריה": {
+      "total": 2496,
+      "breakdown": {
+        "Count of קבוצת עבירה": 2496
+      }
+    },
+    "נוף הגליל": {
+      "total": 2516,
+      "breakdown": {
+        "Count of קבוצת עבירה": 2516
+      }
+    },
+    "נחף": {
+      "total": 445,
+      "breakdown": {
+        "Count of קבוצת עבירה": 445
+      }
+    },
+    "נמל תעופה בן גוריון": {
+      "total": 1435,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1435
+      }
+    },
+    "נס ציונה": {
+      "total": 1148,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1148
+      }
+    },
+    "נצרת": {
+      "total": 3589,
+      "breakdown": {
+        "Count of קבוצת עבירה": 3589
+      }
+    },
+    "נשר": {
+      "total": 934,
+      "breakdown": {
+        "Count of קבוצת עבירה": 934
+      }
+    },
+    "נתיבות": {
+      "total": 1602,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1602
+      }
+    },
+    "נתניה": {
+      "total": 9141,
+      "breakdown": {
+        "Count of קבוצת עבירה": 9141
+      }
+    },
+    "סאג'ור": {
+      "total": 132,
+      "breakdown": {
+        "Count of קבוצת עבירה": 132
+      }
+    },
+    "סביון": {
+      "total": 182,
+      "breakdown": {
+        "Count of קבוצת עבירה": 182
+      }
+    },
+    "סח'נין": {
+      "total": 1254,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1254
+      }
+    },
+    "ע'ג'ר": {
+      "total": 42,
+      "breakdown": {
+        "Count of קבוצת עבירה": 42
+      }
+    },
+    "עומר": {
+      "total": 307,
+      "breakdown": {
+        "Count of קבוצת עבירה": 307
+      }
+    },
+    "עיילבון": {
+      "total": 227,
+      "breakdown": {
+        "Count of קבוצת עבירה": 227
+      }
+    },
+    "עילוט": {
+      "total": 239,
+      "breakdown": {
+        "Count of קבוצת עבירה": 239
+      }
+    },
+    "עין מאהל": {
+      "total": 282,
+      "breakdown": {
+        "Count of קבוצת עבירה": 282
+      }
+    },
+    "עין קנייא": {
+      "total": 46,
+      "breakdown": {
+        "Count of קבוצת עבירה": 46
+      }
+    },
+    "עכו": {
+      "total": 4004,
+      "breakdown": {
+        "Count of קבוצת עבירה": 4004
+      }
+    },
+    "עמנואל": {
+      "total": 104,
+      "breakdown": {
+        "Count of קבוצת עבירה": 104
+      }
+    },
+    "עספיא": {
+      "total": 413,
+      "breakdown": {
+        "Count of קבוצת עבירה": 413
+      }
+    },
+    "עפולה": {
+      "total": 3166,
+      "breakdown": {
+        "Count of קבוצת עבירה": 3166
+      }
+    },
+    "עראבה": {
+      "total": 904,
+      "breakdown": {
+        "Count of קבוצת עבירה": 904
+      }
+    },
+    "ערד": {
+      "total": 1387,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1387
+      }
+    },
+    "ערערה": {
+      "total": 641,
+      "breakdown": {
+        "Count of קבוצת עבירה": 641
+      }
+    },
+    "ערערה-בנגב": {
+      "total": 987,
+      "breakdown": {
+        "Count of קבוצת עבירה": 987
+      }
+    },
+    "פוריידיס": {
+      "total": 465,
+      "breakdown": {
+        "Count of קבוצת עבירה": 465
+      }
+    },
+    "פסוטה": {
+      "total": 91,
+      "breakdown": {
+        "Count of קבוצת עבירה": 91
+      }
+    },
+    "פקיעין": {
+      "total": 119,
+      "breakdown": {
+        "Count of קבוצת עבירה": 119
+      }
+    },
+    "פרדס חנה-כרכור": {
+      "total": 1462,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1462
+      }
+    },
+    "פרדסיה": {
+      "total": 104,
+      "breakdown": {
+        "Count of קבוצת עבירה": 104
+      }
+    },
+    "פתח תקווה": {
+      "total": 10335,
+      "breakdown": {
+        "Count of קבוצת עבירה": 10335
+      }
+    },
+    "צור הדסה": {
+      "total": 147,
+      "breakdown": {
+        "Count of קבוצת עבירה": 147
+      }
+    },
+    "צפת": {
+      "total": 1226,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1226
+      }
+    },
+    "קדומים": {
+      "total": 77,
+      "breakdown": {
+        "Count of קבוצת עבירה": 77
+      }
+    },
+    "קדימה צורן": {
+      "total": 544,
+      "breakdown": {
+        "Count of קבוצת עבירה": 544
+      }
+    },
+    "קלנסווה": {
+      "total": 815,
+      "breakdown": {
+        "Count of קבוצת עבירה": 815
+      }
+    },
+    "קצרין": {
+      "total": 414,
+      "breakdown": {
+        "Count of קבוצת עבירה": 414
+      }
+    },
+    "קרית אונו": {
+      "total": 1001,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1001
+      }
+    },
+    "קרית ארבע": {
+      "total": 268,
+      "breakdown": {
+        "Count of קבוצת עבירה": 268
+      }
+    },
+    "קרית אתא": {
+      "total": 2356,
+      "breakdown": {
+        "Count of קבוצת עבירה": 2356
+      }
+    },
+    "קרית ביאליק": {
+      "total": 1744,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1744
+      }
+    },
+    "קרית גת": {
+      "total": 3412,
+      "breakdown": {
+        "Count of קבוצת עבירה": 3412
+      }
+    },
+    "קרית טבעון": {
+      "total": 597,
+      "breakdown": {
+        "Count of קבוצת עבירה": 597
+      }
+    },
+    "קרית ים": {
+      "total": 1607,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1607
+      }
+    },
+    "קרית יערים": {
+      "total": 48,
+      "breakdown": {
+        "Count of קבוצת עבירה": 48
+      }
+    },
+    "קרית מוצקין": {
+      "total": 1566,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1566
+      }
+    },
+    "קרית מלאכי": {
+      "total": 1566,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1566
+      }
+    },
+    "קרית עקרון": {
+      "total": 487,
+      "breakdown": {
+        "Count of קבוצת עבירה": 487
+      }
+    },
+    "קרית שמונה": {
+      "total": 1192,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1192
+      }
+    },
+    "קרני שומרון": {
+      "total": 220,
+      "breakdown": {
+        "Count of קבוצת עבירה": 220
+      }
+    },
+    "ראמה": {
+      "total": 239,
+      "breakdown": {
+        "Count of קבוצת עבירה": 239
+      }
+    },
+    "ראש העין": {
+      "total": 2041,
+      "breakdown": {
+        "Count of קבוצת עבירה": 2041
+      }
+    },
+    "ראש פינה": {
+      "total": 239,
+      "breakdown": {
+        "Count of קבוצת עבירה": 239
+      }
+    },
+    "ראשון לציון": {
+      "total": 10079,
+      "breakdown": {
+        "Count of קבוצת עבירה": 10079
+      }
+    },
+    "רהט": {
+      "total": 3529,
+      "breakdown": {
+        "Count of קבוצת עבירה": 3529
+      }
+    },
+    "רחובות": {
+      "total": 4839,
+      "breakdown": {
+        "Count of קבוצת עבירה": 4839
+      }
+    },
+    "ריינה": {
+      "total": 448,
+      "breakdown": {
+        "Count of קבוצת עבירה": 448
+      }
+    },
+    "רכסים": {
+      "total": 200,
+      "breakdown": {
+        "Count of קבוצת עבירה": 200
+      }
+    },
+    "רמלה": {
+      "total": 4811,
+      "breakdown": {
+        "Count of קבוצת עבירה": 4811
+      }
+    },
+    "רמת גן": {
+      "total": 5593,
+      "breakdown": {
+        "Count of קבוצת עבירה": 5593
+      }
+    },
+    "רמת השרון": {
+      "total": 1194,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1194
+      }
+    },
+    "רמת ישי": {
+      "total": 203,
+      "breakdown": {
+        "Count of קבוצת עבירה": 203
+      }
+    },
+    "רעננה": {
+      "total": 2019,
+      "breakdown": {
+        "Count of קבוצת עבירה": 2019
+      }
+    },
+    "שבלי": {
+      "total": 508,
+      "breakdown": {
+        "Count of קבוצת עבירה": 508
+      }
+    },
+    "שגב-שלום": {
+      "total": 801,
+      "breakdown": {
+        "Count of קבוצת עבירה": 801
+      }
+    },
+    "שדרות": {
+      "total": 2285,
+      "breakdown": {
+        "Count of קבוצת עבירה": 2285
+      }
+    },
+    "שוהם": {
+      "total": 331,
+      "breakdown": {
+        "Count of קבוצת עבירה": 331
+      }
+    },
+    "שלומי": {
+      "total": 246,
+      "breakdown": {
+        "Count of קבוצת עבירה": 246
+      }
+    },
+    "שעב": {
+      "total": 274,
+      "breakdown": {
+        "Count of קבוצת עבירה": 274
+      }
+    },
+    "שער שומרון": {
+      "total": 14,
+      "breakdown": {
+        "Count of קבוצת עבירה": 14
+      }
+    },
+    "שפרעם": {
+      "total": 2020,
+      "breakdown": {
+        "Count of קבוצת עבירה": 2020
+      }
+    },
+    "תל אביב יפו": {
+      "total": 36933,
+      "breakdown": {
+        "Count of קבוצת עבירה": 36933
+      }
+    },
+    "תל מונד": {
+      "total": 289,
+      "breakdown": {
+        "Count of קבוצת עבירה": 289
+      }
+    },
+    "תל שבע": {
+      "total": 1096,
+      "breakdown": {
+        "Count of קבוצת עבירה": 1096
+      }
+    },
+    "Grand Total": {
+      "total": 414130,
+      "breakdown": {
+        "Count of קבוצת עבירה": 414130
+      }
+    }
+  },
+  "2023": {
+    "כל הארץ": {
+      "total": 125,
+      "breakdown": {
+        "Count of StatisticGroup": 125
+      }
+    },
+    "עבירות בטחון": {
+      "total": 87,
+      "breakdown": {
+        "Count of StatisticGroup": 87
+      }
+    },
+    "עבירות כלכליות": {
+      "total": 6,
+      "breakdown": {
+        "Count of StatisticGroup": 6
+      }
+    },
+    "עבירות כלפי המוסר": {
+      "total": 42,
+      "breakdown": {
+        "Count of StatisticGroup": 42
+      }
+    },
+    "עבירות כלפי הרכוש": {
+      "total": 162,
+      "breakdown": {
+        "Count of StatisticGroup": 162
+      }
+    },
+    "עבירות מנהליות": {
+      "total": 11,
+      "breakdown": {
+        "Count of StatisticGroup": 11
+      }
+    },
+    "עבירות מרמה": {
+      "total": 14,
+      "breakdown": {
+        "Count of StatisticGroup": 14
+      }
+    },
+    "עבירות נגד גוף": {
+      "total": 158,
+      "breakdown": {
+        "Count of StatisticGroup": 158
+      }
+    },
+    "עבירות סדר ציבורי": {
+      "total": 387,
+      "breakdown": {
+        "Count of StatisticGroup": 387
+      }
+    },
+    "עבירות רשוי": {
+      "total": 1,
+      "breakdown": {
+        "Count of StatisticGroup": 1
+      }
+    },
+    "אבו גוש": {
+      "total": 336,
+      "breakdown": {
+        "Count of StatisticGroup": 336
+      }
+    },
+    "סעיפי הגדרה": {
+      "total": 3,
+      "breakdown": {
+        "Count of StatisticGroup": 3
+      }
+    },
+    "עבירות מין": {
+      "total": 4,
+      "breakdown": {
+        "Count of StatisticGroup": 4
+      }
+    },
+    "עבירות תנועה": {
+      "total": 4,
+      "breakdown": {
+        "Count of StatisticGroup": 4
+      }
+    },
+    "אבו סנאן": {
+      "total": 385,
+      "breakdown": {
+        "Count of StatisticGroup": 385
+      }
+    },
+    "עבירות נגד אדם": {
+      "total": 3,
+      "breakdown": {
+        "Count of StatisticGroup": 3
+      }
+    },
+    "אבן יהודה": {
+      "total": 244,
+      "breakdown": {
+        "Count of StatisticGroup": 244
+      }
+    },
+    "אום אל-פחם": {
+      "total": 1630,
+      "breakdown": {
+        "Count of StatisticGroup": 1630
+      }
+    },
+    "שאר עבירות": {
+      "total": 1,
+      "breakdown": {
+        "Count of StatisticGroup": 1
+      }
+    },
+    "אופקים": {
+      "total": 1100,
+      "breakdown": {
+        "Count of StatisticGroup": 1100
+      }
+    },
+    "שגיאת הזנה": {
+      "total": 2,
+      "breakdown": {
+        "Count of StatisticGroup": 2
+      }
+    },
+    "אור יהודה": {
+      "total": 1300,
+      "breakdown": {
+        "Count of StatisticGroup": 1300
+      }
+    },
+    "אור עקיבא": {
+      "total": 779,
+      "breakdown": {
+        "Count of StatisticGroup": 779
+      }
+    },
+    "אורנית": {
+      "total": 97,
+      "breakdown": {
+        "Count of StatisticGroup": 97
+      }
+    },
+    "אזור": {
+      "total": 356,
+      "breakdown": {
+        "Count of StatisticGroup": 356
+      }
+    },
+    "אילת": {
+      "total": 4149,
+      "breakdown": {
+        "Count of StatisticGroup": 4149
+      }
+    },
+    "אכסאל": {
+      "total": 524,
+      "breakdown": {
+        "Count of StatisticGroup": 524
+      }
+    },
+    "אליכין": {
+      "total": 75,
+      "breakdown": {
+        "Count of StatisticGroup": 75
+      }
+    },
+    "אלעד": {
+      "total": 538,
+      "breakdown": {
+        "Count of StatisticGroup": 538
+      }
+    },
+    "אלפי מנשה": {
+      "total": 69,
+      "breakdown": {
+        "Count of StatisticGroup": 69
+      }
+    },
+    "אלקנה": {
+      "total": 16,
+      "breakdown": {
+        "Count of StatisticGroup": 16
+      }
+    },
+    "אעבלין": {
+      "total": 401,
+      "breakdown": {
+        "Count of StatisticGroup": 401
+      }
+    },
+    "אפרת": {
+      "total": 126,
+      "breakdown": {
+        "Count of StatisticGroup": 126
+      }
+    },
+    "אריאל": {
+      "total": 515,
+      "breakdown": {
+        "Count of StatisticGroup": 515
+      }
+    },
+    "אשדוד": {
+      "total": 6806,
+      "breakdown": {
+        "Count of StatisticGroup": 6806
+      }
+    },
+    "אשקלון": {
+      "total": 5978,
+      "breakdown": {
+        "Count of StatisticGroup": 5978
+      }
+    },
+    "באקה אל-גרביה": {
+      "total": 931,
+      "breakdown": {
+        "Count of StatisticGroup": 931
+      }
+    },
+    "באר יעקב": {
+      "total": 795,
+      "breakdown": {
+        "Count of StatisticGroup": 795
+      }
+    },
+    "באר שבע": {
+      "total": 14166,
+      "breakdown": {
+        "Count of StatisticGroup": 14166
+      }
+    },
+    "בועיינה נוג'יידאת": {
+      "total": 244,
+      "breakdown": {
+        "Count of StatisticGroup": 244
+      }
+    },
+    "בוקעתא": {
+      "total": 92,
+      "breakdown": {
+        "Count of StatisticGroup": 92
+      }
+    },
+    "ביענה": {
+      "total": 241,
+      "breakdown": {
+        "Count of StatisticGroup": 241
+      }
+    },
+    "ביר אל מכסור": {
+      "total": 209,
+      "breakdown": {
+        "Count of StatisticGroup": 209
+      }
+    },
+    "בית אל": {
+      "total": 53,
+      "breakdown": {
+        "Count of StatisticGroup": 53
+      }
+    },
+    "בית אריה": {
+      "total": 106,
+      "breakdown": {
+        "Count of StatisticGroup": 106
+      }
+    },
+    "בית ג'ן": {
+      "total": 110,
+      "breakdown": {
+        "Count of StatisticGroup": 110
+      }
+    },
+    "בית דגן": {
+      "total": 158,
+      "breakdown": {
+        "Count of StatisticGroup": 158
+      }
+    },
+    "בית שאן": {
+      "total": 944,
+      "breakdown": {
+        "Count of StatisticGroup": 944
+      }
+    },
+    "בית שמש": {
+      "total": 2547,
+      "breakdown": {
+        "Count of StatisticGroup": 2547
+      }
+    },
+    "ביתר עילית": {
+      "total": 804,
+      "breakdown": {
+        "Count of StatisticGroup": 804
+      }
+    },
+    "בני ברק": {
+      "total": 2991,
+      "breakdown": {
+        "Count of StatisticGroup": 2991
+      }
+    },
+    "בני עי''ש": {
+      "total": 155,
+      "breakdown": {
+        "Count of StatisticGroup": 155
+      }
+    },
+    "בנימינה-גבעת עדה": {
+      "total": 354,
+      "breakdown": {
+        "Count of StatisticGroup": 354
+      }
+    },
+    "בסמ''ה": {
+      "total": 778,
+      "breakdown": {
+        "Count of StatisticGroup": 778
+      }
+    },
+    "בסמת טבעון": {
+      "total": 249,
+      "breakdown": {
+        "Count of StatisticGroup": 249
+      }
+    },
+    "בת ים": {
+      "total": 5648,
+      "breakdown": {
+        "Count of StatisticGroup": 5648
+      }
+    },
+    "ג'דיידה-מכר": {
+      "total": 870,
+      "breakdown": {
+        "Count of StatisticGroup": 870
+      }
+    },
+    "ג'וליס": {
+      "total": 113,
+      "breakdown": {
+        "Count of StatisticGroup": 113
+      }
+    },
+    "ג'יש": {
+      "total": 42,
+      "breakdown": {
+        "Count of StatisticGroup": 42
+      }
+    },
+    "ג'לג'וליה": {
+      "total": 430,
+      "breakdown": {
+        "Count of StatisticGroup": 430
+      }
+    },
+    "ג'סר א זרקא": {
+      "total": 1280,
+      "breakdown": {
+        "Count of StatisticGroup": 1280
+      }
+    },
+    "ג'ת": {
+      "total": 202,
+      "breakdown": {
+        "Count of StatisticGroup": 202
+      }
+    },
+    "גבעת זאב": {
+      "total": 332,
+      "breakdown": {
+        "Count of StatisticGroup": 332
+      }
+    },
+    "גבעת שמואל": {
+      "total": 501,
+      "breakdown": {
+        "Count of StatisticGroup": 501
+      }
+    },
+    "גבעתיים": {
+      "total": 1504,
+      "breakdown": {
+        "Count of StatisticGroup": 1504
+      }
+    },
+    "גדרה": {
+      "total": 551,
+      "breakdown": {
+        "Count of StatisticGroup": 551
+      }
+    },
+    "גן יבנה": {
+      "total": 499,
+      "breakdown": {
+        "Count of StatisticGroup": 499
+      }
+    },
+    "גני תקווה": {
+      "total": 352,
+      "breakdown": {
+        "Count of StatisticGroup": 352
+      }
+    },
+    "דאלית אל כרמל": {
+      "total": 349,
+      "breakdown": {
+        "Count of StatisticGroup": 349
+      }
+    },
+    "דבוריה": {
+      "total": 284,
+      "breakdown": {
+        "Count of StatisticGroup": 284
+      }
+    },
+    "דייר אל אסד": {
+      "total": 315,
+      "breakdown": {
+        "Count of StatisticGroup": 315
+      }
+    },
+    "דייר חנא": {
+      "total": 287,
+      "breakdown": {
+        "Count of StatisticGroup": 287
+      }
+    },
+    "דימונה": {
+      "total": 2054,
+      "breakdown": {
+        "Count of StatisticGroup": 2054
+      }
+    },
+    "הוד השרון": {
+      "total": 1514,
+      "breakdown": {
+        "Count of StatisticGroup": 1514
+      }
+    },
+    "הר אדר": {
+      "total": 34,
+      "breakdown": {
+        "Count of StatisticGroup": 34
+      }
+    },
+    "הרצליה": {
+      "total": 3276,
+      "breakdown": {
+        "Count of StatisticGroup": 3276
+      }
+    },
+    "זכרון יעקב": {
+      "total": 470,
+      "breakdown": {
+        "Count of StatisticGroup": 470
+      }
+    },
+    "זמר": {
+      "total": 181,
+      "breakdown": {
+        "Count of StatisticGroup": 181
+      }
+    },
+    "זרזיר": {
+      "total": 325,
+      "breakdown": {
+        "Count of StatisticGroup": 325
+      }
+    },
+    "חדרה": {
+      "total": 3480,
+      "breakdown": {
+        "Count of StatisticGroup": 3480
+      }
+    },
+    "חולון": {
+      "total": 6169,
+      "breakdown": {
+        "Count of StatisticGroup": 6169
+      }
+    },
+    "חורה": {
+      "total": 683,
+      "breakdown": {
+        "Count of StatisticGroup": 683
+      }
+    },
+    "חורפיש": {
+      "total": 80,
+      "breakdown": {
+        "Count of StatisticGroup": 80
+      }
+    },
+    "חיפה": {
+      "total": 11582,
+      "breakdown": {
+        "Count of StatisticGroup": 11582
+      }
+    },
+    "חצור הגלילית": {
+      "total": 343,
+      "breakdown": {
+        "Count of StatisticGroup": 343
+      }
+    },
+    "חריש": {
+      "total": 783,
+      "breakdown": {
+        "Count of StatisticGroup": 783
+      }
+    },
+    "טבריה": {
+      "total": 2391,
+      "breakdown": {
+        "Count of StatisticGroup": 2391
+      }
+    },
+    "טובא זנגריה": {
+      "total": 408,
+      "breakdown": {
+        "Count of StatisticGroup": 408
+      }
+    },
+    "טורעאן": {
+      "total": 521,
+      "breakdown": {
+        "Count of StatisticGroup": 521
+      }
+    },
+    "טייבה": {
+      "total": 1859,
+      "breakdown": {
+        "Count of StatisticGroup": 1859
+      }
+    },
+    "טירה": {
+      "total": 1230,
+      "breakdown": {
+        "Count of StatisticGroup": 1230
+      }
+    },
+    "טירת כרמל": {
+      "total": 696,
+      "breakdown": {
+        "Count of StatisticGroup": 696
+      }
+    },
+    "טמרה": {
+      "total": 1691,
+      "breakdown": {
+        "Count of StatisticGroup": 1691
+      }
+    },
+    "יאנוח-ג'ת": {
+      "total": 69,
+      "breakdown": {
+        "Count of StatisticGroup": 69
+      }
+    },
+    "יבנאל": {
+      "total": 143,
+      "breakdown": {
+        "Count of StatisticGroup": 143
+      }
+    },
+    "יבנה": {
+      "total": 1612,
+      "breakdown": {
+        "Count of StatisticGroup": 1612
+      }
+    },
+    "יהוד-מונוסון": {
+      "total": 683,
+      "breakdown": {
+        "Count of StatisticGroup": 683
+      }
+    },
+    "יסוד המעלה": {
+      "total": 26,
+      "breakdown": {
+        "Count of StatisticGroup": 26
+      }
+    },
+    "יפיע": {
+      "total": 295,
+      "breakdown": {
+        "Count of StatisticGroup": 295
+      }
+    },
+    "יקנעם עילית": {
+      "total": 413,
+      "breakdown": {
+        "Count of StatisticGroup": 413
+      }
+    },
+    "ירוחם": {
+      "total": 526,
+      "breakdown": {
+        "Count of StatisticGroup": 526
+      }
+    },
+    "ירושלים": {
+      "total": 26553,
+      "breakdown": {
+        "Count of StatisticGroup": 26553
+      }
+    },
+    "ירכא": {
+      "total": 501,
+      "breakdown": {
+        "Count of StatisticGroup": 501
+      }
+    },
+    "ישוב פלסטיני": {
+      "total": 12349,
+      "breakdown": {
+        "Count of StatisticGroup": 12349
+      }
+    },
+    "כאבול": {
+      "total": 356,
+      "breakdown": {
+        "Count of StatisticGroup": 356
+      }
+    },
+    "כאוכב אבו אל היגא": {
+      "total": 68,
+      "breakdown": {
+        "Count of StatisticGroup": 68
+      }
+    },
+    "כוכב יאיר": {
+      "total": 119,
+      "breakdown": {
+        "Count of StatisticGroup": 119
+      }
+    },
+    "כסיפה": {
+      "total": 540,
+      "breakdown": {
+        "Count of StatisticGroup": 540
+      }
+    },
+    "כסרא-סמיע": {
+      "total": 65,
+      "breakdown": {
+        "Count of StatisticGroup": 65
+      }
+    },
+    "כעביה טבאש חג'אג'רה": {
+      "total": 195,
+      "breakdown": {
+        "Count of StatisticGroup": 195
+      }
+    },
+    "כפר ברא": {
+      "total": 90,
+      "breakdown": {
+        "Count of StatisticGroup": 90
+      }
+    },
+    "כפר ורדים": {
+      "total": 70,
+      "breakdown": {
+        "Count of StatisticGroup": 70
+      }
+    },
+    "כפר יאסיף": {
+      "total": 592,
+      "breakdown": {
+        "Count of StatisticGroup": 592
+      }
+    },
+    "כפר יונה": {
+      "total": 616,
+      "breakdown": {
+        "Count of StatisticGroup": 616
+      }
+    },
+    "כפר כמא": {
+      "total": 34,
+      "breakdown": {
+        "Count of StatisticGroup": 34
+      }
+    },
+    "כפר כנא": {
+      "total": 832,
+      "breakdown": {
+        "Count of StatisticGroup": 832
+      }
+    },
+    "כפר מנדא": {
+      "total": 430,
+      "breakdown": {
+        "Count of StatisticGroup": 430
+      }
+    },
+    "כפר סבא": {
+      "total": 2948,
+      "breakdown": {
+        "Count of StatisticGroup": 2948
+      }
+    },
+    "כפר קאסם": {
+      "total": 902,
+      "breakdown": {
+        "Count of StatisticGroup": 902
+      }
+    },
+    "כפר קרע": {
+      "total": 803,
+      "breakdown": {
+        "Count of StatisticGroup": 803
+      }
+    },
+    "כפר שמריהו": {
+      "total": 46,
+      "breakdown": {
+        "Count of StatisticGroup": 46
+      }
+    },
+    "כפר תבור": {
+      "total": 99,
+      "breakdown": {
+        "Count of StatisticGroup": 99
+      }
+    },
+    "כרמיאל": {
+      "total": 1134,
+      "breakdown": {
+        "Count of StatisticGroup": 1134
+      }
+    },
+    "להבים": {
+      "total": 115,
+      "breakdown": {
+        "Count of StatisticGroup": 115
+      }
+    },
+    "לוד": {
+      "total": 4243,
+      "breakdown": {
+        "Count of StatisticGroup": 4243
+      }
+    },
+    "לקיה": {
+      "total": 487,
+      "breakdown": {
+        "Count of StatisticGroup": 487
+      }
+    },
+    "מבשרת ציון": {
+      "total": 678,
+      "breakdown": {
+        "Count of StatisticGroup": 678
+      }
+    },
+    "מג'ד אל כרום": {
+      "total": 662,
+      "breakdown": {
+        "Count of StatisticGroup": 662
+      }
+    },
+    "מג'דל שמס": {
+      "total": 202,
+      "breakdown": {
+        "Count of StatisticGroup": 202
+      }
+    },
+    "מגאר": {
+      "total": 398,
+      "breakdown": {
+        "Count of StatisticGroup": 398
+      }
+    },
+    "מגדל": {
+      "total": 76,
+      "breakdown": {
+        "Count of StatisticGroup": 76
+      }
+    },
+    "מגדל העמק": {
+      "total": 939,
+      "breakdown": {
+        "Count of StatisticGroup": 939
+      }
+    },
+    "מגדל תפן": {
+      "total": 12,
+      "breakdown": {
+        "Count of StatisticGroup": 12
+      }
+    },
+    "מודיעין-מכבים-רעות": {
+      "total": 1631,
+      "breakdown": {
+        "Count of StatisticGroup": 1631
+      }
+    },
+    "מודיעין עילית": {
+      "total": 548,
+      "breakdown": {
+        "Count of StatisticGroup": 548
+      }
+    },
+    "מועצה אזורית אל-בטוף": {
+      "total": 316,
+      "breakdown": {
+        "Count of StatisticGroup": 316
+      }
+    },
+    "מועצה אזורית אל קסום": {
+      "total": 605,
+      "breakdown": {
+        "Count of StatisticGroup": 605
+      }
+    },
+    "מועצה אזורית אלונה": {
+      "total": 29,
+      "breakdown": {
+        "Count of StatisticGroup": 29
+      }
+    },
+    "מועצה אזורית אשכול": {
+      "total": 1363,
+      "breakdown": {
+        "Count of StatisticGroup": 1363
+      }
+    },
+    "מועצה אזורית באר טוביה": {
+      "total": 1055,
+      "breakdown": {
+        "Count of StatisticGroup": 1055
+      }
+    },
+    "מועצה אזורית בוסתן-אל-מרג'": {
+      "total": 266,
+      "breakdown": {
+        "Count of StatisticGroup": 266
+      }
+    },
+    "מועצה אזורית בני שמעון": {
+      "total": 598,
+      "breakdown": {
+        "Count of StatisticGroup": 598
+      }
+    },
+    "מועצה אזורית ברנר": {
+      "total": 188,
+      "breakdown": {
+        "Count of StatisticGroup": 188
+      }
+    },
+    "מועצה אזורית גדרות": {
+      "total": 132,
+      "breakdown": {
+        "Count of StatisticGroup": 132
+      }
+    },
+    "מועצה אזורית גולן": {
+      "total": 378,
+      "breakdown": {
+        "Count of StatisticGroup": 378
+      }
+    },
+    "מועצה אזורית גוש עציון": {
+      "total": 638,
+      "breakdown": {
+        "Count of StatisticGroup": 638
+      }
+    },
+    "מועצה אזורית גזר": {
+      "total": 736,
+      "breakdown": {
+        "Count of StatisticGroup": 736
+      }
+    },
+    "מועצה אזורית גן רווה": {
+      "total": 238,
+      "breakdown": {
+        "Count of StatisticGroup": 238
+      }
+    },
+    "מועצה אזורית דרום השרון": {
+      "total": 769,
+      "breakdown": {
+        "Count of StatisticGroup": 769
+      }
+    },
+    "מועצה אזורית הגלבוע": {
+      "total": 889,
+      "breakdown": {
+        "Count of StatisticGroup": 889
+      }
+    },
+    "מועצה אזורית הגליל העליון": {
+      "total": 366,
+      "breakdown": {
+        "Count of StatisticGroup": 366
+      }
+    },
+    "מועצה אזורית הגליל התחתון": {
+      "total": 234,
+      "breakdown": {
+        "Count of StatisticGroup": 234
+      }
+    },
+    "מועצה אזורית הערבה התיכונה": {
+      "total": 101,
+      "breakdown": {
+        "Count of StatisticGroup": 101
+      }
+    },
+    "מועצה אזורית הר חברון": {
+      "total": 489,
+      "breakdown": {
+        "Count of StatisticGroup": 489
+      }
+    },
+    "מועצה אזורית זבולון": {
+      "total": 350,
+      "breakdown": {
+        "Count of StatisticGroup": 350
+      }
+    },
+    "מועצה אזורית חבל אילות": {
+      "total": 102,
+      "breakdown": {
+        "Count of StatisticGroup": 102
+      }
+    },
+    "מועצה אזורית חבל יבנה": {
+      "total": 128,
+      "breakdown": {
+        "Count of StatisticGroup": 128
+      }
+    },
+    "מועצה אזורית חבל מודיעין": {
+      "total": 753,
+      "breakdown": {
+        "Count of StatisticGroup": 753
+      }
+    },
+    "מועצה אזורית חוף אשקלון": {
+      "total": 599,
+      "breakdown": {
+        "Count of StatisticGroup": 599
+      }
+    },
+    "מועצה אזורית חוף הכרמל": {
+      "total": 1064,
+      "breakdown": {
+        "Count of StatisticGroup": 1064
+      }
+    },
+    "מועצה אזורית חוף השרון": {
+      "total": 592,
+      "breakdown": {
+        "Count of StatisticGroup": 592
+      }
+    },
+    "מועצה אזורית יואב": {
+      "total": 274,
+      "breakdown": {
+        "Count of StatisticGroup": 274
+      }
+    },
+    "מועצה אזורית לב השרון": {
+      "total": 760,
+      "breakdown": {
+        "Count of StatisticGroup": 760
+      }
+    },
+    "מועצה אזורית לכיש": {
+      "total": 493,
+      "breakdown": {
+        "Count of StatisticGroup": 493
+      }
+    },
+    "מועצה אזורית מבואות החרמון": {
+      "total": 253,
+      "breakdown": {
+        "Count of StatisticGroup": 253
+      }
+    },
+    "מועצה אזורית מגידו": {
+      "total": 339,
+      "breakdown": {
+        "Count of StatisticGroup": 339
+      }
+    },
+    "מועצה אזורית מגילות ים המלח": {
+      "total": 59,
+      "breakdown": {
+        "Count of StatisticGroup": 59
+      }
+    },
+    "מועצה אזורית מטה אשר": {
+      "total": 972,
+      "breakdown": {
+        "Count of StatisticGroup": 972
+      }
+    },
+    "מועצה אזורית מטה בנימין": {
+      "total": 1360,
+      "breakdown": {
+        "Count of StatisticGroup": 1360
+      }
+    },
+    "מועצה אזורית מטה יהודה": {
+      "total": 1567,
+      "breakdown": {
+        "Count of StatisticGroup": 1567
+      }
+    },
+    "מועצה אזורית מנשה": {
+      "total": 628,
+      "breakdown": {
+        "Count of StatisticGroup": 628
+      }
+    },
+    "מועצה אזורית מעלה יוסף": {
+      "total": 327,
+      "breakdown": {
+        "Count of StatisticGroup": 327
+      }
+    },
+    "מועצה אזורית מרום הגליל": {
+      "total": 576,
+      "breakdown": {
+        "Count of StatisticGroup": 576
+      }
+    },
+    "מועצה אזורית מרחבים": {
+      "total": 496,
+      "breakdown": {
+        "Count of StatisticGroup": 496
+      }
+    },
+    "מועצה אזורית משגב": {
+      "total": 568,
+      "breakdown": {
+        "Count of StatisticGroup": 568
+      }
+    },
+    "מועצה אזורית נווה מדבר": {
+      "total": 407,
+      "breakdown": {
+        "Count of StatisticGroup": 407
+      }
+    },
+    "מועצה אזורית נחל שורק": {
+      "total": 129,
+      "breakdown": {
+        "Count of StatisticGroup": 129
+      }
+    },
+    "מועצה אזורית עמק הירדן": {
+      "total": 325,
+      "breakdown": {
+        "Count of StatisticGroup": 325
+      }
+    },
+    "מועצה אזורית עמק המעיינות": {
+      "total": 464,
+      "breakdown": {
+        "Count of StatisticGroup": 464
+      }
+    },
+    "מועצה אזורית עמק חפר": {
+      "total": 1163,
+      "breakdown": {
+        "Count of StatisticGroup": 1163
+      }
+    },
+    "מועצה אזורית עמק יזרעאל": {
+      "total": 909,
+      "breakdown": {
+        "Count of StatisticGroup": 909
+      }
+    },
+    "מועצה אזורית עמק לוד": {
+      "total": 212,
+      "breakdown": {
+        "Count of StatisticGroup": 212
+      }
+    },
+    "מועצה אזורית ערבות הירדן": {
+      "total": 281,
+      "breakdown": {
+        "Count of StatisticGroup": 281
+      }
+    },
+    "מועצה אזורית רמת נגב": {
+      "total": 378,
+      "breakdown": {
+        "Count of StatisticGroup": 378
+      }
+    },
+    "מועצה אזורית שדות דן": {
+      "total": 166,
+      "breakdown": {
+        "Count of StatisticGroup": 166
+      }
+    },
+    "מועצה אזורית שדות נגב": {
+      "total": 336,
+      "breakdown": {
+        "Count of StatisticGroup": 336
+      }
+    },
+    "מועצה אזורית שומרון": {
+      "total": 754,
+      "breakdown": {
+        "Count of StatisticGroup": 754
+      }
+    },
+    "מועצה אזורית שער הנגב": {
+      "total": 475,
+      "breakdown": {
+        "Count of StatisticGroup": 475
+      }
+    },
+    "מועצה אזורית שפיר": {
+      "total": 425,
+      "breakdown": {
+        "Count of StatisticGroup": 425
+      }
+    },
+    "מועצה אזורית תמר": {
+      "total": 346,
+      "breakdown": {
+        "Count of StatisticGroup": 346
+      }
+    },
+    "מזכרת בתיה": {
+      "total": 214,
+      "breakdown": {
+        "Count of StatisticGroup": 214
+      }
+    },
+    "מזרעה": {
+      "total": 89,
+      "breakdown": {
+        "Count of StatisticGroup": 89
+      }
+    },
+    "מטולה": {
+      "total": 36,
+      "breakdown": {
+        "Count of StatisticGroup": 36
+      }
+    },
+    "מיתר": {
+      "total": 365,
+      "breakdown": {
+        "Count of StatisticGroup": 365
+      }
+    },
+    "מסעדה": {
+      "total": 113,
+      "breakdown": {
+        "Count of StatisticGroup": 113
+      }
+    },
+    "מעיליא": {
+      "total": 64,
+      "breakdown": {
+        "Count of StatisticGroup": 64
+      }
+    },
+    "מעלה אדומים": {
+      "total": 869,
+      "breakdown": {
+        "Count of StatisticGroup": 869
+      }
+    },
+    "מעלה אפרים": {
+      "total": 28,
+      "breakdown": {
+        "Count of StatisticGroup": 28
+      }
+    },
+    "מעלה עירון": {
+      "total": 214,
+      "breakdown": {
+        "Count of StatisticGroup": 214
+      }
+    },
+    "מעלות-תרשיחא": {
+      "total": 468,
+      "breakdown": {
+        "Count of StatisticGroup": 468
+      }
+    },
+    "מצפה רמון": {
+      "total": 299,
+      "breakdown": {
+        "Count of StatisticGroup": 299
+      }
+    },
+    "מקום": {
+      "total": 861,
+      "breakdown": {
+        "Count of StatisticGroup": 861
+      }
+    },
+    "מקום אחר": {
+      "total": 23839,
+      "breakdown": {
+        "Count of StatisticGroup": 23839
+      }
+    },
+    "משהד": {
+      "total": 152,
+      "breakdown": {
+        "Count of StatisticGroup": 152
+      }
+    },
+    "נאות חובב": {
+      "total": 41,
+      "breakdown": {
+        "Count of StatisticGroup": 41
+      }
+    },
+    "נהריה": {
+      "total": 1806,
+      "breakdown": {
+        "Count of StatisticGroup": 1806
+      }
+    },
+    "נוף הגליל": {
+      "total": 1759,
+      "breakdown": {
+        "Count of StatisticGroup": 1759
+      }
+    },
+    "נחף": {
+      "total": 333,
+      "breakdown": {
+        "Count of StatisticGroup": 333
+      }
+    },
+    "נמל תעופה בן גוריון": {
+      "total": 839,
+      "breakdown": {
+        "Count of StatisticGroup": 839
+      }
+    },
+    "נס ציונה": {
+      "total": 966,
+      "breakdown": {
+        "Count of StatisticGroup": 966
+      }
+    },
+    "נצרת": {
+      "total": 2625,
+      "breakdown": {
+        "Count of StatisticGroup": 2625
+      }
+    },
+    "נשר": {
+      "total": 785,
+      "breakdown": {
+        "Count of StatisticGroup": 785
+      }
+    },
+    "נתיבות": {
+      "total": 1285,
+      "breakdown": {
+        "Count of StatisticGroup": 1285
+      }
+    },
+    "נתניה": {
+      "total": 7512,
+      "breakdown": {
+        "Count of StatisticGroup": 7512
+      }
+    },
+    "סאג'ור": {
+      "total": 100,
+      "breakdown": {
+        "Count of StatisticGroup": 100
+      }
+    },
+    "סביון": {
+      "total": 60,
+      "breakdown": {
+        "Count of StatisticGroup": 60
+      }
+    },
+    "סח'נין": {
+      "total": 1076,
+      "breakdown": {
+        "Count of StatisticGroup": 1076
+      }
+    },
+    "ע'ג'ר": {
+      "total": 26,
+      "breakdown": {
+        "Count of StatisticGroup": 26
+      }
+    },
+    "עומר": {
+      "total": 259,
+      "breakdown": {
+        "Count of StatisticGroup": 259
+      }
+    },
+    "עיילבון": {
+      "total": 143,
+      "breakdown": {
+        "Count of StatisticGroup": 143
+      }
+    },
+    "עילוט": {
+      "total": 176,
+      "breakdown": {
+        "Count of StatisticGroup": 176
+      }
+    },
+    "עין מאהל": {
+      "total": 226,
+      "breakdown": {
+        "Count of StatisticGroup": 226
+      }
+    },
+    "עין קנייא": {
+      "total": 40,
+      "breakdown": {
+        "Count of StatisticGroup": 40
+      }
+    },
+    "עכו": {
+      "total": 2719,
+      "breakdown": {
+        "Count of StatisticGroup": 2719
+      }
+    },
+    "עמנואל": {
+      "total": 100,
+      "breakdown": {
+        "Count of StatisticGroup": 100
+      }
+    },
+    "עספיא": {
+      "total": 280,
+      "breakdown": {
+        "Count of StatisticGroup": 280
+      }
+    },
+    "עפולה": {
+      "total": 2314,
+      "breakdown": {
+        "Count of StatisticGroup": 2314
+      }
+    },
+    "עראבה": {
+      "total": 731,
+      "breakdown": {
+        "Count of StatisticGroup": 731
+      }
+    },
+    "ערד": {
+      "total": 1189,
+      "breakdown": {
+        "Count of StatisticGroup": 1189
+      }
+    },
+    "ערערה": {
+      "total": 669,
+      "breakdown": {
+        "Count of StatisticGroup": 669
+      }
+    },
+    "ערערה-בנגב": {
+      "total": 910,
+      "breakdown": {
+        "Count of StatisticGroup": 910
+      }
+    },
+    "פוריידיס": {
+      "total": 456,
+      "breakdown": {
+        "Count of StatisticGroup": 456
+      }
+    },
+    "פסוטה": {
+      "total": 39,
+      "breakdown": {
+        "Count of StatisticGroup": 39
+      }
+    },
+    "פקיעין": {
+      "total": 52,
+      "breakdown": {
+        "Count of StatisticGroup": 52
+      }
+    },
+    "פרדס חנה-כרכור": {
+      "total": 1165,
+      "breakdown": {
+        "Count of StatisticGroup": 1165
+      }
+    },
+    "פרדסיה": {
+      "total": 85,
+      "breakdown": {
+        "Count of StatisticGroup": 85
+      }
+    },
+    "פתח תקווה": {
+      "total": 7219,
+      "breakdown": {
+        "Count of StatisticGroup": 7219
+      }
+    },
+    "צור הדסה": {
+      "total": 112,
+      "breakdown": {
+        "Count of StatisticGroup": 112
+      }
+    },
+    "צפת": {
+      "total": 905,
+      "breakdown": {
+        "Count of StatisticGroup": 905
+      }
+    },
+    "קדומים": {
+      "total": 51,
+      "breakdown": {
+        "Count of StatisticGroup": 51
+      }
+    },
+    "קדימה צורן": {
+      "total": 440,
+      "breakdown": {
+        "Count of StatisticGroup": 440
+      }
+    },
+    "קלנסווה": {
+      "total": 721,
+      "breakdown": {
+        "Count of StatisticGroup": 721
+      }
+    },
+    "קצרין": {
+      "total": 284,
+      "breakdown": {
+        "Count of StatisticGroup": 284
+      }
+    },
+    "קרית אונו": {
+      "total": 786,
+      "breakdown": {
+        "Count of StatisticGroup": 786
+      }
+    },
+    "קרית ארבע": {
+      "total": 212,
+      "breakdown": {
+        "Count of StatisticGroup": 212
+      }
+    },
+    "קרית אתא": {
+      "total": 2039,
+      "breakdown": {
+        "Count of StatisticGroup": 2039
+      }
+    },
+    "קרית ביאליק": {
+      "total": 1417,
+      "breakdown": {
+        "Count of StatisticGroup": 1417
+      }
+    },
+    "קרית גת": {
+      "total": 2739,
+      "breakdown": {
+        "Count of StatisticGroup": 2739
+      }
+    },
+    "קרית טבעון": {
+      "total": 352,
+      "breakdown": {
+        "Count of StatisticGroup": 352
+      }
+    },
+    "קרית ים": {
+      "total": 1437,
+      "breakdown": {
+        "Count of StatisticGroup": 1437
+      }
+    },
+    "קרית יערים": {
+      "total": 52,
+      "breakdown": {
+        "Count of StatisticGroup": 52
+      }
+    },
+    "קרית מוצקין": {
+      "total": 1245,
+      "breakdown": {
+        "Count of StatisticGroup": 1245
+      }
+    },
+    "קרית מלאכי": {
+      "total": 1151,
+      "breakdown": {
+        "Count of StatisticGroup": 1151
+      }
+    },
+    "קרית עקרון": {
+      "total": 385,
+      "breakdown": {
+        "Count of StatisticGroup": 385
+      }
+    },
+    "קרית שמונה": {
+      "total": 846,
+      "breakdown": {
+        "Count of StatisticGroup": 846
+      }
+    },
+    "קרני שומרון": {
+      "total": 113,
+      "breakdown": {
+        "Count of StatisticGroup": 113
+      }
+    },
+    "ראמה": {
+      "total": 173,
+      "breakdown": {
+        "Count of StatisticGroup": 173
+      }
+    },
+    "ראש העין": {
+      "total": 1607,
+      "breakdown": {
+        "Count of StatisticGroup": 1607
+      }
+    },
+    "ראש פינה": {
+      "total": 166,
+      "breakdown": {
+        "Count of StatisticGroup": 166
+      }
+    },
+    "ראשון לציון": {
+      "total": 7324,
+      "breakdown": {
+        "Count of StatisticGroup": 7324
+      }
+    },
+    "רהט": {
+      "total": 2625,
+      "breakdown": {
+        "Count of StatisticGroup": 2625
+      }
+    },
+    "רחובות": {
+      "total": 3815,
+      "breakdown": {
+        "Count of StatisticGroup": 3815
+      }
+    },
+    "ריינה": {
+      "total": 372,
+      "breakdown": {
+        "Count of StatisticGroup": 372
+      }
+    },
+    "רכסים": {
+      "total": 187,
+      "breakdown": {
+        "Count of StatisticGroup": 187
+      }
+    },
+    "רמלה": {
+      "total": 4251,
+      "breakdown": {
+        "Count of StatisticGroup": 4251
+      }
+    },
+    "רמת גן": {
+      "total": 4951,
+      "breakdown": {
+        "Count of StatisticGroup": 4951
+      }
+    },
+    "רמת השרון": {
+      "total": 1056,
+      "breakdown": {
+        "Count of StatisticGroup": 1056
+      }
+    },
+    "רמת ישי": {
+      "total": 164,
+      "breakdown": {
+        "Count of StatisticGroup": 164
+      }
+    },
+    "רעננה": {
+      "total": 1735,
+      "breakdown": {
+        "Count of StatisticGroup": 1735
+      }
+    },
+    "שבלי": {
+      "total": 378,
+      "breakdown": {
+        "Count of StatisticGroup": 378
+      }
+    },
+    "שגב-שלום": {
+      "total": 578,
+      "breakdown": {
+        "Count of StatisticGroup": 578
+      }
+    },
+    "שדרות": {
+      "total": 1381,
+      "breakdown": {
+        "Count of StatisticGroup": 1381
+      }
+    },
+    "שוהם": {
+      "total": 349,
+      "breakdown": {
+        "Count of StatisticGroup": 349
+      }
+    },
+    "שלומי": {
+      "total": 139,
+      "breakdown": {
+        "Count of StatisticGroup": 139
+      }
+    },
+    "שעב": {
+      "total": 242,
+      "breakdown": {
+        "Count of StatisticGroup": 242
+      }
+    },
+    "שער שומרון": {
+      "total": 87,
+      "breakdown": {
+        "Count of StatisticGroup": 87
+      }
+    },
+    "שפרעם": {
+      "total": 1614,
+      "breakdown": {
+        "Count of StatisticGroup": 1614
+      }
+    },
+    "תל אביב יפו": {
+      "total": 28246,
+      "breakdown": {
+        "Count of StatisticGroup": 28246
+      }
+    },
+    "תל מונד": {
+      "total": 221,
+      "breakdown": {
+        "Count of StatisticGroup": 221
+      }
+    },
+    "תל שבע": {
+      "total": 874,
+      "breakdown": {
+        "Count of StatisticGroup": 874
+      }
+    },
+    "Grand Total": {
+      "total": 339743,
+      "breakdown": {
+        "Count of StatisticGroup": 339743
+      }
+    }
+  },
+  "2024": {
+    "כל הארץ": {
+      "total": 20,
+      "breakdown": {
+        "עבירות בטחון": 2,
+        "עבירות כלפי הרכוש": 1,
+        "עבירות נגד גוף": 2,
+        "עבירות סדר ציבורי": 7,
+        "עבירות רשוי": 2,
+        "עבירות תנועה": 6
+      }
+    },
+    "מרחב איילון הישן תא": {
+      "total": 3,
+      "breakdown": {
+        "עבירות כלכליות": 1,
+        "עבירות כלפי הרכוש": 2
+      }
+    },
+    "מרחב אילת דרום": {
+      "total": 5751,
+      "breakdown": {
+        "עבירות בטחון": 38,
+        "עבירות כלכליות": 92,
+        "עבירות כלפי המוסר": 440,
+        "עבירות כלפי הרכוש": 1604,
+        "עבירות מין": 123,
+        "עבירות מנהליות": 1,
+        "עבירות מרמה": 175,
+        "עבירות נגד אדם": 9,
+        "עבירות נגד גוף": 1117,
+        "עבירות סדר ציבורי": 2049,
+        "עבירות רשוי": 21,
+        "עבירות תנועה": 73,
+        "שאר עבירות": 9
+      }
+    },
+    "מרחב דוד ירושלים": {
+      "total": 1804,
+      "breakdown": {
+        "עבירות בטחון": 198,
+        "עבירות כלכליות": 15,
+        "עבירות כלפי המוסר": 65,
+        "עבירות כלפי הרכוש": 233,
+        "עבירות מין": 24,
+        "עבירות מרמה": 31,
+        "עבירות נגד אדם": 5,
+        "עבירות נגד גוף": 289,
+        "עבירות סדר ציבורי": 932,
+        "עבירות רשוי": 5,
+        "עבירות תנועה": 1,
+        "שאר עבירות": 6
+      }
+    },
+    "מרחב נתבג מרכז": {
+      "total": 1056,
+      "breakdown": {
+        "עבירות בטחון": 10,
+        "עבירות כלכליות": 6,
+        "עבירות כלפי המוסר": 104,
+        "עבירות כלפי הרכוש": 335,
+        "עבירות מין": 48,
+        "עבירות מנהליות": 1,
+        "עבירות מרמה": 56,
+        "עבירות נגד גוף": 71,
+        "עבירות סדר ציבורי": 418,
+        "עבירות רשוי": 1,
+        "עבירות תנועה": 5,
+        "שאר עבירות": 1
+      }
+    },
+    "תחנת אום אל פחם חוף": {
+      "total": 2312,
+      "breakdown": {
+        "עבירות בטחון": 231,
+        "עבירות כלכליות": 42,
+        "עבירות כלפי המוסר": 65,
+        "עבירות כלפי הרכוש": 575,
+        "עבירות מין": 24,
+        "עבירות מרמה": 90,
+        "עבירות נגד אדם": 12,
+        "עבירות נגד גוף": 357,
+        "עבירות סדר ציבורי": 889,
+        "עבירות רשוי": 4,
+        "עבירות תנועה": 19,
+        "שאר עבירות": 4
+      }
+    },
+    "תחנת אופקים נגב": {
+      "total": 2231,
+      "breakdown": {
+        "עבירות בטחון": 68,
+        "עבירות כלכליות": 29,
+        "עבירות כלפי המוסר": 141,
+        "עבירות כלפי הרכוש": 682,
+        "עבירות מין": 41,
+        "עבירות מנהליות": 3,
+        "עבירות מרמה": 78,
+        "עבירות נגד אדם": 17,
+        "עבירות נגד גוף": 355,
+        "עבירות סדר ציבורי": 792,
+        "עבירות רשוי": 8,
+        "עבירות תנועה": 11,
+        "שאר עבירות": 6
+      }
+    },
+    "תחנת אריאל מרחב שומרון": {
+      "total": 6582,
+      "breakdown": {
+        "עבירות בטחון": 1743,
+        "עבירות כלכליות": 89,
+        "עבירות כלפי המוסר": 140,
+        "עבירות כלפי הרכוש": 955,
+        "עבירות מין": 98,
+        "עבירות מנהליות": 2,
+        "עבירות מרמה": 148,
+        "עבירות נגד אדם": 49,
+        "עבירות נגד גוף": 568,
+        "עבירות סדר ציבורי": 2591,
+        "עבירות רשוי": 74,
+        "עבירות תנועה": 93,
+        "שאר עבירות": 32
+      }
+    },
+    "תחנת אשדוד": {
+      "total": 9762,
+      "breakdown": {
+        "עבירות בטחון": 45,
+        "עבירות כלכליות": 170,
+        "עבירות כלפי המוסר": 248,
+        "עבירות כלפי הרכוש": 2897,
+        "עבירות מין": 213,
+        "עבירות מנהליות": 2,
+        "עבירות מרמה": 442,
+        "עבירות נגד אדם": 19,
+        "עבירות נגד גוף": 1969,
+        "עבירות סדר ציבורי": 3636,
+        "עבירות רשוי": 45,
+        "עבירות תנועה": 64,
+        "שאר עבירות": 12
+      }
+    },
+    "תחנת אשקלון לכיש": {
+      "total": 7745,
+      "breakdown": {
+        "עבירות בטחון": 47,
+        "עבירות כלכליות": 144,
+        "עבירות כלפי המוסר": 417,
+        "עבירות כלפי הרכוש": 2253,
+        "עבירות מין": 177,
+        "עבירות מנהליות": 2,
+        "עבירות מרמה": 440,
+        "עבירות נגד אדם": 11,
+        "עבירות נגד גוף": 1478,
+        "עבירות סדר ציבורי": 2610,
+        "עבירות רשוי": 54,
+        "עבירות תנועה": 78,
+        "שאר עבירות": 34
+      }
+    },
+    "תחנת באקה אלערביה חוף": {
+      "total": 1529,
+      "breakdown": {
+        "עבירות בטחון": 87,
+        "עבירות כלכליות": 47,
+        "עבירות כלפי המוסר": 37,
+        "עבירות כלפי הרכוש": 325,
+        "עבירות מין": 18,
+        "עבירות מנהליות": 1,
+        "עבירות מרמה": 53,
+        "עבירות נגד אדם": 13,
+        "עבירות נגד גוף": 275,
+        "עבירות סדר ציבורי": 640,
+        "עבירות רשוי": 14,
+        "עבירות תנועה": 18,
+        "שאר עבירות": 1
+      }
+    },
+    "תחנת באר שבע נגב": {
+      "total": 16883,
+      "breakdown": {
+        "עבירות בטחון": 133,
+        "עבירות כלכליות": 266,
+        "עבירות כלפי המוסר": 751,
+        "עבירות כלפי הרכוש": 5347,
+        "עבירות מין": 385,
+        "עבירות מנהליות": 12,
+        "עבירות מרמה": 575,
+        "עבירות נגד אדם": 50,
+        "עבירות נגד גוף": 3345,
+        "עבירות סדר ציבורי": 5840,
+        "עבירות רשוי": 52,
+        "עבירות תנועה": 112,
+        "שאר עבירות": 15
+      }
+    },
+    "תחנת בית שאן עמקים צפון": {
+      "total": 1815,
+      "breakdown": {
+        "עבירות בטחון": 38,
+        "עבירות כלכליות": 11,
+        "עבירות כלפי המוסר": 168,
+        "עבירות כלפי הרכוש": 399,
+        "עבירות מין": 41,
+        "עבירות מנהליות": 6,
+        "עבירות מרמה": 46,
+        "עבירות נגד אדם": 4,
+        "עבירות נגד גוף": 322,
+        "עבירות סדר ציבורי": 734,
+        "עבירות רשוי": 10,
+        "עבירות תנועה": 13,
+        "שאר עבירות": 23
+      }
+    },
+    "תחנת בית שמש ציון": {
+      "total": 3144,
+      "breakdown": {
+        "עבירות בטחון": 25,
+        "עבירות כלכליות": 46,
+        "עבירות כלפי המוסר": 141,
+        "עבירות כלפי הרכוש": 709,
+        "עבירות מין": 120,
+        "עבירות מרמה": 210,
+        "עבירות נגד אדם": 4,
+        "עבירות נגד גוף": 631,
+        "עבירות סדר ציבורי": 1227,
+        "עבירות רשוי": 6,
+        "עבירות תנועה": 19,
+        "שאר עבירות": 6
+      }
+    },
+    "תחנת בני ברק דן": {
+      "total": 10522,
+      "breakdown": {
+        "עבירות בטחון": 38,
+        "עבירות כלכליות": 177,
+        "עבירות כלפי המוסר": 325,
+        "עבירות כלפי הרכוש": 4157,
+        "עבירות מין": 272,
+        "עבירות מנהליות": 3,
+        "עבירות מרמה": 513,
+        "עבירות נגד אדם": 14,
+        "עבירות נגד גוף": 1552,
+        "עבירות סדר ציבורי": 3270,
+        "עבירות רשוי": 28,
+        "עבירות תנועה": 153,
+        "שאר עבירות": 20
+      }
+    },
+    "תחנת בנימין שומרון": {
+      "total": 3178,
+      "breakdown": {
+        "עבירות בטחון": 876,
+        "עבירות כלכליות": 47,
+        "עבירות כלפי המוסר": 42,
+        "עבירות כלפי הרכוש": 633,
+        "עבירות מין": 34,
+        "עבירות מרמה": 75,
+        "עבירות נגד אדם": 41,
+        "עבירות נגד גוף": 277,
+        "עבירות סדר ציבורי": 1072,
+        "עבירות רשוי": 36,
+        "עבירות תנועה": 15,
+        "שאר עבירות": 30
+      }
+    },
+    "תחנת בת ים איילון החדש": {
+      "total": 7553,
+      "breakdown": {
+        "עבירות בטחון": 28,
+        "עבירות כלכליות": 203,
+        "עבירות כלפי המוסר": 334,
+        "עבירות כלפי הרכוש": 2871,
+        "עבירות מין": 111,
+        "עבירות מנהליות": 1,
+        "עבירות מרמה": 335,
+        "עבירות נגד אדם": 13,
+        "עבירות נגד גוף": 1276,
+        "עבירות סדר ציבורי": 2280,
+        "עבירות רשוי": 16,
+        "עבירות תנועה": 71,
+        "שאר עבירות": 14
+      }
+    },
+    "תחנת גבעתיים מרחב דן": {
+      "total": 2014,
+      "breakdown": {
+        "עבירות בטחון": 7,
+        "עבירות כלכליות": 36,
+        "עבירות כלפי המוסר": 83,
+        "עבירות כלפי הרכוש": 921,
+        "עבירות מין": 32,
+        "עבירות מרמה": 117,
+        "עבירות נגד אדם": 7,
+        "עבירות נגד גוף": 219,
+        "עבירות סדר ציבורי": 531,
+        "עבירות רשוי": 4,
+        "עבירות תנועה": 52,
+        "שאר עבירות": 5
+      }
+    },
+    "תחנת גולן כנרת צפון": {
+      "total": 1638,
+      "breakdown": {
+        "עבירות בטחון": 27,
+        "עבירות כלכליות": 15,
+        "עבירות כלפי המוסר": 217,
+        "עבירות כלפי הרכוש": 328,
+        "עבירות מין": 20,
+        "עבירות מרמה": 98,
+        "עבירות נגד אדם": 4,
+        "עבירות נגד גוף": 233,
+        "עבירות סדר ציבורי": 595,
+        "עבירות רשוי": 4,
+        "עבירות תנועה": 96,
+        "שאר עבירות": 1
+      }
+    },
+    "תחנת גליל מערבי מחוז חוף": {
+      "total": 3072,
+      "breakdown": {
+        "עבירות בטחון": 198,
+        "עבירות כלכליות": 34,
+        "עבירות כלפי המוסר": 220,
+        "עבירות כלפי הרכוש": 568,
+        "עבירות מין": 19,
+        "עבירות מרמה": 133,
+        "עבירות נגד אדם": 31,
+        "עבירות נגד גוף": 452,
+        "עבירות סדר ציבורי": 1364,
+        "עבירות רשוי": 21,
+        "עבירות תנועה": 21,
+        "שאר עבירות": 11
+      }
+    },
+    "תחנת גלילות ירקון": {
+      "total": 6030,
+      "breakdown": {
+        "עבירות בטחון": 30,
+        "עבירות כלכליות": 87,
+        "עבירות כלפי המוסר": 225,
+        "עבירות כלפי הרכוש": 2837,
+        "עבירות מין": 120,
+        "עבירות מנהליות": 2,
+        "עבירות מרמה": 273,
+        "עבירות נגד אדם": 17,
+        "עבירות נגד גוף": 727,
+        "עבירות סדר ציבורי": 1574,
+        "עבירות רשוי": 20,
+        "עבירות תנועה": 101,
+        "שאר עבירות": 17
+      }
+    },
+    "תחנת גסר א-זרקא חוף": {
+      "total": 1498,
+      "breakdown": {
+        "עבירות בטחון": 114,
+        "עבירות כלכליות": 4,
+        "עבירות כלפי המוסר": 52,
+        "עבירות כלפי הרכוש": 358,
+        "עבירות מין": 2,
+        "עבירות מרמה": 8,
+        "עבירות נגד אדם": 13,
+        "עבירות נגד גוף": 330,
+        "עבירות סדר ציבורי": 609,
+        "עבירות תנועה": 6,
+        "שאר עבירות": 2
+      }
+    },
+    "תחנת דימונה נגב": {
+      "total": 3535,
+      "breakdown": {
+        "עבירות בטחון": 44,
+        "עבירות כלכליות": 47,
+        "עבירות כלפי המוסר": 106,
+        "עבירות כלפי הרכוש": 1250,
+        "עבירות מין": 62,
+        "עבירות מנהליות": 23,
+        "עבירות מרמה": 117,
+        "עבירות נגד אדם": 10,
+        "עבירות נגד גוף": 639,
+        "עבירות סדר ציבורי": 1170,
+        "עבירות רשוי": 47,
+        "עבירות תנועה": 18,
+        "שאר עבירות": 2
+      }
+    },
+    "תחנת העיירות נגב": {
+      "total": 5103,
+      "breakdown": {
+        "עבירות בטחון": 392,
+        "עבירות כלכליות": 23,
+        "עבירות כלפי המוסר": 125,
+        "עבירות כלפי הרכוש": 1099,
+        "עבירות מין": 37,
+        "עבירות מרמה": 166,
+        "עבירות נגד אדם": 22,
+        "עבירות נגד גוף": 761,
+        "עבירות סדר ציבורי": 2366,
+        "עבירות רשוי": 47,
+        "עבירות תנועה": 55,
+        "שאר עבירות": 10
+      }
+    },
+    "תחנת הראל ציון": {
+      "total": 1928,
+      "breakdown": {
+        "עבירות בטחון": 16,
+        "עבירות כלכליות": 19,
+        "עבירות כלפי המוסר": 80,
+        "עבירות כלפי הרכוש": 494,
+        "עבירות מין": 42,
+        "עבירות מרמה": 112,
+        "עבירות נגד אדם": 4,
+        "עבירות נגד גוף": 326,
+        "עבירות סדר ציבורי": 797,
+        "עבירות רשוי": 4,
+        "עבירות תנועה": 29,
+        "שאר עבירות": 5
+      }
+    },
+    "תחנת זבולון מחוז חוף": {
+      "total": 10864,
+      "breakdown": {
+        "עבירות בטחון": 120,
+        "עבירות כלכליות": 209,
+        "עבירות כלפי המוסר": 512,
+        "עבירות כלפי הרכוש": 3863,
+        "עבירות מין": 227,
+        "עבירות מרמה": 515,
+        "עבירות נגד אדם": 13,
+        "עבירות נגד גוף": 1807,
+        "עבירות סדר ציבורי": 3516,
+        "עבירות רשוי": 21,
+        "עבירות תנועה": 43,
+        "שאר עבירות": 18
+      }
+    },
+    "תחנת זכרון יעקב מחוז חוף": {
+      "total": 3567,
+      "breakdown": {
+        "עבירות בטחון": 73,
+        "עבירות כלכליות": 52,
+        "עבירות כלפי המוסר": 152,
+        "עבירות כלפי הרכוש": 1325,
+        "עבירות מין": 64,
+        "עבירות מנהליות": 2,
+        "עבירות מרמה": 155,
+        "עבירות נגד אדם": 12,
+        "עבירות נגד גוף": 473,
+        "עבירות סדר ציבורי": 1220,
+        "עבירות רשוי": 7,
+        "עבירות תנועה": 14,
+        "שאר עבירות": 18
+      }
+    },
+    "תחנת חברון יהודה": {
+      "total": 2929,
+      "breakdown": {
+        "עבירות בטחון": 671,
+        "עבירות כלכליות": 31,
+        "עבירות כלפי המוסר": 26,
+        "עבירות כלפי הרכוש": 593,
+        "עבירות מין": 20,
+        "עבירות מרמה": 41,
+        "עבירות נגד אדם": 29,
+        "עבירות נגד גוף": 243,
+        "עבירות סדר ציבורי": 1199,
+        "עבירות רשוי": 23,
+        "עבירות תנועה": 10,
+        "שאר עבירות": 43
+      }
+    },
+    "תחנת חדרה מחוז חוף": {
+      "total": 6305,
+      "breakdown": {
+        "עבירות בטחון": 58,
+        "עבירות כלכליות": 92,
+        "עבירות כלפי המוסר": 343,
+        "עבירות כלפי הרכוש": 1878,
+        "עבירות מין": 136,
+        "עבירות מנהליות": 2,
+        "עבירות מרמה": 259,
+        "עבירות נגד אדם": 7,
+        "עבירות נגד גוף": 1296,
+        "עבירות סדר ציבורי": 2147,
+        "עבירות רשוי": 20,
+        "עבירות תנועה": 55,
+        "שאר עבירות": 12
+      }
+    },
+    "תחנת חולון איילון החדש": {
+      "total": 8733,
+      "breakdown": {
+        "עבירות בטחון": 43,
+        "עבירות כלכליות": 182,
+        "עבירות כלפי המוסר": 393,
+        "עבירות כלפי הרכוש": 3448,
+        "עבירות מין": 132,
+        "עבירות מנהליות": 2,
+        "עבירות מרמה": 413,
+        "עבירות נגד אדם": 26,
+        "עבירות נגד גוף": 1372,
+        "עבירות סדר ציבורי": 2576,
+        "עבירות רשוי": 2,
+        "עבירות תנועה": 129,
+        "שאר עבירות": 15
+      }
+    },
+    "תחנת חיפה מחוז חוף": {
+      "total": 11095,
+      "breakdown": {
+        "עבירות בטחון": 59,
+        "עבירות כלכליות": 393,
+        "עבירות כלפי המוסר": 502,
+        "עבירות כלפי הרכוש": 3843,
+        "עבירות מין": 151,
+        "עבירות מנהליות": 2,
+        "עבירות מרמה": 629,
+        "עבירות נגד אדם": 9,
+        "עבירות נגד גוף": 1816,
+        "עבירות סדר ציבורי": 3613,
+        "עבירות רשוי": 27,
+        "עבירות תנועה": 33,
+        "שאר עבירות": 18
+      }
+    },
+    "תחנת טבריה כנרת צפון": {
+      "total": 5614,
+      "breakdown": {
+        "עבירות בטחון": 63,
+        "עבירות כלכליות": 57,
+        "עבירות כלפי המוסר": 204,
+        "עבירות כלפי הרכוש": 1378,
+        "עבירות מין": 138,
+        "עבירות מנהליות": 2,
+        "עבירות מרמה": 154,
+        "עבירות נגד אדם": 20,
+        "עבירות נגד גוף": 1135,
+        "עבירות סדר ציבורי": 2398,
+        "עבירות רשוי": 25,
+        "עבירות תנועה": 27,
+        "שאר עבירות": 13
+      }
+    },
+    "תחנת טייבה שרון": {
+      "total": 3876,
+      "breakdown": {
+        "עבירות בטחון": 199,
+        "עבירות כלכליות": 36,
+        "עבירות כלפי המוסר": 151,
+        "עבירות כלפי הרכוש": 800,
+        "עבירות מין": 21,
+        "עבירות מנהליות": 1,
+        "עבירות מרמה": 203,
+        "עבירות נגד אדם": 12,
+        "עבירות נגד גוף": 673,
+        "עבירות סדר ציבורי": 1703,
+        "עבירות רשוי": 22,
+        "עבירות תנועה": 46,
+        "שאר עבירות": 9
+      }
+    },
+    "תחנת טירה שרון": {
+      "total": 1727,
+      "breakdown": {
+        "עבירות בטחון": 46,
+        "עבירות כלכליות": 12,
+        "עבירות כלפי המוסר": 35,
+        "עבירות כלפי הרכוש": 353,
+        "עבירות מין": 14,
+        "עבירות מרמה": 68,
+        "עבירות נגד אדם": 13,
+        "עבירות נגד גוף": 317,
+        "עבירות סדר ציבורי": 847,
+        "עבירות רשוי": 10,
+        "עבירות תנועה": 9,
+        "שאר עבירות": 3
+      }
+    },
+    "תחנת טירת הכרמל חוף": {
+      "total": 1490,
+      "breakdown": {
+        "עבירות בטחון": 19,
+        "עבירות כלכליות": 36,
+        "עבירות כלפי המוסר": 92,
+        "עבירות כלפי הרכוש": 398,
+        "עבירות מין": 29,
+        "עבירות מנהליות": 12,
+        "עבירות מרמה": 63,
+        "עבירות נגד אדם": 2,
+        "עבירות נגד גוף": 295,
+        "עבירות סדר ציבורי": 532,
+        "עבירות רשוי": 4,
+        "עבירות תנועה": 4,
+        "שאר עבירות": 4
+      }
+    },
+    "תחנת טמרה גליל צפון": {
+      "total": 3179,
+      "breakdown": {
+        "עבירות בטחון": 167,
+        "עבירות כלכליות": 26,
+        "עבירות כלפי המוסר": 122,
+        "עבירות כלפי הרכוש": 787,
+        "עבירות מין": 22,
+        "עבירות מרמה": 93,
+        "עבירות נגד אדם": 17,
+        "עבירות נגד גוף": 494,
+        "עבירות סדר ציבורי": 1395,
+        "עבירות רשוי": 13,
+        "עבירות תנועה": 38,
+        "שאר עבירות": 5
+      }
+    },
+    "תחנת יבנה שפלה": {
+      "total": 3393,
+      "breakdown": {
+        "עבירות בטחון": 28,
+        "עבירות כלכליות": 55,
+        "עבירות כלפי המוסר": 124,
+        "עבירות כלפי הרכוש": 1230,
+        "עבירות מין": 68,
+        "עבירות מרמה": 211,
+        "עבירות נגד אדם": 8,
+        "עבירות נגד גוף": 547,
+        "עבירות סדר ציבורי": 1080,
+        "עבירות רשוי": 18,
+        "עבירות תנועה": 13,
+        "שאר עבירות": 11
+      }
+    },
+    "תחנת יפו איילון החדש": {
+      "total": 6899,
+      "breakdown": {
+        "עבירות בטחון": 81,
+        "עבירות כלכליות": 86,
+        "עבירות כלפי המוסר": 435,
+        "עבירות כלפי הרכוש": 3044,
+        "עבירות מין": 87,
+        "עבירות מנהליות": 7,
+        "עבירות מרמה": 199,
+        "עבירות נגד אדם": 15,
+        "עבירות נגד גוף": 883,
+        "עבירות סדר ציבורי": 1992,
+        "עבירות רשוי": 24,
+        "עבירות תנועה": 44,
+        "שאר עבירות": 2
+      }
+    },
+    "תחנת ירדן כנרת צפון": {
+      "total": 1723,
+      "breakdown": {
+        "עבירות בטחון": 86,
+        "עבירות כלכליות": 6,
+        "עבירות כלפי המוסר": 222,
+        "עבירות כלפי הרכוש": 410,
+        "עבירות מין": 31,
+        "עבירות מרמה": 41,
+        "עבירות נגד אדם": 12,
+        "עבירות נגד גוף": 215,
+        "עבירות סדר ציבורי": 634,
+        "עבירות רשוי": 5,
+        "עבירות תנועה": 60,
+        "שאר עבירות": 1
+      }
+    },
+    "תחנת כפר כנא עמקים צפון": {
+      "total": 2285,
+      "breakdown": {
+        "עבירות בטחון": 160,
+        "עבירות כלכליות": 49,
+        "עבירות כלפי המוסר": 89,
+        "עבירות כלפי הרכוש": 316,
+        "עבירות מין": 18,
+        "עבירות מנהליות": 1,
+        "עבירות מרמה": 90,
+        "עבירות נגד אדם": 10,
+        "עבירות נגד גוף": 382,
+        "עבירות סדר ציבורי": 1132,
+        "עבירות רשוי": 2,
+        "עבירות תנועה": 27,
+        "שאר עבירות": 9
+      }
+    },
+    "תחנת כפר סבא שרון": {
+      "total": 7990,
+      "breakdown": {
+        "עבירות בטחון": 24,
+        "עבירות כלכליות": 68,
+        "עבירות כלפי המוסר": 160,
+        "עבירות כלפי הרכוש": 4012,
+        "עבירות מין": 122,
+        "עבירות מנהליות": 1,
+        "עבירות מרמה": 371,
+        "עבירות נגד אדם": 11,
+        "עבירות נגד גוף": 997,
+        "עבירות סדר ציבורי": 2083,
+        "עבירות רשוי": 12,
+        "עבירות תנועה": 109,
+        "שאר עבירות": 20
+      }
+    },
+    "תחנת כפר קאסם שרון": {
+      "total": 2094,
+      "breakdown": {
+        "עבירות בטחון": 160,
+        "עבירות כלכליות": 12,
+        "עבירות כלפי המוסר": 85,
+        "עבירות כלפי הרכוש": 403,
+        "עבירות מין": 8,
+        "עבירות מרמה": 111,
+        "עבירות נגד אדם": 10,
+        "עבירות נגד גוף": 330,
+        "עבירות סדר ציבורי": 904,
+        "עבירות רשוי": 52,
+        "עבירות תנועה": 15,
+        "שאר עבירות": 4
+      }
+    },
+    "תחנת כרמיאל גליל צפון": {
+      "total": 2270,
+      "breakdown": {
+        "עבירות בטחון": 43,
+        "עבירות כלכליות": 39,
+        "עבירות כלפי המוסר": 67,
+        "עבירות כלפי הרכוש": 675,
+        "עבירות מין": 42,
+        "עבירות מרמה": 153,
+        "עבירות נגד אדם": 7,
+        "עבירות נגד גוף": 454,
+        "עבירות סדר ציבורי": 759,
+        "עבירות רשוי": 9,
+        "עבירות תנועה": 20,
+        "שאר עבירות": 2
+      }
+    },
+    "תחנת לב הבירה ציון": {
+      "total": 9895,
+      "breakdown": {
+        "עבירות בטחון": 277,
+        "עבירות כלכליות": 174,
+        "עבירות כלפי המוסר": 491,
+        "עבירות כלפי הרכוש": 2890,
+        "עבירות מין": 317,
+        "עבירות מנהליות": 2,
+        "עבירות מרמה": 722,
+        "עבירות נגד אדם": 23,
+        "עבירות נגד גוף": 1575,
+        "עבירות סדר ציבורי": 3320,
+        "עבירות רשוי": 14,
+        "עבירות תנועה": 72,
+        "שאר עבירות": 18
+      }
+    },
+    "תחנת לב תא ירקון": {
+      "total": 13756,
+      "breakdown": {
+        "עבירות בטחון": 28,
+        "עבירות כלכליות": 284,
+        "עבירות כלפי המוסר": 426,
+        "עבירות כלפי הרכוש": 8300,
+        "עבירות מין": 169,
+        "עבירות מנהליות": 5,
+        "עבירות מרמה": 501,
+        "עבירות נגד אדם": 21,
+        "עבירות נגד גוף": 1247,
+        "עבירות סדר ציבורי": 2641,
+        "עבירות רשוי": 16,
+        "עבירות תנועה": 99,
+        "שאר עבירות": 19
+      }
+    },
+    "תחנת לוד שפלה": {
+      "total": 5722,
+      "breakdown": {
+        "עבירות בטחון": 188,
+        "עבירות כלכליות": 75,
+        "עבירות כלפי המוסר": 303,
+        "עבירות כלפי הרכוש": 1945,
+        "עבירות מין": 102,
+        "עבירות מנהליות": 3,
+        "עבירות מרמה": 336,
+        "עבירות נגד אדם": 28,
+        "עבירות נגד גוף": 807,
+        "עבירות סדר ציבורי": 1860,
+        "עבירות רשוי": 20,
+        "עבירות תנועה": 45,
+        "שאר עבירות": 10
+      }
+    },
+    "תחנת מגדל העמק עמקים צפון": {
+      "total": 3413,
+      "breakdown": {
+        "עבירות בטחון": 136,
+        "עבירות כלכליות": 54,
+        "עבירות כלפי המוסר": 144,
+        "עבירות כלפי הרכוש": 1066,
+        "עבירות מין": 70,
+        "עבירות מרמה": 139,
+        "עבירות נגד אדם": 7,
+        "עבירות נגד גוף": 531,
+        "עבירות סדר ציבורי": 1240,
+        "עבירות רשוי": 7,
+        "עבירות תנועה": 15,
+        "שאר עבירות": 4
+      }
+    },
+    "תחנת מגדל כרום גליל צפון": {
+      "total": 2061,
+      "breakdown": {
+        "עבירות בטחון": 91,
+        "עבירות כלכליות": 33,
+        "עבירות כלפי המוסר": 86,
+        "עבירות כלפי הרכוש": 453,
+        "עבירות מין": 15,
+        "עבירות מרמה": 90,
+        "עבירות נגד אדם": 10,
+        "עבירות נגד גוף": 345,
+        "עבירות סדר ציבורי": 906,
+        "עבירות רשוי": 8,
+        "עבירות תנועה": 14,
+        "שאר עבירות": 10
+      }
+    },
+    "תחנת מודיעין עילית שומרון": {
+      "total": 2344,
+      "breakdown": {
+        "עבירות בטחון": 358,
+        "עבירות כלכליות": 16,
+        "עבירות כלפי המוסר": 84,
+        "עבירות כלפי הרכוש": 578,
+        "עבירות מין": 64,
+        "עבירות מנהליות": 2,
+        "עבירות מרמה": 109,
+        "עבירות נגד אדם": 20,
+        "עבירות נגד גוף": 292,
+        "עבירות סדר ציבורי": 743,
+        "עבירות רשוי": 27,
+        "עבירות תנועה": 37,
+        "שאר עבירות": 14
+      }
+    },
+    "תחנת מודיעין שפלה": {
+      "total": 2282,
+      "breakdown": {
+        "עבירות בטחון": 28,
+        "עבירות כלכליות": 11,
+        "עבירות כלפי המוסר": 90,
+        "עבירות כלפי הרכוש": 1056,
+        "עבירות מין": 49,
+        "עבירות מנהליות": 1,
+        "עבירות מרמה": 114,
+        "עבירות נגד אדם": 5,
+        "עבירות נגד גוף": 255,
+        "עבירות סדר ציבורי": 579,
+        "עבירות רשוי": 4,
+        "עבירות תנועה": 67,
+        "שאר עבירות": 23
+      }
+    },
+    "תחנת מוריה ציון": {
+      "total": 8487,
+      "breakdown": {
+        "עבירות בטחון": 137,
+        "עבירות כלכליות": 139,
+        "עבירות כלפי המוסר": 414,
+        "עבירות כלפי הרכוש": 2544,
+        "עבירות מין": 228,
+        "עבירות מנהליות": 6,
+        "עבירות מרמה": 386,
+        "עבירות נגד אדם": 15,
+        "עבירות נגד גוף": 1456,
+        "עבירות סדר ציבורי": 3065,
+        "עבירות רשוי": 15,
+        "עבירות תנועה": 61,
+        "שאר עבירות": 21
+      }
+    },
+    "תחנת מטה יהודה מגב י-ם": {
+      "total": 1249,
+      "breakdown": {
+        "עבירות בטחון": 16,
+        "עבירות כלכליות": 12,
+        "עבירות כלפי המוסר": 45,
+        "עבירות כלפי הרכוש": 461,
+        "עבירות מין": 25,
+        "עבירות מנהליות": 2,
+        "עבירות מרמה": 86,
+        "עבירות נגד אדם": 1,
+        "עבירות נגד גוף": 174,
+        "עבירות סדר ציבורי": 391,
+        "עבירות רשוי": 11,
+        "עבירות תנועה": 17,
+        "שאר עבירות": 8
+      }
+    },
+    "תחנת מסובים דן": {
+      "total": 5747,
+      "breakdown": {
+        "עבירות בטחון": 37,
+        "עבירות כלכליות": 84,
+        "עבירות כלפי המוסר": 143,
+        "עבירות כלפי הרכוש": 2181,
+        "עבירות מין": 113,
+        "עבירות מנהליות": 1,
+        "עבירות מרמה": 354,
+        "עבירות נגד אדם": 11,
+        "עבירות נגד גוף": 801,
+        "עבירות סדר ציבורי": 1889,
+        "עבירות רשוי": 17,
+        "עבירות תנועה": 91,
+        "שאר עבירות": 25
+      }
+    },
+    "תחנת מעלה אדומים והבקעה יהודה": {
+      "total": 2057,
+      "breakdown": {
+        "עבירות בטחון": 252,
+        "עבירות כלכליות": 14,
+        "עבירות כלפי המוסר": 92,
+        "עבירות כלפי הרכוש": 438,
+        "עבירות מין": 54,
+        "עבירות מנהליות": 1,
+        "עבירות מרמה": 120,
+        "עבירות נגד אדם": 19,
+        "עבירות נגד גוף": 295,
+        "עבירות סדר ציבורי": 723,
+        "עבירות רשוי": 6,
+        "עבירות תנועה": 12,
+        "שאר עבירות": 31
+      }
+    },
+    "תחנת מעלות תרשיחא כנרת צפון": {
+      "total": 1331,
+      "breakdown": {
+        "עבירות בטחון": 30,
+        "עבירות כלכליות": 29,
+        "עבירות כלפי המוסר": 55,
+        "עבירות כלפי הרכוש": 337,
+        "עבירות מין": 22,
+        "עבירות מרמה": 114,
+        "עבירות נגד אדם": 4,
+        "עבירות נגד גוף": 273,
+        "עבירות סדר ציבורי": 457,
+        "עבירות רשוי": 3,
+        "עבירות תנועה": 3,
+        "שאר עבירות": 4
+      }
+    },
+    "תחנת משגב גליל צפון": {
+      "total": 4077,
+      "breakdown": {
+        "עבירות בטחון": 213,
+        "עבירות כלכליות": 49,
+        "עבירות כלפי המוסר": 53,
+        "עבירות כלפי הרכוש": 1107,
+        "עבירות מין": 26,
+        "עבירות מנהליות": 1,
+        "עבירות מרמה": 157,
+        "עבירות נגד אדם": 27,
+        "עבירות נגד גוף": 637,
+        "עבירות סדר ציבורי": 1753,
+        "עבירות רשוי": 10,
+        "עבירות תנועה": 35,
+        "שאר עבירות": 9
+      }
+    },
+    "תחנת נהריה מחוז חוף": {
+      "total": 3228,
+      "breakdown": {
+        "עבירות בטחון": 52,
+        "עבירות כלכליות": 77,
+        "עבירות כלפי המוסר": 245,
+        "עבירות כלפי הרכוש": 835,
+        "עבירות מין": 58,
+        "עבירות מרמה": 180,
+        "עבירות נגד אדם": 5,
+        "עבירות נגד גוף": 596,
+        "עבירות סדר ציבורי": 1128,
+        "עבירות רשוי": 18,
+        "עבירות תנועה": 21,
+        "שאר עבירות": 13
+      }
+    },
+    "תחנת נוף הגליל עמקים צפון": {
+      "total": 2545,
+      "breakdown": {
+        "עבירות בטחון": 23,
+        "עבירות כלכליות": 67,
+        "עבירות כלפי המוסר": 87,
+        "עבירות כלפי הרכוש": 637,
+        "עבירות מין": 45,
+        "עבירות מרמה": 99,
+        "עבירות נגד אדם": 7,
+        "עבירות נגד גוף": 499,
+        "עבירות סדר ציבורי": 1052,
+        "עבירות רשוי": 7,
+        "עבירות תנועה": 16,
+        "שאר עבירות": 6
+      }
+    },
+    "תחנת נצרת עמקים צפון": {
+      "total": 4743,
+      "breakdown": {
+        "עבירות בטחון": 344,
+        "עבירות כלכליות": 128,
+        "עבירות כלפי המוסר": 185,
+        "עבירות כלפי הרכוש": 1036,
+        "עבירות מין": 43,
+        "עבירות מנהליות": 1,
+        "עבירות מרמה": 196,
+        "עבירות נגד אדם": 25,
+        "עבירות נגד גוף": 787,
+        "עבירות סדר ציבורי": 1947,
+        "עבירות רשוי": 10,
+        "עבירות תנועה": 28,
+        "שאר עבירות": 13
+      }
+    },
+    "תחנת נשר מחוז חוף": {
+      "total": 1931,
+      "breakdown": {
+        "עבירות בטחון": 41,
+        "עבירות כלכליות": 44,
+        "עבירות כלפי המוסר": 96,
+        "עבירות כלפי הרכוש": 506,
+        "עבירות מין": 29,
+        "עבירות מנהליות": 6,
+        "עבירות מרמה": 106,
+        "עבירות נגד אדם": 3,
+        "עבירות נגד גוף": 354,
+        "עבירות סדר ציבורי": 734,
+        "עבירות רשוי": 8,
+        "עבירות תנועה": 4
+      }
+    },
+    "תחנת נתיבות נגב": {
+      "total": 2262,
+      "breakdown": {
+        "עבירות בטחון": 15,
+        "עבירות כלכליות": 23,
+        "עבירות כלפי המוסר": 137,
+        "עבירות כלפי הרכוש": 729,
+        "עבירות מין": 59,
+        "עבירות מנהליות": 2,
+        "עבירות מרמה": 110,
+        "עבירות נגד אדם": 3,
+        "עבירות נגד גוף": 392,
+        "עבירות סדר ציבורי": 757,
+        "עבירות רשוי": 11,
+        "עבירות תנועה": 16,
+        "שאר עבירות": 8
+      }
+    },
+    "תחנת נתניה שרון": {
+      "total": 9216,
+      "breakdown": {
+        "עבירות בטחון": 40,
+        "עבירות כלכליות": 168,
+        "עבירות כלפי המוסר": 317,
+        "עבירות כלפי הרכוש": 3988,
+        "עבירות מין": 125,
+        "עבירות מנהליות": 3,
+        "עבירות מרמה": 399,
+        "עבירות נגד אדם": 7,
+        "עבירות נגד גוף": 1635,
+        "עבירות סדר ציבורי": 2445,
+        "עבירות רשוי": 24,
+        "עבירות תנועה": 39,
+        "שאר עבירות": 26
+      }
+    },
+    "תחנת עוז קדם": {
+      "total": 2586,
+      "breakdown": {
+        "עבירות בטחון": 118,
+        "עבירות כלכליות": 33,
+        "עבירות כלפי המוסר": 117,
+        "עבירות כלפי הרכוש": 626,
+        "עבירות מין": 60,
+        "עבירות מרמה": 145,
+        "עבירות נגד אדם": 7,
+        "עבירות נגד גוף": 470,
+        "עבירות סדר ציבורי": 975,
+        "עבירות רשוי": 12,
+        "עבירות תנועה": 14,
+        "שאר עבירות": 9
+      }
+    },
+    "תחנת עירון מחוז חוף": {
+      "total": 2686,
+      "breakdown": {
+        "עבירות בטחון": 109,
+        "עבירות כלכליות": 49,
+        "עבירות כלפי המוסר": 144,
+        "עבירות כלפי הרכוש": 660,
+        "עבירות מין": 45,
+        "עבירות מרמה": 106,
+        "עבירות נגד אדם": 11,
+        "עבירות נגד גוף": 476,
+        "עבירות סדר ציבורי": 1045,
+        "עבירות רשוי": 8,
+        "עבירות תנועה": 28,
+        "שאר עבירות": 5
+      }
+    },
+    "תחנת עכו מחוז חוף": {
+      "total": 4069,
+      "breakdown": {
+        "עבירות בטחון": 52,
+        "עבירות כלכליות": 37,
+        "עבירות כלפי המוסר": 290,
+        "עבירות כלפי הרכוש": 1235,
+        "עבירות מין": 37,
+        "עבירות מנהליות": 2,
+        "עבירות מרמה": 136,
+        "עבירות נגד אדם": 13,
+        "עבירות נגד גוף": 719,
+        "עבירות סדר ציבורי": 1475,
+        "עבירות רשוי": 18,
+        "עבירות תנועה": 43,
+        "שאר עבירות": 12
+      }
+    },
+    "תחנת עפולה עמקים צפון": {
+      "total": 3954,
+      "breakdown": {
+        "עבירות בטחון": 69,
+        "עבירות כלכליות": 71,
+        "עבירות כלפי המוסר": 167,
+        "עבירות כלפי הרכוש": 1114,
+        "עבירות מין": 65,
+        "עבירות מנהליות": 1,
+        "עבירות מרמה": 126,
+        "עבירות נגד אדם": 16,
+        "עבירות נגד גוף": 686,
+        "עבירות סדר ציבורי": 1580,
+        "עבירות רשוי": 16,
+        "עבירות תנועה": 20,
+        "שאר עבירות": 23
+      }
+    },
+    "תחנת עציון יהודה": {
+      "total": 3703,
+      "breakdown": {
+        "עבירות בטחון": 601,
+        "עבירות כלכליות": 38,
+        "עבירות כלפי המוסר": 55,
+        "עבירות כלפי הרכוש": 732,
+        "עבירות מין": 132,
+        "עבירות מנהליות": 1,
+        "עבירות מרמה": 256,
+        "עבירות נגד אדם": 22,
+        "עבירות נגד גוף": 343,
+        "עבירות סדר ציבורי": 1465,
+        "עבירות רשוי": 20,
+        "עבירות תנועה": 24,
+        "שאר עבירות": 14
+      }
+    },
+    "תחנת ערד נגב": {
+      "total": 2145,
+      "breakdown": {
+        "עבירות בטחון": 25,
+        "עבירות כלכליות": 49,
+        "עבירות כלפי המוסר": 120,
+        "עבירות כלפי הרכוש": 516,
+        "עבירות מין": 55,
+        "עבירות מנהליות": 1,
+        "עבירות מרמה": 98,
+        "עבירות נגד אדם": 8,
+        "עבירות נגד גוף": 368,
+        "עבירות סדר ציבורי": 860,
+        "עבירות רשוי": 10,
+        "עבירות תנועה": 27,
+        "שאר עבירות": 8
+      }
+    },
+    "תחנת ערוער נגב": {
+      "total": 3046,
+      "breakdown": {
+        "עבירות בטחון": 276,
+        "עבירות כלכליות": 19,
+        "עבירות כלפי המוסר": 32,
+        "עבירות כלפי הרכוש": 449,
+        "עבירות מין": 17,
+        "עבירות מרמה": 101,
+        "עבירות נגד אדם": 13,
+        "עבירות נגד גוף": 561,
+        "עבירות סדר ציבורי": 1540,
+        "עבירות רשוי": 11,
+        "עבירות תנועה": 22,
+        "שאר עבירות": 5
+      }
+    },
+    "תחנת פתח תקוה שרון": {
+      "total": 9720,
+      "breakdown": {
+        "עבירות בטחון": 115,
+        "עבירות כלכליות": 229,
+        "עבירות כלפי המוסר": 214,
+        "עבירות כלפי הרכוש": 4344,
+        "עבירות מין": 160,
+        "עבירות מנהליות": 9,
+        "עבירות מרמה": 426,
+        "עבירות נגד אדם": 34,
+        "עבירות נגד גוף": 1529,
+        "עבירות סדר ציבורי": 2524,
+        "עבירות רשוי": 18,
+        "עבירות תנועה": 82,
+        "שאר עבירות": 36
+      }
+    },
+    "תחנת צפת כנרת צפון": {
+      "total": 1658,
+      "breakdown": {
+        "עבירות בטחון": 29,
+        "עבירות כלכליות": 16,
+        "עבירות כלפי המוסר": 61,
+        "עבירות כלפי הרכוש": 533,
+        "עבירות מין": 37,
+        "עבירות מנהליות": 1,
+        "עבירות מרמה": 80,
+        "עבירות נגד אדם": 2,
+        "עבירות נגד גוף": 304,
+        "עבירות סדר ציבורי": 583,
+        "עבירות רשוי": 5,
+        "עבירות תנועה": 5,
+        "שאר עבירות": 2
+      }
+    },
+    "תחנת ק.מלאכי לכיש": {
+      "total": 3852,
+      "breakdown": {
+        "עבירות בטחון": 16,
+        "עבירות כלכליות": 66,
+        "עבירות כלפי המוסר": 105,
+        "עבירות כלפי הרכוש": 1326,
+        "עבירות מין": 67,
+        "עבירות מרמה": 192,
+        "עבירות נגד אדם": 14,
+        "עבירות נגד גוף": 602,
+        "עבירות סדר ציבורי": 1402,
+        "עבירות רשוי": 23,
+        "עבירות תנועה": 28,
+        "שאר עבירות": 11
+      }
+    },
+    "תחנת ק.שמונה כנרת צפון": {
+      "total": 712,
+      "breakdown": {
+        "עבירות בטחון": 14,
+        "עבירות כלכליות": 7,
+        "עבירות כלפי המוסר": 50,
+        "עבירות כלפי הרכוש": 304,
+        "עבירות מין": 20,
+        "עבירות מרמה": 39,
+        "עבירות נגד גוף": 83,
+        "עבירות סדר ציבורי": 186,
+        "עבירות תנועה": 9
+      }
+    },
+    "תחנת קרית גת לכיש": {
+      "total": 4666,
+      "breakdown": {
+        "עבירות בטחון": 41,
+        "עבירות כלכליות": 88,
+        "עבירות כלפי המוסר": 242,
+        "עבירות כלפי הרכוש": 1418,
+        "עבירות מין": 154,
+        "עבירות מרמה": 159,
+        "עבירות נגד אדם": 9,
+        "עבירות נגד גוף": 872,
+        "עבירות סדר ציבורי": 1602,
+        "עבירות רשוי": 35,
+        "עבירות תנועה": 39,
+        "שאר עבירות": 7
+      }
+    },
+    "תחנת ראש העין שרון": {
+      "total": 3859,
+      "breakdown": {
+        "עבירות בטחון": 14,
+        "עבירות כלכליות": 58,
+        "עבירות כלפי המוסר": 128,
+        "עבירות כלפי הרכוש": 1231,
+        "עבירות מין": 114,
+        "עבירות מנהליות": 1,
+        "עבירות מרמה": 222,
+        "עבירות נגד אדם": 3,
+        "עבירות נגד גוף": 671,
+        "עבירות סדר ציבורי": 1346,
+        "עבירות רשוי": 23,
+        "עבירות תנועה": 23,
+        "שאר עבירות": 25
+      }
+    },
+    "תחנת ראשון לציון שפלה": {
+      "total": 10474,
+      "breakdown": {
+        "עבירות בטחון": 37,
+        "עבירות כלכליות": 211,
+        "עבירות כלפי המוסר": 246,
+        "עבירות כלפי הרכוש": 4578,
+        "עבירות מין": 155,
+        "עבירות מרמה": 534,
+        "עבירות נגד אדם": 27,
+        "עבירות נגד גוף": 1673,
+        "עבירות סדר ציבורי": 2754,
+        "עבירות רשוי": 52,
+        "עבירות תנועה": 143,
+        "שאר עבירות": 64
+      }
+    },
+    "תחנת רהט נגב": {
+      "total": 4352,
+      "breakdown": {
+        "עבירות בטחון": 270,
+        "עבירות כלכליות": 40,
+        "עבירות כלפי המוסר": 139,
+        "עבירות כלפי הרכוש": 1005,
+        "עבירות מין": 30,
+        "עבירות מנהליות": 1,
+        "עבירות מרמה": 155,
+        "עבירות נגד אדם": 26,
+        "עבירות נגד גוף": 693,
+        "עבירות סדר ציבורי": 1854,
+        "עבירות רשוי": 76,
+        "עבירות תנועה": 53,
+        "שאר עבירות": 10
+      }
+    },
+    "תחנת רחובות שפלה": {
+      "total": 7276,
+      "breakdown": {
+        "עבירות בטחון": 28,
+        "עבירות כלכליות": 127,
+        "עבירות כלפי המוסר": 177,
+        "עבירות כלפי הרכוש": 2929,
+        "עבירות מין": 177,
+        "עבירות מרמה": 436,
+        "עבירות נגד אדם": 6,
+        "עבירות נגד גוף": 1165,
+        "עבירות סדר ציבורי": 2112,
+        "עבירות רשוי": 11,
+        "עבירות תנועה": 87,
+        "שאר עבירות": 21
+      }
+    },
+    "תחנת רמלה שפלה": {
+      "total": 6722,
+      "breakdown": {
+        "עבירות בטחון": 193,
+        "עבירות כלכליות": 93,
+        "עבירות כלפי המוסר": 292,
+        "עבירות כלפי הרכוש": 2322,
+        "עבירות מין": 127,
+        "עבירות מנהליות": 5,
+        "עבירות מרמה": 228,
+        "עבירות נגד אדם": 21,
+        "עבירות נגד גוף": 1162,
+        "עבירות סדר ציבורי": 2204,
+        "עבירות רשוי": 14,
+        "עבירות תנועה": 43,
+        "שאר עבירות": 18
+      }
+    },
+    "תחנת שגב שלום נגב": {
+      "total": 1793,
+      "breakdown": {
+        "עבירות בטחון": 105,
+        "עבירות כלכליות": 7,
+        "עבירות כלפי המוסר": 76,
+        "עבירות כלפי הרכוש": 428,
+        "עבירות מין": 13,
+        "עבירות מרמה": 35,
+        "עבירות נגד אדם": 16,
+        "עבירות נגד גוף": 221,
+        "עבירות סדר ציבורי": 831,
+        "עבירות רשוי": 30,
+        "עבירות תנועה": 22,
+        "שאר עבירות": 9
+      }
+    },
+    "תחנת שדות שרון": {
+      "total": 4313,
+      "breakdown": {
+        "עבירות בטחון": 20,
+        "עבירות כלכליות": 56,
+        "עבירות כלפי המוסר": 134,
+        "עבירות כלפי הרכוש": 1379,
+        "עבירות מין": 102,
+        "עבירות מנהליות": 17,
+        "עבירות מרמה": 174,
+        "עבירות נגד אדם": 3,
+        "עבירות נגד גוף": 738,
+        "עבירות סדר ציבורי": 1618,
+        "עבירות רשוי": 20,
+        "עבירות תנועה": 24,
+        "שאר עבירות": 28
+      }
+    },
+    "תחנת שדרות לכיש": {
+      "total": 1885,
+      "breakdown": {
+        "עבירות בטחון": 37,
+        "עבירות כלכליות": 33,
+        "עבירות כלפי המוסר": 101,
+        "עבירות כלפי הרכוש": 463,
+        "עבירות מין": 34,
+        "עבירות מרמה": 86,
+        "עבירות נגד אדם": 4,
+        "עבירות נגד גוף": 377,
+        "עבירות סדר ציבורי": 726,
+        "עבירות רשוי": 7,
+        "עבירות תנועה": 12,
+        "שאר עבירות": 5
+      }
+    },
+    "תחנת שלם קדם": {
+      "total": 3707,
+      "breakdown": {
+        "עבירות בטחון": 364,
+        "עבירות כלכליות": 31,
+        "עבירות כלפי המוסר": 121,
+        "עבירות כלפי הרכוש": 760,
+        "עבירות מין": 54,
+        "עבירות מרמה": 200,
+        "עבירות נגד אדם": 11,
+        "עבירות נגד גוף": 667,
+        "עבירות סדר ציבורי": 1412,
+        "עבירות רשוי": 19,
+        "עבירות תנועה": 46,
+        "שאר עבירות": 22
+      }
+    },
+    "תחנת שפט קדם": {
+      "total": 4424,
+      "breakdown": {
+        "עבירות בטחון": 290,
+        "עבירות כלכליות": 99,
+        "עבירות כלפי המוסר": 129,
+        "עבירות כלפי הרכוש": 1151,
+        "עבירות מין": 81,
+        "עבירות מרמה": 364,
+        "עבירות נגד אדם": 17,
+        "עבירות נגד גוף": 706,
+        "עבירות סדר ציבורי": 1501,
+        "עבירות רשוי": 18,
+        "עבירות תנועה": 49,
+        "שאר עבירות": 19
+      }
+    },
+    "תחנת שפרעם גליל צפון": {
+      "total": 2984,
+      "breakdown": {
+        "עבירות בטחון": 183,
+        "עבירות כלכליות": 52,
+        "עבירות כלפי המוסר": 82,
+        "עבירות כלפי הרכוש": 698,
+        "עבירות מין": 32,
+        "עבירות מנהליות": 1,
+        "עבירות מרמה": 112,
+        "עבירות נגד אדם": 16,
+        "עבירות נגד גוף": 456,
+        "עבירות סדר ציבורי": 1310,
+        "עבירות רשוי": 5,
+        "עבירות תנועה": 27,
+        "שאר עבירות": 10
+      }
+    },
+    "תחנת שרת מרחב איילון החדש": {
+      "total": 5488,
+      "breakdown": {
+        "עבירות בטחון": 25,
+        "עבירות כלכליות": 94,
+        "עבירות כלפי המוסר": 571,
+        "עבירות כלפי הרכוש": 2726,
+        "עבירות מין": 61,
+        "עבירות מנהליות": 4,
+        "עבירות מרמה": 120,
+        "עבירות נגד אדם": 13,
+        "עבירות נגד גוף": 625,
+        "עבירות סדר ציבורי": 1173,
+        "עבירות רשוי": 48,
+        "עבירות תנועה": 23,
+        "שאר עבירות": 5
+      }
+    },
+    "תחנת תא צפון ירקון": {
+      "total": 6413,
+      "breakdown": {
+        "עבירות בטחון": 23,
+        "עבירות כלכליות": 98,
+        "עבירות כלפי המוסר": 245,
+        "עבירות כלפי הרכוש": 3465,
+        "עבירות מין": 82,
+        "עבירות מרמה": 319,
+        "עבירות נגד אדם": 9,
+        "עבירות נגד גוף": 602,
+        "עבירות סדר ציבורי": 1373,
+        "עבירות רשוי": 6,
+        "עבירות תנועה": 171,
+        "שאר עבירות": 20
+      }
+    },
+    "תחנת תבור צפון": {
+      "total": 2095,
+      "breakdown": {
+        "עבירות בטחון": 151,
+        "עבירות כלכליות": 22,
+        "עבירות כלפי המוסר": 51,
+        "עבירות כלפי הרכוש": 466,
+        "עבירות מין": 9,
+        "עבירות מרמה": 64,
+        "עבירות נגד אדם": 7,
+        "עבירות נגד גוף": 343,
+        "עבירות סדר ציבורי": 965,
+        "עבירות רשוי": 7,
+        "עבירות תנועה": 8,
+        "שאר עבירות": 2
+      }
+    },
+    "תחנת תל אביב דרום איילון החדש": {
+      "total": 5087,
+      "breakdown": {
+        "עבירות בטחון": 31,
+        "עבירות כלכליות": 64,
+        "עבירות כלפי המוסר": 327,
+        "עבירות כלפי הרכוש": 2254,
+        "עבירות מין": 85,
+        "עבירות מרמה": 147,
+        "עבירות נגד אדם": 12,
+        "עבירות נגד גוף": 752,
+        "עבירות סדר ציבורי": 1326,
+        "עבירות רשוי": 21,
+        "עבירות תנועה": 58,
+        "שאר עבירות": 10
+      }
+    },
+    "(blank)": {
+      "total": 1697,
+      "breakdown": {
+        "עבירות בטחון": 243,
+        "עבירות כלכליות": 30,
+        "עבירות כלפי המוסר": 18,
+        "עבירות כלפי הרכוש": 400,
+        "עבירות מין": 49,
+        "עבירות מרמה": 145,
+        "עבירות נגד אדם": 68,
+        "עבירות נגד גוף": 232,
+        "עבירות סדר ציבורי": 499,
+        "עבירות רשוי": 5,
+        "עבירות תנועה": 6,
+        "שאר עבירות": 2
+      }
+    },
+    "Grand Total": {
+      "total": 394453,
+      "breakdown": {}
+    }
+  },
+  "2025": {
+    "כל הארץ": {
+      "total": 200,
+      "breakdown": {
+        "עבירות בטחון": 21,
+        "עבירות כלכליות": 3,
+        "עבירות כלפי המוסר": 4,
+        "עבירות כלפי הרכוש": 67,
+        "עבירות מין": 4,
+        "עבירות מרמה": 11,
+        "עבירות נגד גוף": 38,
+        "עבירות סדר ציבורי": 51,
+        "עבירות רשוי": 1
+      }
+    },
+    "אבו גוש": {
+      "total": 336,
+      "breakdown": {
+        "עבירות בטחון": 9,
+        "עבירות כלכליות": 4,
+        "עבירות כלפי המוסר": 4,
+        "עבירות כלפי הרכוש": 60,
+        "עבירות מין": 4,
+        "עבירות מרמה": 13,
+        "עבירות נגד אדם": 2,
+        "עבירות נגד גוף": 90,
+        "עבירות סדר ציבורי": 147,
+        "עבירות רשוי": 1,
+        "עבירות תנועה": 2
+      }
+    },
+    "אבו סנאן": {
+      "total": 368,
+      "breakdown": {
+        "סעיפי הגדרה": 1,
+        "עבירות בטחון": 24,
+        "עבירות כלכליות": 10,
+        "עבירות כלפי המוסר": 34,
+        "עבירות כלפי הרכוש": 64,
+        "עבירות מין": 3,
+        "עבירות מרמה": 20,
+        "עבירות נגד אדם": 4,
+        "עבירות נגד גוף": 64,
+        "עבירות סדר ציבורי": 143,
+        "שגיאת הזנה": 1
+      }
+    },
+    "אבן יהודה": {
+      "total": 209,
+      "breakdown": {
+        "עבירות כלכליות": 2,
+        "עבירות כלפי המוסר": 4,
+        "עבירות כלפי הרכוש": 77,
+        "עבירות מין": 6,
+        "עבירות מרמה": 11,
+        "עבירות נגד גוף": 29,
+        "עבירות סדר ציבורי": 75,
+        "עבירות רשוי": 3,
+        "עבירות תנועה": 2
+      }
+    },
+    "אום אל-פחם": {
+      "total": 1506,
+      "breakdown": {
+        "סעיפי הגדרה": 1,
+        "עבירות בטחון": 146,
+        "עבירות כלכליות": 30,
+        "עבירות כלפי המוסר": 49,
+        "עבירות כלפי הרכוש": 366,
+        "עבירות מין": 5,
+        "עבירות מרמה": 48,
+        "עבירות נגד אדם": 10,
+        "עבירות נגד גוף": 231,
+        "עבירות סדר ציבורי": 598,
+        "עבירות רשוי": 4,
+        "עבירות תנועה": 15,
+        "שאר עבירות": 2,
+        "שגיאת הזנה": 1
+      }
+    },
+    "אופקים": {
+      "total": 1192,
+      "breakdown": {
+        "עבירות בטחון": 9,
+        "עבירות כלכליות": 15,
+        "עבירות כלפי המוסר": 68,
+        "עבירות כלפי הרכוש": 333,
+        "עבירות מין": 25,
+        "עבירות מנהליות": 1,
+        "עבירות מרמה": 56,
+        "עבירות נגד אדם": 3,
+        "עבירות נגד גוף": 175,
+        "עבירות סדר ציבורי": 493,
+        "עבירות רשוי": 3,
+        "עבירות תנועה": 8,
+        "שגיאת הזנה": 3
+      }
+    },
+    "אור יהודה": {
+      "total": 1263,
+      "breakdown": {
+        "סעיפי הגדרה": 1,
+        "עבירות בטחון": 6,
+        "עבירות כלכליות": 6,
+        "עבירות כלפי המוסר": 63,
+        "עבירות כלפי הרכוש": 370,
+        "עבירות מין": 33,
+        "עבירות מרמה": 68,
+        "עבירות נגד אדם": 6,
+        "עבירות נגד גוף": 253,
+        "עבירות סדר ציבורי": 427,
+        "עבירות רשוי": 12,
+        "עבירות תנועה": 16,
+        "שגיאת הזנה": 2
+      }
+    },
+    "אור עקיבא": {
+      "total": 655,
+      "breakdown": {
+        "עבירות בטחון": 9,
+        "עבירות כלכליות": 15,
+        "עבירות כלפי המוסר": 38,
+        "עבירות כלפי הרכוש": 214,
+        "עבירות מין": 12,
+        "עבירות מרמה": 34,
+        "עבירות נגד גוף": 148,
+        "עבירות סדר ציבורי": 178,
+        "עבירות רשוי": 2,
+        "עבירות תנועה": 4,
+        "שגיאת הזנה": 1
+      }
+    },
+    "אורנית": {
+      "total": 90,
+      "breakdown": {
+        "עבירות בטחון": 3,
+        "עבירות כלפי המוסר": 4,
+        "עבירות כלפי הרכוש": 17,
+        "עבירות מין": 2,
+        "עבירות מרמה": 10,
+        "עבירות נגד גוף": 22,
+        "עבירות סדר ציבורי": 32
+      }
+    },
+    "אזור": {
+      "total": 330,
+      "breakdown": {
+        "עבירות בטחון": 1,
+        "עבירות כלכליות": 6,
+        "עבירות כלפי המוסר": 8,
+        "עבירות כלפי הרכוש": 118,
+        "עבירות מין": 6,
+        "עבירות מרמה": 16,
+        "עבירות נגד גוף": 58,
+        "עבירות סדר ציבורי": 102,
+        "עבירות רשוי": 5,
+        "עבירות תנועה": 9,
+        "שגיאת הזנה": 1
+      }
+    },
+    "אילת": {
+      "total": 4536,
+      "breakdown": {
+        "סעיפי הגדרה": 3,
+        "עבירות בטחון": 31,
+        "עבירות כלכליות": 72,
+        "עבירות כלפי המוסר": 337,
+        "עבירות כלפי הרכוש": 1124,
+        "עבירות מין": 88,
+        "עבירות מנהליות": 1,
+        "עבירות מרמה": 162,
+        "עבירות נגד אדם": 10,
+        "עבירות נגד גוף": 899,
+        "עבירות סדר ציבורי": 1709,
+        "עבירות רשוי": 32,
+        "עבירות תנועה": 53,
+        "שגיאת הזנה": 15
+      }
+    },
+    "אכסאל": {
+      "total": 703,
+      "breakdown": {
+        "סעיפי הגדרה": 1,
+        "עבירות בטחון": 35,
+        "עבירות כלכליות": 7,
+        "עבירות כלפי המוסר": 29,
+        "עבירות כלפי הרכוש": 132,
+        "עבירות מין": 3,
+        "עבירות מנהליות": 1,
+        "עבירות מרמה": 27,
+        "עבירות נגד אדם": 4,
+        "עבירות נגד גוף": 115,
+        "עבירות סדר ציבורי": 338,
+        "עבירות תנועה": 10,
+        "שאר עבירות": 1
+      }
+    },
+    "אליכין": {
+      "total": 61,
+      "breakdown": {
+        "עבירות כלכליות": 1,
+        "עבירות כלפי המוסר": 5,
+        "עבירות כלפי הרכוש": 19,
+        "עבירות מין": 1,
+        "עבירות מרמה": 5,
+        "עבירות נגד גוף": 7,
+        "עבירות סדר ציבורי": 23
+      }
+    },
+    "אלעד": {
+      "total": 549,
+      "breakdown": {
+        "סעיפי הגדרה": 1,
+        "עבירות בטחון": 2,
+        "עבירות כלכליות": 8,
+        "עבירות כלפי המוסר": 11,
+        "עבירות כלפי הרכוש": 131,
+        "עבירות מין": 26,
+        "עבירות מרמה": 22,
+        "עבירות נגד אדם": 1,
+        "עבירות נגד גוף": 109,
+        "עבירות סדר ציבורי": 231,
+        "עבירות רשוי": 1,
+        "עבירות תנועה": 3,
+        "שגיאת הזנה": 3
+      }
+    },
+    "אלפי מנשה": {
+      "total": 96,
+      "breakdown": {
+        "עבירות בטחון": 4,
+        "עבירות כלפי המוסר": 3,
+        "עבירות כלפי הרכוש": 17,
+        "עבירות מין": 5,
+        "עבירות מרמה": 13,
+        "עבירות נגד גוף": 18,
+        "עבירות סדר ציבורי": 31,
+        "עבירות תנועה": 3,
+        "שגיאת הזנה": 2
+      }
+    },
+    "אלקנה": {
+      "total": 23,
+      "breakdown": {
+        "עבירות בטחון": 1,
+        "עבירות כלפי הרכוש": 5,
+        "עבירות מין": 1,
+        "עבירות מרמה": 2,
+        "עבירות נגד גוף": 4,
+        "עבירות סדר ציבורי": 10
+      }
+    },
+    "אעבלין": {
+      "total": 438,
+      "breakdown": {
+        "עבירות בטחון": 37,
+        "עבירות כלכליות": 3,
+        "עבירות כלפי המוסר": 8,
+        "עבירות כלפי הרכוש": 95,
+        "עבירות מין": 2,
+        "עבירות מרמה": 15,
+        "עבירות נגד אדם": 3,
+        "עבירות נגד גוף": 60,
+        "עבירות סדר ציבורי": 206,
+        "עבירות רשוי": 3,
+        "עבירות תנועה": 5,
+        "שגיאת הזנה": 1
+      }
+    },
+    "אפרת": {
+      "total": 66,
+      "breakdown": {
+        "עבירות בטחון": 7,
+        "עבירות כלפי המוסר": 2,
+        "עבירות כלפי הרכוש": 14,
+        "עבירות מין": 8,
+        "עבירות מרמה": 6,
+        "עבירות נגד גוף": 8,
+        "עבירות סדר ציבורי": 20,
+        "שגיאת הזנה": 1
+      }
+    },
+    "אריאל": {
+      "total": 471,
+      "breakdown": {
+        "עבירות בטחון": 18,
+        "עבירות כלכליות": 2,
+        "עבירות כלפי המוסר": 30,
+        "עבירות כלפי הרכוש": 63,
+        "עבירות מין": 11,
+        "עבירות מרמה": 50,
+        "עבירות נגד גוף": 122,
+        "עבירות סדר ציבורי": 163,
+        "עבירות רשוי": 4,
+        "עבירות תנועה": 2,
+        "שגיאת הזנה": 6
+      }
+    },
+    "אשדוד": {
+      "total": 7689,
+      "breakdown": {
+        "סעיפי הגדרה": 9,
+        "עבירות בטחון": 51,
+        "עבירות כלכליות": 115,
+        "עבירות כלפי המוסר": 301,
+        "עבירות כלפי הרכוש": 2249,
+        "עבירות מין": 150,
+        "עבירות מרמה": 477,
+        "עבירות נגד אדם": 8,
+        "עבירות נגד גוף": 1483,
+        "עבירות סדר ציבורי": 2760,
+        "עבירות רשוי": 29,
+        "עבירות תנועה": 50,
+        "שגיאת הזנה": 7
+      }
+    },
+    "אשקלון": {
+      "total": 6349,
+      "breakdown": {
+        "סעיפי הגדרה": 7,
+        "עבירות בטחון": 51,
+        "עבירות כלכליות": 107,
+        "עבירות כלפי המוסר": 311,
+        "עבירות כלפי הרכוש": 1932,
+        "עבירות מין": 114,
+        "עבירות מנהליות": 1,
+        "עבירות מרמה": 378,
+        "עבירות נגד אדם": 16,
+        "עבירות נגד גוף": 1189,
+        "עבירות סדר ציבורי": 2119,
+        "עבירות רשוי": 37,
+        "עבירות תנועה": 47,
+        "שגיאת הזנה": 40
+      }
+    },
+    "באקה אל-גרביה": {
+      "total": 879,
+      "breakdown": {
+        "סעיפי הגדרה": 3,
+        "עבירות בטחון": 27,
+        "עבירות כלכליות": 5,
+        "עבירות כלפי המוסר": 56,
+        "עבירות כלפי הרכוש": 181,
+        "עבירות מין": 1,
+        "עבירות מרמה": 41,
+        "עבירות נגד אדם": 4,
+        "עבירות נגד גוף": 142,
+        "עבירות סדר ציבורי": 400,
+        "עבירות רשוי": 4,
+        "עבירות תנועה": 15
+      }
+    },
+    "באר יעקב": {
+      "total": 703,
+      "breakdown": {
+        "עבירות בטחון": 4,
+        "עבירות כלכליות": 6,
+        "עבירות כלפי המוסר": 49,
+        "עבירות כלפי הרכוש": 244,
+        "עבירות מין": 30,
+        "עבירות מרמה": 24,
+        "עבירות נגד גוף": 108,
+        "עבירות סדר ציבורי": 226,
+        "עבירות תנועה": 10,
+        "שגיאת הזנה": 2
+      }
+    },
+    "באר שבע": {
+      "total": 12681,
+      "breakdown": {
+        "סעיפי הגדרה": 3,
+        "עבירות בטחון": 73,
+        "עבירות כלכליות": 202,
+        "עבירות כלפי המוסר": 364,
+        "עבירות כלפי הרכוש": 4095,
+        "עבירות מין": 221,
+        "עבירות מנהליות": 18,
+        "עבירות מרמה": 621,
+        "עבירות נגד אדם": 22,
+        "עבירות נגד גוף": 2330,
+        "עבירות סדר ציבורי": 4587,
+        "עבירות רשוי": 42,
+        "עבירות תנועה": 92,
+        "שגיאת הזנה": 11
+      }
+    },
+    "בועיינה נוג'יידאת": {
+      "total": 268,
+      "breakdown": {
+        "עבירות בטחון": 9,
+        "עבירות כלכליות": 1,
+        "עבירות כלפי הרכוש": 58,
+        "עבירות מין": 2,
+        "עבירות מרמה": 9,
+        "עבירות נגד אדם": 2,
+        "עבירות נגד גוף": 48,
+        "עבירות סדר ציבורי": 135,
+        "עבירות תנועה": 4
+      }
+    },
+    "בוקעתא": {
+      "total": 101,
+      "breakdown": {
+        "סעיפי הגדרה": 1,
+        "עבירות בטחון": 6,
+        "עבירות כלפי הרכוש": 14,
+        "עבירות מרמה": 7,
+        "עבירות נגד גוף": 24,
+        "עבירות סדר ציבורי": 41,
+        "עבירות רשוי": 1,
+        "עבירות תנועה": 7
+      }
+    },
+    "ביענה": {
+      "total": 240,
+      "breakdown": {
+        "עבירות בטחון": 5,
+        "עבירות כלכליות": 14,
+        "עבירות כלפי המוסר": 8,
+        "עבירות כלפי הרכוש": 31,
+        "עבירות מין": 2,
+        "עבירות מרמה": 9,
+        "עבירות נגד גוף": 42,
+        "עבירות סדר ציבורי": 126,
+        "עבירות רשוי": 2,
+        "שגיאת הזנה": 1
+      }
+    },
+    "ביר אל מכסור": {
+      "total": 272,
+      "breakdown": {
+        "סעיפי הגדרה": 1,
+        "עבירות בטחון": 12,
+        "עבירות כלפי המוסר": 1,
+        "עבירות כלפי הרכוש": 66,
+        "עבירות מין": 1,
+        "עבירות מרמה": 9,
+        "עבירות נגד גוף": 43,
+        "עבירות סדר ציבורי": 137,
+        "עבירות רשוי": 1,
+        "עבירות תנועה": 1
+      }
+    },
+    "בית אל": {
+      "total": 59,
+      "breakdown": {
+        "עבירות בטחון": 7,
+        "עבירות כלפי הרכוש": 15,
+        "עבירות מין": 3,
+        "עבירות מרמה": 7,
+        "עבירות נגד גוף": 10,
+        "עבירות סדר ציבורי": 17
+      }
+    },
+    "בית אריה": {
+      "total": 73,
+      "breakdown": {
+        "עבירות בטחון": 3,
+        "עבירות כלפי המוסר": 5,
+        "עבירות כלפי הרכוש": 24,
+        "עבירות מין": 2,
+        "עבירות מרמה": 9,
+        "עבירות נגד גוף": 9,
+        "עבירות סדר ציבורי": 20,
+        "שגיאת הזנה": 1
+      }
+    },
+    "בית ג'ן": {
+      "total": 101,
+      "breakdown": {
+        "עבירות בטחון": 5,
+        "עבירות כלכליות": 2,
+        "עבירות כלפי הרכוש": 18,
+        "עבירות מרמה": 15,
+        "עבירות נגד גוף": 18,
+        "עבירות סדר ציבורי": 37,
+        "עבירות תנועה": 6
+      }
+    },
+    "בית דגן": {
+      "total": 146,
+      "breakdown": {
+        "סעיפי הגדרה": 1,
+        "עבירות כלכליות": 2,
+        "עבירות כלפי המוסר": 7,
+        "עבירות כלפי הרכוש": 51,
+        "עבירות מין": 1,
+        "עבירות מרמה": 10,
+        "עבירות נגד גוף": 24,
+        "עבירות סדר ציבורי": 49,
+        "עבירות תנועה": 1
+      }
+    },
+    "בית שאן": {
+      "total": 907,
+      "breakdown": {
+        "עבירות בטחון": 17,
+        "עבירות כלכליות": 19,
+        "עבירות כלפי המוסר": 104,
+        "עבירות כלפי הרכוש": 194,
+        "עבירות מין": 20,
+        "עבירות מרמה": 26,
+        "עבירות נגד אדם": 1,
+        "עבירות נגד גוף": 127,
+        "עבירות סדר ציבורי": 394,
+        "עבירות רשוי": 2,
+        "עבירות תנועה": 2,
+        "שגיאת הזנה": 1
+      }
+    },
+    "בית שמש": {
+      "total": 2483,
+      "breakdown": {
+        "סעיפי הגדרה": 5,
+        "עבירות בטחון": 22,
+        "עבירות כלכליות": 27,
+        "עבירות כלפי המוסר": 104,
+        "עבירות כלפי הרכוש": 544,
+        "עבירות מין": 123,
+        "עבירות מרמה": 163,
+        "עבירות נגד גוף": 470,
+        "עבירות סדר ציבורי": 1004,
+        "עבירות תנועה": 18,
+        "שאר עבירות": 1,
+        "שגיאת הזנה": 2
+      }
+    },
+    "ביתר עילית": {
+      "total": 607,
+      "breakdown": {
+        "עבירות בטחון": 35,
+        "עבירות כלכליות": 5,
+        "עבירות כלפי המוסר": 10,
+        "עבירות כלפי הרכוש": 138,
+        "עבירות מין": 36,
+        "עבירות מנהליות": 1,
+        "עבירות מרמה": 40,
+        "עבירות נגד גוף": 114,
+        "עבירות סדר ציבורי": 219,
+        "עבירות רשוי": 2,
+        "עבירות תנועה": 7
+      }
+    },
+    "בני ברק": {
+      "total": 3139,
+      "breakdown": {
+        "סעיפי הגדרה": 2,
+        "עבירות בטחון": 28,
+        "עבירות כלכליות": 49,
+        "עבירות כלפי המוסר": 102,
+        "עבירות כלפי הרכוש": 1070,
+        "עבירות מין": 125,
+        "עבירות מנהליות": 1,
+        "עבירות מרמה": 157,
+        "עבירות נגד אדם": 8,
+        "עבירות נגד גוף": 505,
+        "עבירות סדר ציבורי": 1052,
+        "עבירות רשוי": 17,
+        "עבירות תנועה": 19,
+        "שאר עבירות": 2,
+        "שגיאת הזנה": 2
+      }
+    },
+    "בני עי''ש": {
+      "total": 184,
+      "breakdown": {
+        "עבירות כלפי המוסר": 4,
+        "עבירות כלפי הרכוש": 43,
+        "עבירות מין": 6,
+        "עבירות מרמה": 6,
+        "עבירות נגד גוף": 28,
+        "עבירות סדר ציבורי": 97
+      }
+    },
+    "בנימינה-גבעת עדה": {
+      "total": 379,
+      "breakdown": {
+        "עבירות בטחון": 3,
+        "עבירות כלכליות": 2,
+        "עבירות כלפי המוסר": 6,
+        "עבירות כלפי הרכוש": 191,
+        "עבירות מין": 11,
+        "עבירות מרמה": 14,
+        "עבירות נגד גוף": 33,
+        "עבירות סדר ציבורי": 118,
+        "עבירות תנועה": 1
+      }
+    },
+    "בסמ''ה": {
+      "total": 256,
+      "breakdown": {
+        "עבירות בטחון": 55,
+        "עבירות כלכליות": 4,
+        "עבירות כלפי המוסר": 8,
+        "עבירות כלפי הרכוש": 55,
+        "עבירות מין": 1,
+        "עבירות מרמה": 8,
+        "עבירות נגד אדם": 2,
+        "עבירות נגד גוף": 34,
+        "עבירות סדר ציבורי": 81,
+        "עבירות תנועה": 6,
+        "שאר עבירות": 2
+      }
+    },
+    "בסמת טבעון": {
+      "total": 283,
+      "breakdown": {
+        "עבירות בטחון": 20,
+        "עבירות כלכליות": 2,
+        "עבירות כלפי המוסר": 25,
+        "עבירות כלפי הרכוש": 37,
+        "עבירות מרמה": 2,
+        "עבירות נגד אדם": 1,
+        "עבירות נגד גוף": 44,
+        "עבירות סדר ציבורי": 146,
+        "עבירות רשוי": 2,
+        "עבירות תנועה": 4
+      }
+    },
+    "בת ים": {
+      "total": 6034,
+      "breakdown": {
+        "סעיפי הגדרה": 6,
+        "עבירות בטחון": 26,
+        "עבירות כלכליות": 160,
+        "עבירות כלפי המוסר": 282,
+        "עבירות כלפי הרכוש": 2274,
+        "עבירות מין": 77,
+        "עבירות מנהליות": 2,
+        "עבירות מרמה": 435,
+        "עבירות נגד אדם": 8,
+        "עבירות נגד גוף": 964,
+        "עבירות סדר ציבורי": 1748,
+        "עבירות רשוי": 8,
+        "עבירות תנועה": 41,
+        "שגיאת הזנה": 3
+      }
+    },
+    "ג'דיידה-מכר": {
+      "total": 749,
+      "breakdown": {
+        "סעיפי הגדרה": 1,
+        "עבירות בטחון": 57,
+        "עבירות כלכליות": 15,
+        "עבירות כלפי המוסר": 87,
+        "עבירות כלפי הרכוש": 150,
+        "עבירות מין": 3,
+        "עבירות מרמה": 17,
+        "עבירות נגד גוף": 115,
+        "עבירות סדר ציבורי": 295,
+        "עבירות רשוי": 4,
+        "עבירות תנועה": 5
+      }
+    },
+    "ג'וליס": {
+      "total": 100,
+      "breakdown": {
+        "עבירות בטחון": 3,
+        "עבירות כלפי המוסר": 2,
+        "עבירות כלפי הרכוש": 17,
+        "עבירות מרמה": 6,
+        "עבירות נגד גוף": 16,
+        "עבירות סדר ציבורי": 55,
+        "עבירות רשוי": 1
+      }
+    },
+    "ג'יש": {
+      "total": 59,
+      "breakdown": {
+        "עבירות בטחון": 5,
+        "עבירות כלכליות": 1,
+        "עבירות כלפי הרכוש": 16,
+        "עבירות מין": 1,
+        "עבירות מרמה": 1,
+        "עבירות נגד גוף": 9,
+        "עבירות סדר ציבורי": 26
+      }
+    },
+    "ג'לג'וליה": {
+      "total": 328,
+      "breakdown": {
+        "עבירות בטחון": 37,
+        "עבירות כלכליות": 3,
+        "עבירות כלפי המוסר": 20,
+        "עבירות כלפי הרכוש": 56,
+        "עבירות מין": 5,
+        "עבירות מרמה": 17,
+        "עבירות נגד אדם": 2,
+        "עבירות נגד גוף": 69,
+        "עבירות סדר ציבורי": 117,
+        "עבירות תנועה": 2
+      }
+    },
+    "ג'סר א זרקא": {
+      "total": 1114,
+      "breakdown": {
+        "סעיפי הגדרה": 3,
+        "עבירות בטחון": 74,
+        "עבירות כלכליות": 2,
+        "עבירות כלפי המוסר": 132,
+        "עבירות כלפי הרכוש": 271,
+        "עבירות מין": 9,
+        "עבירות מרמה": 8,
+        "עבירות נגד אדם": 6,
+        "עבירות נגד גוף": 208,
+        "עבירות סדר ציבורי": 397,
+        "עבירות רשוי": 1,
+        "עבירות תנועה": 3
+      }
+    },
+    "ג'ת": {
+      "total": 152,
+      "breakdown": {
+        "עבירות בטחון": 10,
+        "עבירות כלפי המוסר": 3,
+        "עבירות כלפי הרכוש": 33,
+        "עבירות מרמה": 2,
+        "עבירות נגד גוף": 31,
+        "עבירות סדר ציבורי": 71,
+        "עבירות תנועה": 2
+      }
+    },
+    "גבעת זאב": {
+      "total": 340,
+      "breakdown": {
+        "עבירות בטחון": 15,
+        "עבירות כלכליות": 2,
+        "עבירות כלפי המוסר": 10,
+        "עבירות כלפי הרכוש": 80,
+        "עבירות מין": 13,
+        "עבירות מרמה": 13,
+        "עבירות נגד אדם": 2,
+        "עבירות נגד גוף": 53,
+        "עבירות סדר ציבורי": 143,
+        "עבירות רשוי": 1,
+        "עבירות תנועה": 8
+      }
+    },
+    "גבעת שמואל": {
+      "total": 578,
+      "breakdown": {
+        "עבירות כלכליות": 5,
+        "עבירות כלפי המוסר": 5,
+        "עבירות כלפי הרכוש": 248,
+        "עבירות מין": 25,
+        "עבירות מרמה": 35,
+        "עבירות נגד גוף": 74,
+        "עבירות סדר ציבורי": 177,
+        "עבירות רשוי": 1,
+        "עבירות תנועה": 7,
+        "שאר עבירות": 1
+      }
+    },
+    "גבעתיים": {
+      "total": 1339,
+      "breakdown": {
+        "עבירות בטחון": 6,
+        "עבירות כלכליות": 25,
+        "עבירות כלפי המוסר": 77,
+        "עבירות כלפי הרכוש": 649,
+        "עבירות מין": 19,
+        "עבירות מרמה": 84,
+        "עבירות נגד אדם": 1,
+        "עבירות נגד גוף": 123,
+        "עבירות סדר ציבורי": 340,
+        "עבירות תנועה": 14,
+        "שגיאת הזנה": 1
+      }
+    },
+    "גדרה": {
+      "total": 529,
+      "breakdown": {
+        "עבירות בטחון": 3,
+        "עבירות כלכליות": 6,
+        "עבירות כלפי המוסר": 15,
+        "עבירות כלפי הרכוש": 176,
+        "עבירות מין": 7,
+        "עבירות מרמה": 29,
+        "עבירות נגד אדם": 1,
+        "עבירות נגד גוף": 79,
+        "עבירות סדר ציבורי": 200,
+        "עבירות רשוי": 3,
+        "עבירות תנועה": 10
+      }
+    },
+    "גן יבנה": {
+      "total": 542,
+      "breakdown": {
+        "עבירות בטחון": 1,
+        "עבירות כלכליות": 3,
+        "עבירות כלפי המוסר": 13,
+        "עבירות כלפי הרכוש": 169,
+        "עבירות מין": 9,
+        "עבירות מרמה": 29,
+        "עבירות נגד גוף": 90,
+        "עבירות סדר ציבורי": 218,
+        "עבירות רשוי": 1,
+        "עבירות תנועה": 7,
+        "שגיאת הזנה": 2
+      }
+    },
+    "גני תקווה": {
+      "total": 283,
+      "breakdown": {
+        "עבירות בטחון": 3,
+        "עבירות כלכליות": 3,
+        "עבירות כלפי המוסר": 8,
+        "עבירות כלפי הרכוש": 98,
+        "עבירות מין": 7,
+        "עבירות מרמה": 25,
+        "עבירות נגד אדם": 2,
+        "עבירות נגד גוף": 46,
+        "עבירות סדר ציבורי": 85,
+        "עבירות תנועה": 6
+      }
+    },
+    "דאלית אל כרמל": {
+      "total": 326,
+      "breakdown": {
+        "עבירות בטחון": 5,
+        "עבירות כלכליות": 3,
+        "עבירות כלפי המוסר": 18,
+        "עבירות כלפי הרכוש": 65,
+        "עבירות מין": 3,
+        "עבירות מנהליות": 1,
+        "עבירות מרמה": 17,
+        "עבירות נגד אדם": 1,
+        "עבירות נגד גוף": 60,
+        "עבירות סדר ציבורי": 136,
+        "עבירות רשוי": 5,
+        "עבירות תנועה": 11,
+        "שגיאת הזנה": 1
+      }
+    },
+    "דבוריה": {
+      "total": 449,
+      "breakdown": {
+        "עבירות בטחון": 32,
+        "עבירות כלכליות": 1,
+        "עבירות כלפי המוסר": 11,
+        "עבירות כלפי הרכוש": 79,
+        "עבירות מין": 4,
+        "עבירות מרמה": 10,
+        "עבירות נגד אדם": 1,
+        "עבירות נגד גוף": 64,
+        "עבירות סדר ציבורי": 237,
+        "עבירות רשוי": 2,
+        "עבירות תנועה": 7,
+        "שאר עבירות": 1
+      }
+    },
+    "דייר אל אסד": {
+      "total": 396,
+      "breakdown": {
+        "עבירות בטחון": 18,
+        "עבירות כלכליות": 16,
+        "עבירות כלפי המוסר": 31,
+        "עבירות כלפי הרכוש": 62,
+        "עבירות מין": 5,
+        "עבירות מרמה": 20,
+        "עבירות נגד אדם": 3,
+        "עבירות נגד גוף": 66,
+        "עבירות סדר ציבורי": 173,
+        "עבירות רשוי": 1,
+        "עבירות תנועה": 1
+      }
+    },
+    "דייר חנא": {
+      "total": 278,
+      "breakdown": {
+        "סעיפי הגדרה": 1,
+        "עבירות בטחון": 17,
+        "עבירות כלכליות": 3,
+        "עבירות כלפי הרכוש": 75,
+        "עבירות מרמה": 22,
+        "עבירות נגד אדם": 3,
+        "עבירות נגד גוף": 32,
+        "עבירות סדר ציבורי": 124,
+        "עבירות תנועה": 1
+      }
+    },
+    "דימונה": {
+      "total": 1539,
+      "breakdown": {
+        "עבירות בטחון": 30,
+        "עבירות כלכליות": 12,
+        "עבירות כלפי המוסר": 85,
+        "עבירות כלפי הרכוש": 457,
+        "עבירות מין": 35,
+        "עבירות מנהליות": 1,
+        "עבירות מרמה": 84,
+        "עבירות נגד אדם": 3,
+        "עבירות נגד גוף": 298,
+        "עבירות סדר ציבורי": 525,
+        "עבירות רשוי": 4,
+        "עבירות תנועה": 4,
+        "שגיאת הזנה": 1
+      }
+    },
+    "הוד השרון": {
+      "total": 1570,
+      "breakdown": {
+        "עבירות בטחון": 4,
+        "עבירות כלכליות": 12,
+        "עבירות כלפי המוסר": 41,
+        "עבירות כלפי הרכוש": 730,
+        "עבירות מין": 24,
+        "עבירות מרמה": 73,
+        "עבירות נגד אדם": 1,
+        "עבירות נגד גוף": 166,
+        "עבירות סדר ציבורי": 499,
+        "עבירות רשוי": 4,
+        "עבירות תנועה": 14,
+        "שגיאת הזנה": 2
+      }
+    },
+    "הר אדר": {
+      "total": 25,
+      "breakdown": {
+        "עבירות כלפי הרכוש": 3,
+        "עבירות מין": 1,
+        "עבירות מרמה": 5,
+        "עבירות נגד גוף": 7,
+        "עבירות סדר ציבורי": 9
+      }
+    },
+    "הרצליה": {
+      "total": 2944,
+      "breakdown": {
+        "סעיפי הגדרה": 2,
+        "עבירות בטחון": 16,
+        "עבירות כלכליות": 50,
+        "עבירות כלפי המוסר": 119,
+        "עבירות כלפי הרכוש": 1230,
+        "עבירות מין": 53,
+        "עבירות מנהליות": 1,
+        "עבירות מרמה": 133,
+        "עבירות נגד אדם": 7,
+        "עבירות נגד גוף": 470,
+        "עבירות סדר ציבורי": 845,
+        "עבירות רשוי": 1,
+        "עבירות תנועה": 17
+      }
+    },
+    "זכרון יעקב": {
+      "total": 446,
+      "breakdown": {
+        "סעיפי הגדרה": 2,
+        "עבירות בטחון": 5,
+        "עבירות כלכליות": 5,
+        "עבירות כלפי המוסר": 15,
+        "עבירות כלפי הרכוש": 153,
+        "עבירות מין": 17,
+        "עבירות מרמה": 19,
+        "עבירות נגד גוף": 71,
+        "עבירות סדר ציבורי": 155,
+        "שגיאת הזנה": 4
+      }
+    },
+    "זמר": {
+      "total": 129,
+      "breakdown": {
+        "עבירות בטחון": 5,
+        "עבירות כלכליות": 1,
+        "עבירות כלפי המוסר": 4,
+        "עבירות כלפי הרכוש": 30,
+        "עבירות מין": 1,
+        "עבירות מרמה": 5,
+        "עבירות נגד אדם": 1,
+        "עבירות נגד גוף": 22,
+        "עבירות סדר ציבורי": 58,
+        "עבירות רשוי": 2
+      }
+    },
+    "זרזיר": {
+      "total": 327,
+      "breakdown": {
+        "עבירות בטחון": 35,
+        "עבירות כלכליות": 3,
+        "עבירות כלפי המוסר": 16,
+        "עבירות כלפי הרכוש": 53,
+        "עבירות מין": 4,
+        "עבירות מרמה": 8,
+        "עבירות נגד אדם": 1,
+        "עבירות נגד גוף": 70,
+        "עבירות סדר ציבורי": 133,
+        "עבירות תנועה": 4
+      }
+    },
+    "חדרה": {
+      "total": 3134,
+      "breakdown": {
+        "סעיפי הגדרה": 4,
+        "עבירות בטחון": 15,
+        "עבירות כלכליות": 77,
+        "עבירות כלפי המוסר": 128,
+        "עבירות כלפי הרכוש": 1132,
+        "עבירות מין": 84,
+        "עבירות מנהליות": 2,
+        "עבירות מרמה": 149,
+        "עבירות נגד אדם": 4,
+        "עבירות נגד גוף": 599,
+        "עבירות סדר ציבורי": 889,
+        "עבירות רשוי": 15,
+        "עבירות תנועה": 26,
+        "שאר עבירות": 1,
+        "שגיאת הזנה": 9
+      }
+    },
+    "חולון": {
+      "total": 6154,
+      "breakdown": {
+        "סעיפי הגדרה": 5,
+        "עבירות בטחון": 29,
+        "עבירות כלכליות": 140,
+        "עבירות כלפי המוסר": 294,
+        "עבירות כלפי הרכוש": 2309,
+        "עבירות מין": 112,
+        "עבירות מרמה": 317,
+        "עבירות נגד אדם": 13,
+        "עבירות נגד גוף": 998,
+        "עבירות סדר ציבורי": 1836,
+        "עבירות רשוי": 4,
+        "עבירות תנועה": 96,
+        "שגיאת הזנה": 1
+      }
+    },
+    "חורה": {
+      "total": 710,
+      "breakdown": {
+        "סעיפי הגדרה": 2,
+        "עבירות בטחון": 55,
+        "עבירות כלכליות": 10,
+        "עבירות כלפי המוסר": 1,
+        "עבירות כלפי הרכוש": 133,
+        "עבירות מין": 1,
+        "עבירות מרמה": 22,
+        "עבירות נגד אדם": 1,
+        "עבירות נגד גוף": 141,
+        "עבירות סדר ציבורי": 330,
+        "עבירות רשוי": 4,
+        "עבירות תנועה": 9,
+        "שגיאת הזנה": 1
+      }
+    },
+    "חורפיש": {
+      "total": 80,
+      "breakdown": {
+        "עבירות בטחון": 1,
+        "עבירות כלכליות": 1,
+        "עבירות כלפי הרכוש": 15,
+        "עבירות מין": 1,
+        "עבירות מרמה": 10,
+        "עבירות נגד גוף": 23,
+        "עבירות סדר ציבורי": 29
+      }
+    },
+    "חיפה": {
+      "total": 9520,
+      "breakdown": {
+        "סעיפי הגדרה": 4,
+        "עבירות בטחון": 54,
+        "עבירות כלכליות": 237,
+        "עבירות כלפי המוסר": 427,
+        "עבירות כלפי הרכוש": 3460,
+        "עבירות מין": 147,
+        "עבירות מנהליות": 4,
+        "עבירות מרמה": 701,
+        "עבירות נגד אדם": 15,
+        "עבירות נגד גוף": 1580,
+        "עבירות סדר ציבורי": 2790,
+        "עבירות רשוי": 47,
+        "עבירות תנועה": 39,
+        "שגיאת הזנה": 15
+      }
+    },
+    "חצור הגלילית": {
+      "total": 240,
+      "breakdown": {
+        "סעיפי הגדרה": 1,
+        "עבירות בטחון": 2,
+        "עבירות כלכליות": 4,
+        "עבירות כלפי המוסר": 23,
+        "עבירות כלפי הרכוש": 53,
+        "עבירות מין": 5,
+        "עבירות מרמה": 6,
+        "עבירות נגד גוף": 49,
+        "עבירות סדר ציבורי": 93,
+        "עבירות תנועה": 3,
+        "שגיאת הזנה": 1
+      }
+    },
+    "חריש": {
+      "total": 678,
+      "breakdown": {
+        "עבירות בטחון": 6,
+        "עבירות כלכליות": 5,
+        "עבירות כלפי המוסר": 23,
+        "עבירות כלפי הרכוש": 196,
+        "עבירות מין": 32,
+        "עבירות מרמה": 38,
+        "עבירות נגד גוף": 153,
+        "עבירות סדר ציבורי": 221,
+        "עבירות רשוי": 1,
+        "עבירות תנועה": 2,
+        "שגיאת הזנה": 1
+      }
+    },
+    "טבריה": {
+      "total": 2135,
+      "breakdown": {
+        "סעיפי הגדרה": 2,
+        "עבירות בטחון": 8,
+        "עבירות כלכליות": 30,
+        "עבירות כלפי המוסר": 62,
+        "עבירות כלפי הרכוש": 611,
+        "עבירות מין": 70,
+        "עבירות מרמה": 76,
+        "עבירות נגד אדם": 7,
+        "עבירות נגד גוף": 455,
+        "עבירות סדר ציבורי": 797,
+        "עבירות רשוי": 2,
+        "עבירות תנועה": 10,
+        "שגיאת הזנה": 5
+      }
+    },
+    "טובא זנגריה": {
+      "total": 479,
+      "breakdown": {
+        "סעיפי הגדרה": 1,
+        "עבירות בטחון": 75,
+        "עבירות כלכליות": 6,
+        "עבירות כלפי המוסר": 7,
+        "עבירות כלפי הרכוש": 70,
+        "עבירות מין": 3,
+        "עבירות מרמה": 8,
+        "עבירות נגד אדם": 3,
+        "עבירות נגד גוף": 66,
+        "עבירות סדר ציבורי": 228,
+        "עבירות רשוי": 2,
+        "עבירות תנועה": 10
+      }
+    },
+    "טורעאן": {
+      "total": 390,
+      "breakdown": {
+        "עבירות בטחון": 30,
+        "עבירות כלכליות": 2,
+        "עבירות כלפי המוסר": 5,
+        "עבירות כלפי הרכוש": 80,
+        "עבירות מין": 7,
+        "עבירות מרמה": 17,
+        "עבירות נגד אדם": 1,
+        "עבירות נגד גוף": 50,
+        "עבירות סדר ציבורי": 196,
+        "עבירות תנועה": 2
+      }
+    },
+    "טייבה": {
+      "total": 1573,
+      "breakdown": {
+        "עבירות בטחון": 97,
+        "עבירות כלכליות": 11,
+        "עבירות כלפי המוסר": 91,
+        "עבירות כלפי הרכוש": 291,
+        "עבירות מין": 11,
+        "עבירות מרמה": 86,
+        "עבירות נגד אדם": 9,
+        "עבירות נגד גוף": 249,
+        "עבירות סדר ציבורי": 696,
+        "עבירות רשוי": 11,
+        "עבירות תנועה": 19,
+        "שאר עבירות": 1,
+        "שגיאת הזנה": 1
+      }
+    },
+    "טירה": {
+      "total": 1227,
+      "breakdown": {
+        "סעיפי הגדרה": 1,
+        "עבירות בטחון": 41,
+        "עבירות כלכליות": 5,
+        "עבירות כלפי המוסר": 30,
+        "עבירות כלפי הרכוש": 190,
+        "עבירות מין": 5,
+        "עבירות מרמה": 54,
+        "עבירות נגד אדם": 11,
+        "עבירות נגד גוף": 223,
+        "עבירות סדר ציבורי": 642,
+        "עבירות רשוי": 19,
+        "עבירות תנועה": 4,
+        "שאר עבירות": 1,
+        "שגיאת הזנה": 1
+      }
+    },
+    "טירת כרמל": {
+      "total": 779,
+      "breakdown": {
+        "עבירות בטחון": 6,
+        "עבירות כלכליות": 11,
+        "עבירות כלפי המוסר": 127,
+        "עבירות כלפי הרכוש": 174,
+        "עבירות מין": 19,
+        "עבירות מנהליות": 1,
+        "עבירות מרמה": 28,
+        "עבירות נגד אדם": 3,
+        "עבירות נגד גוף": 151,
+        "עבירות סדר ציבורי": 248,
+        "עבירות רשוי": 2,
+        "עבירות תנועה": 5,
+        "שגיאת הזנה": 4
+      }
+    },
+    "טמרה": {
+      "total": 1743,
+      "breakdown": {
+        "סעיפי הגדרה": 4,
+        "עבירות בטחון": 125,
+        "עבירות כלכליות": 12,
+        "עבירות כלפי המוסר": 31,
+        "עבירות כלפי הרכוש": 407,
+        "עבירות מין": 7,
+        "עבירות מרמה": 62,
+        "עבירות נגד אדם": 18,
+        "עבירות נגד גוף": 239,
+        "עבירות סדר ציבורי": 799,
+        "עבירות רשוי": 5,
+        "עבירות תנועה": 32,
+        "שאר עבירות": 1,
+        "שגיאת הזנה": 1
+      }
+    },
+    "יאנוח-ג'ת": {
+      "total": 76,
+      "breakdown": {
+        "עבירות בטחון": 1,
+        "עבירות כלפי הרכוש": 25,
+        "עבירות מרמה": 7,
+        "עבירות נגד גוף": 18,
+        "עבירות סדר ציבורי": 24,
+        "עבירות רשוי": 1
+      }
+    },
+    "יבנאל": {
+      "total": 232,
+      "breakdown": {
+        "עבירות כלכליות": 1,
+        "עבירות כלפי המוסר": 1,
+        "עבירות כלפי הרכוש": 55,
+        "עבירות מין": 9,
+        "עבירות מרמה": 1,
+        "עבירות נגד גוף": 52,
+        "עבירות סדר ציבורי": 112,
+        "שגיאת הזנה": 1
+      }
+    },
+    "יבנה": {
+      "total": 1363,
+      "breakdown": {
+        "סעיפי הגדרה": 2,
+        "עבירות בטחון": 6,
+        "עבירות כלכליות": 41,
+        "עבירות כלפי המוסר": 68,
+        "עבירות כלפי הרכוש": 443,
+        "עבירות מין": 35,
+        "עבירות מרמה": 85,
+        "עבירות נגד אדם": 2,
+        "עבירות נגד גוף": 203,
+        "עבירות סדר ציבורי": 440,
+        "עבירות רשוי": 3,
+        "עבירות תנועה": 32,
+        "שגיאת הזנה": 3
+      }
+    },
+    "יהוד-מונוסון": {
+      "total": 773,
+      "breakdown": {
+        "עבירות בטחון": 1,
+        "עבירות כלכליות": 6,
+        "עבירות כלפי המוסר": 39,
+        "עבירות כלפי הרכוש": 263,
+        "עבירות מין": 9,
+        "עבירות מרמה": 36,
+        "עבירות נגד גוף": 113,
+        "עבירות סדר ציבורי": 291,
+        "עבירות רשוי": 1,
+        "עבירות תנועה": 13,
+        "שגיאת הזנה": 1
+      }
+    },
+    "יסוד המעלה": {
+      "total": 50,
+      "breakdown": {
+        "עבירות בטחון": 2,
+        "עבירות כלפי המוסר": 29,
+        "עבירות כלפי הרכוש": 6,
+        "עבירות מין": 2,
+        "עבירות נגד גוף": 4,
+        "עבירות סדר ציבורי": 7
+      }
+    },
+    "יפיע": {
+      "total": 405,
+      "breakdown": {
+        "עבירות בטחון": 41,
+        "עבירות כלכליות": 9,
+        "עבירות כלפי המוסר": 20,
+        "עבירות כלפי הרכוש": 85,
+        "עבירות מרמה": 15,
+        "עבירות נגד אדם": 5,
+        "עבירות נגד גוף": 64,
+        "עבירות סדר ציבורי": 163,
+        "עבירות רשוי": 1,
+        "עבירות תנועה": 2
+      }
+    },
+    "יקנעם עילית": {
+      "total": 341,
+      "breakdown": {
+        "עבירות בטחון": 3,
+        "עבירות כלכליות": 1,
+        "עבירות כלפי המוסר": 12,
+        "עבירות כלפי הרכוש": 115,
+        "עבירות מין": 6,
+        "עבירות מרמה": 35,
+        "עבירות נגד גוף": 45,
+        "עבירות סדר ציבורי": 121,
+        "עבירות רשוי": 1,
+        "עבירות תנועה": 1,
+        "שגיאת הזנה": 1
+      }
+    },
+    "ירוחם": {
+      "total": 412,
+      "breakdown": {
+        "עבירות בטחון": 2,
+        "עבירות כלכליות": 2,
+        "עבירות כלפי המוסר": 13,
+        "עבירות כלפי הרכוש": 202,
+        "עבירות מין": 6,
+        "עבירות מרמה": 8,
+        "עבירות נגד אדם": 1,
+        "עבירות נגד גוף": 46,
+        "עבירות סדר ציבורי": 122,
+        "עבירות רשוי": 5,
+        "עבירות תנועה": 3,
+        "שגיאת הזנה": 2
+      }
+    },
+    "ירושלים": {
+      "total": 22852,
+      "breakdown": {
+        "סעיפי הגדרה": 53,
+        "עבירות בטחון": 837,
+        "עבירות כלכליות": 341,
+        "עבירות כלפי המוסר": 922,
+        "עבירות כלפי הרכוש": 6221,
+        "עבירות מין": 622,
+        "עבירות מנהליות": 23,
+        "עבירות מרמה": 1259,
+        "עבירות נגד אדם": 60,
+        "עבירות נגד גוף": 4116,
+        "עבירות סדר ציבורי": 8082,
+        "עבירות רשוי": 53,
+        "עבירות תנועה": 210,
+        "שאר עבירות": 7,
+        "שגיאת הזנה": 46
+      }
+    },
+    "ירכא": {
+      "total": 440,
+      "breakdown": {
+        "סעיפי הגדרה": 1,
+        "עבירות בטחון": 26,
+        "עבירות כלכליות": 9,
+        "עבירות כלפי המוסר": 40,
+        "עבירות כלפי הרכוש": 103,
+        "עבירות מין": 5,
+        "עבירות מרמה": 26,
+        "עבירות נגד אדם": 3,
+        "עבירות נגד גוף": 72,
+        "עבירות סדר ציבורי": 144,
+        "עבירות רשוי": 3,
+        "עבירות תנועה": 7,
+        "שגיאת הזנה": 1
+      }
+    },
+    "ישוב פלסטיני": {
+      "total": 7576,
+      "breakdown": {
+        "סעיפי הגדרה": 27,
+        "עבירות בטחון": 4908,
+        "עבירות כלכליות": 136,
+        "עבירות כלפי המוסר": 59,
+        "עבירות כלפי הרכוש": 935,
+        "עבירות מין": 17,
+        "עבירות מנהליות": 3,
+        "עבירות מרמה": 108,
+        "עבירות נגד אדם": 60,
+        "עבירות נגד גוף": 300,
+        "עבירות סדר ציבורי": 870,
+        "עבירות רשוי": 34,
+        "עבירות תנועה": 61,
+        "שאר עבירות": 58
+      }
+    },
+    "כאבול": {
+      "total": 484,
+      "breakdown": {
+        "עבירות בטחון": 22,
+        "עבירות כלכליות": 5,
+        "עבירות כלפי המוסר": 4,
+        "עבירות כלפי הרכוש": 138,
+        "עבירות מין": 5,
+        "עבירות מנהליות": 1,
+        "עבירות מרמה": 22,
+        "עבירות נגד אדם": 3,
+        "עבירות נגד גוף": 70,
+        "עבירות סדר ציבורי": 209,
+        "עבירות רשוי": 3,
+        "עבירות תנועה": 2
+      }
+    },
+    "כאוכב אבו אל היגא": {
+      "total": 56,
+      "breakdown": {
+        "עבירות בטחון": 2,
+        "עבירות כלפי המוסר": 1,
+        "עבירות כלפי הרכוש": 15,
+        "עבירות מרמה": 3,
+        "עבירות נגד גוף": 9,
+        "עבירות סדר ציבורי": 26
+      }
+    },
+    "כוכב יאיר": {
+      "total": 73,
+      "breakdown": {
+        "עבירות כלכליות": 1,
+        "עבירות כלפי המוסר": 1,
+        "עבירות כלפי הרכוש": 28,
+        "עבירות מין": 4,
+        "עבירות מרמה": 4,
+        "עבירות נגד גוף": 5,
+        "עבירות סדר ציבורי": 30
+      }
+    },
+    "כסיפה": {
+      "total": 498,
+      "breakdown": {
+        "עבירות בטחון": 18,
+        "עבירות כלכליות": 3,
+        "עבירות כלפי המוסר": 3,
+        "עבירות כלפי הרכוש": 73,
+        "עבירות מין": 1,
+        "עבירות מרמה": 14,
+        "עבירות נגד אדם": 3,
+        "עבירות נגד גוף": 84,
+        "עבירות סדר ציבורי": 283,
+        "עבירות רשוי": 10,
+        "עבירות תנועה": 2,
+        "שאר עבירות": 1,
+        "שגיאת הזנה": 3
+      }
+    },
+    "כסרא-סמיע": {
+      "total": 65,
+      "breakdown": {
+        "עבירות בטחון": 3,
+        "עבירות כלכליות": 2,
+        "עבירות כלפי הרכוש": 8,
+        "עבירות מין": 2,
+        "עבירות מרמה": 3,
+        "עבירות נגד גוף": 16,
+        "עבירות סדר ציבורי": 31
+      }
+    },
+    "כעביה טבאש חג'אג'רה": {
+      "total": 185,
+      "breakdown": {
+        "עבירות בטחון": 20,
+        "עבירות כלפי המוסר": 4,
+        "עבירות כלפי הרכוש": 41,
+        "עבירות מין": 5,
+        "עבירות מרמה": 10,
+        "עבירות נגד אדם": 1,
+        "עבירות נגד גוף": 25,
+        "עבירות סדר ציבורי": 76,
+        "עבירות תנועה": 3
+      }
+    },
+    "כפר ברא": {
+      "total": 131,
+      "breakdown": {
+        "עבירות בטחון": 16,
+        "עבירות כלכליות": 2,
+        "עבירות כלפי הרכוש": 22,
+        "עבירות מרמה": 5,
+        "עבירות נגד אדם": 1,
+        "עבירות נגד גוף": 25,
+        "עבירות סדר ציבורי": 59,
+        "עבירות רשוי": 1
+      }
+    },
+    "כפר ורדים": {
+      "total": 44,
+      "breakdown": {
+        "עבירות כלפי המוסר": 3,
+        "עבירות כלפי הרכוש": 8,
+        "עבירות מין": 2,
+        "עבירות מרמה": 3,
+        "עבירות נגד גוף": 12,
+        "עבירות סדר ציבורי": 16
+      }
+    },
+    "כפר יאסיף": {
+      "total": 562,
+      "breakdown": {
+        "סעיפי הגדרה": 5,
+        "עבירות בטחון": 19,
+        "עבירות כלכליות": 5,
+        "עבירות כלפי המוסר": 89,
+        "עבירות כלפי הרכוש": 86,
+        "עבירות מין": 5,
+        "עבירות מרמה": 16,
+        "עבירות נגד אדם": 1,
+        "עבירות נגד גוף": 86,
+        "עבירות סדר ציבורי": 240,
+        "עבירות רשוי": 3,
+        "עבירות תנועה": 6,
+        "שגיאת הזנה": 1
+      }
+    },
+    "כפר יונה": {
+      "total": 650,
+      "breakdown": {
+        "סעיפי הגדרה": 2,
+        "עבירות בטחון": 3,
+        "עבירות כלכליות": 3,
+        "עבירות כלפי המוסר": 25,
+        "עבירות כלפי הרכוש": 221,
+        "עבירות מין": 12,
+        "עבירות מרמה": 25,
+        "עבירות נגד גוף": 111,
+        "עבירות סדר ציבורי": 234,
+        "עבירות רשוי": 3,
+        "עבירות תנועה": 9,
+        "שגיאת הזנה": 2
+      }
+    },
+    "כפר כמא": {
+      "total": 11,
+      "breakdown": {
+        "עבירות בטחון": 1,
+        "עבירות כלפי הרכוש": 3,
+        "עבירות מרמה": 1,
+        "עבירות נגד גוף": 2,
+        "עבירות סדר ציבורי": 4
+      }
+    },
+    "כפר כנא": {
+      "total": 690,
+      "breakdown": {
+        "סעיפי הגדרה": 3,
+        "עבירות בטחון": 52,
+        "עבירות כלכליות": 9,
+        "עבירות כלפי המוסר": 38,
+        "עבירות כלפי הרכוש": 89,
+        "עבירות מין": 2,
+        "עבירות מרמה": 32,
+        "עבירות נגד אדם": 5,
+        "עבירות נגד גוף": 76,
+        "עבירות סדר ציבורי": 374,
+        "עבירות רשוי": 2,
+        "עבירות תנועה": 8
+      }
+    },
+    "כפר מנדא": {
+      "total": 577,
+      "breakdown": {
+        "סעיפי הגדרה": 1,
+        "עבירות בטחון": 34,
+        "עבירות כלכליות": 15,
+        "עבירות כלפי המוסר": 14,
+        "עבירות כלפי הרכוש": 119,
+        "עבירות מין": 7,
+        "עבירות מרמה": 26,
+        "עבירות נגד אדם": 6,
+        "עבירות נגד גוף": 102,
+        "עבירות סדר ציבורי": 247,
+        "עבירות תנועה": 6
+      }
+    },
+    "כפר סבא": {
+      "total": 2513,
+      "breakdown": {
+        "עבירות בטחון": 5,
+        "עבירות כלכליות": 45,
+        "עבירות כלפי המוסר": 40,
+        "עבירות כלפי הרכוש": 1205,
+        "עבירות מין": 60,
+        "עבירות מרמה": 156,
+        "עבירות נגד אדם": 1,
+        "עבירות נגד גוף": 301,
+        "עבירות סדר ציבורי": 641,
+        "עבירות רשוי": 2,
+        "עבירות תנועה": 42,
+        "שאר עבירות": 1,
+        "שגיאת הזנה": 14
+      }
+    },
+    "כפר קאסם": {
+      "total": 730,
+      "breakdown": {
+        "עבירות בטחון": 40,
+        "עבירות כלכליות": 15,
+        "עבירות כלפי המוסר": 22,
+        "עבירות כלפי הרכוש": 128,
+        "עבירות מין": 4,
+        "עבירות מרמה": 64,
+        "עבירות נגד אדם": 4,
+        "עבירות נגד גוף": 119,
+        "עבירות סדר ציבורי": 325,
+        "עבירות רשוי": 7,
+        "עבירות תנועה": 2
+      }
+    },
+    "כפר קרע": {
+      "total": 741,
+      "breakdown": {
+        "עבירות בטחון": 43,
+        "עבירות כלכליות": 6,
+        "עבירות כלפי המוסר": 32,
+        "עבירות כלפי הרכוש": 188,
+        "עבירות מין": 4,
+        "עבירות מרמה": 15,
+        "עבירות נגד אדם": 10,
+        "עבירות נגד גוף": 114,
+        "עבירות סדר ציבורי": 306,
+        "עבירות רשוי": 5,
+        "עבירות תנועה": 17,
+        "שגיאת הזנה": 1
+      }
+    },
+    "כפר שמריהו": {
+      "total": 33,
+      "breakdown": {
+        "עבירות כלפי המוסר": 2,
+        "עבירות כלפי הרכוש": 5,
+        "עבירות מין": 2,
+        "עבירות מרמה": 2,
+        "עבירות נגד גוף": 5,
+        "עבירות סדר ציבורי": 17
+      }
+    },
+    "כפר תבור": {
+      "total": 82,
+      "breakdown": {
+        "עבירות בטחון": 1,
+        "עבירות כלפי המוסר": 2,
+        "עבירות כלפי הרכוש": 23,
+        "עבירות מין": 2,
+        "עבירות מרמה": 4,
+        "עבירות נגד גוף": 19,
+        "עבירות סדר ציבורי": 28,
+        "עבירות תנועה": 3
+      }
+    },
+    "כרמיאל": {
+      "total": 1189,
+      "breakdown": {
+        "עבירות בטחון": 9,
+        "עבירות כלכליות": 35,
+        "עבירות כלפי המוסר": 40,
+        "עבירות כלפי הרכוש": 320,
+        "עבירות מין": 33,
+        "עבירות מרמה": 106,
+        "עבירות נגד אדם": 1,
+        "עבירות נגד גוף": 227,
+        "עבירות סדר ציבורי": 405,
+        "עבירות רשוי": 3,
+        "עבירות תנועה": 9,
+        "שגיאת הזנה": 1
+      }
+    },
+    "להבים": {
+      "total": 85,
+      "breakdown": {
+        "עבירות בטחון": 2,
+        "עבירות כלכליות": 4,
+        "עבירות כלפי הרכוש": 43,
+        "עבירות מרמה": 8,
+        "עבירות נגד גוף": 5,
+        "עבירות סדר ציבורי": 23
+      }
+    },
+    "לוד": {
+      "total": 3548,
+      "breakdown": {
+        "סעיפי הגדרה": 3,
+        "עבירות בטחון": 128,
+        "עבירות כלכליות": 64,
+        "עבירות כלפי המוסר": 150,
+        "עבירות כלפי הרכוש": 1140,
+        "עבירות מין": 118,
+        "עבירות מרמה": 188,
+        "עבירות נגד אדם": 19,
+        "עבירות נגד גוף": 484,
+        "עבירות סדר ציבורי": 1194,
+        "עבירות רשוי": 26,
+        "עבירות תנועה": 22,
+        "שאר עבירות": 4,
+        "שגיאת הזנה": 8
+      }
+    },
+    "לקיה": {
+      "total": 503,
+      "breakdown": {
+        "עבירות בטחון": 59,
+        "עבירות כלכליות": 5,
+        "עבירות כלפי המוסר": 4,
+        "עבירות כלפי הרכוש": 89,
+        "עבירות מין": 3,
+        "עבירות מרמה": 17,
+        "עבירות נגד אדם": 6,
+        "עבירות נגד גוף": 50,
+        "עבירות סדר ציבורי": 261,
+        "עבירות רשוי": 2,
+        "עבירות תנועה": 6,
+        "שגיאת הזנה": 1
+      }
+    },
+    "מבשרת ציון": {
+      "total": 645,
+      "breakdown": {
+        "עבירות בטחון": 5,
+        "עבירות כלכליות": 7,
+        "עבירות כלפי המוסר": 36,
+        "עבירות כלפי הרכוש": 190,
+        "עבירות מין": 10,
+        "עבירות מרמה": 50,
+        "עבירות נגד אדם": 2,
+        "עבירות נגד גוף": 103,
+        "עבירות סדר ציבורי": 227,
+        "עבירות תנועה": 15
+      }
+    },
+    "מג'ד אל כרום": {
+      "total": 517,
+      "breakdown": {
+        "סעיפי הגדרה": 1,
+        "עבירות בטחון": 26,
+        "עבירות כלכליות": 16,
+        "עבירות כלפי המוסר": 26,
+        "עבירות כלפי הרכוש": 98,
+        "עבירות מין": 3,
+        "עבירות מרמה": 31,
+        "עבירות נגד אדם": 1,
+        "עבירות נגד גוף": 89,
+        "עבירות סדר ציבורי": 222,
+        "עבירות רשוי": 1,
+        "עבירות תנועה": 2,
+        "שגיאת הזנה": 1
+      }
+    },
+    "מג'דל שמס": {
+      "total": 200,
+      "breakdown": {
+        "סעיפי הגדרה": 2,
+        "עבירות בטחון": 7,
+        "עבירות כלפי המוסר": 7,
+        "עבירות כלפי הרכוש": 35,
+        "עבירות מין": 2,
+        "עבירות מרמה": 13,
+        "עבירות נגד גוף": 33,
+        "עבירות סדר ציבורי": 98,
+        "עבירות תנועה": 3
+      }
+    },
+    "מגאר": {
+      "total": 344,
+      "breakdown": {
+        "עבירות בטחון": 9,
+        "עבירות כלכליות": 11,
+        "עבירות כלפי המוסר": 11,
+        "עבירות כלפי הרכוש": 70,
+        "עבירות מין": 6,
+        "עבירות מרמה": 23,
+        "עבירות נגד גוף": 59,
+        "עבירות סדר ציבורי": 153,
+        "עבירות רשוי": 1,
+        "שגיאת הזנה": 1
+      }
+    },
+    "מגדל": {
+      "total": 64,
+      "breakdown": {
+        "עבירות כלפי המוסר": 4,
+        "עבירות כלפי הרכוש": 15,
+        "עבירות מין": 1,
+        "עבירות מרמה": 3,
+        "עבירות נגד גוף": 8,
+        "עבירות סדר ציבורי": 33
+      }
+    },
+    "מגדל העמק": {
+      "total": 739,
+      "breakdown": {
+        "עבירות בטחון": 12,
+        "עבירות כלכליות": 3,
+        "עבירות כלפי המוסר": 27,
+        "עבירות כלפי הרכוש": 193,
+        "עבירות מין": 14,
+        "עבירות מרמה": 56,
+        "עבירות נגד אדם": 1,
+        "עבירות נגד גוף": 143,
+        "עבירות סדר ציבורי": 278,
+        "עבירות רשוי": 2,
+        "עבירות תנועה": 6,
+        "שגיאת הזנה": 4
+      }
+    },
+    "מגדל תפן": {
+      "total": 14,
+      "breakdown": {
+        "עבירות כלכליות": 1,
+        "עבירות כלפי המוסר": 1,
+        "עבירות כלפי הרכוש": 3,
+        "עבירות מרמה": 2,
+        "עבירות סדר ציבורי": 7
+      }
+    },
+    "מודיעין-מכבים-רעות": {
+      "total": 1468,
+      "breakdown": {
+        "סעיפי הגדרה": 6,
+        "עבירות בטחון": 23,
+        "עבירות כלכליות": 25,
+        "עבירות כלפי המוסר": 63,
+        "עבירות כלפי הרכוש": 693,
+        "עבירות מין": 29,
+        "עבירות מרמה": 92,
+        "עבירות נגד אדם": 2,
+        "עבירות נגד גוף": 145,
+        "עבירות סדר ציבורי": 357,
+        "עבירות רשוי": 2,
+        "עבירות תנועה": 25,
+        "שגיאת הזנה": 6
+      }
+    },
+    "מודיעין עילית": {
+      "total": 497,
+      "breakdown": {
+        "עבירות בטחון": 34,
+        "עבירות כלכליות": 1,
+        "עבירות כלפי המוסר": 10,
+        "עבירות כלפי הרכוש": 165,
+        "עבירות מין": 40,
+        "עבירות מרמה": 22,
+        "עבירות נגד אדם": 1,
+        "עבירות נגד גוף": 93,
+        "עבירות סדר ציבורי": 122,
+        "עבירות רשוי": 6,
+        "עבירות תנועה": 3
+      }
+    },
+    "מועצה אזורית אל-בטוף": {
+      "total": 248,
+      "breakdown": {
+        "סעיפי הגדרה": 1,
+        "עבירות בטחון": 17,
+        "עבירות כלכליות": 2,
+        "עבירות כלפי הרכוש": 51,
+        "עבירות מרמה": 4,
+        "עבירות נגד גוף": 50,
+        "עבירות סדר ציבורי": 121,
+        "עבירות רשוי": 2
+      }
+    },
+    "מועצה אזורית אל קסום": {
+      "total": 595,
+      "breakdown": {
+        "עבירות בטחון": 40,
+        "עבירות כלכליות": 1,
+        "עבירות כלפי המוסר": 1,
+        "עבירות כלפי הרכוש": 139,
+        "עבירות מין": 4,
+        "עבירות מרמה": 14,
+        "עבירות נגד אדם": 3,
+        "עבירות נגד גוף": 134,
+        "עבירות סדר ציבורי": 252,
+        "עבירות רשוי": 2,
+        "עבירות תנועה": 5
+      }
+    },
+    "מועצה אזורית אלונה": {
+      "total": 48,
+      "breakdown": {
+        "עבירות כלכליות": 1,
+        "עבירות כלפי המוסר": 2,
+        "עבירות כלפי הרכוש": 30,
+        "עבירות מרמה": 2,
+        "עבירות נגד גוף": 2,
+        "עבירות סדר ציבורי": 10,
+        "עבירות רשוי": 1
+      }
+    },
+    "מועצה אזורית אשכול": {
+      "total": 324,
+      "breakdown": {
+        "סעיפי הגדרה": 1,
+        "עבירות בטחון": 34,
+        "עבירות כלכליות": 8,
+        "עבירות כלפי המוסר": 50,
+        "עבירות כלפי הרכוש": 90,
+        "עבירות מין": 4,
+        "עבירות מרמה": 21,
+        "עבירות נגד אדם": 2,
+        "עבירות נגד גוף": 28,
+        "עבירות סדר ציבורי": 81,
+        "עבירות רשוי": 3,
+        "עבירות תנועה": 1,
+        "שגיאת הזנה": 1
+      }
+    },
+    "מועצה אזורית באר טוביה": {
+      "total": 630,
+      "breakdown": {
+        "עבירות בטחון": 2,
+        "עבירות כלכליות": 5,
+        "עבירות כלפי המוסר": 20,
+        "עבירות כלפי הרכוש": 218,
+        "עבירות מין": 16,
+        "עבירות מרמה": 25,
+        "עבירות נגד אדם": 3,
+        "עבירות נגד גוף": 108,
+        "עבירות סדר ציבורי": 219,
+        "עבירות רשוי": 10,
+        "עבירות תנועה": 2,
+        "שאר עבירות": 1,
+        "שגיאת הזנה": 1
+      }
+    },
+    "מועצה אזורית בוסתן-אל-מרג'": {
+      "total": 217,
+      "breakdown": {
+        "עבירות בטחון": 12,
+        "עבירות כלכליות": 6,
+        "עבירות כלפי המוסר": 6,
+        "עבירות כלפי הרכוש": 39,
+        "עבירות מין": 2,
+        "עבירות מרמה": 20,
+        "עבירות נגד אדם": 1,
+        "עבירות נגד גוף": 38,
+        "עבירות סדר ציבורי": 91,
+        "עבירות רשוי": 2
+      }
+    },
+    "מועצה אזורית בני שמעון": {
+      "total": 370,
+      "breakdown": {
+        "עבירות בטחון": 7,
+        "עבירות כלכליות": 1,
+        "עבירות כלפי המוסר": 10,
+        "עבירות כלפי הרכוש": 161,
+        "עבירות מין": 6,
+        "עבירות מרמה": 12,
+        "עבירות נגד אדם": 3,
+        "עבירות נגד גוף": 36,
+        "עבירות סדר ציבורי": 125,
+        "עבירות רשוי": 1,
+        "עבירות תנועה": 5,
+        "שאר עבירות": 2,
+        "שגיאת הזנה": 1
+      }
+    },
+    "מועצה אזורית ברנר": {
+      "total": 166,
+      "breakdown": {
+        "עבירות בטחון": 2,
+        "עבירות כלכליות": 2,
+        "עבירות כלפי המוסר": 28,
+        "עבירות כלפי הרכוש": 52,
+        "עבירות מין": 2,
+        "עבירות מרמה": 9,
+        "עבירות נגד גוף": 12,
+        "עבירות סדר ציבורי": 49,
+        "עבירות רשוי": 3,
+        "עבירות תנועה": 6,
+        "שגיאת הזנה": 1
+      }
+    },
+    "מועצה אזורית גדרות": {
+      "total": 48,
+      "breakdown": {
+        "עבירות כלפי המוסר": 1,
+        "עבירות כלפי הרכוש": 24,
+        "עבירות מין": 2,
+        "עבירות מרמה": 3,
+        "עבירות נגד גוף": 5,
+        "עבירות סדר ציבורי": 13
+      }
+    },
+    "מועצה אזורית גולן": {
+      "total": 239,
+      "breakdown": {
+        "עבירות בטחון": 2,
+        "עבירות כלפי המוסר": 8,
+        "עבירות כלפי הרכוש": 63,
+        "עבירות מין": 17,
+        "עבירות מנהליות": 1,
+        "עבירות מרמה": 13,
+        "עבירות נגד אדם": 1,
+        "עבירות נגד גוף": 45,
+        "עבירות סדר ציבורי": 86,
+        "עבירות תנועה": 3
+      }
+    },
+    "מועצה אזורית גוש עציון": {
+      "total": 300,
+      "breakdown": {
+        "סעיפי הגדרה": 2,
+        "עבירות בטחון": 37,
+        "עבירות כלכליות": 3,
+        "עבירות כלפי המוסר": 1,
+        "עבירות כלפי הרכוש": 69,
+        "עבירות מין": 3,
+        "עבירות מנהליות": 1,
+        "עבירות מרמה": 24,
+        "עבירות נגד גוף": 41,
+        "עבירות סדר ציבורי": 113,
+        "עבירות רשוי": 1,
+        "עבירות תנועה": 3,
+        "שגיאת הזנה": 2
+      }
+    },
+    "מועצה אזורית גזר": {
+      "total": 453,
+      "breakdown": {
+        "סעיפי הגדרה": 2,
+        "עבירות בטחון": 11,
+        "עבירות כלכליות": 6,
+        "עבירות כלפי המוסר": 8,
+        "עבירות כלפי הרכוש": 183,
+        "עבירות מין": 12,
+        "עבירות מרמה": 21,
+        "עבירות נגד אדם": 2,
+        "עבירות נגד גוף": 68,
+        "עבירות סדר ציבורי": 139,
+        "עבירות רשוי": 1
+      }
+    },
+    "מועצה אזורית גן רווה": {
+      "total": 136,
+      "breakdown": {
+        "עבירות כלכליות": 3,
+        "עבירות כלפי המוסר": 3,
+        "עבירות כלפי הרכוש": 57,
+        "עבירות מין": 5,
+        "עבירות מרמה": 7,
+        "עבירות נגד גוף": 20,
+        "עבירות סדר ציבורי": 39,
+        "עבירות רשוי": 1,
+        "עבירות תנועה": 1
+      }
+    },
+    "מועצה אזורית דרום השרון": {
+      "total": 555,
+      "breakdown": {
+        "עבירות בטחון": 4,
+        "עבירות כלכליות": 5,
+        "עבירות כלפי המוסר": 23,
+        "עבירות כלפי הרכוש": 207,
+        "עבירות מין": 9,
+        "עבירות מרמה": 44,
+        "עבירות נגד אדם": 2,
+        "עבירות נגד גוף": 91,
+        "עבירות סדר ציבורי": 162,
+        "עבירות רשוי": 3,
+        "עבירות תנועה": 3,
+        "שגיאת הזנה": 2
+      }
+    },
+    "מועצה אזורית הגלבוע": {
+      "total": 655,
+      "breakdown": {
+        "סעיפי הגדרה": 1,
+        "עבירות בטחון": 49,
+        "עבירות כלכליות": 15,
+        "עבירות כלפי המוסר": 31,
+        "עבירות כלפי הרכוש": 149,
+        "עבירות מין": 15,
+        "עבירות מנהליות": 2,
+        "עבירות מרמה": 22,
+        "עבירות נגד אדם": 2,
+        "עבירות נגד גוף": 100,
+        "עבירות סדר ציבורי": 264,
+        "עבירות רשוי": 4,
+        "שאר עבירות": 1
+      }
+    },
+    "מועצה אזורית הגליל העליון": {
+      "total": 305,
+      "breakdown": {
+        "עבירות בטחון": 4,
+        "עבירות כלכליות": 7,
+        "עבירות כלפי המוסר": 47,
+        "עבירות כלפי הרכוש": 95,
+        "עבירות מין": 5,
+        "עבירות מנהליות": 2,
+        "עבירות מרמה": 20,
+        "עבירות נגד גוף": 32,
+        "עבירות סדר ציבורי": 85,
+        "עבירות רשוי": 1,
+        "עבירות תנועה": 6,
+        "שאר עבירות": 1
+      }
+    },
+    "מועצה אזורית הגליל התחתון": {
+      "total": 163,
+      "breakdown": {
+        "עבירות כלכליות": 1,
+        "עבירות כלפי המוסר": 1,
+        "עבירות כלפי הרכוש": 64,
+        "עבירות מין": 6,
+        "עבירות מרמה": 6,
+        "עבירות נגד גוף": 29,
+        "עבירות סדר ציבורי": 54,
+        "עבירות תנועה": 2
+      }
+    },
+    "מועצה אזורית הערבה התיכונה": {
+      "total": 97,
+      "breakdown": {
+        "עבירות כלפי המוסר": 2,
+        "עבירות כלפי הרכוש": 61,
+        "עבירות מין": 1,
+        "עבירות מרמה": 1,
+        "עבירות נגד גוף": 8,
+        "עבירות סדר ציבורי": 23,
+        "עבירות רשוי": 1
+      }
+    },
+    "מועצה אזורית הר חברון": {
+      "total": 287,
+      "breakdown": {
+        "עבירות בטחון": 33,
+        "עבירות כלכליות": 1,
+        "עבירות כלפי המוסר": 2,
+        "עבירות כלפי הרכוש": 56,
+        "עבירות מין": 7,
+        "עבירות מנהליות": 1,
+        "עבירות מרמה": 9,
+        "עבירות נגד אדם": 4,
+        "עבירות נגד גוף": 58,
+        "עבירות סדר ציבורי": 111,
+        "עבירות תנועה": 3,
+        "שאר עבירות": 1,
+        "שגיאת הזנה": 1
+      }
+    },
+    "מועצה אזורית זבולון": {
+      "total": 286,
+      "breakdown": {
+        "עבירות בטחון": 26,
+        "עבירות כלכליות": 1,
+        "עבירות כלפי המוסר": 11,
+        "עבירות כלפי הרכוש": 94,
+        "עבירות מין": 6,
+        "עבירות מרמה": 9,
+        "עבירות נגד אדם": 2,
+        "עבירות נגד גוף": 33,
+        "עבירות סדר ציבורי": 101,
+        "עבירות רשוי": 2,
+        "עבירות תנועה": 1
+      }
+    },
+    "מועצה אזורית חבל אילות": {
+      "total": 91,
+      "breakdown": {
+        "עבירות כלכליות": 1,
+        "עבירות כלפי המוסר": 3,
+        "עבירות כלפי הרכוש": 47,
+        "עבירות מין": 2,
+        "עבירות מרמה": 3,
+        "עבירות נגד גוף": 10,
+        "עבירות סדר ציבורי": 21,
+        "עבירות רשוי": 2,
+        "עבירות תנועה": 2
+      }
+    },
+    "מועצה אזורית חבל יבנה": {
+      "total": 83,
+      "breakdown": {
+        "עבירות בטחון": 1,
+        "עבירות כלכליות": 1,
+        "עבירות כלפי המוסר": 1,
+        "עבירות כלפי הרכוש": 32,
+        "עבירות מין": 2,
+        "עבירות מרמה": 7,
+        "עבירות נגד גוף": 14,
+        "עבירות סדר ציבורי": 24,
+        "עבירות תנועה": 1
+      }
+    },
+    "מועצה אזורית חבל מודיעין": {
+      "total": 506,
+      "breakdown": {
+        "סעיפי הגדרה": 1,
+        "עבירות בטחון": 5,
+        "עבירות כלכליות": 5,
+        "עבירות כלפי המוסר": 17,
+        "עבירות כלפי הרכוש": 225,
+        "עבירות מין": 11,
+        "עבירות מנהליות": 1,
+        "עבירות מרמה": 15,
+        "עבירות נגד אדם": 3,
+        "עבירות נגד גוף": 65,
+        "עבירות סדר ציבורי": 144,
+        "עבירות רשוי": 10,
+        "עבירות תנועה": 2,
+        "שגיאת הזנה": 2
+      }
+    },
+    "מועצה אזורית חוף אשקלון": {
+      "total": 486,
+      "breakdown": {
+        "סעיפי הגדרה": 1,
+        "עבירות בטחון": 9,
+        "עבירות כלכליות": 7,
+        "עבירות כלפי המוסר": 16,
+        "עבירות כלפי הרכוש": 173,
+        "עבירות מין": 10,
+        "עבירות מרמה": 27,
+        "עבירות נגד גוף": 74,
+        "עבירות סדר ציבורי": 162,
+        "עבירות רשוי": 3,
+        "עבירות תנועה": 2,
+        "שאר עבירות": 1,
+        "שגיאת הזנה": 1
+      }
+    },
+    "מועצה אזורית חוף הכרמל": {
+      "total": 813,
+      "breakdown": {
+        "סעיפי הגדרה": 1,
+        "עבירות בטחון": 8,
+        "עבירות כלכליות": 14,
+        "עבירות כלפי המוסר": 25,
+        "עבירות כלפי הרכוש": 391,
+        "עבירות מין": 13,
+        "עבירות מרמה": 35,
+        "עבירות נגד אדם": 3,
+        "עבירות נגד גוף": 86,
+        "עבירות סדר ציבורי": 221,
+        "עבירות רשוי": 7,
+        "עבירות תנועה": 8,
+        "שגיאת הזנה": 1
+      }
+    },
+    "מועצה אזורית חוף השרון": {
+      "total": 360,
+      "breakdown": {
+        "עבירות כלכליות": 5,
+        "עבירות כלפי המוסר": 8,
+        "עבירות כלפי הרכוש": 152,
+        "עבירות מין": 15,
+        "עבירות מנהליות": 1,
+        "עבירות מרמה": 19,
+        "עבירות נגד גוף": 42,
+        "עבירות סדר ציבורי": 107,
+        "עבירות רשוי": 8,
+        "עבירות תנועה": 1,
+        "שגיאת הזנה": 2
+      }
+    },
+    "מועצה אזורית יואב": {
+      "total": 160,
+      "breakdown": {
+        "עבירות כלכליות": 1,
+        "עבירות כלפי הרכוש": 95,
+        "עבירות מין": 2,
+        "עבירות מרמה": 6,
+        "עבירות נגד גוף": 10,
+        "עבירות סדר ציבורי": 43,
+        "עבירות רשוי": 1,
+        "עבירות תנועה": 2
+      }
+    },
+    "מועצה אזורית לב השרון": {
+      "total": 479,
+      "breakdown": {
+        "עבירות בטחון": 1,
+        "עבירות כלכליות": 6,
+        "עבירות כלפי המוסר": 15,
+        "עבירות כלפי הרכוש": 131,
+        "עבירות מין": 12,
+        "עבירות מרמה": 26,
+        "עבירות נגד גוף": 61,
+        "עבירות סדר ציבורי": 222,
+        "עבירות רשוי": 3,
+        "עבירות תנועה": 1,
+        "שגיאת הזנה": 1
+      }
+    },
+    "מועצה אזורית לכיש": {
+      "total": 333,
+      "breakdown": {
+        "עבירות בטחון": 10,
+        "עבירות כלכליות": 6,
+        "עבירות כלפי המוסר": 4,
+        "עבירות כלפי הרכוש": 162,
+        "עבירות מין": 8,
+        "עבירות מנהליות": 1,
+        "עבירות מרמה": 14,
+        "עבירות נגד גוף": 30,
+        "עבירות סדר ציבורי": 95,
+        "עבירות רשוי": 1,
+        "שאר עבירות": 1,
+        "שגיאת הזנה": 1
+      }
+    },
+    "מועצה אזורית מבואות החרמון": {
+      "total": 168,
+      "breakdown": {
+        "סעיפי הגדרה": 1,
+        "עבירות בטחון": 1,
+        "עבירות כלפי המוסר": 38,
+        "עבירות כלפי הרכוש": 42,
+        "עבירות מין": 1,
+        "עבירות מנהליות": 1,
+        "עבירות מרמה": 5,
+        "עבירות נגד גוף": 21,
+        "עבירות סדר ציבורי": 55,
+        "עבירות רשוי": 1,
+        "עבירות תנועה": 1,
+        "שגיאת הזנה": 1
+      }
+    },
+    "מועצה אזורית מגידו": {
+      "total": 227,
+      "breakdown": {
+        "עבירות בטחון": 3,
+        "עבירות כלכליות": 2,
+        "עבירות כלפי המוסר": 22,
+        "עבירות כלפי הרכוש": 68,
+        "עבירות מין": 7,
+        "עבירות מרמה": 11,
+        "עבירות נגד גוף": 26,
+        "עבירות סדר ציבורי": 82,
+        "עבירות רשוי": 2,
+        "עבירות תנועה": 4
+      }
+    },
+    "מועצה אזורית מגילות ים המלח": {
+      "total": 40,
+      "breakdown": {
+        "עבירות בטחון": 4,
+        "עבירות כלפי המוסר": 1,
+        "עבירות כלפי הרכוש": 14,
+        "עבירות מין": 1,
+        "עבירות מרמה": 1,
+        "עבירות נגד גוף": 3,
+        "עבירות סדר ציבורי": 16
+      }
+    },
+    "מועצה אזורית מטה אשר": {
+      "total": 895,
+      "breakdown": {
+        "עבירות בטחון": 26,
+        "עבירות כלכליות": 7,
+        "עבירות כלפי המוסר": 43,
+        "עבירות כלפי הרכוש": 235,
+        "עבירות מין": 27,
+        "עבירות מרמה": 25,
+        "עבירות נגד אדם": 4,
+        "עבירות נגד גוף": 107,
+        "עבירות סדר ציבורי": 401,
+        "עבירות רשוי": 5,
+        "עבירות תנועה": 11,
+        "שגיאת הזנה": 4
+      }
+    },
+    "מועצה אזורית מטה בנימין": {
+      "total": 867,
+      "breakdown": {
+        "סעיפי הגדרה": 5,
+        "עבירות בטחון": 54,
+        "עבירות כלכליות": 4,
+        "עבירות כלפי המוסר": 71,
+        "עבירות כלפי הרכוש": 207,
+        "עבירות מין": 28,
+        "עבירות מרמה": 62,
+        "עבירות נגד אדם": 3,
+        "עבירות נגד גוף": 139,
+        "עבירות סדר ציבורי": 281,
+        "עבירות רשוי": 2,
+        "עבירות תנועה": 4,
+        "שאר עבירות": 1,
+        "שגיאת הזנה": 6
+      }
+    },
+    "מועצה אזורית מטה יהודה": {
+      "total": 960,
+      "breakdown": {
+        "סעיפי הגדרה": 2,
+        "עבירות בטחון": 15,
+        "עבירות כלכליות": 10,
+        "עבירות כלפי המוסר": 23,
+        "עבירות כלפי הרכוש": 315,
+        "עבירות מין": 31,
+        "עבירות מנהליות": 1,
+        "עבירות מרמה": 61,
+        "עבירות נגד אדם": 3,
+        "עבירות נגד גוף": 135,
+        "עבירות סדר ציבורי": 348,
+        "עבירות רשוי": 6,
+        "עבירות תנועה": 8,
+        "שאר עבירות": 1,
+        "שגיאת הזנה": 1
+      }
+    },
+    "מועצה אזורית מנשה": {
+      "total": 347,
+      "breakdown": {
+        "עבירות בטחון": 6,
+        "עבירות כלכליות": 2,
+        "עבירות כלפי המוסר": 15,
+        "עבירות כלפי הרכוש": 123,
+        "עבירות מין": 14,
+        "עבירות מרמה": 17,
+        "עבירות נגד אדם": 2,
+        "עבירות נגד גוף": 64,
+        "עבירות סדר ציבורי": 97,
+        "עבירות תנועה": 5,
+        "שגיאת הזנה": 2
+      }
+    },
+    "מועצה אזורית מעלה יוסף": {
+      "total": 148,
+      "breakdown": {
+        "עבירות בטחון": 1,
+        "עבירות כלפי המוסר": 11,
+        "עבירות כלפי הרכוש": 38,
+        "עבירות מין": 5,
+        "עבירות מרמה": 4,
+        "עבירות נגד גוף": 31,
+        "עבירות סדר ציבורי": 58
+      }
+    },
+    "מועצה אזורית מרום הגליל": {
+      "total": 394,
+      "breakdown": {
+        "עבירות בטחון": 6,
+        "עבירות כלכליות": 2,
+        "עבירות כלפי המוסר": 36,
+        "עבירות כלפי הרכוש": 98,
+        "עבירות מין": 15,
+        "עבירות מנהליות": 1,
+        "עבירות מרמה": 11,
+        "עבירות נגד גוף": 67,
+        "עבירות סדר ציבורי": 154,
+        "עבירות רשוי": 4
+      }
+    },
+    "מועצה אזורית מרחבים": {
+      "total": 436,
+      "breakdown": {
+        "עבירות בטחון": 2,
+        "עבירות כלכליות": 2,
+        "עבירות כלפי המוסר": 15,
+        "עבירות כלפי הרכוש": 204,
+        "עבירות מין": 5,
+        "עבירות מרמה": 17,
+        "עבירות נגד אדם": 1,
+        "עבירות נגד גוף": 38,
+        "עבירות סדר ציבורי": 147,
+        "עבירות רשוי": 2,
+        "עבירות תנועה": 3
+      }
+    },
+    "מועצה אזורית משגב": {
+      "total": 416,
+      "breakdown": {
+        "עבירות בטחון": 12,
+        "עבירות כלכליות": 2,
+        "עבירות כלפי המוסר": 9,
+        "עבירות כלפי הרכוש": 157,
+        "עבירות מין": 4,
+        "עבירות מרמה": 24,
+        "עבירות נגד גוף": 59,
+        "עבירות סדר ציבורי": 143,
+        "עבירות רשוי": 2,
+        "עבירות תנועה": 2,
+        "שגיאת הזנה": 2
+      }
+    },
+    "מועצה אזורית נווה מדבר": {
+      "total": 457,
+      "breakdown": {
+        "עבירות בטחון": 18,
+        "עבירות כלכליות": 1,
+        "עבירות כלפי המוסר": 19,
+        "עבירות כלפי הרכוש": 65,
+        "עבירות מנהליות": 2,
+        "עבירות מרמה": 1,
+        "עבירות נגד אדם": 1,
+        "עבירות נגד גוף": 38,
+        "עבירות סדר ציבורי": 307,
+        "עבירות רשוי": 4,
+        "עבירות תנועה": 1
+      }
+    },
+    "מועצה אזורית נחל שורק": {
+      "total": 109,
+      "breakdown": {
+        "עבירות בטחון": 2,
+        "עבירות כלכליות": 2,
+        "עבירות כלפי המוסר": 2,
+        "עבירות כלפי הרכוש": 41,
+        "עבירות מין": 2,
+        "עבירות מרמה": 2,
+        "עבירות נגד אדם": 1,
+        "עבירות נגד גוף": 21,
+        "עבירות סדר ציבורי": 34,
+        "עבירות רשוי": 2
+      }
+    },
+    "מועצה אזורית עמק הירדן": {
+      "total": 245,
+      "breakdown": {
+        "עבירות בטחון": 1,
+        "עבירות כלכליות": 1,
+        "עבירות כלפי המוסר": 6,
+        "עבירות כלפי הרכוש": 90,
+        "עבירות מין": 2,
+        "עבירות מנהליות": 1,
+        "עבירות מרמה": 9,
+        "עבירות נגד אדם": 4,
+        "עבירות נגד גוף": 47,
+        "עבירות סדר ציבורי": 79,
+        "עבירות רשוי": 3,
+        "עבירות תנועה": 2
+      }
+    },
+    "מועצה אזורית עמק המעיינות": {
+      "total": 314,
+      "breakdown": {
+        "סעיפי הגדרה": 1,
+        "עבירות בטחון": 3,
+        "עבירות כלכליות": 1,
+        "עבירות כלפי המוסר": 11,
+        "עבירות כלפי הרכוש": 72,
+        "עבירות מין": 9,
+        "עבירות מנהליות": 1,
+        "עבירות מרמה": 5,
+        "עבירות נגד אדם": 2,
+        "עבירות נגד גוף": 44,
+        "עבירות סדר ציבורי": 161,
+        "עבירות רשוי": 1,
+        "שאר עבירות": 2,
+        "שגיאת הזנה": 1
+      }
+    },
+    "מועצה אזורית עמק חפר": {
+      "total": 795,
+      "breakdown": {
+        "עבירות בטחון": 1,
+        "עבירות כלכליות": 7,
+        "עבירות כלפי המוסר": 5,
+        "עבירות כלפי הרכוש": 375,
+        "עבירות מין": 6,
+        "עבירות מנהליות": 6,
+        "עבירות מרמה": 45,
+        "עבירות נגד אדם": 3,
+        "עבירות נגד גוף": 87,
+        "עבירות סדר ציבורי": 234,
+        "עבירות רשוי": 9,
+        "עבירות תנועה": 8,
+        "שגיאת הזנה": 9
+      }
+    },
+    "מועצה אזורית עמק יזרעאל": {
+      "total": 670,
+      "breakdown": {
+        "סעיפי הגדרה": 6,
+        "עבירות בטחון": 17,
+        "עבירות כלכליות": 2,
+        "עבירות כלפי המוסר": 13,
+        "עבירות כלפי הרכוש": 283,
+        "עבירות מין": 17,
+        "עבירות מרמה": 23,
+        "עבירות נגד גוף": 77,
+        "עבירות סדר ציבורי": 225,
+        "עבירות תנועה": 5,
+        "שגיאת הזנה": 2
+      }
+    },
+    "מועצה אזורית עמק לוד": {
+      "total": 181,
+      "breakdown": {
+        "עבירות בטחון": 1,
+        "עבירות כלכליות": 2,
+        "עבירות כלפי הרכוש": 58,
+        "עבירות מין": 3,
+        "עבירות מרמה": 11,
+        "עבירות נגד גוף": 33,
+        "עבירות סדר ציבורי": 68,
+        "עבירות רשוי": 4,
+        "שגיאת הזנה": 1
+      }
+    },
+    "מועצה אזורית ערבות הירדן": {
+      "total": 173,
+      "breakdown": {
+        "סעיפי הגדרה": 1,
+        "עבירות בטחון": 83,
+        "עבירות כלפי המוסר": 2,
+        "עבירות כלפי הרכוש": 30,
+        "עבירות מין": 2,
+        "עבירות מרמה": 6,
+        "עבירות נגד גוף": 22,
+        "עבירות סדר ציבורי": 24,
+        "עבירות רשוי": 1,
+        "שגיאת הזנה": 2
+      }
+    },
+    "מועצה אזורית רמת נגב": {
+      "total": 182,
+      "breakdown": {
+        "עבירות בטחון": 5,
+        "עבירות כלכליות": 4,
+        "עבירות כלפי המוסר": 5,
+        "עבירות כלפי הרכוש": 94,
+        "עבירות מין": 4,
+        "עבירות מרמה": 6,
+        "עבירות נגד גוף": 11,
+        "עבירות סדר ציבורי": 52,
+        "שגיאת הזנה": 1
+      }
+    },
+    "מועצה אזורית שדות דן": {
+      "total": 93,
+      "breakdown": {
+        "עבירות כלכליות": 3,
+        "עבירות כלפי המוסר": 1,
+        "עבירות כלפי הרכוש": 32,
+        "עבירות מין": 2,
+        "עבירות מרמה": 8,
+        "עבירות נגד גוף": 15,
+        "עבירות סדר ציבורי": 30,
+        "עבירות רשוי": 1,
+        "שגיאת הזנה": 1
+      }
+    },
+    "מועצה אזורית שדות נגב": {
+      "total": 276,
+      "breakdown": {
+        "סעיפי הגדרה": 1,
+        "עבירות בטחון": 3,
+        "עבירות כלכליות": 1,
+        "עבירות כלפי המוסר": 21,
+        "עבירות כלפי הרכוש": 91,
+        "עבירות מין": 3,
+        "עבירות מרמה": 13,
+        "עבירות נגד גוף": 30,
+        "עבירות סדר ציבורי": 97,
+        "עבירות תנועה": 16
+      }
+    },
+    "מועצה אזורית שומרון": {
+      "total": 393,
+      "breakdown": {
+        "עבירות בטחון": 43,
+        "עבירות כלכליות": 4,
+        "עבירות כלפי המוסר": 24,
+        "עבירות כלפי הרכוש": 109,
+        "עבירות מין": 17,
+        "עבירות מרמה": 21,
+        "עבירות נגד אדם": 4,
+        "עבירות נגד גוף": 55,
+        "עבירות סדר ציבורי": 105,
+        "עבירות תנועה": 9,
+        "שגיאת הזנה": 2
+      }
+    },
+    "מועצה אזורית שער הנגב": {
+      "total": 159,
+      "breakdown": {
+        "עבירות בטחון": 6,
+        "עבירות כלכליות": 1,
+        "עבירות כלפי המוסר": 13,
+        "עבירות כלפי הרכוש": 50,
+        "עבירות מין": 4,
+        "עבירות מנהליות": 1,
+        "עבירות מרמה": 6,
+        "עבירות נגד גוף": 21,
+        "עבירות סדר ציבורי": 53,
+        "עבירות רשוי": 2,
+        "עבירות תנועה": 1,
+        "שגיאת הזנה": 1
+      }
+    },
+    "מועצה אזורית שפיר": {
+      "total": 322,
+      "breakdown": {
+        "סעיפי הגדרה": 2,
+        "עבירות בטחון": 1,
+        "עבירות כלכליות": 3,
+        "עבירות כלפי המוסר": 17,
+        "עבירות כלפי הרכוש": 127,
+        "עבירות מין": 4,
+        "עבירות מרמה": 14,
+        "עבירות נגד גוף": 39,
+        "עבירות סדר ציבורי": 106,
+        "עבירות רשוי": 2,
+        "עבירות תנועה": 6,
+        "שאר עבירות": 1
+      }
+    },
+    "מועצה אזורית תמר": {
+      "total": 267,
+      "breakdown": {
+        "עבירות בטחון": 6,
+        "עבירות כלכליות": 5,
+        "עבירות כלפי המוסר": 6,
+        "עבירות כלפי הרכוש": 110,
+        "עבירות מין": 8,
+        "עבירות מרמה": 9,
+        "עבירות נגד אדם": 2,
+        "עבירות נגד גוף": 41,
+        "עבירות סדר ציבורי": 77,
+        "עבירות תנועה": 3
+      }
+    },
+    "מזכרת בתיה": {
+      "total": 255,
+      "breakdown": {
+        "סעיפי הגדרה": 1,
+        "עבירות בטחון": 2,
+        "עבירות כלכליות": 3,
+        "עבירות כלפי המוסר": 7,
+        "עבירות כלפי הרכוש": 104,
+        "עבירות מין": 7,
+        "עבירות מרמה": 16,
+        "עבירות נגד גוף": 32,
+        "עבירות סדר ציבורי": 74,
+        "עבירות רשוי": 2,
+        "עבירות תנועה": 6,
+        "שגיאת הזנה": 1
+      }
+    },
+    "מזרעה": {
+      "total": 93,
+      "breakdown": {
+        "עבירות בטחון": 3,
+        "עבירות כלכליות": 3,
+        "עבירות כלפי המוסר": 7,
+        "עבירות כלפי הרכוש": 15,
+        "עבירות מרמה": 3,
+        "עבירות נגד גוף": 20,
+        "עבירות סדר ציבורי": 42
+      }
+    },
+    "מטולה": {
+      "total": 11,
+      "breakdown": {
+        "עבירות כלפי הרכוש": 4,
+        "עבירות מרמה": 1,
+        "עבירות סדר ציבורי": 6
+      }
+    },
+    "מיתר": {
+      "total": 273,
+      "breakdown": {
+        "עבירות בטחון": 18,
+        "עבירות כלכליות": 4,
+        "עבירות כלפי המוסר": 9,
+        "עבירות כלפי הרכוש": 62,
+        "עבירות מין": 5,
+        "עבירות מרמה": 25,
+        "עבירות נגד אדם": 1,
+        "עבירות נגד גוף": 21,
+        "עבירות סדר ציבורי": 119,
+        "עבירות תנועה": 9
+      }
+    },
+    "מסעדה": {
+      "total": 95,
+      "breakdown": {
+        "עבירות בטחון": 1,
+        "עבירות כלכליות": 2,
+        "עבירות כלפי המוסר": 2,
+        "עבירות כלפי הרכוש": 24,
+        "עבירות מין": 2,
+        "עבירות מרמה": 4,
+        "עבירות נגד גוף": 15,
+        "עבירות סדר ציבורי": 41,
+        "עבירות תנועה": 4
+      }
+    },
+    "מעיליא": {
+      "total": 41,
+      "breakdown": {
+        "עבירות כלכליות": 1,
+        "עבירות כלפי המוסר": 4,
+        "עבירות כלפי הרכוש": 8,
+        "עבירות מין": 1,
+        "עבירות מרמה": 1,
+        "עבירות נגד גוף": 7,
+        "עבירות סדר ציבורי": 19
+      }
+    },
+    "מעלה אדומים": {
+      "total": 826,
+      "breakdown": {
+        "סעיפי הגדרה": 1,
+        "עבירות בטחון": 35,
+        "עבירות כלכליות": 4,
+        "עבירות כלפי המוסר": 45,
+        "עבירות כלפי הרכוש": 190,
+        "עבירות מין": 25,
+        "עבירות מרמה": 72,
+        "עבירות נגד אדם": 7,
+        "עבירות נגד גוף": 166,
+        "עבירות סדר ציבורי": 272,
+        "עבירות רשוי": 2,
+        "עבירות תנועה": 4,
+        "שאר עבירות": 1,
+        "שגיאת הזנה": 2
+      }
+    },
+    "מעלה אפרים": {
+      "total": 45,
+      "breakdown": {
+        "עבירות בטחון": 4,
+        "עבירות כלפי המוסר": 1,
+        "עבירות כלפי הרכוש": 19,
+        "עבירות מרמה": 5,
+        "עבירות נגד גוף": 4,
+        "עבירות סדר ציבורי": 12
+      }
+    },
+    "מעלה עירון": {
+      "total": 246,
+      "breakdown": {
+        "סעיפי הגדרה": 1,
+        "עבירות בטחון": 25,
+        "עבירות כלכליות": 4,
+        "עבירות כלפי המוסר": 6,
+        "עבירות כלפי הרכוש": 51,
+        "עבירות מין": 3,
+        "עבירות מרמה": 8,
+        "עבירות נגד אדם": 3,
+        "עבירות נגד גוף": 44,
+        "עבירות סדר ציבורי": 99,
+        "עבירות תנועה": 1,
+        "שאר עבירות": 1
+      }
+    },
+    "מעלות-תרשיחא": {
+      "total": 447,
+      "breakdown": {
+        "עבירות בטחון": 9,
+        "עבירות כלכליות": 7,
+        "עבירות כלפי המוסר": 45,
+        "עבירות כלפי הרכוש": 119,
+        "עבירות מין": 2,
+        "עבירות מרמה": 39,
+        "עבירות נגד אדם": 2,
+        "עבירות נגד גוף": 78,
+        "עבירות סדר ציבורי": 144,
+        "עבירות תנועה": 1,
+        "שגיאת הזנה": 1
+      }
+    },
+    "מצפה רמון": {
+      "total": 211,
+      "breakdown": {
+        "עבירות בטחון": 2,
+        "עבירות כלכליות": 2,
+        "עבירות כלפי המוסר": 3,
+        "עבירות כלפי הרכוש": 74,
+        "עבירות מין": 2,
+        "עבירות מנהליות": 1,
+        "עבירות מרמה": 7,
+        "עבירות נגד גוף": 68,
+        "עבירות סדר ציבורי": 51,
+        "עבירות רשוי": 1
+      }
+    },
+    "מקום": {
+      "total": 417,
+      "breakdown": {
+        "סעיפי הגדרה": 1,
+        "עבירות בטחון": 46,
+        "עבירות כלכליות": 2,
+        "עבירות כלפי המוסר": 25,
+        "עבירות כלפי הרכוש": 74,
+        "עבירות מין": 2,
+        "עבירות מרמה": 14,
+        "עבירות נגד אדם": 2,
+        "עבירות נגד גוף": 81,
+        "עבירות סדר ציבורי": 169,
+        "עבירות תנועה": 1
+      }
+    },
+    "מקום אחר": {
+      "total": 14136,
+      "breakdown": {
+        "סעיפי הגדרה": 31,
+        "עבירות בטחון": 2043,
+        "עבירות כלכליות": 159,
+        "עבירות כלפי המוסר": 801,
+        "עבירות כלפי הרכוש": 3806,
+        "עבירות מין": 166,
+        "עבירות מנהליות": 39,
+        "עבירות מרמה": 422,
+        "עבירות נגד אדם": 146,
+        "עבירות נגד גוף": 1668,
+        "עבירות סדר ציבורי": 4248,
+        "עבירות רשוי": 160,
+        "עבירות תנועה": 392,
+        "שאר עבירות": 46,
+        "שגיאת הזנה": 9
+      }
+    },
+    "משהד": {
+      "total": 132,
+      "breakdown": {
+        "סעיפי הגדרה": 3,
+        "עבירות בטחון": 6,
+        "עבירות כלכליות": 1,
+        "עבירות כלפי המוסר": 5,
+        "עבירות כלפי הרכוש": 15,
+        "עבירות מרמה": 15,
+        "עבירות נגד אדם": 1,
+        "עבירות נגד גוף": 26,
+        "עבירות סדר ציבורי": 57,
+        "עבירות רשוי": 2,
+        "עבירות תנועה": 1
+      }
+    },
+    "נאות חובב": {
+      "total": 48,
+      "breakdown": {
+        "עבירות בטחון": 2,
+        "עבירות כלפי המוסר": 3,
+        "עבירות כלפי הרכוש": 25,
+        "עבירות מרמה": 1,
+        "עבירות נגד אדם": 3,
+        "עבירות נגד גוף": 4,
+        "עבירות סדר ציבורי": 8,
+        "עבירות תנועה": 2
+      }
+    },
+    "נהריה": {
+      "total": 1747,
+      "breakdown": {
+        "סעיפי הגדרה": 1,
+        "עבירות בטחון": 18,
+        "עבירות כלכליות": 18,
+        "עבירות כלפי המוסר": 163,
+        "עבירות כלפי הרכוש": 467,
+        "עבירות מין": 30,
+        "עבירות מרמה": 100,
+        "עבירות נגד אדם": 4,
+        "עבירות נגד גוף": 357,
+        "עבירות סדר ציבורי": 570,
+        "עבירות רשוי": 9,
+        "עבירות תנועה": 3,
+        "שגיאת הזנה": 7
+      }
+    },
+    "נוף הגליל": {
+      "total": 1907,
+      "breakdown": {
+        "סעיפי הגדרה": 1,
+        "עבירות בטחון": 16,
+        "עבירות כלכליות": 50,
+        "עבירות כלפי המוסר": 101,
+        "עבירות כלפי הרכוש": 470,
+        "עבירות מין": 44,
+        "עבירות מנהליות": 1,
+        "עבירות מרמה": 90,
+        "עבירות נגד אדם": 2,
+        "עבירות נגד גוף": 349,
+        "עבירות סדר ציבורי": 765,
+        "עבירות רשוי": 7,
+        "עבירות תנועה": 10,
+        "שגיאת הזנה": 1
+      }
+    },
+    "נחף": {
+      "total": 360,
+      "breakdown": {
+        "סעיפי הגדרה": 1,
+        "עבירות בטחון": 17,
+        "עבירות כלכליות": 10,
+        "עבירות כלפי המוסר": 5,
+        "עבירות כלפי הרכוש": 51,
+        "עבירות מין": 4,
+        "עבירות מרמה": 8,
+        "עבירות נגד אדם": 2,
+        "עבירות נגד גוף": 74,
+        "עבירות סדר ציבורי": 186,
+        "עבירות תנועה": 2
+      }
+    },
+    "נמל תעופה בן גוריון": {
+      "total": 775,
+      "breakdown": {
+        "סעיפי הגדרה": 2,
+        "עבירות בטחון": 13,
+        "עבירות כלכליות": 7,
+        "עבירות כלפי המוסר": 98,
+        "עבירות כלפי הרכוש": 242,
+        "עבירות מין": 9,
+        "עבירות מנהליות": 1,
+        "עבירות מרמה": 23,
+        "עבירות נגד גוף": 42,
+        "עבירות סדר ציבורי": 327,
+        "עבירות רשוי": 5,
+        "עבירות תנועה": 6
+      }
+    },
+    "נס ציונה": {
+      "total": 898,
+      "breakdown": {
+        "סעיפי הגדרה": 1,
+        "עבירות בטחון": 3,
+        "עבירות כלכליות": 17,
+        "עבירות כלפי המוסר": 17,
+        "עבירות כלפי הרכוש": 366,
+        "עבירות מין": 34,
+        "עבירות מרמה": 59,
+        "עבירות נגד גוף": 121,
+        "עבירות סדר ציבורי": 269,
+        "עבירות רשוי": 1,
+        "עבירות תנועה": 10
+      }
+    },
+    "נצרת": {
+      "total": 2884,
+      "breakdown": {
+        "עבירות בטחון": 170,
+        "עבירות כלכליות": 50,
+        "עבירות כלפי המוסר": 136,
+        "עבירות כלפי הרכוש": 617,
+        "עבירות מין": 13,
+        "עבירות מרמה": 128,
+        "עבירות נגד אדם": 15,
+        "עבירות נגד גוף": 447,
+        "עבירות סדר ציבורי": 1278,
+        "עבירות רשוי": 7,
+        "עבירות תנועה": 23
+      }
+    },
+    "נשר": {
+      "total": 583,
+      "breakdown": {
+        "עבירות בטחון": 6,
+        "עבירות כלכליות": 21,
+        "עבירות כלפי המוסר": 27,
+        "עבירות כלפי הרכוש": 193,
+        "עבירות מין": 12,
+        "עבירות מרמה": 64,
+        "עבירות נגד אדם": 1,
+        "עבירות נגד גוף": 104,
+        "עבירות סדר ציבורי": 149,
+        "עבירות רשוי": 3,
+        "עבירות תנועה": 2,
+        "שגיאת הזנה": 1
+      }
+    },
+    "נתיבות": {
+      "total": 1407,
+      "breakdown": {
+        "סעיפי הגדרה": 1,
+        "עבירות בטחון": 9,
+        "עבירות כלכליות": 13,
+        "עבירות כלפי המוסר": 61,
+        "עבירות כלפי הרכוש": 387,
+        "עבירות מין": 41,
+        "עבירות מנהליות": 1,
+        "עבירות מרמה": 92,
+        "עבירות נגד אדם": 7,
+        "עבירות נגד גוף": 256,
+        "עבירות סדר ציבורי": 516,
+        "עבירות רשוי": 3,
+        "עבירות תנועה": 12,
+        "שגיאת הזנה": 8
+      }
+    },
+    "נתניה": {
+      "total": 6596,
+      "breakdown": {
+        "סעיפי הגדרה": 15,
+        "עבירות בטחון": 35,
+        "עבירות כלכליות": 144,
+        "עבירות כלפי המוסר": 191,
+        "עבירות כלפי הרכוש": 2754,
+        "עבירות מין": 98,
+        "עבירות מנהליות": 1,
+        "עבירות מרמה": 354,
+        "עבירות נגד אדם": 9,
+        "עבירות נגד גוף": 1136,
+        "עבירות סדר ציבורי": 1783,
+        "עבירות רשוי": 18,
+        "עבירות תנועה": 39,
+        "שאר עבירות": 1,
+        "שגיאת הזנה": 18
+      }
+    },
+    "סאג'ור": {
+      "total": 115,
+      "breakdown": {
+        "עבירות בטחון": 4,
+        "עבירות כלכליות": 1,
+        "עבירות כלפי המוסר": 11,
+        "עבירות כלפי הרכוש": 29,
+        "עבירות מרמה": 5,
+        "עבירות נגד גוף": 15,
+        "עבירות סדר ציבורי": 49,
+        "עבירות תנועה": 1
+      }
+    },
+    "סביון": {
+      "total": 68,
+      "breakdown": {
+        "עבירות כלכליות": 2,
+        "עבירות כלפי המוסר": 3,
+        "עבירות כלפי הרכוש": 20,
+        "עבירות מרמה": 10,
+        "עבירות נגד גוף": 8,
+        "עבירות סדר ציבורי": 24,
+        "עבירות רשוי": 1
+      }
+    },
+    "סח'נין": {
+      "total": 1022,
+      "breakdown": {
+        "סעיפי הגדרה": 2,
+        "עבירות בטחון": 50,
+        "עבירות כלכליות": 22,
+        "עבירות כלפי המוסר": 14,
+        "עבירות כלפי הרכוש": 236,
+        "עבירות מין": 6,
+        "עבירות מנהליות": 1,
+        "עבירות מרמה": 57,
+        "עבירות נגד אדם": 5,
+        "עבירות נגד גוף": 137,
+        "עבירות סדר ציבורי": 481,
+        "עבירות רשוי": 5,
+        "עבירות תנועה": 6
+      }
+    },
+    "ע'ג'ר": {
+      "total": 12,
+      "breakdown": {
+        "עבירות כלפי הרכוש": 2,
+        "עבירות מרמה": 2,
+        "עבירות נגד גוף": 1,
+        "עבירות סדר ציבורי": 7
+      }
+    },
+    "עומר": {
+      "total": 230,
+      "breakdown": {
+        "עבירות בטחון": 2,
+        "עבירות כלכליות": 4,
+        "עבירות כלפי הרכוש": 89,
+        "עבירות מין": 3,
+        "עבירות מרמה": 27,
+        "עבירות נגד גוף": 20,
+        "עבירות סדר ציבורי": 85
+      }
+    },
+    "עיילבון": {
+      "total": 169,
+      "breakdown": {
+        "סעיפי הגדרה": 3,
+        "עבירות בטחון": 8,
+        "עבירות כלכליות": 1,
+        "עבירות כלפי המוסר": 3,
+        "עבירות כלפי הרכוש": 44,
+        "עבירות מרמה": 6,
+        "עבירות נגד אדם": 3,
+        "עבירות נגד גוף": 27,
+        "עבירות סדר ציבורי": 73,
+        "עבירות רשוי": 1
+      }
+    },
+    "עילוט": {
+      "total": 179,
+      "breakdown": {
+        "עבירות בטחון": 11,
+        "עבירות כלכליות": 1,
+        "עבירות כלפי המוסר": 4,
+        "עבירות כלפי הרכוש": 36,
+        "עבירות מין": 4,
+        "עבירות מרמה": 6,
+        "עבירות נגד אדם": 2,
+        "עבירות נגד גוף": 24,
+        "עבירות סדר ציבורי": 87,
+        "עבירות רשוי": 1,
+        "עבירות תנועה": 2,
+        "שאר עבירות": 1
+      }
+    },
+    "עין מאהל": {
+      "total": 275,
+      "breakdown": {
+        "עבירות בטחון": 12,
+        "עבירות כלכליות": 24,
+        "עבירות כלפי המוסר": 6,
+        "עבירות כלפי הרכוש": 54,
+        "עבירות מין": 3,
+        "עבירות מרמה": 11,
+        "עבירות נגד אדם": 1,
+        "עבירות נגד גוף": 50,
+        "עבירות סדר ציבורי": 109,
+        "עבירות רשוי": 3,
+        "עבירות תנועה": 2
+      }
+    },
+    "עין קנייא": {
+      "total": 11,
+      "breakdown": {
+        "עבירות כלפי המוסר": 1,
+        "עבירות כלפי הרכוש": 5,
+        "עבירות מרמה": 1,
+        "עבירות נגד גוף": 1,
+        "עבירות סדר ציבורי": 3
+      }
+    },
+    "עכו": {
+      "total": 2191,
+      "breakdown": {
+        "סעיפי הגדרה": 4,
+        "עבירות בטחון": 39,
+        "עבירות כלכליות": 28,
+        "עבירות כלפי המוסר": 168,
+        "עבירות כלפי הרכוש": 669,
+        "עבירות מין": 23,
+        "עבירות מרמה": 74,
+        "עבירות נגד אדם": 6,
+        "עבירות נגד גוף": 435,
+        "עבירות סדר ציבורי": 722,
+        "עבירות רשוי": 10,
+        "עבירות תנועה": 10,
+        "שגיאת הזנה": 3
+      }
+    },
+    "עמנואל": {
+      "total": 114,
+      "breakdown": {
+        "עבירות בטחון": 2,
+        "עבירות כלכליות": 1,
+        "עבירות כלפי המוסר": 14,
+        "עבירות כלפי הרכוש": 28,
+        "עבירות מין": 3,
+        "עבירות מרמה": 2,
+        "עבירות נגד גוף": 24,
+        "עבירות סדר ציבורי": 39,
+        "שגיאת הזנה": 1
+      }
+    },
+    "עספיא": {
+      "total": 268,
+      "breakdown": {
+        "סעיפי הגדרה": 1,
+        "עבירות בטחון": 14,
+        "עבירות כלכליות": 2,
+        "עבירות כלפי המוסר": 18,
+        "עבירות כלפי הרכוש": 58,
+        "עבירות מין": 6,
+        "עבירות מרמה": 23,
+        "עבירות נגד אדם": 2,
+        "עבירות נגד גוף": 37,
+        "עבירות סדר ציבורי": 106,
+        "עבירות רשוי": 1
+      }
+    },
+    "עפולה": {
+      "total": 2158,
+      "breakdown": {
+        "סעיפי הגדרה": 1,
+        "עבירות בטחון": 21,
+        "עבירות כלכליות": 50,
+        "עבירות כלפי המוסר": 95,
+        "עבירות כלפי הרכוש": 658,
+        "עבירות מין": 48,
+        "עבירות מרמה": 115,
+        "עבירות נגד אדם": 4,
+        "עבירות נגד גוף": 385,
+        "עבירות סדר ציבורי": 755,
+        "עבירות רשוי": 4,
+        "עבירות תנועה": 7,
+        "שאר עבירות": 3,
+        "שגיאת הזנה": 12
+      }
+    },
+    "עראבה": {
+      "total": 646,
+      "breakdown": {
+        "סעיפי הגדרה": 1,
+        "עבירות בטחון": 32,
+        "עבירות כלכליות": 5,
+        "עבירות כלפי המוסר": 2,
+        "עבירות כלפי הרכוש": 143,
+        "עבירות מין": 6,
+        "עבירות מרמה": 40,
+        "עבירות נגד אדם": 5,
+        "עבירות נגד גוף": 101,
+        "עבירות סדר ציבורי": 294,
+        "עבירות רשוי": 2,
+        "עבירות תנועה": 9,
+        "שגיאת הזנה": 6
+      }
+    },
+    "ערד": {
+      "total": 1158,
+      "breakdown": {
+        "עבירות בטחון": 9,
+        "עבירות כלכליות": 14,
+        "עבירות כלפי המוסר": 35,
+        "עבירות כלפי הרכוש": 282,
+        "עבירות מין": 16,
+        "עבירות מרמה": 79,
+        "עבירות נגד אדם": 1,
+        "עבירות נגד גוף": 210,
+        "עבירות סדר ציבורי": 499,
+        "עבירות תנועה": 8,
+        "שגיאת הזנה": 5
+      }
+    },
+    "ערערה": {
+      "total": 671,
+      "breakdown": {
+        "עבירות בטחון": 52,
+        "עבירות כלכליות": 6,
+        "עבירות כלפי המוסר": 15,
+        "עבירות כלפי הרכוש": 182,
+        "עבירות מין": 5,
+        "עבירות מרמה": 20,
+        "עבירות נגד אדם": 2,
+        "עבירות נגד גוף": 116,
+        "עבירות סדר ציבורי": 258,
+        "עבירות רשוי": 1,
+        "עבירות תנועה": 13,
+        "שגיאת הזנה": 1
+      }
+    },
+    "ערערה-בנגב": {
+      "total": 1158,
+      "breakdown": {
+        "עבירות בטחון": 146,
+        "עבירות כלכליות": 6,
+        "עבירות כלפי המוסר": 14,
+        "עבירות כלפי הרכוש": 200,
+        "עבירות מין": 8,
+        "עבירות מרמה": 12,
+        "עבירות נגד אדם": 10,
+        "עבירות נגד גוף": 154,
+        "עבירות סדר ציבורי": 593,
+        "עבירות רשוי": 6,
+        "עבירות תנועה": 8,
+        "שגיאת הזנה": 1
+      }
+    },
+    "פוריידיס": {
+      "total": 485,
+      "breakdown": {
+        "עבירות בטחון": 25,
+        "עבירות כלפי המוסר": 13,
+        "עבירות כלפי הרכוש": 128,
+        "עבירות מין": 2,
+        "עבירות מרמה": 13,
+        "עבירות נגד גוף": 64,
+        "עבירות סדר ציבורי": 240
+      }
+    },
+    "פסוטה": {
+      "total": 56,
+      "breakdown": {
+        "עבירות כלפי המוסר": 4,
+        "עבירות כלפי הרכוש": 13,
+        "עבירות מין": 2,
+        "עבירות מנהליות": 1,
+        "עבירות מרמה": 5,
+        "עבירות נגד גוף": 10,
+        "עבירות סדר ציבורי": 21
+      }
+    },
+    "פקיעין": {
+      "total": 45,
+      "breakdown": {
+        "עבירות בטחון": 2,
+        "עבירות כלכליות": 1,
+        "עבירות כלפי הרכוש": 10,
+        "עבירות מין": 2,
+        "עבירות מרמה": 2,
+        "עבירות נגד גוף": 7,
+        "עבירות סדר ציבורי": 21
+      }
+    },
+    "פרדס חנה-כרכור": {
+      "total": 1057,
+      "breakdown": {
+        "סעיפי הגדרה": 4,
+        "עבירות בטחון": 11,
+        "עבירות כלכליות": 8,
+        "עבירות כלפי המוסר": 45,
+        "עבירות כלפי הרכוש": 383,
+        "עבירות מין": 27,
+        "עבירות מרמה": 41,
+        "עבירות נגד אדם": 1,
+        "עבירות נגד גוף": 168,
+        "עבירות סדר ציבורי": 354,
+        "עבירות רשוי": 5,
+        "עבירות תנועה": 3,
+        "שגיאת הזנה": 7
+      }
+    },
+    "פרדסיה": {
+      "total": 135,
+      "breakdown": {
+        "עבירות בטחון": 2,
+        "עבירות כלכליות": 3,
+        "עבירות כלפי המוסר": 20,
+        "עבירות כלפי הרכוש": 44,
+        "עבירות מין": 3,
+        "עבירות מרמה": 10,
+        "עבירות נגד גוף": 13,
+        "עבירות סדר ציבורי": 38,
+        "שגיאת הזנה": 2
+      }
+    },
+    "פתח תקווה": {
+      "total": 6572,
+      "breakdown": {
+        "סעיפי הגדרה": 6,
+        "עבירות בטחון": 24,
+        "עבירות כלכליות": 153,
+        "עבירות כלפי המוסר": 218,
+        "עבירות כלפי הרכוש": 2730,
+        "עבירות מין": 123,
+        "עבירות מנהליות": 4,
+        "עבירות מרמה": 495,
+        "עבירות נגד אדם": 10,
+        "עבירות נגד גוף": 1000,
+        "עבירות סדר ציבורי": 1723,
+        "עבירות רשוי": 6,
+        "עבירות תנועה": 58,
+        "שגיאת הזנה": 22
+      }
+    },
+    "צור הדסה": {
+      "total": 109,
+      "breakdown": {
+        "עבירות כלכליות": 1,
+        "עבירות כלפי המוסר": 13,
+        "עבירות כלפי הרכוש": 27,
+        "עבירות מין": 5,
+        "עבירות מרמה": 7,
+        "עבירות נגד גוף": 12,
+        "עבירות סדר ציבורי": 44
+      }
+    },
+    "צפת": {
+      "total": 865,
+      "breakdown": {
+        "עבירות בטחון": 11,
+        "עבירות כלכליות": 11,
+        "עבירות כלפי המוסר": 45,
+        "עבירות כלפי הרכוש": 178,
+        "עבירות מין": 38,
+        "עבירות מרמה": 44,
+        "עבירות נגד אדם": 1,
+        "עבירות נגד גוף": 208,
+        "עבירות סדר ציבורי": 325,
+        "עבירות תנועה": 4
+      }
+    },
+    "קדומים": {
+      "total": 45,
+      "breakdown": {
+        "עבירות בטחון": 1,
+        "עבירות כלכליות": 1,
+        "עבירות כלפי הרכוש": 9,
+        "עבירות מין": 4,
+        "עבירות מרמה": 2,
+        "עבירות נגד גוף": 7,
+        "עבירות סדר ציבורי": 21
+      }
+    },
+    "קדימה צורן": {
+      "total": 379,
+      "breakdown": {
+        "עבירות בטחון": 2,
+        "עבירות כלכליות": 10,
+        "עבירות כלפי המוסר": 14,
+        "עבירות כלפי הרכוש": 106,
+        "עבירות מין": 5,
+        "עבירות מרמה": 25,
+        "עבירות נגד גוף": 68,
+        "עבירות סדר ציבורי": 149
+      }
+    },
+    "קלנסווה": {
+      "total": 761,
+      "breakdown": {
+        "סעיפי הגדרה": 1,
+        "עבירות בטחון": 38,
+        "עבירות כלכליות": 10,
+        "עבירות כלפי המוסר": 16,
+        "עבירות כלפי הרכוש": 192,
+        "עבירות מין": 7,
+        "עבירות מנהליות": 1,
+        "עבירות מרמה": 23,
+        "עבירות נגד אדם": 4,
+        "עבירות נגד גוף": 127,
+        "עבירות סדר ציבורי": 330,
+        "עבירות רשוי": 3,
+        "עבירות תנועה": 8,
+        "שגיאת הזנה": 1
+      }
+    },
+    "קצרין": {
+      "total": 267,
+      "breakdown": {
+        "עבירות כלכליות": 3,
+        "עבירות כלפי המוסר": 22,
+        "עבירות כלפי הרכוש": 61,
+        "עבירות מין": 14,
+        "עבירות מנהליות": 1,
+        "עבירות מרמה": 17,
+        "עבירות נגד אדם": 2,
+        "עבירות נגד גוף": 42,
+        "עבירות סדר ציבורי": 101,
+        "עבירות תנועה": 3,
+        "שגיאת הזנה": 1
+      }
+    },
+    "קרית אונו": {
+      "total": 900,
+      "breakdown": {
+        "סעיפי הגדרה": 3,
+        "עבירות בטחון": 2,
+        "עבירות כלכליות": 16,
+        "עבירות כלפי המוסר": 9,
+        "עבירות כלפי הרכוש": 330,
+        "עבירות מין": 15,
+        "עבירות מרמה": 78,
+        "עבירות נגד אדם": 1,
+        "עבירות נגד גוף": 136,
+        "עבירות סדר ציבורי": 295,
+        "עבירות תנועה": 15
+      }
+    },
+    "קרית ארבע": {
+      "total": 151,
+      "breakdown": {
+        "עבירות בטחון": 1,
+        "עבירות כלכליות": 4,
+        "עבירות כלפי המוסר": 4,
+        "עבירות כלפי הרכוש": 39,
+        "עבירות מין": 4,
+        "עבירות מרמה": 8,
+        "עבירות נגד גוף": 30,
+        "עבירות סדר ציבורי": 57,
+        "עבירות רשוי": 1,
+        "עבירות תנועה": 3
+      }
+    },
+    "קרית אתא": {
+      "total": 1590,
+      "breakdown": {
+        "סעיפי הגדרה": 1,
+        "עבירות בטחון": 13,
+        "עבירות כלכליות": 27,
+        "עבירות כלפי המוסר": 143,
+        "עבירות כלפי הרכוש": 489,
+        "עבירות מין": 39,
+        "עבירות מרמה": 99,
+        "עבירות נגד אדם": 5,
+        "עבירות נגד גוף": 250,
+        "עבירות סדר ציבורי": 509,
+        "עבירות רשוי": 3,
+        "עבירות תנועה": 9,
+        "שגיאת הזנה": 3
+      }
+    },
+    "קרית ביאליק": {
+      "total": 1066,
+      "breakdown": {
+        "סעיפי הגדרה": 3,
+        "עבירות בטחון": 5,
+        "עבירות כלכליות": 35,
+        "עבירות כלפי המוסר": 35,
+        "עבירות כלפי הרכוש": 368,
+        "עבירות מין": 18,
+        "עבירות מרמה": 92,
+        "עבירות נגד אדם": 3,
+        "עבירות נגד גוף": 193,
+        "עבירות סדר ציבורי": 306,
+        "עבירות רשוי": 5,
+        "שגיאת הזנה": 3
+      }
+    },
+    "קרית גת": {
+      "total": 2491,
+      "breakdown": {
+        "סעיפי הגדרה": 1,
+        "עבירות בטחון": 19,
+        "עבירות כלכליות": 62,
+        "עבירות כלפי המוסר": 111,
+        "עבירות כלפי הרכוש": 682,
+        "עבירות מין": 54,
+        "עבירות מרמה": 119,
+        "עבירות נגד אדם": 5,
+        "עבירות נגד גוף": 507,
+        "עבירות סדר ציבורי": 902,
+        "עבירות רשוי": 12,
+        "עבירות תנועה": 15,
+        "שגיאת הזנה": 2
+      }
+    },
+    "קרית טבעון": {
+      "total": 317,
+      "breakdown": {
+        "עבירות בטחון": 1,
+        "עבירות כלכליות": 8,
+        "עבירות כלפי המוסר": 16,
+        "עבירות כלפי הרכוש": 142,
+        "עבירות מין": 6,
+        "עבירות מרמה": 15,
+        "עבירות נגד אדם": 1,
+        "עבירות נגד גוף": 40,
+        "עבירות סדר ציבורי": 87,
+        "שגיאת הזנה": 1
+      }
+    },
+    "קרית ים": {
+      "total": 1212,
+      "breakdown": {
+        "עבירות בטחון": 16,
+        "עבירות כלכליות": 37,
+        "עבירות כלפי המוסר": 100,
+        "עבירות כלפי הרכוש": 396,
+        "עבירות מין": 18,
+        "עבירות מרמה": 94,
+        "עבירות נגד אדם": 2,
+        "עבירות נגד גוף": 218,
+        "עבירות סדר ציבורי": 318,
+        "עבירות רשוי": 3,
+        "עבירות תנועה": 5,
+        "שגיאת הזנה": 5
+      }
+    },
+    "קרית יערים": {
+      "total": 54,
+      "breakdown": {
+        "עבירות בטחון": 2,
+        "עבירות כלפי הרכוש": 21,
+        "עבירות מין": 4,
+        "עבירות מרמה": 2,
+        "עבירות נגד גוף": 9,
+        "עבירות סדר ציבורי": 14,
+        "עבירות תנועה": 1,
+        "שגיאת הזנה": 1
+      }
+    },
+    "קרית מוצקין": {
+      "total": 1005,
+      "breakdown": {
+        "עבירות בטחון": 7,
+        "עבירות כלכליות": 25,
+        "עבירות כלפי המוסר": 54,
+        "עבירות כלפי הרכוש": 322,
+        "עבירות מין": 24,
+        "עבירות מרמה": 84,
+        "עבירות נגד אדם": 1,
+        "עבירות נגד גוף": 183,
+        "עבירות סדר ציבורי": 296,
+        "עבירות רשוי": 4,
+        "שאר עבירות": 1,
+        "שגיאת הזנה": 4
+      }
+    },
+    "קרית מלאכי": {
+      "total": 1244,
+      "breakdown": {
+        "עבירות בטחון": 11,
+        "עבירות כלכליות": 28,
+        "עבירות כלפי המוסר": 52,
+        "עבירות כלפי הרכוש": 329,
+        "עבירות מין": 27,
+        "עבירות מנהליות": 1,
+        "עבירות מרמה": 58,
+        "עבירות נגד אדם": 5,
+        "עבירות נגד גוף": 251,
+        "עבירות סדר ציבורי": 468,
+        "עבירות רשוי": 4,
+        "עבירות תנועה": 7,
+        "שגיאת הזנה": 3
+      }
+    },
+    "קרית עקרון": {
+      "total": 426,
+      "breakdown": {
+        "עבירות בטחון": 1,
+        "עבירות כלכליות": 5,
+        "עבירות כלפי המוסר": 6,
+        "עבירות כלפי הרכוש": 185,
+        "עבירות מין": 12,
+        "עבירות מרמה": 14,
+        "עבירות נגד אדם": 2,
+        "עבירות נגד גוף": 61,
+        "עבירות סדר ציבורי": 131,
+        "עבירות רשוי": 1,
+        "עבירות תנועה": 7,
+        "שגיאת הזנה": 1
+      }
+    },
+    "קרית שמונה": {
+      "total": 644,
+      "breakdown": {
+        "עבירות בטחון": 7,
+        "עבירות כלכליות": 3,
+        "עבירות כלפי המוסר": 19,
+        "עבירות כלפי הרכוש": 163,
+        "עבירות מין": 21,
+        "עבירות מרמה": 56,
+        "עבירות נגד גוף": 127,
+        "עבירות סדר ציבורי": 244,
+        "עבירות תנועה": 1,
+        "שגיאת הזנה": 3
+      }
+    },
+    "קרני שומרון": {
+      "total": 142,
+      "breakdown": {
+        "עבירות בטחון": 7,
+        "עבירות כלכליות": 1,
+        "עבירות כלפי המוסר": 3,
+        "עבירות כלפי הרכוש": 20,
+        "עבירות מין": 7,
+        "עבירות מרמה": 16,
+        "עבירות נגד גוף": 28,
+        "עבירות סדר ציבורי": 59,
+        "עבירות תנועה": 1
+      }
+    },
+    "ראמה": {
+      "total": 182,
+      "breakdown": {
+        "עבירות בטחון": 11,
+        "עבירות כלכליות": 3,
+        "עבירות כלפי המוסר": 22,
+        "עבירות כלפי הרכוש": 46,
+        "עבירות מין": 1,
+        "עבירות מרמה": 10,
+        "עבירות נגד אדם": 1,
+        "עבירות נגד גוף": 18,
+        "עבירות סדר ציבורי": 66,
+        "עבירות תנועה": 4
+      }
+    },
+    "ראש העין": {
+      "total": 1527,
+      "breakdown": {
+        "סעיפי הגדרה": 3,
+        "עבירות בטחון": 7,
+        "עבירות כלכליות": 21,
+        "עבירות כלפי המוסר": 32,
+        "עבירות כלפי הרכוש": 527,
+        "עבירות מין": 41,
+        "עבירות מנהליות": 1,
+        "עבירות מרמה": 74,
+        "עבירות נגד אדם": 2,
+        "עבירות נגד גוף": 269,
+        "עבירות סדר ציבורי": 521,
+        "עבירות רשוי": 2,
+        "עבירות תנועה": 17,
+        "שאר עבירות": 1,
+        "שגיאת הזנה": 9
+      }
+    },
+    "ראש פינה": {
+      "total": 166,
+      "breakdown": {
+        "עבירות בטחון": 4,
+        "עבירות כלכליות": 8,
+        "עבירות כלפי המוסר": 21,
+        "עבירות כלפי הרכוש": 36,
+        "עבירות מין": 2,
+        "עבירות מרמה": 11,
+        "עבירות נגד גוף": 25,
+        "עבירות סדר ציבורי": 59
+      }
+    },
+    "ראשון לציון": {
+      "total": 7490,
+      "breakdown": {
+        "סעיפי הגדרה": 15,
+        "עבירות בטחון": 38,
+        "עבירות כלכליות": 214,
+        "עבירות כלפי המוסר": 201,
+        "עבירות כלפי הרכוש": 3047,
+        "עבירות מין": 144,
+        "עבירות מרמה": 536,
+        "עבירות נגד אדם": 12,
+        "עבירות נגד גוף": 1171,
+        "עבירות סדר ציבורי": 1960,
+        "עבירות רשוי": 24,
+        "עבירות תנועה": 93,
+        "שאר עבירות": 1,
+        "שגיאת הזנה": 34
+      }
+    },
+    "רהט": {
+      "total": 3168,
+      "breakdown": {
+        "סעיפי הגדרה": 3,
+        "עבירות בטחון": 180,
+        "עבירות כלכליות": 30,
+        "עבירות כלפי המוסר": 62,
+        "עבירות כלפי הרכוש": 626,
+        "עבירות מין": 22,
+        "עבירות מרמה": 139,
+        "עבירות נגד אדם": 25,
+        "עבירות נגד גוף": 482,
+        "עבירות סדר ציבורי": 1534,
+        "עבירות רשוי": 26,
+        "עבירות תנועה": 36,
+        "שאר עבירות": 1,
+        "שגיאת הזנה": 2
+      }
+    },
+    "רחובות": {
+      "total": 3589,
+      "breakdown": {
+        "סעיפי הגדרה": 4,
+        "עבירות בטחון": 18,
+        "עבירות כלכליות": 82,
+        "עבירות כלפי המוסר": 76,
+        "עבירות כלפי הרכוש": 1313,
+        "עבירות מין": 103,
+        "עבירות מנהליות": 3,
+        "עבירות מרמה": 226,
+        "עבירות נגד אדם": 5,
+        "עבירות נגד גוף": 587,
+        "עבירות סדר ציבורי": 1111,
+        "עבירות רשוי": 8,
+        "עבירות תנועה": 39,
+        "שגיאת הזנה": 14
+      }
+    },
+    "ריינה": {
+      "total": 441,
+      "breakdown": {
+        "עבירות בטחון": 34,
+        "עבירות כלכליות": 4,
+        "עבירות כלפי המוסר": 7,
+        "עבירות כלפי הרכוש": 105,
+        "עבירות מין": 3,
+        "עבירות מרמה": 17,
+        "עבירות נגד גוף": 81,
+        "עבירות סדר ציבורי": 187,
+        "עבירות רשוי": 1,
+        "עבירות תנועה": 2
+      }
+    },
+    "רכסים": {
+      "total": 95,
+      "breakdown": {
+        "עבירות בטחון": 1,
+        "עבירות כלכליות": 3,
+        "עבירות כלפי המוסר": 1,
+        "עבירות כלפי הרכוש": 29,
+        "עבירות מין": 7,
+        "עבירות מנהליות": 1,
+        "עבירות מרמה": 6,
+        "עבירות נגד גוף": 21,
+        "עבירות סדר ציבורי": 26
+      }
+    },
+    "רמלה": {
+      "total": 3592,
+      "breakdown": {
+        "סעיפי הגדרה": 3,
+        "עבירות בטחון": 104,
+        "עבירות כלכליות": 44,
+        "עבירות כלפי המוסר": 125,
+        "עבירות כלפי הרכוש": 1179,
+        "עבירות מין": 83,
+        "עבירות מנהליות": 2,
+        "עבירות מרמה": 154,
+        "עבירות נגד אדם": 11,
+        "עבירות נגד גוף": 640,
+        "עבירות סדר ציבורי": 1175,
+        "עבירות רשוי": 26,
+        "עבירות תנועה": 37,
+        "שאר עבירות": 1,
+        "שגיאת הזנה": 8
+      }
+    },
+    "רמת גן": {
+      "total": 4619,
+      "breakdown": {
+        "סעיפי הגדרה": 6,
+        "עבירות בטחון": 14,
+        "עבירות כלכליות": 93,
+        "עבירות כלפי המוסר": 224,
+        "עבירות כלפי הרכוש": 1978,
+        "עבירות מין": 85,
+        "עבירות מרמה": 278,
+        "עבירות נגד אדם": 3,
+        "עבירות נגד גוף": 577,
+        "עבירות סדר ציבורי": 1317,
+        "עבירות רשוי": 5,
+        "עבירות תנועה": 35,
+        "שגיאת הזנה": 4
+      }
+    },
+    "רמת השרון": {
+      "total": 1009,
+      "breakdown": {
+        "סעיפי הגדרה": 4,
+        "עבירות בטחון": 3,
+        "עבירות כלכליות": 13,
+        "עבירות כלפי המוסר": 59,
+        "עבירות כלפי הרכוש": 425,
+        "עבירות מין": 24,
+        "עבירות מרמה": 64,
+        "עבירות נגד אדם": 1,
+        "עבירות נגד גוף": 108,
+        "עבירות סדר ציבורי": 287,
+        "עבירות רשוי": 1,
+        "עבירות תנועה": 20
+      }
+    },
+    "רמת ישי": {
+      "total": 103,
+      "breakdown": {
+        "עבירות כלכליות": 2,
+        "עבירות כלפי המוסר": 4,
+        "עבירות כלפי הרכוש": 33,
+        "עבירות מרמה": 6,
+        "עבירות נגד גוף": 13,
+        "עבירות סדר ציבורי": 44,
+        "עבירות רשוי": 1
+      }
+    },
+    "רעננה": {
+      "total": 1455,
+      "breakdown": {
+        "סעיפי הגדרה": 1,
+        "עבירות בטחון": 4,
+        "עבירות כלכליות": 17,
+        "עבירות כלפי המוסר": 48,
+        "עבירות כלפי הרכוש": 685,
+        "עבירות מין": 16,
+        "עבירות מרמה": 75,
+        "עבירות נגד אדם": 2,
+        "עבירות נגד גוף": 187,
+        "עבירות סדר ציבורי": 403,
+        "עבירות רשוי": 4,
+        "עבירות תנועה": 12,
+        "שאר עבירות": 1
+      }
+    },
+    "שבלי": {
+      "total": 437,
+      "breakdown": {
+        "סעיפי הגדרה": 1,
+        "עבירות בטחון": 51,
+        "עבירות כלכליות": 3,
+        "עבירות כלפי המוסר": 29,
+        "עבירות כלפי הרכוש": 69,
+        "עבירות מין": 4,
+        "עבירות מרמה": 11,
+        "עבירות נגד גוף": 65,
+        "עבירות סדר ציבורי": 200,
+        "עבירות תנועה": 4
+      }
+    },
+    "שגב-שלום": {
+      "total": 699,
+      "breakdown": {
+        "עבירות בטחון": 62,
+        "עבירות כלכליות": 10,
+        "עבירות כלפי המוסר": 31,
+        "עבירות כלפי הרכוש": 89,
+        "עבירות מין": 1,
+        "עבירות מרמה": 14,
+        "עבירות נגד אדם": 5,
+        "עבירות נגד גוף": 68,
+        "עבירות סדר ציבורי": 405,
+        "עבירות רשוי": 2,
+        "עבירות תנועה": 11,
+        "שגיאת הזנה": 1
+      }
+    },
+    "שדרות": {
+      "total": 1308,
+      "breakdown": {
+        "עבירות בטחון": 9,
+        "עבירות כלכליות": 14,
+        "עבירות כלפי המוסר": 72,
+        "עבירות כלפי הרכוש": 261,
+        "עבירות מין": 33,
+        "עבירות מרמה": 77,
+        "עבירות נגד אדם": 2,
+        "עבירות נגד גוף": 307,
+        "עבירות סדר ציבורי": 511,
+        "עבירות רשוי": 11,
+        "עבירות תנועה": 6,
+        "שגיאת הזנה": 5
+      }
+    },
+    "שוהם": {
+      "total": 245,
+      "breakdown": {
+        "עבירות בטחון": 1,
+        "עבירות כלכליות": 3,
+        "עבירות כלפי המוסר": 4,
+        "עבירות כלפי הרכוש": 108,
+        "עבירות מין": 6,
+        "עבירות מרמה": 17,
+        "עבירות נגד גוף": 35,
+        "עבירות סדר ציבורי": 66,
+        "עבירות רשוי": 1,
+        "שגיאת הזנה": 4
+      }
+    },
+    "שלומי": {
+      "total": 130,
+      "breakdown": {
+        "סעיפי הגדרה": 1,
+        "עבירות בטחון": 3,
+        "עבירות כלכליות": 3,
+        "עבירות כלפי המוסר": 11,
+        "עבירות כלפי הרכוש": 32,
+        "עבירות מין": 2,
+        "עבירות מרמה": 7,
+        "עבירות נגד גוף": 18,
+        "עבירות סדר ציבורי": 52,
+        "שגיאת הזנה": 1
+      }
+    },
+    "שעב": {
+      "total": 337,
+      "breakdown": {
+        "עבירות בטחון": 23,
+        "עבירות כלכליות": 5,
+        "עבירות כלפי המוסר": 5,
+        "עבירות כלפי הרכוש": 95,
+        "עבירות מין": 1,
+        "עבירות מרמה": 9,
+        "עבירות נגד אדם": 1,
+        "עבירות נגד גוף": 52,
+        "עבירות סדר ציבורי": 143,
+        "עבירות רשוי": 1,
+        "עבירות תנועה": 2
+      }
+    },
+    "שער שומרון": {
+      "total": 79,
+      "breakdown": {
+        "עבירות בטחון": 2,
+        "עבירות כלכליות": 2,
+        "עבירות כלפי המוסר": 1,
+        "עבירות כלפי הרכוש": 16,
+        "עבירות מין": 2,
+        "עבירות מרמה": 8,
+        "עבירות נגד גוף": 23,
+        "עבירות סדר ציבורי": 23,
+        "עבירות תנועה": 1,
+        "שגיאת הזנה": 1
+      }
+    },
+    "שפרעם": {
+      "total": 1443,
+      "breakdown": {
+        "עבירות בטחון": 67,
+        "עבירות כלכליות": 31,
+        "עבירות כלפי המוסר": 44,
+        "עבירות כלפי הרכוש": 367,
+        "עבירות מין": 6,
+        "עבירות מרמה": 76,
+        "עבירות נגד אדם": 8,
+        "עבירות נגד גוף": 198,
+        "עבירות סדר ציבורי": 627,
+        "עבירות תנועה": 15,
+        "שאר עבירות": 2,
+        "שגיאת הזנה": 2
+      }
+    },
+    "תל אביב יפו": {
+      "total": 27782,
+      "breakdown": {
+        "סעיפי הגדרה": 22,
+        "עבירות בטחון": 175,
+        "עבירות כלכליות": 393,
+        "עבירות כלפי המוסר": 1412,
+        "עבירות כלפי הרכוש": 14622,
+        "עבירות מין": 354,
+        "עבירות מנהליות": 2,
+        "עבירות מרמה": 1092,
+        "עבירות נגד אדם": 53,
+        "עבירות נגד גוף": 3047,
+        "עבירות סדר ציבורי": 6251,
+        "עבירות רשוי": 96,
+        "עבירות תנועה": 255,
+        "שאר עבירות": 2,
+        "שגיאת הזנה": 6
+      }
+    },
+    "תל מונד": {
+      "total": 232,
+      "breakdown": {
+        "עבירות בטחון": 1,
+        "עבירות כלכליות": 2,
+        "עבירות כלפי הרכוש": 66,
+        "עבירות מין": 5,
+        "עבירות מרמה": 10,
+        "עבירות נגד גוף": 39,
+        "עבירות סדר ציבורי": 106,
+        "עבירות רשוי": 1,
+        "עבירות תנועה": 1,
+        "שגיאת הזנה": 1
+      }
+    },
+    "תל שבע": {
+      "total": 939,
+      "breakdown": {
+        "סעיפי הגדרה": 1,
+        "עבירות בטחון": 112,
+        "עבירות כלכליות": 4,
+        "עבירות כלפי המוסר": 52,
+        "עבירות כלפי הרכוש": 167,
+        "עבירות מין": 4,
+        "עבירות מרמה": 23,
+        "עבירות נגד אדם": 7,
+        "עבירות נגד גוף": 163,
+        "עבירות סדר ציבורי": 395,
+        "עבירות רשוי": 1,
+        "עבירות תנועה": 8,
+        "שגיאת הזנה": 2
+      }
+    },
+    "Grand Total": {
+      "total": 299697,
+      "breakdown": {}
+    }
+  }
+};
