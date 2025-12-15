@@ -2,7 +2,7 @@
 <html lang="he" dir="rtl">
 <head>
   <meta charset="utf-8" />
-  <title>מפת פשיעה – לפי רשות ולפי שנה (2020–2025)</title>
+  <title>מפת פשיעה – לפי רשות ושנה (2020–2025)</title>
 
   <!-- נתוני פשיעה -->
   <script src="crimeByYear_2020_2025.js"></script>
@@ -12,55 +12,305 @@
       margin: 0;
       padding: 0;
       height: 100%;
-      font-family: Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
       overflow: hidden;
+      background: #f5f5f5;
     }
 
-    #map { width: 100%; height: 100%; }
+    #map { 
+      width: 100%; 
+      height: 100%; 
+    }
 
+    /* פאנל מידע */
     #info-panel {
       position: absolute;
-      top: 10px;
-      left: 10px;
+      top: 15px;
+      left: 15px;
       z-index: 9999;
-      background: #fff;
-      padding: 10px 14px;
-      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(10px);
+      padding: 0;
+      border-radius: 12px;
       width: 420px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+      max-height: calc(100vh - 30px);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
       font-size: 14px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
     }
 
+    /* כותרת */
+    #panel-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 16px 18px;
+      border-radius: 12px 12px 0 0;
+    }
+
+    #panel-header h1 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    #panel-header p {
+      margin: 5px 0 0 0;
+      font-size: 13px;
+      opacity: 0.9;
+    }
+
+    /* בקרות */
     #controls {
+      padding: 16px 18px;
+      background: #f8f9fa;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    #controls-row {
       display: flex;
-      gap: 10px;
+      gap: 12px;
       align-items: center;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
+    }
+
+    #controls label {
+      font-weight: 500;
+      font-size: 13px;
+      color: #555;
     }
 
     #yearSelect {
-      padding: 6px 8px;
+      flex: 1;
+      padding: 8px 12px;
       border-radius: 8px;
-      border: 1px solid #ccc;
+      border: 2px solid #ddd;
+      font-size: 14px;
+      background: white;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    #yearSelect:hover {
+      border-color: #667eea;
+    }
+
+    #yearSelect:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    /* סטטיסטיקות מהירות */
+    #quick-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .stat-card {
+      background: white;
+      padding: 10px;
+      border-radius: 8px;
+      text-align: center;
+      border: 1px solid #e0e0e0;
+    }
+
+    .stat-value {
+      font-size: 20px;
+      font-weight: 700;
+      color: #667eea;
+      margin-bottom: 2px;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* תוכן */
+    #info-content {
+      padding: 18px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    #info-title {
+      font-weight: 600;
+      font-size: 16px;
+      margin-bottom: 12px;
+      color: #333;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    #info-title::before {
+      content: "📍";
+      font-size: 20px;
+    }
+
+    #info-body {
+      white-space: pre-line;
+      line-height: 1.6;
+      color: #555;
+    }
+
+    /* רשימת עבירות */
+    .crime-list {
+      margin-top: 12px;
+    }
+
+    .crime-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 12px;
+      margin-bottom: 6px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      border-right: 3px solid #667eea;
+      transition: all 0.2s;
+    }
+
+    .crime-item:hover {
+      background: #e9ecef;
+      transform: translateX(-2px);
+    }
+
+    .crime-name {
+      font-weight: 500;
+      color: #333;
+      font-size: 13px;
+    }
+
+    .crime-count {
+      font-weight: 700;
+      color: #667eea;
       font-size: 14px;
     }
 
-    #info-title { font-weight: bold; margin-bottom: 6px; }
-    #info-body  { white-space: pre-line; max-height: 60vh; overflow-y: auto; }
+    /* סרגל התקדמות */
+    .progress-bar {
+      width: 100%;
+      height: 4px;
+      background: #e0e0e0;
+      border-radius: 2px;
+      margin-top: 4px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #667eea, #764ba2);
+      transition: width 0.3s ease;
+    }
+
+    /* הודעות */
+    .message {
+      padding: 16px;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .message-info {
+      background: #e3f2fd;
+      color: #1565c0;
+      border: 1px solid #90caf9;
+    }
+
+    .message-error {
+      background: #ffebee;
+      color: #c62828;
+      border: 1px solid #ef9a9a;
+    }
+
+    .message-success {
+      background: #e8f5e9;
+      color: #2e7d32;
+      border: 1px solid #a5d6a7;
+    }
+
+    /* מסך טעינה */
+    #loading {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      padding: 30px 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      z-index: 10000;
+      text-align: center;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      margin: 0 auto 15px;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #667eea;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      #info-panel {
+        width: calc(100% - 30px);
+        left: 15px;
+        right: 15px;
+      }
+
+      #quick-stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    /* Scrollbar */
+    #info-content::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    #info-content::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+
+    #info-content::-webkit-scrollbar-thumb {
+      background: #888;
+      border-radius: 3px;
+    }
+
+    #info-content::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
   </style>
 
   <script>
-    /* ===== קונפיגורציה ===== */
     const MUNICIPAL_LAYER = "125";
     const TOKEN = "ede9a5fd-7c23-432f-8ffb-d85feffa3f3c";
 
     let mapInitialized = false;
     let currentYear = "2025";
+    let totalMunicipalities = 0;
+    let totalCrimes = 0;
+    let yearlyStats = {};
 
-    // normalized -> { name, data }
     const muniIndex = {};
 
-    /* ===== נרמול שמות (עם הגנה) ===== */
+    /* נרמול שמות רשויות */
     function normalizeMunicipalityKey(name) {
       if (name == null) return "";
       let s = String(name).trim();
@@ -76,7 +326,39 @@
       return s.toLowerCase();
     }
 
-    /* ===== בניית אינדקס לשנה ===== */
+    /* חישוב סטטיסטיקות */
+    function calculateStats(year) {
+      const yearData = window.crimeByYear?.[year];
+      if (!yearData) return { municipalities: 0, total: 0, avg: 0 };
+
+      let total = 0;
+      let count = 0;
+
+      for (const name in yearData) {
+        const data = yearData[name];
+        if (data.total) {
+          total += data.total;
+          count++;
+        }
+      }
+
+      return {
+        municipalities: count,
+        total: total,
+        avg: count > 0 ? Math.round(total / count) : 0
+      };
+    }
+
+    /* עדכון סטטיסטיקות UI */
+    function updateQuickStats() {
+      const stats = yearlyStats[currentYear] || { municipalities: 0, total: 0, avg: 0 };
+      
+      document.getElementById('stat-municipalities').textContent = stats.municipalities.toLocaleString();
+      document.getElementById('stat-total').textContent = stats.total.toLocaleString();
+      document.getElementById('stat-avg').textContent = stats.avg.toLocaleString();
+    }
+
+    /* בניית אינדקס לשנה */
     function buildIndexForYear(year) {
       for (const k in muniIndex) delete muniIndex[k];
 
@@ -90,38 +372,82 @@
         };
       }
 
-      console.log(`Year: ${year} muniIndex size:`, Object.keys(muniIndex).length);
+      yearlyStats[year] = calculateStats(year);
+      console.log(`Year ${year}: ${Object.keys(muniIndex).length} municipalities indexed`);
     }
 
-    /* ===== UI ===== */
-    function showInfo(title, body) {
-      document.getElementById("info-title").textContent = title;
-      document.getElementById("info-body").textContent = body;
+    /* UI Functions */
+    function showInfo(title, body, type = 'info') {
+      const titleEl = document.getElementById("info-title");
+      const bodyEl = document.getElementById("info-body");
+      
+      titleEl.textContent = title;
+      
+      if (typeof body === 'string') {
+        bodyEl.innerHTML = `<div class="message message-${type}">${body}</div>`;
+      } else {
+        bodyEl.innerHTML = body;
+      }
     }
 
     function showEntry(entry) {
       const d = entry.data;
-      const lines = [];
+      
+      let html = `<div class="message message-success">
+        <strong>✓ נמצא!</strong> הצגת נתוני פשיעה עבור ${entry.name} בשנת ${currentYear}
+      </div>`;
 
-      lines.push(`שנה: ${currentYear}`);
       if (d.total !== undefined) {
-        lines.push(`סה״כ אירועים: ${d.total}\n`);
+        html += `<div style="font-size: 24px; font-weight: 700; color: #667eea; margin: 16px 0;">
+          ${d.total.toLocaleString()} אירועים
+        </div>`;
       }
 
-      if (d.breakdown) {
-        for (const k in d.breakdown) {
-          lines.push(`• ${k}: ${d.breakdown[k]}`);
+      if (d.breakdown && Object.keys(d.breakdown).length > 0) {
+        const sorted = Object.entries(d.breakdown)
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 12);
+
+        const maxValue = Math.max(...sorted.map(x => x[1]));
+
+        html += '<div class="crime-list">';
+        
+        for (const [name, count] of sorted) {
+          const percentage = (count / maxValue) * 100;
+          html += `
+            <div class="crime-item">
+              <div>
+                <div class="crime-name">${name}</div>
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width: ${percentage}%"></div>
+                </div>
+              </div>
+              <div class="crime-count">${count.toLocaleString()}</div>
+            </div>`;
+        }
+        
+        html += '</div>';
+
+        if (Object.keys(d.breakdown).length > 12) {
+          html += `<div style="text-align: center; margin-top: 12px; color: #999; font-size: 12px;">
+            ועוד ${Object.keys(d.breakdown).length - 12} סוגי עבירות נוספים
+          </div>`;
         }
       }
 
-      showInfo(`רשות: ${entry.name}`, lines.join("\n"));
+      document.getElementById("info-title").textContent = entry.name;
+      document.getElementById("info-body").innerHTML = html;
     }
 
-    /* ===== GovMap helpers ===== */
+    /* GovMap helpers */
     function fieldsToObject(fields) {
       if (!Array.isArray(fields)) return fields;
       const o = {};
-      for (const f of fields) o[f.FieldName] = f.Value;
+      for (const f of fields) {
+        if (f.FieldName && f.Value !== undefined) {
+          o[f.FieldName] = f.Value;
+        }
+      }
       return o;
     }
 
@@ -129,13 +455,12 @@
       if (!attrsRaw) return null;
 
       const attrs = fieldsToObject(attrsRaw) || attrsRaw;
-      const candidates = ["שם רשות", "שם רשות מקומית", "שם ישוב", "ישוב סופי"];
+      const candidates = ["שם רשות", "שם רשות מקומית", "שם ישוב", "ישוב סופי", "SHEM_YISHUV"];
 
       for (const c of candidates) {
         if (attrs && attrs[c]) return attrs[c];
       }
 
-      // fallback – כל מחרוזת בעברית
       if (attrs && typeof attrs === "object") {
         for (const k in attrs) {
           if (typeof attrs[k] === "string" && /[\u0590-\u05FF]/.test(attrs[k])) {
@@ -147,10 +472,11 @@
       return null;
     }
 
-    /* ===== Init map ===== */
+    /* אתחול מפה */
     function initGovMap() {
       if (!window.crimeByYear) {
-        showInfo("שגיאה", "crimeByYear לא נטען");
+        showInfo("שגיאה", "לא ניתן לטעון את נתוני הפשיעה", "error");
+        document.getElementById('loading').style.display = 'none';
         return;
       }
 
@@ -165,16 +491,19 @@
         sel.appendChild(opt);
       });
 
-      currentYear = years.includes("2025") ? "2025" : years[0];
+      currentYear = years.includes("2025") ? "2025" : years[years.length - 1];
       sel.value = currentYear;
       buildIndexForYear(currentYear);
+      updateQuickStats();
 
       sel.addEventListener("change", e => {
         currentYear = e.target.value;
         buildIndexForYear(currentYear);
+        updateQuickStats();
         showInfo(
           "מפת פשיעה לפי רשות",
-          `שנה נבחרת: ${currentYear}\nלחץ על רשות במפה כדי לראות נתונים`
+          `שנה נבחרת: ${currentYear}<br>לחץ על רשות במפה כדי לראות נתונים מפורטים`,
+          "info"
         );
       });
 
@@ -188,57 +517,63 @@
         onLoad: () => {
           mapInitialized = true;
           govmap.onEvent(govmap.events.CLICK).progress(onMapClick);
+          document.getElementById('loading').style.display = 'none';
           showInfo(
             "מפת פשיעה לפי רשות",
-            `שנה נבחרת: ${currentYear}\nלחץ על רשות במפה כדי לראות נתונים`
+            `שנה נבחרת: ${currentYear}<br>לחץ על רשות במפה כדי לראות נתונים מפורטים`,
+            "info"
           );
         }
       });
     }
 
-    /* ===== Click handler ===== */
+    /* טיפול בלחיצה */
     async function onMapClick(e) {
       if (!mapInitialized) return;
 
-      const resp = await govmap.getLayerData({
-        LayerName: MUNICIPAL_LAYER,
-        layerName: MUNICIPAL_LAYER,
-        Point: e.mapPoint,
-        Radius: 300
-      });
+      try {
+        const resp = await govmap.getLayerData({
+          LayerName: MUNICIPAL_LAYER,
+          Point: e.mapPoint,
+          Radius: 300
+        });
 
-      const items = resp?.data || resp?.Data || [];
-      if (!items.length) return;
+        const items = resp?.data || resp?.Data || [];
+        if (!items.length) {
+          showInfo("לא נמצא", "אין רשות מקומית באזור זה", "info");
+          return;
+        }
 
-      const first = items[0];
-      const attrs =
-        first.Fields || first.fields ||
-        first.Attributes || first.attributes ||
-        first;
+        const first = items[0];
+        const attrs = first.Fields || first.Attributes || first;
 
-      const name = detectMunicipalityName(attrs);
-      if (!name) {
-        showInfo("שגיאה בזיהוי", "לא נמצא שם רשות בלחיצה זו");
-        console.log("DEBUG attrs:", attrs);
-        return;
+        const name = detectMunicipalityName(attrs);
+        if (!name) {
+          showInfo("שגיאה", "לא ניתן לזהות את שם הרשות", "error");
+          console.log("DEBUG attrs:", attrs);
+          return;
+        }
+
+        const key = normalizeMunicipalityKey(name);
+        const entry = muniIndex[key];
+
+        if (!entry) {
+          showInfo(
+            "לא נמצאו נתונים",
+            `אין נתוני פשיעה עבור <strong>${name}</strong> בשנת ${currentYear}`,
+            "error"
+          );
+          return;
+        }
+
+        showEntry(entry);
+      } catch (error) {
+        console.error("Error in onMapClick:", error);
+        showInfo("שגיאה", "אירעה שגיאה בטעינת הנתונים", "error");
       }
-
-      const key = normalizeMunicipalityKey(name);
-      const entry = muniIndex[key];
-
-      if (!entry) {
-        showInfo(
-          "לא נמצאה התאמה",
-          `שנה: ${currentYear}\nשם מהשכבה: ${name}`
-        );
-        return;
-      }
-
-      showEntry(entry);
     }
   </script>
 
-  <!-- GovMap API -->
   <script
     src="https://www.govmap.gov.il/govmap/api/govmap.api.js"
     defer
@@ -247,16 +582,45 @@
 </head>
 
 <body>
+  <div id="loading">
+    <div class="spinner"></div>
+    <div>טוען מפה...</div>
+  </div>
+
   <div id="map"></div>
 
   <div id="info-panel">
-    <div id="controls">
-      <label for="yearSelect">שנה:</label>
-      <select id="yearSelect"></select>
+    <div id="panel-header">
+      <h1>🗺️ מפת פשיעה בישראל</h1>
+      <p>נתוני פשיעה לפי רשויות מקומיות</p>
     </div>
 
-    <div id="info-title">מפת פשיעה לפי רשות</div>
-    <div id="info-body">טוען נתונים…</div>
+    <div id="controls">
+      <div id="controls-row">
+        <label for="yearSelect">בחר שנה:</label>
+        <select id="yearSelect"></select>
+      </div>
+
+      <div id="quick-stats">
+        <div class="stat-card">
+          <div class="stat-value" id="stat-municipalities">-</div>
+          <div class="stat-label">רשויות</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-total">-</div>
+          <div class="stat-label">סה"כ אירועים</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-avg">-</div>
+          <div class="stat-label">ממוצע לרשות</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="info-content">
+      <div id="info-title">טוען נתונים...</div>
+      <div id="info-body"></div>
+    </div>
   </div>
 </body>
 </html>
