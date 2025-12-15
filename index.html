@@ -4,8 +4,15 @@
   <meta charset="utf-8" />
   <title>מפת פשיעה – לפי רשות ולפי שנה (2020–2025)</title>
 
-  <!-- הנתונים המאוחדים (שמור את הקובץ באותה תיקייה כמו ה-index) -->
+  <!-- נתוני פשיעה (חייב להגדיר window.crimeByYear) -->
   <script src="crimeByYear_2020_2025.js"></script>
+
+  <!-- GovMap API -->
+  <script
+    src="https://www.govmap.gov.il/govmap/api/govmap.api.js"
+    defer
+    onload="initGovMap()">
+  </script>
 
   <style>
     html, body {
@@ -16,7 +23,10 @@
       overflow: hidden;
     }
 
-    #map { width: 100%; height: 100%; }
+    #map {
+      width: 100%;
+      height: 100%;
+    }
 
     #info-panel {
       position: absolute;
@@ -39,7 +49,9 @@
       flex-wrap: wrap;
     }
 
-    #controls label { font-weight: bold; }
+    #controls label {
+      font-weight: bold;
+    }
 
     #yearSelect {
       padding: 6px 8px;
@@ -48,24 +60,31 @@
       font-size: 14px;
     }
 
-    #info-title { font-weight: bold; margin-bottom: 6px; }
-    #info-body  { white-space: pre-line; max-height: 60vh; overflow-y: auto; }
+    #info-title {
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+
+    #info-body {
+      white-space: pre-line;
+      max-height: 60vh;
+      overflow-y: auto;
+    }
   </style>
 
   <script>
-    typeof window.crimeByYear
-    const MUNICIPAL_LAYER = "125"; // רשויות מקומיות
+    /* ===== קונפיגורציה ===== */
+    const MUNICIPAL_LAYER = "125"; // רשויות מקומיות – תמיד פעיל
     const TOKEN = "ede9a5fd-7c23-432f-8ffb-d85feffa3f3c";
 
     let mapInitialized = false;
     let detectedMunicipalityField = null;
-
-    // ברירת מחדל לשנה: 2025 אם קיימת, אחרת השנה הראשונה ברשימה
     let currentYear = "2025";
 
-    // אינדקס עבור השנה הנבחרת בלבד: key(normalized) -> {name,data}
+    // אינדקס: normalizedName -> { name, data }
     const muniIndex = {};
 
+    /* ===== עזרי נרמול ===== */
     function normalizeMunicipalityKey(name) {
       let s = (name ?? "").toString().trim();
 
@@ -80,8 +99,8 @@
       return s.toLowerCase();
     }
 
+    /* ===== בניית אינדקס לשנה ===== */
     function buildIndexForYear(yearStr) {
-      // ניקוי אינדקס
       for (const k in muniIndex) delete muniIndex[k];
 
       const yearData = (window.crimeByYear || {})[yearStr];
@@ -91,12 +110,19 @@
       }
 
       for (const k in yearData) {
-        muniIndex[normalizeMunicipalityKey(k)] = { name: k, data: yearData[k] };
+        muniIndex[normalizeMunicipalityKey(k)] = {
+          name: k,
+          data: yearData[k]
+        };
       }
 
-      console.log("Year:", yearStr, "muniIndex size:", Object.keys(muniIndex).length);
+      console.log(
+        "Year:", yearStr,
+        "muniIndex size:", Object.keys(muniIndex).length
+      );
     }
 
+    /* ===== UI ===== */
     function showInfo(title, body) {
       document.getElementById("info-title").textContent = title;
       document.getElementById("info-body").textContent = body;
@@ -120,6 +146,7 @@
       showInfo(`רשות: ${entry.name}`, lines.join("\n"));
     }
 
+    /* ===== GovMap helpers ===== */
     function fieldsToObject(fields) {
       if (!Array.isArray(fields)) return fields;
       const o = {};
@@ -160,16 +187,49 @@
       return null;
     }
 
+    /* ===== מציאת יישובים ללא התאמה ===== */
+    async function findUnmatchedMunicipalities() {
+      if (!mapInitialized) return;
+
+      const resp = await govmap.getLayerEntities({
+        layerName: MUNICIPAL_LAYER
+      });
+
+      const entities = resp.entities || resp.data || [];
+      const unmatched = [];
+
+      for (const ent of entities) {
+        const attrs = ent.Fields || ent.Attributes || ent;
+        const name = detectMunicipalityName(attrs);
+        if (!name) continue;
+
+        const norm = normalizeMunicipalityKey(name);
+        if (!muniIndex[norm]) {
+          unmatched.push({ original: name, normalized: norm });
+        }
+      }
+
+      console.group("❌ יישובים ללא התאמה");
+      unmatched.forEach(u =>
+        console.log(u.original, "→", u.normalized)
+      );
+      console.groupEnd();
+
+      console.log("סה״כ ללא התאמה:", unmatched.length);
+      window.unmatchedMunicipalities = unmatched;
+    }
+
+    /* ===== Init map ===== */
     function initGovMap() {
       if (!window.crimeByYear) {
         showInfo(
           "שגיאה",
-          "crimeByYear לא נטען. ודא שהקובץ crimeByYear_2020_2025.js נמצא באותה תיקייה כמו index.html"
+          "crimeByYear לא נטען. ודא שהקובץ crimeByYear_2020_2025.js נטען לפני הקוד."
         );
         return;
       }
 
-      // בניית רשימת שנים ל-dropdown
+      // בניית רשימת שנים
       const years = Object.keys(window.crimeByYear).sort();
       const sel = document.getElementById("yearSelect");
       sel.innerHTML = "";
@@ -181,23 +241,22 @@
         sel.appendChild(opt);
       }
 
-      // ברירת מחדל: 2025 אם קיימת, אחרת הראשונה ברשימה
       currentYear = years.includes("2025") ? "2025" : (years[0] || "2020");
       sel.value = currentYear;
-
-      // בנה אינדקס לשנה הנבחרת
       buildIndexForYear(currentYear);
 
       sel.addEventListener("change", (e) => {
         currentYear = e.target.value;
         buildIndexForYear(currentYear);
-        showInfo("מפת פשיעה לפי רשות", `שנה נבחרת: ${currentYear}\nלחץ על רשות במפה כדי לראות נתונים`);
+        showInfo(
+          "מפת פשיעה לפי רשות",
+          `שנה נבחרת: ${currentYear}\nלחץ על רשות במפה כדי לראות נתונים`
+        );
       });
 
-      // יצירת המפה
       govmap.createMap("map", {
         token: TOKEN,
-        layers: [MUNICIPAL_LAYER],
+        layers: [MUNICIPAL_LAYER], // שכבת רשויות בלבד
         layersMode: 1,
         background: 2,
         zoomButtons: true,
@@ -206,11 +265,19 @@
         onLoad: () => {
           mapInitialized = true;
           govmap.onEvent(govmap.events.CLICK).progress(onMapClick);
-          showInfo("מפת פשיעה לפי רשות", `שנה נבחרת: ${currentYear}\nלחץ על רשות במפה כדי לראות נתונים`);
+
+          showInfo(
+            "מפת פשיעה לפי רשות",
+            `שנה נבחרת: ${currentYear}\nלחץ על רשות במפה כדי לראות נתונים`
+          );
+
+          // בדיקת חוסרים אוטומטית
+          findUnmatchedMunicipalities();
         }
       });
     }
 
+    /* ===== Click handler ===== */
     async function onMapClick(e) {
       if (!mapInitialized) return;
 
@@ -230,18 +297,15 @@
       const entry = muniIndex[key];
 
       if (!entry) {
-        showInfo("לא נמצאה התאמה", `שנה: ${currentYear}\nשם מהשכבה: ${name}\nnormalize: ${key}`);
+        showInfo(
+          "לא נמצאה התאמה",
+          `שנה: ${currentYear}\nשם מהשכבה: ${name}\nמפתח מנורמל: ${key}`
+        );
         return;
       }
 
       showEntry(entry);
     }
-  </script>
-
-  <script
-    src="https://www.govmap.gov.il/govmap/api/govmap.api.js"
-    defer
-    onload="initGovMap()">
   </script>
 </head>
 
@@ -255,7 +319,7 @@
     </div>
 
     <div id="info-title">מפת פשיעה לפי רשות</div>
-    <div id="info-body">טוען נתונים...</div>
+    <div id="info-body">טוען נתונים…</div>
   </div>
 </body>
 </html>
