@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <title>מפת פשיעה – לפי רשות ולפי שנה (2020–2025)</title>
 
-  <!-- נתוני פשיעה: חייב ליצור window.crimeByYear -->
+  <!-- נתוני פשיעה -->
   <script src="crimeByYear_2020_2025.js"></script>
 
   <style>
@@ -15,6 +15,7 @@
       font-family: Arial, sans-serif;
       overflow: hidden;
     }
+
     #map { width: 100%; height: 100%; }
 
     #info-panel {
@@ -25,7 +26,7 @@
       background: #fff;
       padding: 10px 14px;
       border-radius: 10px;
-      width: 440px;
+      width: 420px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.25);
       font-size: 14px;
     }
@@ -35,22 +36,17 @@
       gap: 10px;
       align-items: center;
       margin-bottom: 10px;
-      flex-wrap: wrap;
     }
 
-    #yearSelect, button {
+    #yearSelect {
       padding: 6px 8px;
       border-radius: 8px;
       border: 1px solid #ccc;
       font-size: 14px;
-      background: #fff;
-      cursor: pointer;
     }
-    button:hover { background: #f5f5f5; }
 
     #info-title { font-weight: bold; margin-bottom: 6px; }
-    #info-body  { white-space: pre-line; max-height: 65vh; overflow-y: auto; }
-    #small-note { font-size: 12px; opacity: 0.8; margin-top: 6px; }
+    #info-body  { white-space: pre-line; max-height: 60vh; overflow-y: auto; }
   </style>
 
   <script>
@@ -61,36 +57,27 @@
     let mapInitialized = false;
     let currentYear = "2025";
 
-    // אינדקס עבור השנה הנבחרת בלבד: normalized -> {name,data}
+    // normalized -> { name, data }
     const muniIndex = {};
-    // רשימת לא-מותאמים
-    let unmatchedMunicipalities = [];
 
     /* ===== נרמול שמות ===== */
     function normalizeMunicipalityKey(name) {
       let s = (name ?? "").toString().trim();
-
       s = s
         .replace(/^עיריית\s+/g, "")
         .replace(/^עיריה\s+/g, "")
         .replace(/^מועצה\s+אזורית\s+/g, "")
         .replace(/^מועצה\s+מקומית\s+/g, "");
-
       s = s.replace(/["׳״']/g, "");
       s = s.replace(/[\s\-]/g, "");
-
       return s.toLowerCase();
     }
 
     /* ===== בניית אינדקס לשנה ===== */
     function buildIndexForYear(year) {
       for (const k in muniIndex) delete muniIndex[k];
-
       const yearData = window.crimeByYear?.[year];
-      if (!yearData) {
-        console.warn("No data for year:", year);
-        return;
-      }
+      if (!yearData) return;
 
       for (const name in yearData) {
         muniIndex[normalizeMunicipalityKey(name)] = {
@@ -111,13 +98,18 @@
     function showEntry(entry) {
       const d = entry.data;
       const lines = [];
+
       lines.push(`שנה: ${currentYear}`);
-      if (d.total !== undefined) lines.push(`סה״כ אירועים: ${d.total}\n`);
+      if (d.total !== undefined) {
+        lines.push(`סה״כ אירועים: ${d.total}\n`);
+      }
+
       if (d.breakdown) {
         for (const k in d.breakdown) {
           lines.push(`• ${k}: ${d.breakdown[k]}`);
         }
       }
+
       showInfo(`רשות: ${entry.name}`, lines.join("\n"));
     }
 
@@ -138,11 +130,10 @@
       return null;
     }
 
-    // לא שומרים "שדה מזוהה" גלובלי בסריקה כדי לא לנעול על שדה לא נכון
-    function detectMunicipalityNameFromAttrs(attrsRaw) {
+    function detectMunicipalityName(attrsRaw) {
       const attrs = fieldsToObject(attrsRaw);
-
       const candidates = ["שם רשות", "שם רשות מקומית", "שם ישוב", "ישוב סופי"];
+
       for (const c of candidates) {
         if (attrs && attrs[c]) return attrs[c];
       }
@@ -151,69 +142,10 @@
       return any ? any.value : null;
     }
 
-    /* ===== UNMATCHED ===== */
-    async function findUnmatchedMunicipalities() {
-      if (!mapInitialized) return;
-
-      try {
-        // חשוב: רק layerName (קטן)
-        const resp = await govmap.getLayerEntities({ layerName: MUNICIPAL_LAYER });
-
-        // GovMap מחזיר לפעמים במבנים שונים
-        const entities = resp?.entities || resp?.data || resp?.Data || resp || [];
-        const list = [];
-
-        for (const ent of entities) {
-          const attrs = ent?.Fields || ent?.Attributes || ent;
-          const name = detectMunicipalityNameFromAttrs(attrs);
-          if (!name) continue;
-
-          const norm = normalizeMunicipalityKey(name);
-          if (!muniIndex[norm]) {
-            list.push({ original: name, normalized: norm });
-          }
-        }
-
-        // מיון כדי שיהיה נוח לעבור ולתקן
-        list.sort((a,b) => a.original.localeCompare(b.original, "he"));
-
-        unmatchedMunicipalities = list;
-        window.unmatchedMunicipalities = list; // כדי שתוכל לגשת מהקונסול
-
-        console.group("❌ יישובים ללא התאמה (UNMATCHED)");
-        list.forEach(u => console.log(u.original, "→", u.normalized));
-        console.groupEnd();
-        console.log("סה״כ ללא התאמה:", list.length);
-
-        document.getElementById("unmatchedCount").textContent = String(list.length);
-      } catch (err) {
-        console.error("findUnmatchedMunicipalities error:", err);
-        showInfo("שגיאה בסריקה", String(err?.message || err));
-      }
-    }
-
-    function showUnmatchedOnSite() {
-      if (!unmatchedMunicipalities || unmatchedMunicipalities.length === 0) {
-        showInfo("UNMATCHED", "אין כרגע יישובים ללא התאמה 🎉");
-        return;
-      }
-
-      const lines = [];
-      lines.push(`UNMATCHED לשנה ${currentYear}: ${unmatchedMunicipalities.length}`);
-      lines.push("");
-      for (const u of unmatchedMunicipalities) {
-        lines.push(`• ${u.original}  →  ${u.normalized}`);
-      }
-      lines.push("");
-      lines.push("טיפ: אפשר גם להדפיס בקונסול: window.unmatchedMunicipalities");
-
-      showInfo("רשימת יישובים ללא התאמה", lines.join("\n"));
-    }
-
     /* ===== Init map ===== */
     function initGovMap() {
       if (!window.crimeByYear) {
-        showInfo("שגיאה", "crimeByYear לא נטען. ודא ש-crimeByYear_2020_2025.js נמצא באותה תיקייה ושהוא מגדיר window.crimeByYear");
+        showInfo("שגיאה", "crimeByYear לא נטען");
         return;
       }
 
@@ -228,36 +160,33 @@
         sel.appendChild(opt);
       });
 
-      currentYear = years.includes("2025") ? "2025" : (years[0] || "2020");
+      currentYear = years.includes("2025") ? "2025" : years[0];
       sel.value = currentYear;
       buildIndexForYear(currentYear);
 
-      sel.addEventListener("change", async (e) => {
+      sel.addEventListener("change", e => {
         currentYear = e.target.value;
         buildIndexForYear(currentYear);
-        showInfo("מפת פשיעה לפי רשות", `שנה נבחרת: ${currentYear}\nלחץ על רשות במפה כדי לראות נתונים`);
-        document.getElementById("unmatchedCount").textContent = "…";
-        await findUnmatchedMunicipalities();
+        showInfo(
+          "מפת פשיעה לפי רשות",
+          `שנה נבחרת: ${currentYear}\nלחץ על רשות במפה כדי לראות נתונים`
+        );
       });
 
-      document.getElementById("btnShowUnmatched").addEventListener("click", showUnmatchedOnSite);
-
-      // יצירת המפה: שכבת 125 תמיד פעילה
       govmap.createMap("map", {
         token: TOKEN,
         layers: [MUNICIPAL_LAYER],
         layersMode: 1,
         background: 2,
         zoomButtons: true,
-        showXY: false,
         identifyOnClick: false,
-        onLoad: async () => {
+        onLoad: () => {
           mapInitialized = true;
-
           govmap.onEvent(govmap.events.CLICK).progress(onMapClick);
-
-          showInfo("מפת פשיעה לפי רשות", `שנה נבחרת: ${currentYear}\nלחץ על רשות במפה כדי לראות נתונים`);
-          await findUnmatchedMunicipalities();
+          showInfo(
+            "מפת פשיעה לפי רשות",
+            `שנה נבחרת: ${currentYear}\nלחץ על רשות במפה כדי לראות נתונים`
+          );
         }
       });
     }
@@ -266,39 +195,33 @@
     async function onMapClick(e) {
       if (!mapInitialized) return;
 
-      try {
-        // כאן נשמור גם layerName וגם LayerName כדי להיות חסינים
-        const resp = await govmap.getLayerData({
-          layerName: MUNICIPAL_LAYER,
-          LayerName: MUNICIPAL_LAYER,
-          Point: e.mapPoint,
-          Radius: 300
-        });
+      const resp = await govmap.getLayerData({
+        layerName: MUNICIPAL_LAYER,
+        Point: e.mapPoint,
+        Radius: 300
+      });
 
-        const items = resp?.data || resp?.Data || [];
-        if (!items.length) return;
+      const items = resp?.data || resp?.Data || [];
+      if (!items.length) return;
 
-        const attrs = items[0].Fields || items[0].Attributes || items[0];
-        const name = detectMunicipalityNameFromAttrs(attrs);
+      const attrs = items[0].Fields || items[0].Attributes || items[0];
+      const name = detectMunicipalityName(attrs);
+      const key = normalizeMunicipalityKey(name);
+      const entry = muniIndex[key];
 
-        const key = normalizeMunicipalityKey(name);
-        const entry = muniIndex[key];
-
-        if (!entry) {
-          showInfo("לא נמצאה התאמה",
-            `שנה: ${currentYear}\nשם מהשכבה: ${name}\nמפתח: ${key}`);
-          return;
-        }
-
-        showEntry(entry);
-      } catch (err) {
-        console.error("onMapClick error:", err);
-        showInfo("שגיאה בלחיצה על מפה", String(err?.message || err));
+      if (!entry) {
+        showInfo(
+          "לא נמצאה התאמה",
+          `שנה: ${currentYear}\nשם מהשכבה: ${name}`
+        );
+        return;
       }
+
+      showEntry(entry);
     }
   </script>
 
-  <!-- GovMap API (אחרי שהפונקציה initGovMap כבר קיימת) -->
+  <!-- GovMap API -->
   <script
     src="https://www.govmap.gov.il/govmap/api/govmap.api.js"
     defer
@@ -313,16 +236,10 @@
     <div id="controls">
       <label for="yearSelect">שנה:</label>
       <select id="yearSelect"></select>
-
-      <button id="btnShowUnmatched" type="button">הצג UNMATCHED</button>
     </div>
 
     <div id="info-title">מפת פשיעה לפי רשות</div>
     <div id="info-body">טוען נתונים…</div>
-
-    <div id="small-note">
-      UNMATCHED: <b id="unmatchedCount">…</b>
-    </div>
   </div>
 </body>
 </html>
