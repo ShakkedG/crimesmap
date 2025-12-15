@@ -1,4 +1,4 @@
-const crimeByYear ={
+window.crimeByYear ={
   "2020": {
     "כל הארץ": {
       "total": 132,
