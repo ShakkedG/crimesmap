@@ -66,6 +66,7 @@
       padding: 16px 18px;
       background: #f8f9fa;
       border-bottom: 1px solid #e0e0e0;
+      flex-shrink: 0;
     }
 
     #controls-row {
@@ -136,6 +137,7 @@
       padding: 18px;
       overflow-y: auto;
       flex: 1;
+      min-height: 0;
     }
 
     #info-title {
@@ -154,59 +156,61 @@
     }
 
     #info-body {
-      white-space: pre-line;
       line-height: 1.6;
       color: #555;
     }
 
-    /* רשימת עבירות */
-    .crime-list {
+    /* סיכום */
+    .total-summary {
+      font-size: 28px;
+      font-weight: 700;
+      color: #667eea;
+      margin: 16px 0 20px 0;
+      text-align: center;
+      padding: 16px;
+      background: #f8f9fa;
+      border-radius: 10px;
+    }
+
+    /* רשימת עבירות - גריד */
+    .crime-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
       margin-top: 12px;
     }
 
     .crime-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 12px;
-      margin-bottom: 6px;
       background: #f8f9fa;
+      padding: 12px;
       border-radius: 8px;
       border-right: 3px solid #667eea;
       transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
     }
 
     .crime-item:hover {
       background: #e9ecef;
-      transform: translateX(-2px);
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
 
     .crime-name {
       font-weight: 500;
       color: #333;
-      font-size: 13px;
+      font-size: 12px;
+      line-height: 1.3;
+      min-height: 32px;
+      display: flex;
+      align-items: center;
     }
 
     .crime-count {
       font-weight: 700;
       color: #667eea;
-      font-size: 14px;
-    }
-
-    /* סרגל התקדמות */
-    .progress-bar {
-      width: 100%;
-      height: 4px;
-      background: #e0e0e0;
-      border-radius: 2px;
-      margin-top: 4px;
-      overflow: hidden;
-    }
-
-    .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #667eea, #764ba2);
-      transition: width 0.3s ease;
+      font-size: 16px;
     }
 
     /* הודעות */
@@ -229,12 +233,6 @@
       background: #ffebee;
       color: #c62828;
       border: 1px solid #ef9a9a;
-    }
-
-    .message-success {
-      background: #e8f5e9;
-      color: #2e7d32;
-      border: 1px solid #a5d6a7;
     }
 
     /* מסך טעינה */
@@ -277,6 +275,10 @@
       #quick-stats {
         grid-template-columns: repeat(2, 1fr);
       }
+
+      .crime-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
     /* Scrollbar */
@@ -304,8 +306,6 @@
 
     let mapInitialized = false;
     let currentYear = "2025";
-    let totalMunicipalities = 0;
-    let totalCrimes = 0;
     let yearlyStats = {};
 
     const muniIndex = {};
@@ -393,46 +393,27 @@
     function showEntry(entry) {
       const d = entry.data;
       
-      let html = `<div class="message message-success">
-        <strong>✓ נמצא!</strong> הצגת נתוני פשיעה עבור ${entry.name} בשנת ${currentYear}
-      </div>`;
+      let html = '';
 
       if (d.total !== undefined) {
-        html += `<div style="font-size: 24px; font-weight: 700; color: #667eea; margin: 16px 0;">
-          ${d.total.toLocaleString()} אירועים
-        </div>`;
+        html += `<div class="total-summary">${d.total.toLocaleString()} אירועים</div>`;
       }
 
       if (d.breakdown && Object.keys(d.breakdown).length > 0) {
         const sorted = Object.entries(d.breakdown)
-          .sort((a, b) => b[1] - a[1])
-          .slice(0, 12);
+          .sort((a, b) => b[1] - a[1]);
 
-        const maxValue = Math.max(...sorted.map(x => x[1]));
-
-        html += '<div class="crime-list">';
+        html += '<div class="crime-grid">';
         
         for (const [name, count] of sorted) {
-          const percentage = (count / maxValue) * 100;
           html += `
             <div class="crime-item">
-              <div>
-                <div class="crime-name">${name}</div>
-                <div class="progress-bar">
-                  <div class="progress-fill" style="width: ${percentage}%"></div>
-                </div>
-              </div>
+              <div class="crime-name">${name}</div>
               <div class="crime-count">${count.toLocaleString()}</div>
             </div>`;
         }
         
         html += '</div>';
-
-        if (Object.keys(d.breakdown).length > 12) {
-          html += `<div style="text-align: center; margin-top: 12px; color: #999; font-size: 12px;">
-            ועוד ${Object.keys(d.breakdown).length - 12} סוגי עבירות נוספים
-          </div>`;
-        }
       }
 
       document.getElementById("info-title").textContent = entry.name;
@@ -502,7 +483,7 @@
         updateQuickStats();
         showInfo(
           "מפת פשיעה לפי רשות",
-          `שנה נבחרת: ${currentYear}<br>לחץ על רשות במפה כדי לראות נתונים מפורטים`,
+          `שנה נבחרת: ${currentYear}<br>לחץ על רשות במפה כדי לראות נתונים`,
           "info"
         );
       });
@@ -520,7 +501,7 @@
           document.getElementById('loading').style.display = 'none';
           showInfo(
             "מפת פשיעה לפי רשות",
-            `שנה נבחרת: ${currentYear}<br>לחץ על רשות במפה כדי לראות נתונים מפורטים`,
+            `שנה נבחרת: ${currentYear}<br>לחץ על רשות במפה כדי לראות נתונים`,
             "info"
           );
         }
