@@ -5,8 +5,10 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>מפת פשיעה – לפי רשות ושנה (2020–2025)</title>
 
-  <!-- נתוני פשיעה: חייב להגדיר window.crimeByYear = { "2020": {...}, ... } -->
+  <!-- נתוני פשיעה לפי רשויות -->
   <script src="crimeByYear_2020_2025.js"></script>
+  <!-- נתוני פשיעה לפי מרחבי משטרה -->
+  <script src="crimeByYearMerhav.js"></script>
 
   <style>
     html, body {
@@ -442,6 +444,7 @@
 
   <script>
     const MUNICIPAL_LAYER = "125";
+    const POLICE_MERHAV_LAYER = "200550"; // מרחבי משטרה
     const TOKEN = "ede9a5fd-7c23-432f-8ffb-d85feffa3f3c";
 
     let mapInitialized = false;
@@ -453,8 +456,9 @@
     let currentTab = "single";
 
     const muniIndex = {};
+    const merhavIndex = {};
 
-    /* נרמול שמות רשויות */
+    /* נרמול שמות */
     function normalizeMunicipalityKey(name) {
       if (name == null) return "";
       let s = String(name).trim();
@@ -470,7 +474,7 @@
       return s.toLowerCase();
     }
 
-    /* חישוב סטטיסטיקות */
+    /* חישוב סטטיסטיקות (רשויות) */
     function calculateStats(year) {
       const yearData = window.crimeByYear?.[year];
       if (!yearData) return { municipalities: 0, total: 0, avg: 0 };
@@ -501,10 +505,9 @@
       document.getElementById("stat-avg").textContent = stats.avg.toLocaleString();
     }
 
-    /* בניית אינדקס לשנה */
+    /* אינדקס רשויות לשנה */
     function buildIndexForYear(year) {
       for (const k in muniIndex) delete muniIndex[k];
-
       const yearData = window.crimeByYear?.[year];
       if (!yearData) return;
 
@@ -514,6 +517,19 @@
 
       yearlyStats[year] = calculateStats(year);
       console.log(`Year ${year}: ${Object.keys(muniIndex).length} municipalities indexed`);
+    }
+
+    /* אינדקס מרחבים לשנה */
+    function buildMerhavIndexForYear(year) {
+      for (const k in merhavIndex) delete merhavIndex[k];
+      const yearData = window.crimeByYearMerhav?.[year];
+      if (!yearData) return;
+
+      for (const name in yearData) {
+        merhavIndex[normalizeMunicipalityKey(name)] = { name, data: yearData[name] };
+      }
+
+      console.log(`Year ${year}: ${Object.keys(merhavIndex).length} merhavim indexed`);
     }
 
     /* החלפת טאב */
@@ -535,10 +551,16 @@
         updateCompareView();
       } else if (tabName === "trends" && selectedCityKey) {
         showTrends(selectedCity);
+      } else if (tabName === "merhav") {
+        showInfo(
+          "מרחבי משטרה",
+          `שנה נבחרת: ${currentYear}<br>עבור לטאב הזה ואז לחץ על מרחב משטרה במפה כדי לראות נתונים`,
+          "info"
+        );
       }
     }
 
-    /* UI Functions */
+    /* UI */
     function showInfo(title, body, type = "info") {
       const titleEl = document.getElementById("info-title");
       const bodyEl = document.getElementById("info-body");
@@ -560,7 +582,7 @@
       }
 
       if (d.breakdown && Object.keys(d.breakdown).length > 0) {
-        const sorted = Object.entries(d.breakdown).sort((a, b) => b[1] - a[1]);
+        const sorted = Object.entries(d.breakdown).sort((a, b) => (b[1] || 0) - (a[1] || 0));
         html += '<div class="crime-grid">';
         for (const [name, count] of sorted) {
           html += `
@@ -573,7 +595,7 @@
       }
 
       document.getElementById("info-title").textContent = entry.name;
-      document.getElementById("info-body").innerHTML = html;
+      document.getElementById("info-body").innerHTML = html || `<div class="message message-info">אין נתונים להצגה</div>`;
     }
 
     /* השוואה בין ישובים */
@@ -642,67 +664,6 @@
         });
 
         html += "</div>";
-
-        // פילוח לפי סוג עבירה (Top 5 סוגים לפי איחוד כל הערים)
-        const allCrimeTypes = new Set();
-        compareList.forEach(city => {
-          const entry = muniIndex[city.key];
-          if (entry?.data?.breakdown) {
-            Object.keys(entry.data.breakdown).forEach(type => allCrimeTypes.add(type));
-          }
-        });
-
-        if (allCrimeTypes.size > 0) {
-          html += '<div class="comparison-chart" style="margin-top: 20px;">';
-          html += '<h4 style="margin: 0 0 12px 0;">פילוח לפי סוג עבירה (Top 5)</h4>';
-
-          const crimeTypes = Array.from(allCrimeTypes);
-
-          // דירוג סוגים לפי סכום בכל הערים
-          const ranked = crimeTypes
-            .map(t => ({
-              type: t,
-              sum: compareList.reduce((acc, c) => {
-                const e = muniIndex[c.key];
-                return acc + (e?.data?.breakdown?.[t] || 0);
-              }, 0)
-            }))
-            .sort((a, b) => b.sum - a.sum)
-            .slice(0, 5);
-
-          ranked.forEach(({ type }) => {
-            html += `<div style="margin-bottom: 15px;"><strong style="font-size: 12px;">${type}</strong>`;
-
-            const maxCount = Math.max(
-              ...compareList.map(c => {
-                const e = muniIndex[c.key];
-                return e?.data?.breakdown?.[type] || 0;
-              }),
-              0
-            );
-
-            compareList.forEach(city => {
-              const entry = muniIndex[city.key];
-              const count = entry?.data?.breakdown?.[type] || 0;
-              const pct = maxCount > 0 ? (count / maxCount) * 100 : 0;
-
-              html += `
-                <div class="comparison-row" style="margin-top: 6px;">
-                  <div class="comparison-label" style="width: 100px; font-size: 11px;">${city.name}</div>
-                  <div class="comparison-bar-container">
-                    <div class="comparison-bar" style="width: ${pct}%">
-                      ${count.toLocaleString()}
-                    </div>
-                  </div>
-                </div>
-              `;
-            });
-
-            html += "</div>";
-          });
-
-          html += "</div>";
-        }
       }
 
       container.innerHTML = html;
@@ -713,7 +674,7 @@
       const container = document.getElementById("trends-content");
 
       if (!cityName) {
-        container.innerHTML = '<div class="message message-info">בחר ישוב במפה כדי לראות טרננדים</div>';
+        container.innerHTML = '<div class="message message-info">בחר ישוב במפה כדי לראות טרנדים</div>';
         return;
       }
 
@@ -725,7 +686,6 @@
         const yearData = window.crimeByYear?.[year];
         if (!yearData) return;
 
-        // ניסיון ישיר + ניסיון לפי נרמול
         let cityData = yearData[cityName];
         if (!cityData) {
           const matchedName = Object.keys(yearData).find(k => normalizeMunicipalityKey(k) === key);
@@ -747,21 +707,8 @@
       let html = `<h3 style="margin: 0 0 15px 0;">${cityName}</h3>`;
       html += '<div class="trend-chart">';
 
-      yearlyData.forEach((data, index) => {
+      yearlyData.forEach((data) => {
         const pct = maxTotal > 0 ? (data.total / maxTotal) * 100 : 0;
-        let changeHtml = "";
-
-        if (index > 0) {
-          const prev = yearlyData[index - 1].total;
-          const diff = data.total - prev;
-          const diffPct = prev > 0 ? ((diff / prev) * 100).toFixed(1) : "0.0";
-          if (diff !== 0) {
-            const cls = diff > 0 ? "trend-up" : "trend-down";
-            const sym = diff > 0 ? "↑" : "↓";
-            changeHtml = `<span class="trend-change ${cls}">${sym} ${Math.abs(Number(diffPct)).toFixed(1)}%</span>`;
-          }
-        }
-
         html += `
           <div class="trend-year">
             <div class="trend-year-label">${data.year}</div>
@@ -769,28 +716,11 @@
               <div class="trend-bar" style="width:${pct}%"></div>
             </div>
             <div class="trend-value">${data.total.toLocaleString()}</div>
-            ${changeHtml}
           </div>
         `;
       });
 
       html += "</div>";
-
-      // סיכום שינוי כולל
-      const first = yearlyData[0];
-      const last = yearlyData[yearlyData.length - 1];
-      const totalChange = last.total - first.total;
-      const totalChangePct = first.total > 0 ? ((totalChange / first.total) * 100).toFixed(1) : "0.0";
-
-      html += `
-        <div style="margin-top: 20px; padding: 12px; background: #f0f7ff; border-radius: 3px; border: 1px solid #b3d9ff;">
-          <strong>שינוי כולל (${first.year}-${last.year}):</strong><br>
-          <span style="font-size: 18px; color: ${totalChange > 0 ? "#c62828" : "#2e7d32"}; font-weight: 700;">
-            ${totalChange > 0 ? "+" : ""}${totalChange.toLocaleString()} (${totalChangePct}%)
-          </span>
-        </div>
-      `;
-
       container.innerHTML = html;
     }
 
@@ -809,18 +739,17 @@
 
       const attrs = fieldsToObject(attrsRaw) || attrsRaw;
       const candidates = ["שם רשות", "שם רשות מקומית", "שם ישוב", "ישוב סופי", "SHEM_YISHUV"];
+      for (const c of candidates) if (attrs && attrs[c]) return attrs[c];
 
-      for (const c of candidates) {
-        if (attrs && attrs[c]) return attrs[c];
-      }
+      return null;
+    }
 
-      if (attrs && typeof attrs === "object") {
-        for (const k in attrs) {
-          if (typeof attrs[k] === "string" && /[\u0590-\u05FF]/.test(attrs[k])) {
-            return attrs[k];
-          }
-        }
-      }
+    function detectMerhavName(attrsRaw) {
+      if (!attrsRaw) return null;
+
+      const attrs = fieldsToObject(attrsRaw) || attrsRaw;
+      const candidates = ["שם מרחב", "שם מרחב משטרתי", "MERHAV", "SHEM_MERHAV"];
+      for (const c of candidates) if (attrs && attrs[c]) return attrs[c];
 
       return null;
     }
@@ -830,21 +759,44 @@
       if (!mapInitialized) return;
 
       try {
+        const layerName = (currentTab === "merhav") ? POLICE_MERHAV_LAYER : MUNICIPAL_LAYER;
+
         const resp = await govmap.getLayerData({
-          LayerName: MUNICIPAL_LAYER,
+          LayerName: layerName,
           Point: e.mapPoint,
           Radius: 300
         });
 
         const items = resp?.data || resp?.Data || [];
         if (!items.length) {
-          showInfo("לא נמצא", "אין רשות מקומית באזור זה", "info");
+          showInfo("לא נמצא", "אין אובייקט באזור זה", "info");
           return;
         }
 
         const first = items[0];
         const attrs = first.Fields || first.Attributes || first;
 
+        if (currentTab === "merhav") {
+          const merhavName = detectMerhavName(attrs);
+          if (!merhavName) {
+            console.log("DEBUG merhav attrs:", attrs);
+            showInfo("שגיאה", "לא ניתן לזהות את שם מרחב המשטרה", "error");
+            return;
+          }
+
+          const key = normalizeMunicipalityKey(merhavName);
+          const entry = merhavIndex[key];
+
+          if (!entry) {
+            showInfo("לא נמצאו נתונים", `אין נתוני פשיעה עבור <strong>${merhavName}</strong> בשנת ${currentYear}`, "error");
+            return;
+          }
+
+          showEntry(entry);
+          return;
+        }
+
+        // מצב רשויות
         const name = detectMunicipalityName(attrs);
         if (!name) {
           console.log("DEBUG attrs:", attrs);
@@ -862,14 +814,9 @@
           return;
         }
 
-        if (currentTab === "single") {
-          showEntry(entry);
-        } else if (currentTab === "trends") {
-          showTrends(name);
-        } else if (currentTab === "compare") {
-          // לא מחליפים מסך, רק משאירים את ההשוואה
-          // אבל אפשר להציג הודעת hint אם תרצה
-        }
+        if (currentTab === "single") showEntry(entry);
+        else if (currentTab === "trends") showTrends(name);
+
       } catch (error) {
         console.error("Error in onMapClick:", error);
         showInfo("שגיאה", "אירעה שגיאה בטעינת הנתונים", "error");
@@ -882,6 +829,11 @@
         showInfo("שגיאה", "לא ניתן לטעון את נתוני הפשיעה (crimeByYear_2020_2025.js)", "error");
         document.getElementById("loading").style.display = "none";
         return;
+      }
+
+      // לא מפילים את האתר אם אין קובץ מרחבים – אבל הטאב לא יעבוד
+      if (!window.crimeByYearMerhav) {
+        console.warn("crimeByYearMerhav.js לא נטען או לא מגדיר window.crimeByYearMerhav");
       }
 
       const years = Object.keys(window.crimeByYear).sort();
@@ -899,11 +851,13 @@
       sel.value = currentYear;
 
       buildIndexForYear(currentYear);
+      buildMerhavIndexForYear(currentYear);
       updateQuickStats();
 
       sel.addEventListener("change", e => {
         currentYear = e.target.value;
         buildIndexForYear(currentYear);
+        buildMerhavIndexForYear(currentYear);
         updateQuickStats();
 
         if (selectedCityKey && currentTab === "single") {
@@ -914,6 +868,8 @@
           updateCompareView();
         } else if (currentTab === "trends" && selectedCity) {
           showTrends(selectedCity);
+        } else if (currentTab === "merhav") {
+          showInfo("מרחבי משטרה", `שנה נבחרת: ${currentYear}<br>לחץ על מרחב משטרה במפה כדי לראות נתונים`, "info");
         } else {
           showInfo("מפת פשיעה לפי רשות", `שנה נבחרת: ${currentYear}<br>לחץ על רשות במפה כדי לראות נתונים`, "info");
         }
@@ -921,18 +877,18 @@
 
       govmap.createMap("map", {
         token: TOKEN,
-        layers: [MUNICIPAL_LAYER],
+        layers: [MUNICIPAL_LAYER, POLICE_MERHAV_LAYER],
         layersMode: 1,
         background: 2,
         zoomButtons: true,
         identifyOnClick: false,
-        visibleLayers: [MUNICIPAL_LAYER],
+        visibleLayers: [MUNICIPAL_LAYER, POLICE_MERHAV_LAYER],
         onLoad: () => {
           mapInitialized = true;
 
           try {
-            govmap.setVisibleLayers([MUNICIPAL_LAYER], []);
-            console.log("✅ Municipal layer is now visible");
+            govmap.setVisibleLayers([MUNICIPAL_LAYER, POLICE_MERHAV_LAYER], []);
+            console.log("✅ Layers visible:", MUNICIPAL_LAYER, POLICE_MERHAV_LAYER);
           } catch (err) {
             console.error("setVisibleLayers error:", err);
           }
@@ -972,11 +928,12 @@
   <div id="info-panel">
     <div id="panel-header">
       <h1>מפת פשיעה בישראל</h1>
-      <p>נתוני פשיעה לפי רשויות מקומיות</p>
+      <p>נתוני פשיעה לפי רשויות מקומיות + מרחבי משטרה</p>
     </div>
 
     <div id="tabs">
       <div class="tab active" data-tab="single" onclick="switchTab('single')">נתוני ישוב</div>
+      <div class="tab" data-tab="merhav" onclick="switchTab('merhav')">מרחבי משטרה</div>
       <div class="tab" data-tab="compare" onclick="switchTab('compare')">השוואה</div>
       <div class="tab" data-tab="trends" onclick="switchTab('trends')">טרנדים</div>
     </div>
@@ -1007,6 +964,12 @@
       <div class="tab-content active" id="tab-single">
         <div id="info-title">טוען נתונים...</div>
         <div id="info-body"></div>
+      </div>
+
+      <div class="tab-content" id="tab-merhav">
+        <div class="message message-info">
+          עבור לטאב הזה ואז לחץ על מרחב משטרה במפה כדי לראות נתונים
+        </div>
       </div>
 
       <div class="tab-content" id="tab-compare">
