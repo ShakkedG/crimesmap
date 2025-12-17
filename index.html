@@ -483,17 +483,9 @@
         max-height: calc(100vh - 100px);
       }
 
-      #quick-stats {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .crime-grid {
-        grid-template-columns: 1fr;
-      }
-
-      #panel-header h1 {
-        font-size: 16px;
-      }
+      #quick-stats { grid-template-columns: repeat(2, 1fr); }
+      .crime-grid { grid-template-columns: 1fr; }
+      #panel-header h1 { font-size: 16px; }
     }
 
     #info-content::-webkit-scrollbar { width: 10px; }
@@ -637,11 +629,7 @@
           "info"
         );
       } else if (tabName === "compare") {
-        if (currentMode !== "muni") {
-          showInfo("השוואה", "השוואה זמינה רק במצב ישובים. החלף מצב ל'ישובים'.", "error");
-        } else {
-          updateCompareView();
-        }
+        updateCompareView(); // ✅ זמין גם למרחבים
       } else if (tabName === "trends") {
         if (currentMode !== "muni") {
           document.getElementById("trends-content").innerHTML =
@@ -655,7 +643,7 @@
       }
     }
 
-    // ✅ תיקון: הדלקת שכבה אחת וכיבוי השנייה
+    // ✅ FIX: אין קוד כפול / אין סוגריים מיותרים
     function setMode(mode) {
       currentMode = mode;
 
@@ -680,27 +668,39 @@
       selectedCity = null;
       selectedCityKey = null;
 
-      if (mode !== "muni" && (currentTab === "compare" || currentTab === "trends")) {
+      // ✅ לא לערבב השוואות בין מצבים (ישובים/מרחבים)
+      compareList = compareList.filter(c => c.mode === mode);
+
+      // ✅ טרנדים רק לישובים
+      if (mode !== "muni" && currentTab === "trends") {
         switchTab("single");
         return;
       }
 
+      // ✅ עדכון תצוגה לפי הטאב הנוכחי
       if (currentTab === "single") {
         showInfo(
           "מפה לפי " + (mode === "muni" ? "ישובים" : "מרחבים"),
           `שנה נבחרת: ${currentYear}<br>לחץ על ${mode === "muni" ? "ישוב" : "מרחב"} במפה כדי לראות נתונים`,
           "info"
         );
-      } else if (currentTab === "compare" && mode === "muni") {
+      } else if (currentTab === "compare") {
         updateCompareView();
       }
     }
 
     function addToCompare() {
-      if (currentMode !== "muni") { alert("השוואה זמינה רק במצב ישובים"); return; }
-      if (!selectedCity) { alert("אנא בחר ישוב במפה תחילה"); return; }
-      if (!compareList.some(c => c.key === selectedCityKey)) {
-        compareList.push({ name: selectedCity, key: selectedCityKey });
+      if (!selectedCity) {
+        alert(`אנא בחר ${currentMode === "muni" ? "ישוב" : "מרחב"} במפה תחילה`);
+        return;
+      }
+
+      if (!compareList.some(c => c.key === selectedCityKey && c.mode === currentMode)) {
+        compareList.push({
+          name: selectedCity,
+          key: selectedCityKey,
+          mode: currentMode
+        });
         updateCompareView();
 
         const msg = document.createElement("div");
@@ -713,34 +713,40 @@
     }
 
     function removeFromCompare(key) {
-      compareList = compareList.filter(c => c.key !== key);
+      compareList = compareList.filter(c => c.key !== key || c.mode !== currentMode);
       updateCompareView();
     }
 
     function updateCompareView() {
       const container = document.getElementById("compare-content");
 
-      // ✅ שיפור: להציג עיר "נבחרת" כרגע, כדי שיהיה ברור שזה נקלט
+      const entityType = currentMode === "muni" ? "ישוב" : "מרחב";
       const selectedHint = selectedCity
         ? `<div class="message message-info">נבחר כעת: <strong>${selectedCity}</strong> (לחץ על ➕ כדי להוסיף להשוואה)</div>`
-        : `<div class="message message-info">לחץ על ישוב במפה ואז על ➕ כדי להוסיף להשוואה</div>`;
+        : `<div class="message message-info">לחץ על ${entityType} במפה ואז על ➕ כדי להוסיף להשוואה</div>`;
 
-      let html = `<button class="add-compare-btn" onclick="addToCompare()">➕ הוסף ישוב נבחר להשוואה</button>${selectedHint}`;
+      let html = `<button class="add-compare-btn" onclick="addToCompare()">➕ הוסף ${entityType} נבחר להשוואה</button>${selectedHint}`;
 
-      if (compareList.length > 0) {
+      const filteredList = compareList.filter(c => c.mode === currentMode);
+
+      if (filteredList.length > 0) {
         html += '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;">';
-        compareList.forEach(city => {
-          html += `<div class="compare-city-tag">${city.name}<button onclick="removeFromCompare('${city.key}')" title="הסר">×</button></div>`;
+        filteredList.forEach(item => {
+          html += `<div class="compare-city-tag">${item.name}<button onclick="removeFromCompare('${item.key}')" title="הסר">×</button></div>`;
         });
         html += "</div>";
       }
 
-      if (compareList.length >= 2) {
+      if (filteredList.length >= 2) {
         html += `<div style="margin-top:16px;"><strong style="font-size:15px;">סה"כ אירועים ב-${currentYear}</strong></div>`;
-        const totals = compareList.map(city => ({
-          name: city.name,
-          total: muniIndex[city.key]?.data?.total || 0
+
+        const index = currentMode === "muni" ? muniIndex : merhavIndex;
+
+        const totals = filteredList.map(item => ({
+          name: item.name,
+          total: index[item.key]?.data?.total || 0
         }));
+
         const maxTotal = Math.max(...totals.map(t => t.total), 1);
 
         totals.forEach(item => {
@@ -752,8 +758,8 @@
             </div>
           </div>`;
         });
-      } else if (compareList.length === 1) {
-        html += `<div class="message message-info">הוסף עוד ישוב אחד לפחות כדי לראות השוואה</div>`;
+      } else if (filteredList.length === 1) {
+        html += `<div class="message message-info">הוסף עוד ${entityType} אחד לפחות כדי לראות השוואה</div>`;
       }
 
       container.innerHTML = html;
@@ -765,6 +771,7 @@
         container.innerHTML = `<div class="message message-info">בחר ישוב במפה כדי לראות טרנדים</div>`;
         return;
       }
+
       const years = Object.keys(window.crimeByYear || {}).sort();
       const key = normalizeKey(cityName);
       const yearlyData = [];
@@ -860,7 +867,6 @@
             return;
           }
 
-          // ✅ אם בטאב השוואה – רק נרענן את המסך כדי שיראו שהבחירה נקלטה
           if (currentTab === "compare") {
             updateCompareView();
             return;
@@ -871,6 +877,7 @@
           return;
         }
 
+        // ✅ מרחבים
         const merhavName = detectMerhavName(attrs);
         if (!merhavName) {
           console.log("❌ DEBUG - Police district attributes:", attrs);
@@ -879,9 +886,17 @@
         }
 
         const key = normalizeKey(merhavName);
+        selectedCity = merhavName;
+        selectedCityKey = key;
+
         const entry = merhavIndex[key];
         if (!entry) {
           showInfo("לא נמצאו נתונים", `אין נתוני פשיעה עבור <strong>${merhavName}</strong> בשנת ${currentYear}`, "error");
+          return;
+        }
+
+        if (currentTab === "compare") {
+          updateCompareView();
           return;
         }
 
@@ -920,6 +935,7 @@
 
       sel.addEventListener("change", e => {
         currentYear = e.target.value;
+
         buildMuniIndexForYear(currentYear);
         buildMerhavIndexForYear(currentYear);
         updateQuickStats();
@@ -930,7 +946,8 @@
           "info"
         );
 
-        if (currentTab === "compare" && currentMode === "muni") updateCompareView();
+        // ✅ FIX: לעדכן השוואה גם במרחבים
+        if (currentTab === "compare") updateCompareView();
         if (currentTab === "trends" && currentMode === "muni" && selectedCity) showTrends(selectedCity);
       });
 
@@ -942,13 +959,13 @@
         zoomButtons: true,
         identifyOnClick: false,
 
-        // ✅ חשוב: בהתחלה תציג רק ישובים
+        // ✅ בהתחלה תציג רק ישובים
         visibleLayers: [MUNICIPAL_LAYER],
 
         onLoad: () => {
           mapInitialized = true;
 
-          // ✅ יכבה/ידליק נכון גם אם בעתיד תרצה לשנות מצב ברירת מחדל
+          // ✅ ידליק/יכבה שכבות נכון בהתאם למצב
           setMode(currentMode);
 
           govmap.onEvent(govmap.events.CLICK).progress(onMapClick);
@@ -1026,7 +1043,7 @@
 
       <div class="tab-content" id="tab-compare">
         <div id="compare-content">
-          <div class="message message-info">בחר ישובים במפה והוסף אותם להשוואה</div>
+          <div class="message message-info">בחר ישובים/מרחבים במפה והוסף אותם להשוואה</div>
         </div>
       </div>
 
