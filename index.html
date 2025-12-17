@@ -12,17 +12,17 @@
 
   <style>
     * { box-sizing: border-box; }
-    
+
     html, body {
       margin: 0; padding: 0; height: 100%;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
       overflow: hidden;
       background: #f5f5f5;
     }
-    
-    #map { 
-      width: 100%; 
-      height: 100%; 
+
+    #map {
+      width: 100%;
+      height: 100%;
       position: relative;
     }
 
@@ -50,17 +50,17 @@
       border-bottom: 1px solid #0052a3;
     }
 
-    #panel-header h1 { 
-      margin: 0; 
-      font-size: 18px; 
+    #panel-header h1 {
+      margin: 0;
+      font-size: 18px;
       font-weight: 600;
       letter-spacing: -0.3px;
     }
-    
-    #panel-header p { 
-      margin: 6px 0 0 0; 
-      font-size: 13px; 
-      opacity: 0.9; 
+
+    #panel-header p {
+      margin: 6px 0 0 0;
+      font-size: 13px;
+      opacity: 0.9;
     }
 
     #tabs {
@@ -68,7 +68,7 @@
       background: #fafafa;
       border-bottom: 2px solid #e0e0e0;
     }
-    
+
     .tab {
       flex: 1;
       padding: 12px 10px;
@@ -81,12 +81,12 @@
       color: #666;
       position: relative;
     }
-    
-    .tab:hover { 
-      background: #f0f0f0; 
+
+    .tab:hover {
+      background: #f0f0f0;
       color: #333;
     }
-    
+
     .tab.active {
       background: white;
       border-bottom-color: #0066cc;
@@ -125,11 +125,9 @@
       cursor: pointer;
       transition: all 0.2s;
     }
-    
-    #yearSelect:hover {
-      border-color: #0066cc;
-    }
-    
+
+    #yearSelect:hover { border-color: #0066cc; }
+
     #yearSelect:focus {
       outline: none;
       border-color: #0066cc;
@@ -141,7 +139,7 @@
       gap: 8px;
       margin-bottom: 12px;
     }
-    
+
     .mode-btn {
       flex: 1;
       padding: 10px 12px;
@@ -154,13 +152,13 @@
       color: #555;
       transition: all 0.2s ease;
     }
-    
+
     .mode-btn:hover {
       border-color: #0066cc;
       color: #0066cc;
       transform: translateY(-1px);
     }
-    
+
     .mode-btn.active {
       background: #0066cc;
       border-color: #0066cc;
@@ -173,7 +171,7 @@
       grid-template-columns: repeat(3, 1fr);
       gap: 10px;
     }
-    
+
     .stat-card {
       background: white;
       padding: 12px;
@@ -182,19 +180,19 @@
       border: 1px solid #e0e0e0;
       transition: all 0.2s;
     }
-    
+
     .stat-card:hover {
       transform: translateY(-2px);
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
-    
+
     .stat-value {
       font-size: 20px;
       font-weight: 700;
       color: #0066cc;
       margin-bottom: 4px;
     }
-    
+
     .stat-label {
       font-size: 10px;
       color: #777;
@@ -222,10 +220,10 @@
       padding-bottom: 10px;
       border-bottom: 3px solid #0066cc;
     }
-    
-    #info-body { 
-      line-height: 1.6; 
-      color: #555; 
+
+    #info-body {
+      line-height: 1.6;
+      color: #555;
     }
 
     .total-summary {
@@ -247,7 +245,7 @@
       gap: 10px;
       margin-top: 12px;
     }
-    
+
     .crime-item {
       background: #fafafa;
       padding: 14px;
@@ -259,14 +257,14 @@
       flex-direction: column;
       gap: 6px;
     }
-    
+
     .crime-item:hover {
       background: #f0f7ff;
       border-right-color: #0052a3;
       transform: translateX(-3px);
       box-shadow: 0 3px 8px rgba(0,0,0,0.12);
     }
-    
+
     .crime-name {
       font-weight: 600;
       color: #333;
@@ -276,7 +274,7 @@
       display: flex;
       align-items: center;
     }
-    
+
     .crime-count {
       font-weight: 700;
       color: #0066cc;
@@ -291,19 +289,19 @@
       border-right: 4px solid;
       line-height: 1.5;
     }
-    
+
     .message-info {
       background: #e7f3ff;
       color: #004080;
       border-right-color: #0066cc;
     }
-    
+
     .message-error {
       background: #fff0f0;
       color: #c00;
       border-right-color: #ff0000;
     }
-    
+
     .message-success {
       background: #e8f5e9;
       color: #2e7d32;
@@ -322,7 +320,7 @@
       z-index: 10000;
       text-align: center;
     }
-    
+
     .spinner {
       width: 40px;
       height: 40px;
@@ -332,10 +330,10 @@
       border-radius: 50%;
       animation: spin 0.8s linear infinite;
     }
-    
-    @keyframes spin { 
-      0% { transform: rotate(0deg); } 
-      100% { transform: rotate(360deg); } 
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
 
     .compare-city-tag {
@@ -351,12 +349,12 @@
       font-weight: 600;
       transition: all 0.2s;
     }
-    
+
     .compare-city-tag:hover {
       background: #d0e9ff;
       box-shadow: 0 2px 6px rgba(0,102,204,0.2);
     }
-    
+
     .compare-city-tag button {
       border: none;
       background: none;
@@ -373,7 +371,7 @@
       border-radius: 50%;
       transition: all 0.2s;
     }
-    
+
     .compare-city-tag button:hover {
       background: #0066cc;
       color: white;
@@ -390,12 +388,12 @@
       border: 1px solid #e0e0e0;
       transition: all 0.2s;
     }
-    
+
     .compare-bar:hover {
       background: white;
       box-shadow: 0 2px 6px rgba(0,0,0,0.08);
     }
-    
+
     .compare-bar-name {
       width: 130px;
       white-space: nowrap;
@@ -405,7 +403,7 @@
       font-weight: 600;
       color: #333;
     }
-    
+
     .compare-bar-container {
       flex: 1;
       height: 28px;
@@ -414,7 +412,7 @@
       overflow: hidden;
       position: relative;
     }
-    
+
     .compare-bar-fill {
       height: 100%;
       background: linear-gradient(90deg, #0066cc 0%, #0080ff 100%);
@@ -440,20 +438,20 @@
       padding: 10px;
       transition: all 0.2s;
     }
-    
+
     .trend-bar:hover {
       background: white;
       box-shadow: 0 2px 6px rgba(0,0,0,0.08);
       transform: translateX(-3px);
     }
-    
+
     .trend-year {
       width: 50px;
       font-weight: 700;
       font-size: 14px;
       color: #333;
     }
-    
+
     .trend-bar-container {
       flex: 1;
       height: 24px;
@@ -461,14 +459,14 @@
       border-radius: 6px;
       overflow: hidden;
     }
-    
+
     .trend-bar-fill {
       height: 100%;
       background: linear-gradient(90deg, #0066cc, #0099ff);
       transition: width 0.5s ease;
       box-shadow: inset 0 -2px 4px rgba(0,0,0,0.1);
     }
-    
+
     .trend-value {
       min-width: 90px;
       text-align: left;
@@ -478,43 +476,30 @@
     }
 
     @media (max-width: 768px) {
-      #info-panel { 
-        width: calc(100% - 30px); 
-        left: 15px; 
-        right: 15px; 
+      #info-panel {
+        width: calc(100% - 30px);
+        left: 15px;
+        right: 15px;
         max-height: calc(100vh - 100px);
       }
-      
-      #quick-stats { 
-        grid-template-columns: repeat(2, 1fr); 
+
+      #quick-stats {
+        grid-template-columns: repeat(2, 1fr);
       }
-      
-      .crime-grid { 
-        grid-template-columns: 1fr; 
+
+      .crime-grid {
+        grid-template-columns: 1fr;
       }
-      
+
       #panel-header h1 {
         font-size: 16px;
       }
     }
 
-    #info-content::-webkit-scrollbar { 
-      width: 10px; 
-    }
-    
-    #info-content::-webkit-scrollbar-track { 
-      background: #f5f5f5; 
-      border-radius: 8px; 
-    }
-    
-    #info-content::-webkit-scrollbar-thumb { 
-      background: #bbb; 
-      border-radius: 8px; 
-    }
-    
-    #info-content::-webkit-scrollbar-thumb:hover { 
-      background: #888; 
-    }
+    #info-content::-webkit-scrollbar { width: 10px; }
+    #info-content::-webkit-scrollbar-track { background: #f5f5f5; border-radius: 8px; }
+    #info-content::-webkit-scrollbar-thumb { background: #bbb; border-radius: 8px; }
+    #info-content::-webkit-scrollbar-thumb:hover { background: #888; }
 
     .add-compare-btn {
       width: 100%;
@@ -529,16 +514,14 @@
       transition: all 0.2s;
       margin-bottom: 16px;
     }
-    
+
     .add-compare-btn:hover {
       background: #0052a3;
       transform: translateY(-1px);
       box-shadow: 0 4px 8px rgba(0,102,204,0.3);
     }
-    
-    .add-compare-btn:active {
-      transform: translateY(0);
-    }
+
+    .add-compare-btn:active { transform: translateY(0); }
   </style>
 
   <script>
@@ -551,7 +534,7 @@
     let yearlyStats = {};
     let currentTab = "single";
     let currentMode = "muni";
-    
+
     let selectedCity = null;
     let selectedCityKey = null;
     let compareList = [];
@@ -562,7 +545,11 @@
     function normalizeKey(name) {
       if (name == null) return "";
       let s = String(name).trim();
-      s = s.replace(/^עיריית\s+/g, "").replace(/^עיריה\s+/g, "").replace(/^מועצה\s+אזורית\s+/g, "").replace(/^מועצה\s+מקומית\s+/g, "");
+      s = s
+        .replace(/^עיריית\s+/g, "")
+        .replace(/^עיריה\s+/g, "")
+        .replace(/^מועצה\s+אזורית\s+/g, "")
+        .replace(/^מועצה\s+מקומית\s+/g, "");
       s = s.replace(/["׳״']/g, "").replace(/[\s\-]/g, "");
       return s.toLowerCase();
     }
@@ -634,33 +621,79 @@
 
     function switchTab(tabName) {
       currentTab = tabName;
-      document.querySelectorAll(".tab").forEach(tab => tab.classList.toggle("active", tab.dataset.tab === tabName));
-      document.querySelectorAll(".tab-content").forEach(content => content.classList.toggle("active", content.id === `tab-${tabName}`));
+
+      document.querySelectorAll(".tab").forEach(tab =>
+        tab.classList.toggle("active", tab.dataset.tab === tabName)
+      );
+
+      document.querySelectorAll(".tab-content").forEach(content =>
+        content.classList.toggle("active", content.id === `tab-${tabName}`)
+      );
+
       if (tabName === "single") {
-        showInfo("מפה לפי " + (currentMode === "muni" ? "ישובים" : "מרחבים"), `שנה נבחרת: ${currentYear}<br>לחץ על ${currentMode === "muni" ? "ישוב" : "מרחב"} במפה כדי לראות נתונים`, "info");
+        showInfo(
+          "מפה לפי " + (currentMode === "muni" ? "ישובים" : "מרחבים"),
+          `שנה נבחרת: ${currentYear}<br>לחץ על ${currentMode === "muni" ? "ישוב" : "מרחב"} במפה כדי לראות נתונים`,
+          "info"
+        );
       } else if (tabName === "compare") {
-        if (currentMode !== "muni") showInfo("השוואה", "השוואה זמינה רק במצב ישובים. החלף מצב ל'ישובים'.", "error");
-        else updateCompareView();
+        if (currentMode !== "muni") {
+          showInfo("השוואה", "השוואה זמינה רק במצב ישובים. החלף מצב ל'ישובים'.", "error");
+        } else {
+          updateCompareView();
+        }
       } else if (tabName === "trends") {
-        if (currentMode !== "muni") document.getElementById("trends-content").innerHTML = `<div class="message message-error">טרנדים זמינים רק במצב ישובים. החלף מצב ל'ישובים'.</div>`;
-        else if (selectedCity) showTrends(selectedCity);
-        else document.getElementById("trends-content").innerHTML = `<div class="message message-info">בחר ישוב במפה כדי לראות טרנדים לאורך זמן</div>`;
+        if (currentMode !== "muni") {
+          document.getElementById("trends-content").innerHTML =
+            `<div class="message message-error">טרנדים זמינים רק במצב ישובים. החלף מצב ל'ישובים'.</div>`;
+        } else if (selectedCity) {
+          showTrends(selectedCity);
+        } else {
+          document.getElementById("trends-content").innerHTML =
+            `<div class="message message-info">בחר ישוב במפה כדי לראות טרנדים לאורך זמן</div>`;
+        }
       }
     }
 
+    // ✅ תיקון: הדלקת שכבה אחת וכיבוי השנייה
     function setMode(mode) {
       currentMode = mode;
-      document.getElementById("btnModeMuni").classList.toggle("active", mode === "muni");
-      document.getElementById("btnModeMerhav").classList.toggle("active", mode === "merhav");
+
+      const btnM = document.getElementById("btnModeMuni");
+      const btnP = document.getElementById("btnModeMerhav");
+
+      btnM.classList.toggle("active", mode === "muni");
+      btnP.classList.toggle("active", mode === "merhav");
+
+      const layerToShow = (mode === "muni") ? MUNICIPAL_LAYER : POLICE_MERHAV_LAYER;
+      const layerToHide = (mode === "muni") ? POLICE_MERHAV_LAYER : MUNICIPAL_LAYER;
+
       if (mapInitialized) {
-        const layerToShow = (mode === "muni") ? MUNICIPAL_LAYER : POLICE_MERHAV_LAYER;
-        try { govmap.setVisibleLayers([layerToShow], []); console.log("✅ Mode switched to:", mode); } 
-        catch (err) { console.error("❌ Error switching layers:", err); }
+        try {
+          govmap.setVisibleLayers([layerToShow], [layerToHide]);
+          console.log("✅ Visible:", layerToShow, "Hidden:", layerToHide);
+        } catch (err) {
+          console.error("❌ setVisibleLayers failed:", err);
+        }
       }
+
       selectedCity = null;
       selectedCityKey = null;
-      if (mode !== "muni" && (currentTab === "compare" || currentTab === "trends")) switchTab("single");
-      else if (currentTab === "single") showInfo("מפה לפי " + (mode === "muni" ? "ישובים" : "מרחבים"), `שנה נבחרת: ${currentYear}<br>לחץ על ${mode === "muni" ? "ישוב" : "מרחב"} במפה כדי לראות נתונים`, "info");
+
+      if (mode !== "muni" && (currentTab === "compare" || currentTab === "trends")) {
+        switchTab("single");
+        return;
+      }
+
+      if (currentTab === "single") {
+        showInfo(
+          "מפה לפי " + (mode === "muni" ? "ישובים" : "מרחבים"),
+          `שנה נבחרת: ${currentYear}<br>לחץ על ${mode === "muni" ? "ישוב" : "מרחב"} במפה כדי לראות נתונים`,
+          "info"
+        );
+      } else if (currentTab === "compare" && mode === "muni") {
+        updateCompareView();
+      }
     }
 
     function addToCompare() {
@@ -669,10 +702,11 @@
       if (!compareList.some(c => c.key === selectedCityKey)) {
         compareList.push({ name: selectedCity, key: selectedCityKey });
         updateCompareView();
-        const msg = document.createElement('div');
-        msg.className = 'message message-success';
+
+        const msg = document.createElement("div");
+        msg.className = "message message-success";
         msg.textContent = `${selectedCity} נוסף להשוואה`;
-        msg.style.cssText = 'position:fixed;top:20px;right:20px;z-index:10001';
+        msg.style.cssText = "position:fixed;top:20px;right:20px;z-index:10001";
         document.body.appendChild(msg);
         setTimeout(() => msg.remove(), 2000);
       }
@@ -685,7 +719,14 @@
 
     function updateCompareView() {
       const container = document.getElementById("compare-content");
-      let html = `<button class="add-compare-btn" onclick="addToCompare()">➕ הוסף ישוב נבחר להשוואה</button>`;
+
+      // ✅ שיפור: להציג עיר "נבחרת" כרגע, כדי שיהיה ברור שזה נקלט
+      const selectedHint = selectedCity
+        ? `<div class="message message-info">נבחר כעת: <strong>${selectedCity}</strong> (לחץ על ➕ כדי להוסיף להשוואה)</div>`
+        : `<div class="message message-info">לחץ על ישוב במפה ואז על ➕ כדי להוסיף להשוואה</div>`;
+
+      let html = `<button class="add-compare-btn" onclick="addToCompare()">➕ הוסף ישוב נבחר להשוואה</button>${selectedHint}`;
+
       if (compareList.length > 0) {
         html += '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;">';
         compareList.forEach(city => {
@@ -693,27 +734,45 @@
         });
         html += "</div>";
       }
+
       if (compareList.length >= 2) {
         html += `<div style="margin-top:16px;"><strong style="font-size:15px;">סה"כ אירועים ב-${currentYear}</strong></div>`;
-        const totals = compareList.map(city => ({ name: city.name, total: muniIndex[city.key]?.data?.total || 0 }));
+        const totals = compareList.map(city => ({
+          name: city.name,
+          total: muniIndex[city.key]?.data?.total || 0
+        }));
         const maxTotal = Math.max(...totals.map(t => t.total), 1);
+
         totals.forEach(item => {
           const pct = (item.total / maxTotal) * 100;
-          html += `<div class="compare-bar"><div class="compare-bar-name">${item.name}</div><div class="compare-bar-container"><div class="compare-bar-fill" style="width:${pct}%">${item.total.toLocaleString()}</div></div></div>`;
+          html += `<div class="compare-bar">
+            <div class="compare-bar-name">${item.name}</div>
+            <div class="compare-bar-container">
+              <div class="compare-bar-fill" style="width:${pct}%">${item.total.toLocaleString()}</div>
+            </div>
+          </div>`;
         });
-      } else if (compareList.length === 1) html += `<div class="message message-info">הוסף עוד ישוב אחד לפחות כדי לראות השוואה</div>`;
+      } else if (compareList.length === 1) {
+        html += `<div class="message message-info">הוסף עוד ישוב אחד לפחות כדי לראות השוואה</div>`;
+      }
+
       container.innerHTML = html;
     }
 
     function showTrends(cityName) {
       const container = document.getElementById("trends-content");
-      if (!cityName) { container.innerHTML = `<div class="message message-info">בחר ישוב במפה כדי לראות טרנדים</div>`; return; }
+      if (!cityName) {
+        container.innerHTML = `<div class="message message-info">בחר ישוב במפה כדי לראות טרנדים</div>`;
+        return;
+      }
       const years = Object.keys(window.crimeByYear || {}).sort();
       const key = normalizeKey(cityName);
       const yearlyData = [];
+
       years.forEach(year => {
         const yearData = window.crimeByYear?.[year];
         if (!yearData) return;
+
         let cityData = yearData[cityName];
         if (!cityData) {
           const matchedName = Object.keys(yearData).find(k => normalizeKey(k) === key);
@@ -721,13 +780,24 @@
         }
         if (cityData) yearlyData.push({ year, total: cityData.total || 0 });
       });
-      if (!yearlyData.length) { container.innerHTML = `<div class="message message-info">אין נתונים זמינים עבור ${cityName}</div>`; return; }
+
+      if (!yearlyData.length) {
+        container.innerHTML = `<div class="message message-info">אין נתונים זמינים עבור ${cityName}</div>`;
+        return;
+      }
+
       const maxTotal = Math.max(...yearlyData.map(d => d.total), 1);
       let html = `<h3 style="margin:0 0 16px 0;font-size:17px;color:#222;">${cityName}</h3>`;
+
       yearlyData.forEach(d => {
         const pct = (d.total / maxTotal) * 100;
-        html += `<div class="trend-bar"><div class="trend-year">${d.year}</div><div class="trend-bar-container"><div class="trend-bar-fill" style="width:${pct}%"></div></div><div class="trend-value">${d.total.toLocaleString()}</div></div>`;
+        html += `<div class="trend-bar">
+          <div class="trend-year">${d.year}</div>
+          <div class="trend-bar-container"><div class="trend-bar-fill" style="width:${pct}%"></div></div>
+          <div class="trend-value">${d.total.toLocaleString()}</div>
+        </div>`;
       });
+
       container.innerHTML = html;
     }
 
@@ -754,30 +824,67 @@
 
     async function onMapClick(e) {
       if (!mapInitialized) return;
+
       try {
         const layerName = (currentMode === "muni") ? MUNICIPAL_LAYER : POLICE_MERHAV_LAYER;
-        const resp = await govmap.getLayerData({ LayerName: layerName, Point: e.mapPoint, Radius: 300 });
+        const resp = await govmap.getLayerData({
+          LayerName: layerName,
+          Point: e.mapPoint,
+          Radius: 300
+        });
+
         const items = resp?.data || resp?.Data || [];
-        if (!items.length) { showInfo("לא נמצא", "אין אובייקט באזור זה", "info"); return; }
+        if (!items.length) {
+          showInfo("לא נמצא", "אין אובייקט באזור זה", "info");
+          return;
+        }
+
         const first = items[0];
         const attrs = first.Fields || first.Attributes || first;
+
         if (currentMode === "muni") {
           const name = detectMunicipalityName(attrs);
-          if (!name) { console.log("❌ DEBUG - Municipality attributes:", attrs); showInfo("שגיאה", "לא ניתן לזהות את שם הרשות", "error"); return; }
+          if (!name) {
+            console.log("❌ DEBUG - Municipality attributes:", attrs);
+            showInfo("שגיאה", "לא ניתן לזהות את שם הרשות", "error");
+            return;
+          }
+
           const key = normalizeKey(name);
           selectedCity = name;
           selectedCityKey = key;
+
           const entry = muniIndex[key];
-          if (!entry) { showInfo("לא נמצאו נתונים", `אין נתוני פשיעה עבור <strong>${name}</strong> בשנת ${currentYear}`, "error"); return; }
+          if (!entry) {
+            showInfo("לא נמצאו נתונים", `אין נתוני פשיעה עבור <strong>${name}</strong> בשנת ${currentYear}`, "error");
+            return;
+          }
+
+          // ✅ אם בטאב השוואה – רק נרענן את המסך כדי שיראו שהבחירה נקלטה
+          if (currentTab === "compare") {
+            updateCompareView();
+            return;
+          }
+
           if (currentTab === "single") showEntry(entry);
           else if (currentTab === "trends") showTrends(name);
           return;
         }
+
         const merhavName = detectMerhavName(attrs);
-        if (!merhavName) { console.log("❌ DEBUG - Police district attributes:", attrs); showInfo("שגיאה", "לא ניתן לזהות את שם מרחב המשטרה", "error"); return; }
+        if (!merhavName) {
+          console.log("❌ DEBUG - Police district attributes:", attrs);
+          showInfo("שגיאה", "לא ניתן לזהות את שם מרחב המשטרה", "error");
+          return;
+        }
+
         const key = normalizeKey(merhavName);
         const entry = merhavIndex[key];
-        if (!entry) { showInfo("לא נמצאו נתונים", `אין נתוני פשיעה עבור <strong>${merhavName}</strong> בשנת ${currentYear}`, "error"); return; }
+        if (!entry) {
+          showInfo("לא נמצאו נתונים", `אין נתוני פשיעה עבור <strong>${merhavName}</strong> בשנת ${currentYear}`, "error");
+          return;
+        }
+
         showEntry(entry);
       } catch (error) {
         console.error("❌ Error in onMapClick:", error);
@@ -786,24 +893,47 @@
     }
 
     function initGovMap() {
-      if (!window.crimeByYear) { showInfo("שגיאה", "לא ניתן לטעון את קובץ הנתונים crimeByYear_2020_2025.js", "error"); document.getElementById("loading").style.display = "none"; return; }
+      if (!window.crimeByYear) {
+        showInfo("שגיאה", "לא ניתן לטעון את קובץ הנתונים crimeByYear_2020_2025.js", "error");
+        document.getElementById("loading").style.display = "none";
+        return;
+      }
       if (!window.crimeByYearMerhav) console.warn("⚠️ crimeByYearMerhav.js לא נטען");
+
       const years = Object.keys(window.crimeByYear).sort();
       const sel = document.getElementById("yearSelect");
       sel.innerHTML = "";
-      years.forEach(y => { const opt = document.createElement("option"); opt.value = y; opt.textContent = y; sel.appendChild(opt); });
+
+      years.forEach(y => {
+        const opt = document.createElement("option");
+        opt.value = y;
+        opt.textContent = y;
+        sel.appendChild(opt);
+      });
+
       currentYear = years.includes("2025") ? "2025" : years[years.length - 1];
       sel.value = currentYear;
+
       buildMuniIndexForYear(currentYear);
       buildMerhavIndexForYear(currentYear);
       updateQuickStats();
+
       sel.addEventListener("change", e => {
         currentYear = e.target.value;
         buildMuniIndexForYear(currentYear);
         buildMerhavIndexForYear(currentYear);
         updateQuickStats();
-        showInfo("מפה לפי " + (currentMode === "muni" ? "ישובים" : "מרחבים"), `שנה נבחרת: ${currentYear}<br>לחץ על ${currentMode === "muni" ? "ישוב" : "מרחב"} במפה כדי לראות נתונים`, "info");
+
+        showInfo(
+          "מפה לפי " + (currentMode === "muni" ? "ישובים" : "מרחבים"),
+          `שנה נבחרת: ${currentYear}<br>לחץ על ${currentMode === "muni" ? "ישוב" : "מרחב"} במפה כדי לראות נתונים`,
+          "info"
+        );
+
+        if (currentTab === "compare" && currentMode === "muni") updateCompareView();
+        if (currentTab === "trends" && currentMode === "muni" && selectedCity) showTrends(selectedCity);
       });
+
       govmap.createMap("map", {
         token: TOKEN,
         layers: [MUNICIPAL_LAYER, POLICE_MERHAV_LAYER],
@@ -811,11 +941,18 @@
         background: 2,
         zoomButtons: true,
         identifyOnClick: false,
-        visibleLayers: [MUNICIPAL_LAYER, POLICE_MERHAV_LAYER],
+
+        // ✅ חשוב: בהתחלה תציג רק ישובים
+        visibleLayers: [MUNICIPAL_LAYER],
+
         onLoad: () => {
           mapInitialized = true;
+
+          // ✅ יכבה/ידליק נכון גם אם בעתיד תרצה לשנות מצב ברירת מחדל
           setMode(currentMode);
+
           govmap.onEvent(govmap.events.CLICK).progress(onMapClick);
+
           document.getElementById("loading").style.display = "none";
           showInfo("מפה לפי ישובים", `שנה נבחרת: ${currentYear}<br>לחץ על ישוב במפה כדי לראות נתונים`, "info");
           console.log("✅ Map initialized successfully");
