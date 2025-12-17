@@ -494,8 +494,20 @@
         background: 2,
         zoomButtons: true,
         identifyOnClick: false,
+        visibleLayers: [MUNICIPAL_LAYER],
         onLoad: () => {
           mapInitialized = true;
+          
+          // וידוא שהשכבה דלוקה
+          setTimeout(() => {
+            try {
+              govmap.setVisibleLayers([MUNICIPAL_LAYER], []);
+              console.log("✅ Municipal layer is now visible");
+            } catch (error) {
+              console.error("Error setting layer visibility:", error);
+            }
+          }, 500);
+          
           govmap.onEvent(govmap.events.CLICK).progress(onMapClick);
           document.getElementById('loading').style.display = 'none';
           showInfo(
