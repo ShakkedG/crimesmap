@@ -24,6 +24,19 @@
 
     #map { width: 100%; height: 100%; position: relative; }
 
+    /* ✅ מסתיר את חלון השכבות/LayerList של govmap/arcgis (כמה וריאציות נפוצות) */
+    .esri-layer-list,
+    .esri-ui .esri-component.esri-layer-list,
+    .esri-ui .esri-component[aria-label*="Layers"],
+    .esri-ui .esri-component[aria-label*="שכבות"],
+    .esri-ui .esri-component[title*="Layers"],
+    .esri-ui .esri-component[title*="שכבות"],
+    .esri-ui .esri-component.esri-legend,
+    .esri-ui .esri-component.esri-basemap-gallery,
+    .esri-ui .esri-component.esri-expand {
+      display: none !important;
+    }
+
     #info-panel {
       position: absolute;
       top: 15px;
@@ -49,7 +62,7 @@
     }
 
     #panel-header h1 { margin: 0; font-size: 18px; font-weight: 600; letter-spacing: -0.3px; }
-    #panel-header p  { margin: 6px 0 0 0; font-size: 13px; opacity: 0.9; }
+    #panel-header p  { margin: 6px 0 0 0; font-size: 13px; opacity: 0.9; line-height: 1.35; }
 
     #tabs {
       display: flex;
@@ -68,6 +81,7 @@
       font-weight: 600;
       color: #666;
       position: relative;
+      user-select: none;
     }
     .tab:hover { background: #f0f0f0; color: #333; }
     .tab.active { background: white; border-bottom-color: #0066cc; color: #0066cc; }
@@ -124,6 +138,7 @@
       font-weight: 700;
       color: #555;
       transition: all 0.2s ease;
+      user-select: none;
     }
 
     .mode-btn:hover {
@@ -137,6 +152,18 @@
       color: white;
       box-shadow: 0 2px 6px rgba(0,102,204,0.3);
     }
+
+    /* ✅ מצב "מנוטרל" לכפתור ל-10,000 כשלא במצב ישובים */
+    .mode-btn.disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      transform: none !important;
+      box-shadow: none !important;
+      border-color: #ddd !important;
+      color: #666 !important;
+      background: #fff !important;
+    }
+    .mode-btn.disabled:hover { border-color: #ddd !important; color: #666 !important; }
 
     #quick-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
 
@@ -243,6 +270,7 @@
       line-height: 1.5;
     }
     .message-info  { background: #e7f3ff; color: #004080; border-right-color: #0066cc; }
+    .message-warn  { background: #fff7e6; color: #7a4a00; border-right-color: #ffb300; }
     .message-error { background: #fff0f0; color: #c00; border-right-color: #ff0000; }
 
     #loading {
@@ -443,7 +471,6 @@
         .filter(Boolean);
     }
 
-    // ✅ Needed because code uses normalizeKey(...)
     function normalizeKey(name) {
       return normalizeKeyBase(name);
     }
@@ -465,10 +492,7 @@
       for (const displayName in raw) {
         const pop = Number(raw[displayName]);
         if (!Number.isFinite(pop)) continue;
-
-        for (const v of nameVariants(displayName)) {
-          populationIndex[v] = pop;
-        }
+        for (const v of nameVariants(displayName)) populationIndex[v] = pop;
       }
 
       console.log("✅ Population index ready:", Object.keys(populationIndex).length);
@@ -485,6 +509,36 @@
     function calcRatePer10k(total, pop) {
       if (!pop || pop <= 0 || !Number.isFinite(total)) return null;
       return Math.round((total / pop) * 10000 * 10) / 10; // 1 decimal
+    }
+
+    // -----------------------------
+    // Button/UX: make it crystal clear
+    // -----------------------------
+    function updateMetricButtonsUI() {
+      const btnAbs = document.getElementById("btnMetricAbs");
+      const btnRate = document.getElementById("btnMetricRate");
+
+      const rateAvailable = (currentMode === "muni");
+      btnRate.classList.toggle("disabled", !rateAvailable);
+
+      btnRate.title = rateAvailable
+        ? "מציג עבירות ל-10,000 תושבים (דורש אוכלוסייה)"
+        : "זמין רק במצב ישובים/רשויות";
+
+      // טקסט בכותרת
+      const headerP = document.querySelector("#panel-header p");
+      if (headerP) {
+        headerP.innerHTML = rateAvailable
+          ? `מצב נוכחי: <strong>ישובים/רשויות</strong><br>תצוגת אוכלוסייה/ל-10,000 זמינה רק כאן`
+          : `מצב נוכחי: <strong>מרחבים</strong><br>תצוגת אוכלוסייה/ל-10,000 <strong>לא זמינה</strong> במרחבים`;
+      }
+
+      // אם עברו למרחבים בזמן שהיה rate — נחזור ל-abs אוטומטית
+      if (!rateAvailable && currentMetric === "rate") {
+        currentMetric = "abs";
+        btnAbs.classList.add("active");
+        btnRate.classList.remove("active");
+      }
     }
 
     // -----------------------------
@@ -514,7 +568,7 @@
 
     // -----------------------------
     // Build indexes for current year
-    // ✅ muniIndex gets ALL variants so govmap names still match
+    // ✅ muniIndex gets ALL variants
     // -----------------------------
     function buildMuniIndexForYear(year) {
       for (const k in muniIndex) delete muniIndex[k];
@@ -523,13 +577,11 @@
 
       for (const name in yearData) {
         const entry = { name, data: yearData[name] };
-        for (const v of nameVariants(name)) {
-          muniIndex[v] = entry;
-        }
+        for (const v of nameVariants(name)) muniIndex[v] = entry;
       }
 
       yearlyStats[year] = calculateStats(year);
-      console.log(`✅ Year ${year}: ${Object.keys(muniIndex).length} muni-keys indexed (variants)`);
+      console.log(`✅ Year ${year}: ${Object.keys(muniIndex).length} muni keys indexed (variants)`);
     }
 
     function buildMerhavIndexForYear(year) {
@@ -558,20 +610,23 @@
       const total = (typeof d.total === "number") ? d.total : null;
       const pop = (currentMode === "muni") ? getPopulationForAuthority(entry.name) : null;
 
+      // ✅ גם אם אין אוכלוסייה — עדיין מציגים נתונים רגילים
       if (total != null) {
         if (currentMetric === "rate" && currentMode === "muni") {
           const rate = calcRatePer10k(total, pop);
+
           if (rate == null) {
-            html += `<div class="total-summary">—</div>`;
-            html += `<div class="message message-error">אין אוכלוסייה עבור <strong>${entry.name}</strong> ולכן לא ניתן לחשב ל-10,000 תושבים.</div>`;
+            // עדיין תציג כמות + הודעה ברורה
+            html += `<div class="total-summary">${Number(total).toLocaleString()} אירועים</div>`;
+            html += `<div class="message message-warn">אין נתון אוכלוסייה עבור <strong>${entry.name}</strong>, לכן תצוגת <strong>ל-10,000</strong> לא זמינה ליישוב הזה. (אפשר לראות כמות רגילה והפירוט למטה)</div>`;
           } else {
             html += `<div class="total-summary">${rate.toLocaleString()} ל-10,000</div>`;
             html += `<div class="sub-summary">אוכלוסייה: ${Number(pop).toLocaleString()} • סה"כ אירועים: ${Number(total).toLocaleString()}</div>`;
           }
         } else {
           html += `<div class="total-summary">${Number(total).toLocaleString()} אירועים</div>`;
-          if (currentMode === "muni" && pop) {
-            html += `<div class="sub-summary">אוכלוסייה: ${Number(pop).toLocaleString()}</div>`;
+          if (currentMode === "muni") {
+            html += `<div class="sub-summary">אוכלוסייה: ${pop ? Number(pop).toLocaleString() : "לא נמצא"}</div>`;
           }
         }
       }
@@ -632,9 +687,7 @@
       btnM.classList.toggle("active", mode === "muni");
       btnP.classList.toggle("active", mode === "merhav");
 
-      if (currentMetric === "rate" && mode !== "muni") {
-        setMetric("abs", true);
-      }
+      updateMetricButtonsUI();
 
       const layerToShow = (mode === "muni") ? MUNICIPAL_LAYER : POLICE_MERHAV_LAYER;
       const layerToHide = (mode === "muni") ? POLICE_MERHAV_LAYER : MUNICIPAL_LAYER;
@@ -665,20 +718,18 @@
     }
 
     function setMetric(metric, silent = false) {
+      // ✅ אם לא במצב ישובים—לא נותנים לעבור ל-rate
+      if (metric === "rate" && currentMode !== "muni") {
+        if (!silent) showInfo("לא זמין", "תצוגת אוכלוסייה / ל-10,000 זמינה רק במצב ישובים/רשויות.", "error");
+        return;
+      }
+
       currentMetric = metric;
 
       const btnAbs = document.getElementById("btnMetricAbs");
       const btnRate = document.getElementById("btnMetricRate");
       btnAbs.classList.toggle("active", metric === "abs");
       btnRate.classList.toggle("active", metric === "rate");
-
-      if (metric === "rate" && currentMode !== "muni") {
-        currentMetric = "abs";
-        btnAbs.classList.add("active");
-        btnRate.classList.remove("active");
-        if (!silent) showInfo("לא זמין", "ל-10,000 תושבים זמין רק במצב ישובים/רשויות.", "error");
-        return;
-      }
 
       if (currentTab === "single" && selectedCityKey) {
         const entry = muniIndex[selectedCityKey];
@@ -715,6 +766,10 @@
 
       let html = `<button class="add-compare-btn" onclick="addToCompare()">➕ הוסף ${entityType} נבחר להשוואה</button>${selectedHint}`;
 
+      if (currentMode !== "muni" && currentMetric === "rate") {
+        html += `<div class="message message-error">תצוגת ל-10,000 זמינה רק במצב ישובים/רשויות.</div>`;
+      }
+
       const filteredList = compareList.filter(c => c.mode === currentMode);
 
       if (filteredList.length > 0) {
@@ -750,6 +805,9 @@
             : `סה"כ אירועים ב-${currentYear}`;
 
         html += `<div style="margin-top:16px;"><strong style="font-size:15px;">${title}</strong></div>`;
+        if (currentMode === "muni" && currentMetric === "rate") {
+          html += `<div class="message message-warn">יישובים בלי אוכלוסייה עדיין מוצגים, אבל יסומנו כ-"אין אוכלוסייה".</div>`;
+        }
 
         const maxVal = Math.max(...values.map(v => v.value), 1);
 
@@ -817,9 +875,11 @@
       let html = `<h3 style="margin:0 0 16px 0;font-size:17px;color:#222;">${cityName}</h3>`;
       if (currentMetric === "rate") {
         const pop = getPopulationForAuthority(cityName);
-        html += `<div class="message message-info" style="margin-bottom:16px;">
-          תצוגה ל-10,000 תושבים • אוכלוסייה: ${pop ? Number(pop).toLocaleString() : "לא נמצא"}
-        </div>`;
+        if (!pop) {
+          html += `<div class="message message-warn" style="margin-bottom:16px;">אין אוכלוסייה ליישוב הזה — מציג טרנדים כ-"אין אוכלוסייה" במקום ל-10,000.</div>`;
+        } else {
+          html += `<div class="message message-info" style="margin-bottom:16px;">תצוגה ל-10,000 תושבים • אוכלוסייה: ${Number(pop).toLocaleString()}</div>`;
+        }
       }
 
       series.forEach(d => {
@@ -934,6 +994,7 @@
       if (!window.crimeByYearMerhav) console.warn("⚠️ crimeByYearMerhav.js לא נטען");
 
       buildPopulationIndex();
+      updateMetricButtonsUI();
 
       const years = Object.keys(window.crimeByYear).sort();
       const sel = document.getElementById("yearSelect");
@@ -951,6 +1012,7 @@
 
       buildMuniIndexForYear(currentYear);
       buildMerhavIndexForYear(currentYear);
+      yearlyStats[currentYear] = calculateStats(currentYear);
       updateQuickStats();
 
       sel.addEventListener("change", e => {
@@ -958,6 +1020,7 @@
 
         buildMuniIndexForYear(currentYear);
         buildMerhavIndexForYear(currentYear);
+        yearlyStats[currentYear] = calculateStats(currentYear);
         updateQuickStats();
 
         showInfo(
@@ -1015,7 +1078,8 @@
   <div id="info-panel">
     <div id="panel-header">
       <h1>🗺️ מפת פשיעה בישראל</h1>
-      <p>בחר מצב + תצוגה (כמות / ל-10,000 תושבים)</p>
+      <!-- הטקסט פה יתעדכן אוטומטית לפי מצב -->
+      <p>תצוגת אוכלוסייה/ל-10,000 זמינה רק במצב ישובים/רשויות</p>
     </div>
 
     <div id="tabs">
