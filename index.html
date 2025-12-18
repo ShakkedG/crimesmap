@@ -408,11 +408,108 @@
     }
     .add-compare-btn:hover { background: #0052a3; }
 
+    /* ===== Compare v2 (משופר עם אוכלוסייה) ===== */
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .compare-card {
+      border: 1px solid #e0e0e0;
+      border-radius: 10px;
+      padding: 12px;
+      background: #fff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+
+    .compare-card-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .compare-name {
+      font-weight: 800;
+      color: #222;
+      font-size: 14px;
+      max-width: 310px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .compare-badges {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .badge {
+      font-size: 11px;
+      font-weight: 800;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid #e0e0e0;
+      background: #fafafa;
+      color: #333;
+    }
+
+    .badge-warn {
+      border-color: #ffcc80;
+      background: #fff7e6;
+      color: #7a4a00;
+    }
+
+    .compare-kpis {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .kpi {
+      border: 1px solid #eee;
+      background: #fafafa;
+      border-radius: 8px;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .kpi .kpi-value {
+      font-weight: 900;
+      color: #0066cc;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+
+    .kpi .kpi-label {
+      font-size: 10px;
+      font-weight: 800;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+    }
+
+    .compare-bars-title {
+      margin-top: 12px;
+      font-weight: 900;
+      font-size: 14px;
+      color: #222;
+    }
+
+    .compare-note { margin: 10px 0; }
+
     @media (max-width: 768px) {
       #info-panel { width: calc(100% - 30px); left: 15px; right: 15px; max-height: calc(100vh - 100px); }
       #quick-stats { grid-template-columns: repeat(2, 1fr); }
       .crime-grid { grid-template-columns: 1fr; }
       #panel-header h1 { font-size: 16px; }
+      .compare-kpis { grid-template-columns: 1fr; }
     }
   </style>
 
@@ -511,6 +608,11 @@
       return Math.round((total / pop) * 10000 * 10) / 10; // 1 decimal
     }
 
+    function fmtMaybe(num) {
+      if (num == null) return "לא נמצא";
+      return Number(num).toLocaleString();
+    }
+
     // -----------------------------
     // Button/UX: make it crystal clear
     // -----------------------------
@@ -525,7 +627,7 @@
         ? "מציג עבירות ל-10,000 תושבים (דורש אוכלוסייה)"
         : "זמין רק במצב ישובים/רשויות";
 
-      // טקסט בכותרת
+      // Header text updates
       const headerP = document.querySelector("#panel-header p");
       if (headerP) {
         headerP.innerHTML = rateAvailable
@@ -533,7 +635,6 @@
           : `מצב נוכחי: <strong>מרחבים</strong><br>תצוגת אוכלוסייה/ל-10,000 <strong>לא זמינה</strong> במרחבים`;
       }
 
-      // אם עברו למרחבים בזמן שהיה rate — נחזור ל-abs אוטומטית
       if (!rateAvailable && currentMetric === "rate") {
         currentMetric = "abs";
         btnAbs.classList.add("active");
@@ -616,7 +717,6 @@
           const rate = calcRatePer10k(total, pop);
 
           if (rate == null) {
-            // עדיין תציג כמות + הודעה ברורה
             html += `<div class="total-summary">${Number(total).toLocaleString()} אירועים</div>`;
             html += `<div class="message message-warn">אין נתון אוכלוסייה עבור <strong>${entry.name}</strong>, לכן תצוגת <strong>ל-10,000</strong> לא זמינה ליישוב הזה. (אפשר לראות כמות רגילה והפירוט למטה)</div>`;
           } else {
@@ -718,7 +818,6 @@
     }
 
     function setMetric(metric, silent = false) {
-      // ✅ אם לא במצב ישובים—לא נותנים לעבור ל-rate
       if (metric === "rate" && currentMode !== "muni") {
         if (!silent) showInfo("לא זמין", "תצוגת אוכלוסייה / ל-10,000 זמינה רק במצב ישובים/רשויות.", "error");
         return;
@@ -744,7 +843,6 @@
         alert(`אנא בחר ${currentMode === "muni" ? "רשות" : "מרחב"} במפה תחילה`);
         return;
       }
-
       if (!compareList.some(c => c.key === selectedCityKey && c.mode === currentMode)) {
         compareList.push({ name: selectedCity, key: selectedCityKey, mode: currentMode });
         updateCompareView();
@@ -756,6 +854,9 @@
       updateCompareView();
     }
 
+    /* ===========================
+       Compare (משופר עם אוכלוסייה)
+       =========================== */
     function updateCompareView() {
       const container = document.getElementById("compare-content");
       const entityType = currentMode === "muni" ? "רשות" : "מרחב";
@@ -764,11 +865,10 @@
         ? `<div class="message message-info">נבחר כעת: <strong>${selectedCity}</strong> (לחץ על ➕ כדי להוסיף להשוואה)</div>`
         : `<div class="message message-info">לחץ על ${entityType} במפה ואז על ➕ כדי להוסיף להשוואה</div>`;
 
-      let html = `<button class="add-compare-btn" onclick="addToCompare()">➕ הוסף ${entityType} נבחר להשוואה</button>${selectedHint}`;
-
-      if (currentMode !== "muni" && currentMetric === "rate") {
-        html += `<div class="message message-error">תצוגת ל-10,000 זמינה רק במצב ישובים/רשויות.</div>`;
-      }
+      let html = `
+        <button class="add-compare-btn" onclick="addToCompare()">➕ הוסף ${entityType} נבחר להשוואה</button>
+        ${selectedHint}
+      `;
 
       const filteredList = compareList.filter(c => c.mode === currentMode);
 
@@ -780,50 +880,101 @@
         html += "</div>";
       }
 
-      if (filteredList.length >= 2) {
-        const index = currentMode === "muni" ? muniIndex : merhavIndex;
-
-        const values = filteredList.map(item => {
-          const total = index[item.key]?.data?.total || 0;
-
-          if (currentMode === "muni" && currentMetric === "rate") {
-            const pop = getPopulationForAuthority(item.name);
-            const rate = calcRatePer10k(total, pop);
-            return {
-              name: item.name,
-              value: rate == null ? 0 : rate,
-              label: rate == null ? "אין אוכלוסייה" : `${rate.toLocaleString()} /10k`
-            };
-          }
-
-          return { name: item.name, value: total, label: total.toLocaleString() };
-        });
-
-        const title =
-          (currentMode === "muni" && currentMetric === "rate")
-            ? `השוואה ל-10,000 תושבים ב-${currentYear}`
-            : `סה"כ אירועים ב-${currentYear}`;
-
-        html += `<div style="margin-top:16px;"><strong style="font-size:15px;">${title}</strong></div>`;
-        if (currentMode === "muni" && currentMetric === "rate") {
-          html += `<div class="message message-warn">יישובים בלי אוכלוסייה עדיין מוצגים, אבל יסומנו כ-"אין אוכלוסייה".</div>`;
-        }
-
-        const maxVal = Math.max(...values.map(v => v.value), 1);
-
-        values.forEach(item => {
-          const pct = (item.value / maxVal) * 100;
-          html += `<div class="compare-bar">
-            <div class="compare-bar-name">${item.name}</div>
-            <div class="compare-bar-container">
-              <div class="compare-bar-fill" style="width:${pct}%">${item.label}</div>
-            </div>
-          </div>`;
-        });
-
-      } else if (filteredList.length === 1) {
+      if (filteredList.length < 2) {
         html += `<div class="message message-info">הוסף עוד ${entityType} אחד לפחות כדי לראות השוואה</div>`;
+        container.innerHTML = html;
+        return;
       }
+
+      const index = currentMode === "muni" ? muniIndex : merhavIndex;
+
+      const rows = filteredList.map(item => {
+        const total = index[item.key]?.data?.total ?? 0;
+        const pop = (currentMode === "muni") ? getPopulationForAuthority(item.name) : null;
+        const rate = (currentMode === "muni") ? calcRatePer10k(total, pop) : null;
+        return { name: item.name, key: item.key, total, pop, rate, hasPop: pop != null };
+      });
+
+      const metricIsRate = (currentMode === "muni" && currentMetric === "rate");
+      const valuesForBars = rows.map(r => metricIsRate ? (r.rate ?? 0) : r.total);
+      const maxVal = Math.max(...valuesForBars, 1);
+
+      if (currentMode !== "muni") {
+        html += `<div class="message message-info compare-note">השוואה לפי אוכלוסייה זמינה רק במצב <strong>ישובים/רשויות</strong>. במרחבים ההשוואה היא לפי כמות בלבד.</div>`;
+      } else if (metricIsRate) {
+        const missingCount = rows.filter(r => !r.hasPop).length;
+        if (missingCount > 0) {
+          html += `<div class="message message-warn compare-note"><strong>${missingCount}</strong> רשויות בלי אוכלוסייה מוצגות, אבל השוואת ל-10,000 עבורן תסומן כ-"לא נמצא".</div>`;
+        } else {
+          html += `<div class="message message-info compare-note">ההשוואה מתבצעת לפי <strong>ל-10,000 תושבים</strong> (ולמטה עדיין תראה גם כמות מוחלטת).</div>`;
+        }
+      } else {
+        html += `<div class="message message-info compare-note">טיפ: עבור ל־<strong>ל-10,000</strong> כדי להשוות יחסית לגודל האוכלוסייה.</div>`;
+      }
+
+      // Cards
+      html += `<div class="compare-grid">`;
+      rows.forEach(r => {
+        const badges = [];
+        badges.push(metricIsRate ? `<span class="badge">מדד: ל-10,000</span>` : `<span class="badge">מדד: כמות</span>`);
+        if (currentMode === "muni" && !r.hasPop) badges.push(`<span class="badge badge-warn">אין אוכלוסייה</span>`);
+
+        html += `
+          <div class="compare-card">
+            <div class="compare-card-title">
+              <div class="compare-name">${r.name}</div>
+              <div class="compare-badges">${badges.join("")}</div>
+            </div>
+
+            <div class="compare-kpis">
+              <div class="kpi">
+                <div class="kpi-value">${Number(r.total).toLocaleString()}</div>
+                <div class="kpi-label">כמות</div>
+              </div>
+
+              <div class="kpi">
+                <div class="kpi-value">${currentMode === "muni" ? fmtMaybe(r.pop) : "—"}</div>
+                <div class="kpi-label">אוכלוסייה</div>
+              </div>
+
+              <div class="kpi">
+                <div class="kpi-value">${currentMode === "muni" ? (r.rate == null ? "לא נמצא" : r.rate.toLocaleString()) : "—"}</div>
+                <div class="kpi-label">ל-10,000</div>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+      html += `</div>`;
+
+      // Bars
+      const title = metricIsRate
+        ? `השוואה לפי ל-10,000 תושבים (${currentYear})`
+        : `השוואה לפי כמות אירועים (${currentYear})`;
+
+      html += `<div class="compare-bars-title">${title}</div>`;
+
+      const sorted = [...rows].sort((a, b) => {
+        const va = metricIsRate ? (a.rate ?? -1) : a.total;
+        const vb = metricIsRate ? (b.rate ?? -1) : b.total;
+        return vb - va;
+      });
+
+      sorted.forEach(r => {
+        const value = metricIsRate ? (r.rate ?? 0) : r.total;
+        const label = metricIsRate
+          ? (r.rate == null ? "לא נמצא" : `${r.rate.toLocaleString()} /10k`)
+          : r.total.toLocaleString();
+
+        const pct = (value / maxVal) * 100;
+
+        html += `<div class="compare-bar">
+          <div class="compare-bar-name">${r.name}</div>
+          <div class="compare-bar-container">
+            <div class="compare-bar-fill" style="width:${pct}%">${label}</div>
+          </div>
+        </div>`;
+      });
 
       container.innerHTML = html;
     }
@@ -1078,8 +1229,7 @@
   <div id="info-panel">
     <div id="panel-header">
       <h1>🗺️ מפת פשיעה בישראל</h1>
-      <!-- הטקסט פה יתעדכן אוטומטית לפי מצב -->
-      <p>תצוגת אוכלוסייה/ל-10,000 זמינה רק במצב ישובים/רשויות</p>
+      <p>מצב נוכחי: <strong>ישובים/רשויות</strong><br>תצוגת אוכלוסייה/ל-10,000 זמינה רק כאן</p>
     </div>
 
     <div id="tabs">
