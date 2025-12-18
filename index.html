@@ -407,28 +407,50 @@
     const muniIndex = {};
     const merhavIndex = {};
 
-    // --- Normalization helpers ---
-    function normalizeKey(name) {
+    // -----------------------------
+    // Normalization + variants
+    // -----------------------------
+    function normalizeKeyBase(name) {
       if (name == null) return "";
       let s = String(name).trim();
 
-      // לא מסירים "מועצה אזורית" כאן, כי לפעמים אנחנו רוצים להשוות גם עם/בלי
       s = s
-        .replace(/^עיריית\s+/g, "")
-        .replace(/^עיריה\s+/g, "")
-        .replace(/^מועצה\s+מקומית\s+/g, "");
+        .replace(/[׳״"']/g, "")
+        .replace(/[(){}\[\],.:]/g, "")
+        .replace(/־/g, "-")
+        .replace(/\s+/g, " ")
+        .trim();
 
-      s = s.replace(/["׳״']/g, "").replace(/[()\[\],.:]/g, "").replace(/[\s\-]/g, "");
+      s = s.replace(/[\s\-]/g, "");
       return s.toLowerCase();
     }
 
-    function stripRegionalPrefix(name) {
-      return String(name || "").trim().replace(/^מועצה\s+אזורית\s+/g, "");
+    function nameVariants(name) {
+      const raw = String(name || "").trim();
+
+      const withoutCityHall = raw
+        .replace(/^עיריית\s+/g, "")
+        .replace(/^עיריה\s+/g, "");
+
+      const withoutLocalCouncil = withoutCityHall
+        .replace(/^מועצה\s+מקומית\s+/g, "");
+
+      const withoutRegionalCouncil = withoutLocalCouncil
+        .replace(/^מועצה\s+אזורית\s+/g, "");
+
+      return [raw, withoutCityHall, withoutLocalCouncil, withoutRegionalCouncil]
+        .map(normalizeKeyBase)
+        .filter(Boolean);
     }
 
-    // --- Population index (normalized) ---
-    // אנחנו ניצור מפה: normalizeKey(name) -> population
-    // וגם normalizeKey(stripRegionalPrefix(name)) -> population (כדי לתמוך בשמות בלי "מועצה אזורית")
+    // ✅ Needed because code uses normalizeKey(...)
+    function normalizeKey(name) {
+      return normalizeKeyBase(name);
+    }
+
+    // -----------------------------
+    // Population index (variants)
+    // -----------------------------
     const populationIndex = {};
 
     function buildPopulationIndex() {
@@ -440,21 +462,24 @@
         return;
       }
 
-      for (const name in raw) {
-        const pop = Number(raw[name]);
+      for (const displayName in raw) {
+        const pop = Number(raw[displayName]);
         if (!Number.isFinite(pop)) continue;
 
-        populationIndex[normalizeKey(name)] = pop;
-        populationIndex[normalizeKey(stripRegionalPrefix(name))] = pop;
+        for (const v of nameVariants(displayName)) {
+          populationIndex[v] = pop;
+        }
       }
 
-      console.log("✅ PopulationDB indexed:", Object.keys(populationIndex).length);
+      console.log("✅ Population index ready:", Object.keys(populationIndex).length);
     }
 
-    function getPopulationForAuthority(name) {
-      const k1 = normalizeKey(name);
-      const k2 = normalizeKey(stripRegionalPrefix(name));
-      return populationIndex[k1] ?? populationIndex[k2] ?? null;
+    function getPopulationForAuthority(nameFromCrime) {
+      for (const v of nameVariants(nameFromCrime)) {
+        const pop = populationIndex[v];
+        if (pop != null) return pop;
+      }
+      return null;
     }
 
     function calcRatePer10k(total, pop) {
@@ -462,7 +487,9 @@
       return Math.round((total / pop) * 10000 * 10) / 10; // 1 decimal
     }
 
-    // --- Stats ---
+    // -----------------------------
+    // Stats
+    // -----------------------------
     function calculateStats(year) {
       const yearData = window.crimeByYear?.[year];
       if (!yearData) return { municipalities: 0, total: 0, avg: 0 };
@@ -485,16 +512,24 @@
       document.getElementById("stat-avg").textContent = stats.avg.toLocaleString();
     }
 
+    // -----------------------------
+    // Build indexes for current year
+    // ✅ muniIndex gets ALL variants so govmap names still match
+    // -----------------------------
     function buildMuniIndexForYear(year) {
       for (const k in muniIndex) delete muniIndex[k];
       const yearData = window.crimeByYear?.[year];
       if (!yearData) return;
 
       for (const name in yearData) {
-        muniIndex[normalizeKey(name)] = { name, data: yearData[name] };
+        const entry = { name, data: yearData[name] };
+        for (const v of nameVariants(name)) {
+          muniIndex[v] = entry;
+        }
       }
+
       yearlyStats[year] = calculateStats(year);
-      console.log(`✅ Year ${year}: ${Object.keys(muniIndex).length} municipalities indexed`);
+      console.log(`✅ Year ${year}: ${Object.keys(muniIndex).length} muni-keys indexed (variants)`);
     }
 
     function buildMerhavIndexForYear(year) {
@@ -508,7 +543,9 @@
       console.log(`✅ Year ${year}: ${Object.keys(merhavIndex).length} police districts indexed`);
     }
 
-    // --- UI helpers ---
+    // -----------------------------
+    // UI helpers
+    // -----------------------------
     function showInfo(title, body, type = "info") {
       document.getElementById("info-title").textContent = title;
       document.getElementById("info-body").innerHTML = `<div class="message message-${type}">${body}</div>`;
@@ -595,7 +632,6 @@
       btnM.classList.toggle("active", mode === "muni");
       btnP.classList.toggle("active", mode === "merhav");
 
-      // metric rate only for muni
       if (currentMetric === "rate" && mode !== "muni") {
         setMetric("abs", true);
       }
@@ -604,11 +640,8 @@
       const layerToHide = (mode === "muni") ? POLICE_MERHAV_LAYER : MUNICIPAL_LAYER;
 
       if (mapInitialized) {
-        try {
-          govmap.setVisibleLayers([layerToShow], [layerToHide]);
-        } catch (err) {
-          console.error("❌ setVisibleLayers failed:", err);
-        }
+        try { govmap.setVisibleLayers([layerToShow], [layerToHide]); }
+        catch (err) { console.error("❌ setVisibleLayers failed:", err); }
       }
 
       selectedCity = null;
@@ -854,7 +887,7 @@
           selectedCity = name;
           selectedCityKey = key;
 
-          const entry = muniIndex[key];
+          const entry = muniIndex[key] || muniIndex[nameVariants(name)[0]];
           if (!entry) {
             showInfo("לא נמצאו נתונים", `אין נתוני פשיעה עבור <strong>${name}</strong> בשנת ${currentYear}`, "error");
             return;
