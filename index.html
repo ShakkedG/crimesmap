@@ -462,6 +462,44 @@
     .rank-right { font-weight: 900; color: #0066cc; white-space: nowrap; }
     .rank-sub { font-size: 12px; color: #666; margin-top: 6px; }
 
+    /* ✅ Choropleth legend / controls */
+    #choropleth-legend {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: #fff;
+      border: 1px solid #e0e0e0;
+    }
+    .legend-title {
+      font-size: 12px;
+      font-weight: 900;
+      color: #333;
+      margin-bottom: 8px;
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:center;
+    }
+    .legend-bar {
+      height: 10px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(255,0,0,0.12), rgba(255,0,0,0.55));
+      border: 1px solid rgba(200,0,0,0.25);
+    }
+    .legend-range {
+      display:flex;
+      justify-content:space-between;
+      font-size: 11px;
+      color:#666;
+      margin-top: 6px;
+      font-weight: 800;
+    }
+    #paintStatus {
+      margin-top: 8px;
+      font-size: 12px;
+      color: #666;
+    }
+
     @media (max-width: 768px) {
       #info-panel { width: calc(100% - 30px); left: 15px; right: 15px; max-height: calc(100vh - 100px); }
       #quick-stats { grid-template-columns: repeat(2, 1fr); }
@@ -492,10 +530,17 @@
     const merhavIndex = {};
     const populationIndex = {};
 
-    // Rankings state (✅ bugfix: rankingTopN was missing)
+    // Rankings state
     let rankingMetric = "total";     // total | type | rate
     let rankingCrimeType = "";
-    let rankingTopN = 10;            // ✅ fixed missing variable
+    let rankingTopN = 10;
+
+    // ✅ Choropleth state
+    let choroplethAllNames = [];
+    let choroplethCancelToken = 0;
+    let layer125EntitiesCache = null;
+    let yearRateMin = 0;
+    let yearRateMax = 0;
 
     // -------------------- Normalize & Variants --------------------
     function normalizeKeyBase(name) {
@@ -732,7 +777,243 @@
       }
     }
 
-    // -------------------- Mode / Metric --------------------
+    // -------------------- Choropleth utils --------------------
+    function setPaintStatus(msg) {
+      const el = document.getElementById("paintStatus");
+      if (el) el.textContent = msg || "";
+    }
+
+    function computeYearRateRange(year) {
+      yearRateMin = 0;
+      yearRateMax = 0;
+
+      const yd = window.crimeByYear?.[year];
+      if (!yd) return;
+
+      let min = Infinity;
+      let max = -Infinity;
+
+      for (const name in yd) {
+        const total = Number(yd?.[name]?.total || 0);
+        const pop = getPopulationForAuthority(name);
+        const rate = calcRatePer10k(total, pop);
+        if (rate == null) continue;
+        if (rate < min) min = rate;
+        if (rate > max) max = rate;
+      }
+
+      if (!Number.isFinite(min) || !Number.isFinite(max)) {
+        yearRateMin = 0;
+        yearRateMax = 0;
+        return;
+      }
+
+      yearRateMin = Math.floor(min);
+      yearRateMax = Math.ceil(max);
+      if (yearRateMax <= yearRateMin) yearRateMax = yearRateMin + 1;
+    }
+
+    function updateLegendUI() {
+      const minEl = document.getElementById("legendMin");
+      const maxEl = document.getElementById("legendMax");
+      if (minEl) minEl.textContent = yearRateMin.toLocaleString();
+      if (maxEl) maxEl.textContent = yearRateMax.toLocaleString();
+    }
+
+    // מחלץ WKT מתוך entity שמוחזר מ-getLayerEntities
+    function extractWktFromGovmapItem(ent) {
+      if (!ent) return null;
+
+      // לפעמים זה מגיע כ-wkt / WKT / geometryWKT וכו'
+      const direct = ent.wkt || ent.WKT || ent.geometryWKT || ent.GeometryWKT;
+      if (typeof direct === "string" && direct.startsWith("POLYGON")) return direct;
+      if (typeof direct === "string" && direct.startsWith("MULTIPOLYGON")) return direct;
+
+      // לפעמים יושב בתוך Geometry / geom / Shape
+      const g = ent.Geometry || ent.geometry || ent.geom || ent.Shape || ent.shape;
+      if (typeof g === "string" && (g.startsWith("POLYGON") || g.startsWith("MULTIPOLYGON"))) return g;
+
+      // לפעמים בתוך Fields
+      const attrs = fieldsToObject(ent.Fields || ent.fields);
+      if (attrs) {
+        const cand = attrs.WKT || attrs.wkt || attrs.Shape || attrs.shape || attrs.GEOM || attrs.geom;
+        if (typeof cand === "string" && (cand.startsWith("POLYGON") || cand.startsWith("MULTIPOLYGON"))) return cand;
+      }
+
+      return null;
+    }
+
+    // צבע אדום: alpha מתחזק לפי rate
+    function rateToFillColor(rate) {
+      // clamp 0..1
+      const t = (rate - yearRateMin) / (yearRateMax - yearRateMin);
+      const clamped = Math.max(0, Math.min(1, t));
+      // alpha בין 0.10 ל-0.65
+      const alpha = 0.10 + clamped * 0.55;
+      return [255, 0, 0, alpha];
+    }
+
+    function extractNameFromEntity(ent) {
+      const attrs = fieldsToObject(ent?.Fields || ent?.fields || ent) || ent;
+      const candidates = ["שם רשות", "שם רשות מקומית", "שם ישוב", "ישוב סופי", "SHEM_YISHUV", "Name", "NAME", "TITLE"];
+      for (const c of candidates) if (attrs && attrs[c]) return attrs[c];
+      return null;
+    }
+
+    function clearAllPainted() {
+      if (!mapInitialized) return;
+      if (!choroplethAllNames.length) return;
+
+      const chunk = 400;
+      for (let i = 0; i < choroplethAllNames.length; i += chunk) {
+        const part = choroplethAllNames.slice(i, i + chunk);
+        try { govmap.clearGeometriesByName(part); } catch (e) {}
+      }
+      choroplethAllNames = [];
+    }
+
+    async function fetchLayer125Entities() {
+      if (layer125EntitiesCache) return layer125EntitiesCache;
+
+      const entitiesResp = await govmap.getLayerEntities({ layerName: MUNICIPAL_LAYER });
+      const list = entitiesResp?.data || entitiesResp?.Data || entitiesResp || [];
+
+      if (!Array.isArray(list) || !list.length) {
+        console.warn("getLayerEntities returned:", entitiesResp);
+        throw new Error("לא הצלחתי למשוך רשימת ישובים מהשכבה (125).");
+      }
+
+      layer125EntitiesCache = list;
+      return list;
+    }
+
+    function buildAllChoroplethGeoms(entities) {
+      const yearData = window.crimeByYear?.[currentYear];
+      if (!yearData) return { wkts: [], names: [], symbols: [], skipped: 0, used: 0 };
+
+      computeYearRateRange(currentYear);
+      updateLegendUI();
+
+      const wkts = [];
+      const names = [];
+      const symbols = [];
+      let skipped = 0;
+      let used = 0;
+
+      for (let i = 0; i < entities.length; i++) {
+        const ent = entities[i];
+
+        const name = extractNameFromEntity(ent);
+        if (!name) { skipped++; continue; }
+
+        const key = normalizeKey(name);
+        const entry = muniIndex[key] || muniIndex[nameVariants(name)[0]];
+        if (!entry) { skipped++; continue; }
+
+        const total = Number(entry.data?.total || 0);
+        const pop = getPopulationForAuthority(entry.name);
+        const rate = calcRatePer10k(total, pop);
+        if (rate == null) { skipped++; continue; }
+
+        const wkt = extractWktFromGovmapItem(ent);
+        if (!wkt) { skipped++; continue; }
+
+        const fillColor = rateToFillColor(rate);
+
+        wkts.push(wkt);
+        const geomName = `__choropleth_all__${currentYear}__${used}`;
+        names.push(geomName);
+        choroplethAllNames.push(geomName);
+
+        symbols.push({
+          outlineColor: [180, 0, 0, 0.35],
+          outlineWidth: 1,
+          fillColor
+        });
+
+        used++;
+      }
+
+      return { wkts, names, symbols, skipped, used };
+    }
+
+    async function paintAllMunicipalitiesByRate() {
+      if (!mapInitialized) {
+        alert("המפה עדיין לא נטענה.");
+        return;
+      }
+      if (currentMode !== "muni") {
+        alert("צביעה לכל הארץ זמינה רק במצב ישובים/רשויות.");
+        return;
+      }
+      if (currentMetric !== "rate") {
+        alert("כדי לצבוע לפי צבעים, העבר למדד 'ל-10,000 תושבים'.");
+        return;
+      }
+
+      choroplethCancelToken++;
+      const myToken = choroplethCancelToken;
+
+      setPaintStatus("טוען רשימת ישובים…");
+
+      try {
+        clearAllPainted();
+
+        // בונים אינדקס של השנה הנוכחית לפני
+        buildMuniIndexForYear(currentYear);
+
+        const entities = await fetchLayer125Entities();
+        setPaintStatus(`מכין פוליגונים… (ישובים בשכבה: ${entities.length.toLocaleString()})`);
+
+        const { wkts, names, symbols, skipped, used } = buildAllChoroplethGeoms(entities);
+
+        if (!used) {
+          setPaintStatus("לא נוצרו פוליגונים (ייתכן שחסרה גאומטריה/WKT או שאין התאמות/אוכלוסייה).");
+          return;
+        }
+
+        const batchSize = 250;
+        const totalBatches = Math.ceil(wkts.length / batchSize);
+
+        for (let b = 0; b < totalBatches; b++) {
+          if (myToken !== choroplethCancelToken) {
+            setPaintStatus("הצביעה בוטלה.");
+            return;
+          }
+
+          const from = b * batchSize;
+          const to = Math.min((b + 1) * batchSize, wkts.length);
+
+          setPaintStatus(`מצייר… ${to.toLocaleString()} / ${wkts.length.toLocaleString()} (אצווה ${b + 1}/${totalBatches})`);
+
+          const data = {
+            wkts: wkts.slice(from, to),
+            names: names.slice(from, to),
+            geometryType: govmap.geometryType.POLYGON,
+            clearExisting: false,
+            defaultSymbol: { outlineColor: [180, 0, 0, 0.35], outlineWidth: 1, fillColor: [255,0,0,0.12] },
+            symbols: symbols.slice(from, to),
+            data: { tooltips: new Array(to - from).fill(""), bubbles: new Array(to - from).fill(""), bubbleUrl: "" }
+          };
+
+          await govmap.displayGeometries(data).catch(err => console.warn("displayGeometries batch failed:", err));
+          await new Promise(r => setTimeout(r, 20));
+        }
+
+        setPaintStatus(`✅ הסתיים. צוירו ${used.toLocaleString()} פוליגונים. דילגנו על ${skipped.toLocaleString()} (ללא התאמה/אוכלוסייה/גאומטריה).`);
+      } catch (err) {
+        console.error(err);
+        setPaintStatus("❌ שגיאה בצביעה: " + (err?.message || err));
+      }
+    }
+
+    // -------------------- Mode / Metric (✅ clears paint) --------------------
+    function clearPaintAndStatus() {
+      choroplethCancelToken++;
+      clearAllPainted();
+      setPaintStatus("");
+    }
+
     function setMode(mode) {
       currentMode = mode;
 
@@ -743,6 +1024,9 @@
 
       updateMetricButtonsUI();
 
+      // ✅ clear overlays when switching mode
+      clearPaintAndStatus();
+
       const layerToShow = (mode === "muni") ? MUNICIPAL_LAYER : POLICE_MERHAV_LAYER;
       const layerToHide = (mode === "muni") ? POLICE_MERHAV_LAYER : MUNICIPAL_LAYER;
 
@@ -750,8 +1034,6 @@
         try {
           if (typeof govmap.setVisibleLayers === "function") {
             govmap.setVisibleLayers([layerToShow], [layerToHide]);
-          } else if (typeof govmap.setVisibleLayers === "undefined") {
-            // ignore
           }
         } catch (err) {
           console.warn("⚠️ setVisibleLayers failed:", err);
@@ -790,6 +1072,9 @@
       const bRate = document.getElementById("btnMetricRate");
       if (bAbs) bAbs.classList.toggle("active", metric === "abs");
       if (bRate) bRate.classList.toggle("active", metric === "rate");
+
+      // ✅ clear overlays when switching metric
+      clearPaintAndStatus();
 
       if (currentTab === "single" && selectedCityKey) {
         const entry = muniIndex[selectedCityKey] || muniIndex[nameVariants(selectedCityKey)[0]];
@@ -945,7 +1230,7 @@
       container.innerHTML = html;
     }
 
-    // -------------------- Trends (✅ improved) --------------------
+    // -------------------- Trends --------------------
     function showTrends(cityName) {
       const container = document.getElementById("trends-content");
       if (!container) return;
@@ -955,7 +1240,6 @@
         return;
       }
 
-      // ✅ if cityName came from map as "עיריית X" etc - convert via current-year index to canonical entry.name
       const canonEntry = muniIndex[normalizeKey(cityName)] || muniIndex[nameVariants(cityName)[0]];
       if (canonEntry?.name) cityName = canonEntry.name;
 
@@ -965,7 +1249,6 @@
 
       const tryMatchInYear = (yearData) => {
         if (!yearData) return null;
-
         if (yearData[cityName]) return { matchedName: cityName, data: yearData[cityName] };
 
         const keys = Object.keys(yearData);
@@ -980,11 +1263,7 @@
         const yearData = window.crimeByYear?.[year];
         const match = tryMatchInYear(yearData);
         if (match?.data) {
-          yearlyData.push({
-            year,
-            total: Number(match.data.total || 0),
-            matchedName: match.matchedName
-          });
+          yearlyData.push({ year, total: Number(match.data.total || 0), matchedName: match.matchedName });
         }
       });
 
@@ -993,7 +1272,6 @@
         return;
       }
 
-      // build series
       let series = yearlyData.map(d => ({
         year: d.year,
         value: d.total,
@@ -1014,10 +1292,8 @@
 
       const maxVal = Math.max(...series.map(d => d.value), 1);
 
-      // header
       let html = `<h3 style="margin:0 0 16px 0;font-size:17px;color:#222;">${cityName}</h3>`;
 
-      // show name mapping info / missing years info
       const matchedDifferent = yearlyData.find(d => d.matchedName && d.matchedName !== cityName);
       const foundYears = new Set(yearlyData.map(d => d.year));
       const missingYears = years.filter(y => !foundYears.has(y));
@@ -1047,7 +1323,6 @@
         }
       }
 
-      // bars
       series.forEach(d => {
         const pct = (d.value / maxVal) * 100;
         html += `<div class="compare-bar">
@@ -1111,7 +1386,6 @@
             return;
           }
 
-          // ✅ IMPORTANT: pick entry, then canonicalize selection from entry.name
           const key = normalizeKey(nameFromMap);
           const entry = muniIndex[key] || muniIndex[nameVariants(nameFromMap)[0]];
 
@@ -1160,26 +1434,16 @@
     }
 
     // -------------------- ABOUT MODAL --------------------
-    function openAbout() {
-      const m = document.getElementById("aboutModal");
-      if (m) m.style.display = "block";
-    }
-    function closeAbout() {
-      const m = document.getElementById("aboutModal");
-      if (m) m.style.display = "none";
-    }
+    function openAbout() { const m = document.getElementById("aboutModal"); if (m) m.style.display = "block"; }
+    function closeAbout(){ const m = document.getElementById("aboutModal"); if (m) m.style.display = "none"; }
     function initAboutModal() {
       const btn = document.getElementById("aboutBtn");
       const overlay = document.getElementById("aboutOverlay");
       const closeBtn = document.getElementById("aboutCloseBtn");
-
       if (btn) btn.addEventListener("click", openAbout);
       if (overlay) overlay.addEventListener("click", closeAbout);
       if (closeBtn) closeBtn.addEventListener("click", closeAbout);
-
-      document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") closeAbout();
-      });
+      document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeAbout(); });
     }
 
     // -------------------- Rankings --------------------
@@ -1227,9 +1491,7 @@
         const yearData = window.crimeByYearMerhav?.[currentYear];
         if (!yearData) return { rows: [], note: "אין נתוני מרחבים לשנה הזו." };
 
-        if (rankingMetric === "rate") {
-          return { rows: [], note: "דירוג לפי אוכלוסייה לא זמין במצב מרחבים." };
-        }
+        if (rankingMetric === "rate") return { rows: [], note: "דירוג לפי אוכלוסייה לא זמין במצב מרחבים." };
 
         const rows = [];
         for (const name in yearData) {
@@ -1241,7 +1503,6 @@
             const br = d?.breakdown || {};
             value = Number(br?.[rankingCrimeType] || 0);
           }
-
           rows.push({ name, value, extra: null });
         }
 
@@ -1249,7 +1510,6 @@
         return { rows, note: null };
       }
 
-      // muni
       const yearData = window.crimeByYear?.[currentYear];
       if (!yearData) return { rows: [], note: "אין נתוני ישובים לשנה הזו." };
 
@@ -1258,10 +1518,7 @@
         const d = yearData[name];
         const total = Number(d?.total || 0);
 
-        if (rankingMetric === "total") {
-          rows.push({ name, value: total, extra: null });
-          continue;
-        }
+        if (rankingMetric === "total") { rows.push({ name, value: total, extra: null }); continue; }
 
         if (rankingMetric === "type") {
           const br = d?.breakdown || {};
@@ -1270,7 +1527,6 @@
           continue;
         }
 
-        // rate
         const pop = getPopulationForAuthority(name);
         const rate = calcRatePer10k(total, pop);
         if (rate == null) continue;
@@ -1297,11 +1553,9 @@
       const tSel = document.getElementById("rankCrimeTypeSelect");
       if (!mSel || !nSel || !tSel) return;
 
-      // sanitize metric by mode
       if (currentMode === "merhav" && rankingMetric === "rate") rankingMetric = "total";
       if (rankingMetric === "type" && !types.length) rankingMetric = "total";
 
-      // sanitize type selection
       if (rankingMetric === "type") {
         if (!rankingCrimeType || !types.includes(rankingCrimeType)) rankingCrimeType = types[0] || "";
       }
@@ -1332,15 +1586,8 @@
       const top = rows.slice(0, rankingTopN);
 
       const metricOptions = isMerhav
-        ? `
-          <option value="total">סה״כ פשעים</option>
-          <option value="type">סוג עבירה ספציפי</option>
-        `
-        : `
-          <option value="total">סה״כ פשעים</option>
-          <option value="type">סוג עבירה ספציפי</option>
-          <option value="rate">יחסית לאוכלוסייה (ל־10,000)</option>
-        `;
+        ? `<option value="total">סה״כ פשעים</option><option value="type">סוג עבירה ספציפי</option>`
+        : `<option value="total">סה״כ פשעים</option><option value="type">סוג עבירה ספציפי</option><option value="rate">יחסית לאוכלוסייה (ל־10,000)</option>`;
 
       const typeDisabled = (rankingMetric !== "type" || !types.length) ? "disabled" : "";
 
@@ -1350,10 +1597,7 @@
         </div>
 
         <div class="rank-controls">
-          <select id="rankMetricSelect">
-            ${metricOptions}
-          </select>
-
+          <select id="rankMetricSelect">${metricOptions}</select>
           <select id="rankTopNSelect">
             <option value="5">Top 5</option>
             <option value="10">Top 10</option>
@@ -1361,8 +1605,7 @@
           </select>
 
           <select id="rankCrimeTypeSelect" class="full" ${typeDisabled}>
-            ${types.length
-              ? types.map(t => `<option value="${escapeHtml(t)}">${escapeHtml(t)}</option>`).join("")
+            ${types.length ? types.map(t => `<option value="${escapeHtml(t)}">${escapeHtml(t)}</option>`).join("")
               : `<option value="">אין רשימת סוגים</option>`}
           </select>
         </div>
@@ -1437,6 +1680,10 @@
       yearlyStats[currentYear] = calculateStats(currentYear);
       updateQuickStats();
 
+      // init legend
+      computeYearRateRange(currentYear);
+      updateLegendUI();
+
       sel.addEventListener("change", e => {
         currentYear = e.target.value;
 
@@ -1445,8 +1692,14 @@
         yearlyStats[currentYear] = calculateStats(currentYear);
         updateQuickStats();
 
+        computeYearRateRange(currentYear);
+        updateLegendUI();
+
         selectedCity = null;
         selectedCityKey = null;
+
+        // ✅ clear choropleth when changing year
+        clearPaintAndStatus();
 
         if (currentTab === "compare") updateCompareView();
         else if (currentTab === "trends") {
@@ -1474,13 +1727,16 @@
           mapInitialized = true;
           setMode(currentMode);
 
-          try {
-            govmap.onEvent(govmap.events.CLICK).progress(onMapClick);
-          } catch (e) {
-            console.warn("⚠️ govmap click hook failed:", e);
-          }
+          try { govmap.onEvent(govmap.events.CLICK).progress(onMapClick); }
+          catch (e) { console.warn("⚠️ govmap click hook failed:", e); }
 
           initAboutModal();
+
+          // wire paint buttons
+          const paintBtn = document.getElementById("btnPaintAll");
+          const clearBtn = document.getElementById("btnClearPaint");
+          if (paintBtn) paintBtn.onclick = () => paintAllMunicipalitiesByRate();
+          if (clearBtn) clearBtn.onclick = () => clearPaintAndStatus();
 
           const l = document.getElementById("loading");
           if (l) l.style.display = "none";
@@ -1564,7 +1820,27 @@
         <select id="yearSelect"></select>
       </div>
 
-      <div id="quick-stats">
+      <!-- ✅ Choropleth buttons -->
+      <div style="display:flex; gap:8px; margin-top:10px;">
+        <button id="btnPaintAll" class="mode-btn" style="flex:1;">🎨 צביעה לכל הארץ (ל־10,000)</button>
+        <button id="btnClearPaint" class="mode-btn" style="flex:1;">🧹 נקה צביעה</button>
+      </div>
+      <div id="paintStatus"></div>
+
+      <!-- ✅ Legend -->
+      <div id="choropleth-legend">
+        <div class="legend-title">
+          <span>מקרא צבעים (ל־10,000)</span>
+          <span style="font-size:11px; opacity:.9;">שנה: <strong id="legendYear"></strong></span>
+        </div>
+        <div class="legend-bar"></div>
+        <div class="legend-range">
+          <span id="legendMin">0</span>
+          <span id="legendMax">0</span>
+        </div>
+      </div>
+
+      <div id="quick-stats" style="margin-top:12px;">
         <div class="stat-card">
           <div class="stat-value" id="stat-municipalities">-</div>
           <div class="stat-label">רשויות</div>
@@ -1693,5 +1969,17 @@
       </div>
     </div>
   </div>
+
+  <script>
+    // keep legend year in sync
+    const legendYearEl = document.getElementById("legendYear");
+    if (legendYearEl) legendYearEl.textContent = currentYear;
+    const _oldCompute = computeYearRateRange;
+    computeYearRateRange = function(y){
+      _oldCompute(y);
+      const el = document.getElementById("legendYear");
+      if (el) el.textContent = currentYear;
+    };
+  </script>
 </body>
 </html>
