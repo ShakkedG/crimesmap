@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>מפת פשיעה – גרסה מלאה (אופטימלית)</title>
+  <title>מפת פשיעה – גרסה מלאה (מתוקנת)</title>
 
   <script src="crimeByYear_2020_2025.js"></script>
   <script src="crimeByYearMerhav.js"></script>
@@ -147,14 +147,13 @@
     let compareList = [];
 
     // --- Optimized Data Stores ---
-    // Instead of iterating window.crimeByYear every time, we index everything on load.
     const DataStore = {
         muni: new Map(),   // Key (norm) -> { name, history: { 2020: data, 2021: data... } }
         merhav: new Map(), // Key (norm) -> { name, history: { ... } }
         pop: new Map()     // Key (norm) -> number
     };
     
-    // Cache for normalization (Huge performance boost for maps)
+    // Cache for normalization
     const NormCache = new Map();
 
     // Rankings State
@@ -187,24 +186,20 @@
         return s;
     }
 
-    // Helper to handle "Iriyat X", "Moatza Y"
     function getNormVariants(name) {
         if (!name) return [];
         const raw = String(name).trim();
         const normRaw = normalizeKey(raw);
         
-        // Quick check if we have common prefixes
         const prefixes = ["עיריית", "עיריה", "מועצה מקומית", "מועצה אזורית"];
         let base = raw;
         for(let p of prefixes) {
              if (base.startsWith(p)) {
                  base = base.replace(p, "").trim();
-                 break; // usually only one prefix
+                 break;
              }
         }
         const normBase = normalizeKey(base);
-        
-        // Return unique normalized keys
         return normRaw === normBase ? [normRaw] : [normRaw, normBase];
     }
 
@@ -212,7 +207,6 @@
     function initDataIndex() {
         console.time("Indexing");
 
-        // 1. Population
         if (window.PopulationDB) {
             for (const [name, pop] of Object.entries(window.PopulationDB)) {
                 if (!Number.isFinite(Number(pop))) continue;
@@ -221,7 +215,6 @@
             }
         }
 
-        // 2. Municipalities (All Years)
         if (window.crimeByYear) {
             for (const [year, cities] of Object.entries(window.crimeByYear)) {
                 for (const [name, data] of Object.entries(cities)) {
@@ -236,7 +229,6 @@
             }
         }
 
-        // 3. Merhav (All Years)
         if (window.crimeByYearMerhav) {
             for (const [year, districts] of Object.entries(window.crimeByYearMerhav)) {
                 for (const [name, data] of Object.entries(districts)) {
@@ -253,14 +245,12 @@
     }
 
     // -------------------- 3. Data Retrieval Helpers --------------------
-    
     function getEntry(name, mode = currentMode) {
         const key = normalizeKey(name);
         const store = mode === 'muni' ? DataStore.muni : DataStore.merhav;
         
         if (store.has(key)) return store.get(key);
         
-        // Try variants if not found directly
         if (mode === 'muni') {
             const variants = getNormVariants(name);
             for(let v of variants) {
@@ -273,7 +263,6 @@
     function getPop(name) {
         const key = normalizeKey(name);
         if (DataStore.pop.has(key)) return DataStore.pop.get(key);
-        // Try variants
         const variants = getNormVariants(name);
         for(let v of variants) {
             if (DataStore.pop.has(v)) return DataStore.pop.get(v);
@@ -287,10 +276,9 @@
     }
 
     // -------------------- 4. Logic & Stats --------------------
-
     function updateQuickStats() {
         const stats = { municipalities: 0, total: 0, avg: 0 };
-        const dataSrc = window.crimeByYear?.[currentYear]; // Use raw for simple iteration count
+        const dataSrc = window.crimeByYear?.[currentYear];
         
         if (dataSrc) {
             let total = 0, count = 0;
@@ -319,7 +307,6 @@
         if (!yearData) return;
 
         let min = Infinity, max = -Infinity;
-        // Optimization: Iterate raw object once, using index for pop
         for (const [name, data] of Object.entries(yearData)) {
             const pop = getPop(name);
             const rate = calcRate(data.total, pop);
@@ -347,7 +334,6 @@
     }
 
     // -------------------- 5. UI Renderers --------------------
-
     function showInfo(title, body, type="info") {
         const t = document.getElementById("info-title");
         const b = document.getElementById("info-body");
@@ -366,7 +352,6 @@
         const pop = (currentMode === 'muni') ? getPop(entry.name) : null;
         let html = "";
         
-        // Header / Summary
         if (currentMetric === 'rate' && currentMode === 'muni') {
             const rate = calcRate(d.total, pop);
             if (rate === null) {
@@ -383,7 +368,6 @@
             }
         }
 
-        // Breakdown Grid
         if (d.breakdown) {
             const sorted = Object.entries(d.breakdown).sort((a,b) => b[1] - a[1]);
             html += `<div class="crime-grid">`;
@@ -412,17 +396,14 @@
             return;
         }
 
-        // Extract types for dropdown
         const allTypes = new Set();
         Object.values(sourceData).forEach(d => {
             if (d.breakdown) Object.keys(d.breakdown).forEach(t => allTypes.add(t));
         });
         const typesArr = Array.from(allTypes).sort();
 
-        // Ensure valid state
         if (rankingMetric === 'type' && !typesArr.includes(rankingCrimeType)) rankingCrimeType = typesArr[0] || "";
 
-        // Build Rows
         let rows = [];
         for (const [name, d] of Object.entries(sourceData)) {
             let val = 0;
@@ -437,7 +418,7 @@
                     val = rate;
                     extra = { pop, total: d.total };
                 } else {
-                    continue; // Skip if no population
+                    continue;
                 }
             }
             rows.push({ name, value: val, extra });
@@ -446,7 +427,6 @@
         rows.sort((a,b) => b.value - a.value);
         const top = rows.slice(0, rankingTopN);
 
-        // Render Controls
         const metricOpts = isMerhav 
             ? `<option value="total">סה״כ</option><option value="type">סוג עבירה</option>`
             : `<option value="total">סה״כ</option><option value="type">סוג עבירה</option><option value="rate">ל-10,000</option>`;
@@ -465,7 +445,6 @@
             </div>
         `;
 
-        // Render List
         html += `<div class="rank-list">`;
         top.forEach((r, idx) => {
             let sub = "";
@@ -490,7 +469,6 @@
         html += `</div>`;
         container.innerHTML = html;
 
-        // Wire Events
         document.getElementById("rankMetricSelect").value = rankingMetric;
         document.getElementById("rankTopNSelect").value = rankingTopN;
         document.getElementById("rankCrimeTypeSelect").value = rankingCrimeType;
@@ -592,8 +570,6 @@
              return;
         }
 
-        // Generate Comparison Cards & Bars
-        // (Simplified logic for brevity, preserves original look)
         html += `<div class="compare-grid">`;
         const dataRows = relevant.map(item => {
              const entry = getEntry(item.name, item.mode);
@@ -604,7 +580,6 @@
              return { name: item.name, total, pop, rate };
         });
 
-        // Determine max for bars
         const isRate = (currentMode === 'muni' && currentMetric === 'rate');
         const vals = dataRows.map(r => isRate ? (r.rate||0) : r.total);
         const max = Math.max(...vals, 1);
@@ -625,7 +600,6 @@
         });
         html += `</div>`;
         
-        // Bars
         html += `<div class="compare-bars-title">השוואה גרפית</div>`;
         dataRows.sort((a,b) => (isRate ? (b.rate||0)-(a.rate||0) : b.total - a.total));
         dataRows.forEach(r => {
@@ -655,11 +629,9 @@
             const item = resp?.data?.[0] || resp?.Data?.[0];
             if (!item) return;
 
-            // Normalize attributes from map
             const attrs = {};
             (item.Fields || item.Attributes || []).forEach(f => attrs[f.FieldName] = f.Value);
             
-            // Try to find name field
             const nameCandidates = ["שם_ישוב", "שם ישוב", "שם רשות", "NAME", "Shem_Yishuv", "שם מרחב", "SHEM_MERHAV"];
             let rawName = null;
             for(let c of nameCandidates) {
@@ -667,7 +639,6 @@
             }
 
             if (!rawName) {
-                 // Fallback: Check keys directly
                  for(let k in attrs) {
                      if (k.includes("שם") || k.includes("NAME")) { rawName = attrs[k]; break; }
                  }
@@ -682,7 +653,7 @@
                     if (currentTab === 'compare') updateCompareView();
                     else if (currentTab === 'trends') showTrends(selectedCity);
                     else if (currentTab === 'rankings') renderRankings();
-                    else showEntry(entry); // 'single' tab
+                    else showEntry(entry); 
                 } else {
                     showInfo("לא נמצא", `אין נתונים עבור ${rawName}`, "warn");
                 }
@@ -690,7 +661,6 @@
         } catch(err) { console.error(err); }
     }
 
-    // --- Choropleth (Painting) ---
     async function fetchLayerEntities() {
         if (layer125EntitiesCache) return layer125EntitiesCache;
         const res = await govmap.getLayerEntities({ layerName: MUNICIPAL_LAYER });
@@ -717,16 +687,12 @@
         
         setPaintStatus(`מחשב צבעים עבור ${entities.length} ישובים...`);
         
-        // Prepare Batches
         const wkts = [], names = [], symbols = [];
         
-        // Use DataStore for O(1) lookups during iteration
         for (const ent of entities) {
-            // Extract WKT
             const wkt = ent.wkt || ent.WKT || ent.geometryWKT || (ent.geometry || {}).wkt;
             if (!wkt || !wkt.includes("POLYGON")) continue;
 
-            // Extract Name
             let entName = "";
             const attrs = {};
             (ent.Fields || []).forEach(f => attrs[f.FieldName] = f.Value);
@@ -735,7 +701,6 @@
             
             if (!entName) continue;
 
-            // Lookup Data
             const entry = getEntry(entName, 'muni');
             if (!entry) continue;
             
@@ -745,9 +710,8 @@
             
             if (rate === null) continue;
 
-            // Calculate Color
             const t = (rate - yearRateMin) / (yearRateMax - yearRateMin || 1);
-            const alpha = 0.15 + (Math.max(0, Math.min(1, t)) * 0.6); // Alpha 0.15 - 0.75
+            const alpha = 0.15 + (Math.max(0, Math.min(1, t)) * 0.6); 
             
             wkts.push(wkt);
             names.push(`__paint_${currentYear}_${wkts.length}`);
@@ -760,7 +724,6 @@
             choroplethAllNames.push(names[names.length-1]);
         }
         
-        // Send to Govmap in batches
         const batchSize = 250;
         const batches = Math.ceil(wkts.length / batchSize);
         
@@ -782,14 +745,27 @@
             };
             
             await govmap.displayGeometries(data);
-            await new Promise(r => setTimeout(r, 10)); // Yield UI
+            await new Promise(r => setTimeout(r, 10)); 
         }
         setPaintStatus(`הושלם (${wkts.length} ישובים)`);
     }
 
     function clearPaint() {
         choroplethCancelToken++;
-        govmap.clearGeometries(); // Clears everything drawn
+        
+        // FIXED: Using clearGeometriesByName instead of clearGeometries (which doesn't exist)
+        if (choroplethAllNames.length > 0) {
+            const chunk = 500;
+            for (let i = 0; i < choroplethAllNames.length; i += chunk) {
+                const part = choroplethAllNames.slice(i, i + chunk);
+                try {
+                    if (govmap.clearGeometriesByName) {
+                         govmap.clearGeometriesByName(part);
+                    }
+                } catch (e) { console.warn("failed to clear chunk", e); }
+            }
+        }
+        
         setPaintStatus("");
         choroplethAllNames = [];
     }
@@ -801,7 +777,6 @@
         document.getElementById("btnModeMuni").classList.toggle("active", mode === 'muni');
         document.getElementById("btnModeMerhav").classList.toggle("active", mode === 'merhav');
         
-        // Map Layers
         if (mapInitialized) {
             const show = mode === 'muni' ? [MUNICIPAL_LAYER] : [POLICE_MERHAV_LAYER];
             const hide = mode === 'muni' ? [POLICE_MERHAV_LAYER] : [MUNICIPAL_LAYER];
@@ -811,7 +786,6 @@
         updateMetricButtonsUI();
         clearPaint();
         
-        // Refresh Tab
         if (currentTab === 'rankings') renderRankings();
         else if (currentTab === 'compare') updateCompareView();
         else if (currentTab === 'trends') showTrends(selectedCity);
@@ -863,50 +837,74 @@
         }
     }
 
-    // Init Sequence
     function initGovMap() {
-        initDataIndex(); // Heavy lifting happens here once
-        updateQuickStats();
-        computeYearRateRange();
-        updateLegendUI();
-
-        // Populate Year Select
-        const years = Object.keys(window.crimeByYear || {}).sort();
-        const sel = document.getElementById("yearSelect");
-        sel.innerHTML = years.map(y => `<option value="${y}">${y}</option>`).join('');
-        sel.value = currentYear;
-        
-        sel.onchange = (e) => {
-            currentYear = e.target.value;
+        console.log("🚀 Starting Init...");
+        try {
+            initDataIndex(); 
             updateQuickStats();
             computeYearRateRange();
-            clearPaint();
-            // Refresh views
-            if(currentTab === 'rankings') renderRankings();
-            else if(currentTab === 'compare') updateCompareView();
-            else if(currentTab === 'trends') showTrends(selectedCity);
-            else if(selectedCity) showEntry(getEntry(selectedCity));
-        };
+            updateLegendUI();
 
-        // Wire Paint Buttons
+            const years = Object.keys(window.crimeByYear || {}).sort();
+            const sel = document.getElementById("yearSelect");
+            if(sel) {
+                sel.innerHTML = years.map(y => `<option value="${y}">${y}</option>`).join('');
+                sel.value = currentYear;
+                sel.onchange = (e) => {
+                    currentYear = e.target.value;
+                    updateQuickStats();
+                    computeYearRateRange();
+                    clearPaint();
+                    if(currentTab === 'rankings') renderRankings();
+                    else if(currentTab === 'compare') updateCompareView();
+                    else if(currentTab === 'trends') showTrends(selectedCity);
+                    else if(selectedCity) showEntry(getEntry(selectedCity));
+                };
+            }
+        } catch (e) {
+            console.error("Data processing error:", e);
+            alert("Data Error: " + e.message);
+        }
+
         document.getElementById("btnPaintAll").onclick = paintAllMunicipalitiesByRate;
         document.getElementById("btnClearPaint").onclick = clearPaint;
 
-        govmap.createMap("map", {
-            token: TOKEN,
-            layers: [MUNICIPAL_LAYER, POLICE_MERHAV_LAYER],
-            layersMode: 4,
-            visibleLayers: [MUNICIPAL_LAYER],
-            zoomButtons: true,
-            identifyOnClick: false,
-            onLoad: () => {
-                mapInitialized = true;
-                setMode('muni');
-                govmap.onEvent(govmap.events.CLICK).progress(onMapClick);
-                document.getElementById("loading").style.display = "none";
-                console.log("Map Ready");
+        // Safety timeout
+        const safetyTimer = setTimeout(() => {
+            const loader = document.getElementById("loading");
+            if (loader && loader.style.display !== "none") {
+                console.warn("⚠️ Map timeout, forcing hide loader");
+                loader.style.display = "none";
             }
-        });
+        }, 5000);
+
+        try {
+            govmap.createMap("map", {
+                token: TOKEN,
+                layers: [MUNICIPAL_LAYER, POLICE_MERHAV_LAYER],
+                layersMode: 4,
+                visibleLayers: [MUNICIPAL_LAYER],
+                zoomButtons: true,
+                identifyOnClick: false,
+                center: { x: 180000, y: 650000 },
+                zoomLevel: 2, 
+                onLoad: () => {
+                    clearTimeout(safetyTimer);
+                    mapInitialized = true;
+                    setMode('muni');
+                    govmap.onEvent(govmap.events.CLICK).progress(onMapClick);
+                    
+                    const loader = document.getElementById("loading");
+                    if(loader) loader.style.display = "none";
+                    console.log("✅ Map loaded!");
+                }
+            });
+        } catch (e) {
+            clearTimeout(safetyTimer);
+            console.error("Map creation error:", e);
+            alert("Map Error: " + e.message);
+            document.getElementById("loading").style.display = "none";
+        }
     }
 
     // Modal Logic
@@ -918,7 +916,7 @@
          document.getElementById("aboutOverlay").onclick = closeAbout;
     });
 
-    // Make accessible globally for HTML event handlers
+    // Expose globals
     window.switchTab = switchTab;
     window.setMode = setMode;
     window.setMetric = setMetric;
@@ -1021,7 +1019,12 @@
         <button id="aboutCloseBtn" style="border:none; background: rgba(255,255,255,.18); color:#fff; width:38px; height:38px; border-radius:10px; cursor:pointer; font-size:20px; font-weight:900;">×</button>
       </div>
       <div style="padding:16px 18px; overflow:auto;">
-          <div style="font-size:13px; color:#333;">(תוכן האודות המקורי שלך נשמר כאן...)</div>
+          <div style="font-size:13px; color:#333;">
+            <strong>הערות חשובות:</strong><br>
+            • נתוני אוכלוסייה (2019) משמשים לחישובים יחסיים (ל-10,000 תושבים).<br>
+            • הנתונים הגולמיים נלקחו ממאגרי מידע משטרתיים.<br>
+            • הצבעים במפה (Choropleth) מחושבים בזמן אמת לפי הכמות היחסית בכל שנה.
+          </div>
       </div>
     </div>
   </div>
