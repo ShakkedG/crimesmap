@@ -720,12 +720,12 @@
       } else if (tabName === "trends") {
         if (currentMode !== "muni") {
           const tc = document.getElementById("trends-content");
-          if (tc) tc.innerHTML = `<div class="message message-error">טרנדים זמינים רק במצב ישובים/רשויות.</div>`;
+          if (tc) tc.innerHTML = `<div class="message message-error">נתונים היסטוריים זמינים רק במצב ישובים/רשויות.</div>`;
         } else if (selectedCity) {
           showTrends(selectedCity);
         } else {
           const tc = document.getElementById("trends-content");
-          if (tc) tc.innerHTML = `<div class="message message-info">בחר רשות במפה כדי לראות טרנדים לאורך זמן</div>`;
+          if (tc) tc.innerHTML = `<div class="message message-info">בחר רשות במפה כדי לראות נתונים היסטוריים </div>`;
         }
       } else if (tabName === "rankings") {
         renderRankings();
@@ -951,7 +951,7 @@
       if (!container) return;
 
       if (!cityName) {
-        container.innerHTML = `<div class="message message-info">בחר רשות במפה כדי לראות טרנדים</div>`;
+        container.innerHTML = `<div class="message message-info">בחר רשות במפה כדי לראות נתונים היסטוריים</div>`;
         return;
       }
 
@@ -1451,7 +1451,7 @@
         if (currentTab === "compare") updateCompareView();
         else if (currentTab === "trends") {
           const tc = document.getElementById("trends-content");
-          if (tc) tc.innerHTML = `<div class="message message-info">בחר רשות במפה כדי לראות טרנדים לאורך זמן</div>`;
+          if (tc) tc.innerHTML = `<div class="message message-info">בחר רשות במפה כדי לראות נתונים היסטוריים </div>`;
         } else if (currentTab === "rankings") renderRankings();
         else {
           showInfo(
@@ -1465,8 +1465,8 @@
       govmap.createMap("map", {
         token: TOKEN,
         layers: [MUNICIPAL_LAYER, POLICE_MERHAV_LAYER],
-        layersMode: 1,
-        background: 2,
+        layersMode: 4,
+        background: 3,
         zoomButtons: true,
         identifyOnClick: false,
         visibleLayers: [MUNICIPAL_LAYER],
@@ -1544,7 +1544,7 @@
     <div id="tabs">
       <div class="tab active" data-tab="single" onclick="switchTab('single')">תצוגה</div>
       <div class="tab" data-tab="compare" onclick="switchTab('compare')">השוואה</div>
-      <div class="tab" data-tab="trends" onclick="switchTab('trends')">טרנדים</div>
+      <div class="tab" data-tab="trends" onclick="switchTab('trends')">נתונים היסטוריים</div>
       <div class="tab" data-tab="rankings" onclick="switchTab('rankings')">דירוגים</div>
     </div>
 
@@ -1594,7 +1594,7 @@
 
       <div class="tab-content" id="tab-trends">
         <div id="trends-content">
-          <div class="message message-info">בחר רשות במפה כדי לראות טרנדים לאורך זמן</div>
+          <div class="message message-info">בחר רשות במפה כדי לראות נתונים היסטוריים </div>
         </div>
       </div>
 
