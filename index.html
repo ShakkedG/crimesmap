@@ -816,8 +816,10 @@
     function updateLegendUI() {
       const minEl = document.getElementById("legendMin");
       const maxEl = document.getElementById("legendMax");
+      const yearEl = document.getElementById("legendYear");
       if (minEl) minEl.textContent = yearRateMin.toLocaleString();
       if (maxEl) maxEl.textContent = yearRateMax.toLocaleString();
+      if (yearEl) yearEl.textContent = String(currentYear);
     }
 
     // מחלץ WKT מתוך entity שמוחזר מ-getLayerEntities
@@ -1969,17 +1971,5 @@
       </div>
     </div>
   </div>
-
-  <script>
-    // keep legend year in sync
-    const legendYearEl = document.getElementById("legendYear");
-    if (legendYearEl) legendYearEl.textContent = currentYear;
-    const _oldCompute = computeYearRateRange;
-    computeYearRateRange = function(y){
-      _oldCompute(y);
-      const el = document.getElementById("legendYear");
-      if (el) el.textContent = currentYear;
-    };
-  </script>
 </body>
 </html>
