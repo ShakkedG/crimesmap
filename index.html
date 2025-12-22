@@ -874,20 +874,30 @@
       choroplethAllNames = [];
     }
 
-    async function fetchLayer125Entities() {
-      if (layer125EntitiesCache) return layer125EntitiesCache;
+   async function fetchLayer125Entities() {
+  if (!mapInitialized) {
+    throw new Error("Map not initialized yet");
+  }
 
-      const entitiesResp = await govmap.getLayerEntities({ layerName: MUNICIPAL_LAYER });
-      const list = entitiesResp?.data || entitiesResp?.Data || entitiesResp || [];
+  if (!MUNICIPAL_LAYER) {
+    throw new Error("MUNICIPAL_LAYER is missing");
+  }
 
-      if (!Array.isArray(list) || !list.length) {
-        console.warn("getLayerEntities returned:", entitiesResp);
-        throw new Error("לא הצלחתי למשוך רשימת ישובים מהשכבה (125).");
-      }
+  if (layer125EntitiesCache) return layer125EntitiesCache;
 
-      layer125EntitiesCache = list;
-      return list;
-    }
+  const entitiesResp = await govmap.getLayerEntities({
+    layerName: String(MUNICIPAL_LAYER)
+  });
+
+  const list = entitiesResp?.data || entitiesResp?.Data || entitiesResp || [];
+  if (!Array.isArray(list) || !list.length) {
+    throw new Error("Empty entities list from layer 125");
+  }
+
+  layer125EntitiesCache = list;
+  return list;
+}
+
 
     function buildAllChoroplethGeoms(entities) {
       const yearData = window.crimeByYear?.[currentYear];
