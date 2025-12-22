@@ -434,12 +434,53 @@
     #aboutModal { display:none; position:fixed; inset:0; z-index:20000; }
     #aboutOverlay { position:absolute; inset:0; background: rgba(0,0,0,.45); }
 
+    /* Rankings */
+    .rank-controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .rank-controls select {
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      font-size: 13px;
+      background: #fff;
+    }
+    .rank-controls .full { grid-column: 1 / -1; }
+    .rank-list { display: grid; gap: 10px; }
+    .rank-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px;
+      border: 1px solid #e6e6e6;
+      background: #fafafa;
+      border-radius: 10px;
+    }
+    .rank-left { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .rank-num {
+      width: 32px; height: 32px; border-radius: 10px;
+      display: inline-flex; align-items: center; justify-content: center;
+      background: #e7f3ff; color: #0066cc; font-weight: 900;
+    }
+    .rank-name {
+      font-weight: 900; color: #222;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      max-width: 250px;
+    }
+    .rank-right { font-weight: 900; color: #0066cc; white-space: nowrap; }
+    .rank-sub { font-size: 12px; color: #666; margin-top: 6px; }
+
     @media (max-width: 768px) {
       #info-panel { width: calc(100% - 30px); left: 15px; right: 15px; max-height: calc(100vh - 100px); }
       #quick-stats { grid-template-columns: repeat(2, 1fr); }
       .crime-grid { grid-template-columns: 1fr; }
       #panel-header h1 { font-size: 16px; }
       .compare-kpis { grid-template-columns: 1fr; }
+      .rank-controls { grid-template-columns: 1fr; }
     }
   </style>
 
@@ -462,6 +503,11 @@
     const muniIndex = {};
     const merhavIndex = {};
     const populationIndex = {};
+
+    // -------------------- Rankings State --------------------
+    let rankingMetric = "total";   // total | type | rate
+    let rankingCrimeType = "";     // when metric=type
+    let rankingTopN = 10;
 
     // ---- Normalize ----
     function normalizeKeyBase(name) {
@@ -639,12 +685,12 @@
             html += `<div class="message message-warn">אין נתון אוכלוסייה עבור <strong>${entry.name}</strong>, לכן תצוגת <strong>ל-10,000</strong> לא זמינה ליישוב הזה. (אפשר לראות כמות רגילה והפירוט למטה)</div>`;
           } else {
             html += `<div class="total-summary">${rate.toLocaleString()} ל-10,000</div>`;
-            html += `<div class="sub-summary">אוכלוסייה: ${Number(pop).toLocaleString()} • סה"כ אירועים: ${Number(total).toLocaleString()}</div>`;
+            html += `<div class="sub-summary">אוכלוסייה (2019): ${Number(pop).toLocaleString()} • סה"כ אירועים: ${Number(total).toLocaleString()}</div>`;
           }
         } else {
           html += `<div class="total-summary">${Number(total).toLocaleString()} אירועים</div>`;
           if (currentMode === "muni") {
-            html += `<div class="sub-summary">אוכלוסייה: ${pop ? Number(pop).toLocaleString() : "לא נמצא"}</div>`;
+            html += `<div class="sub-summary">אוכלוסייה (2019): ${pop ? Number(pop).toLocaleString() : "לא נמצא"}</div>`;
           }
         }
       }
@@ -694,6 +740,8 @@
           document.getElementById("trends-content").innerHTML =
             `<div class="message message-info">בחר רשות במפה כדי לראות טרנדים לאורך זמן</div>`;
         }
+      } else if (tabName === "rankings") {
+        renderRankings();
       }
     }
 
@@ -723,6 +771,7 @@
       }
 
       if (currentTab === "compare") updateCompareView();
+      else if (currentTab === "rankings") renderRankings();
       else {
         showInfo(
           "מפה לפי " + (mode === "muni" ? "ישובים/רשויות" : "מרחבים"),
@@ -749,6 +798,7 @@
       }
       if (currentTab === "compare") updateCompareView();
       if (currentTab === "trends" && currentMode === "muni" && selectedCity) showTrends(selectedCity);
+      if (currentTab === "rankings") renderRankings();
     }
 
     function addToCompare() {
@@ -814,10 +864,10 @@
         if (missing > 0) {
           html += `<div class="message message-warn">יש <strong>${missing}</strong> רשויות בלי אוכלוסייה: הן יוצגו כ-"לא נמצא" ולא כ-0.</div>`;
         } else {
-          html += `<div class="message message-info">השוואה לפי <strong>ל-10,000 תושבים</strong>.</div>`;
+          html += `<div class="message message-info">השוואה לפי <strong>ל-10,000 תושבים</strong> (אוכלוסייה 2019).</div>`;
         }
       } else {
-        html += `<div class="message message-info">טיפ: מעבר ל־<strong>ל-10,000</strong> משווה יחסית לגודל אוכלוסייה.</div>`;
+        html += `<div class="message message-info">טיפ: מעבר ל־<strong>ל-10,000</strong> משווה יחסית לגודל אוכלוסייה (2019).</div>`;
       }
 
       html += `<div class="compare-grid">`;
@@ -946,7 +996,7 @@
         if (!pop) {
           html += `<div class="message message-warn" style="margin-bottom:16px;">אין אוכלוסייה ליישוב הזה — תצוגת ל-10,000 מסומנת כ-"אין אוכלוסייה".</div>`;
         } else {
-          html += `<div class="message message-info" style="margin-bottom:16px;">תצוגה ל-10,000 תושבים • אוכלוסייה: ${Number(pop).toLocaleString()}</div>`;
+          html += `<div class="message message-info" style="margin-bottom:16px;">תצוגה ל-10,000 תושבים • אוכלוסייה (2019): ${Number(pop).toLocaleString()}</div>`;
         }
       }
 
@@ -1025,6 +1075,7 @@
           if (currentTab === "compare") { updateCompareView(); return; }
           if (currentTab === "single") showEntry(entry);
           else if (currentTab === "trends") showTrends(name);
+          else if (currentTab === "rankings") renderRankings();
           return;
         }
 
@@ -1055,12 +1106,8 @@
     }
 
     // ---- ABOUT MODAL ----
-    function openAbout() {
-      document.getElementById("aboutModal").style.display = "block";
-    }
-    function closeAbout() {
-      document.getElementById("aboutModal").style.display = "none";
-    }
+    function openAbout() { document.getElementById("aboutModal").style.display = "block"; }
+    function closeAbout() { document.getElementById("aboutModal").style.display = "none"; }
     function initAboutModal() {
       const btn = document.getElementById("aboutBtn");
       const overlay = document.getElementById("aboutOverlay");
@@ -1070,9 +1117,222 @@
       if (overlay) overlay.addEventListener("click", closeAbout);
       if (closeBtn) closeBtn.addEventListener("click", closeAbout);
 
-      document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") closeAbout();
+      document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeAbout(); });
+    }
+
+    // -------------------- Rankings / Top lists --------------------
+    function escapeHtml(s) {
+      return String(s ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function getAllCrimeTypesForYear(year) {
+      const yearData = window.crimeByYear?.[year];
+      if (!yearData) return [];
+      const set = new Set();
+
+      for (const cityName in yearData) {
+        const d = yearData[cityName];
+        const br = d?.breakdown;
+        if (!br) continue;
+        for (const t of Object.keys(br)) set.add(t);
+      }
+      return Array.from(set).sort((a,b)=>a.localeCompare(b, "he"));
+    }
+
+    function ensureRankingsDefaults() {
+      const types = getAllCrimeTypesForYear(currentYear);
+      if (!rankingCrimeType && types.length) rankingCrimeType = types[0];
+    }
+
+    function formatValueByMetric(row) {
+      if (rankingMetric === "rate") return `${row.value.toLocaleString()} /10k`;
+      return row.value.toLocaleString();
+    }
+
+    function buildRankingsRows() {
+      // merhav mode (no rate)
+      if (currentMode === "merhav") {
+        const yearData = window.crimeByYearMerhav?.[currentYear];
+        if (!yearData) return { rows: [], note: "אין נתוני מרחבים לשנה הזו." };
+
+        if (rankingMetric === "rate") {
+          return { rows: [], note: "דירוג לפי אוכלוסייה לא זמין במצב מרחבים." };
+        }
+
+        const rows = [];
+        for (const name in yearData) {
+          const d = yearData[name];
+          let value = 0;
+
+          if (rankingMetric === "total") value = Number(d?.total || 0);
+          else if (rankingMetric === "type") {
+            const br = d?.breakdown || {};
+            value = Number(br?.[rankingCrimeType] || 0);
+          }
+
+          rows.push({ name, value, extra: null });
+        }
+
+        rows.sort((a,b)=>b.value - a.value);
+        return { rows, note: null };
+      }
+
+      // muni mode
+      const yearData = window.crimeByYear?.[currentYear];
+      if (!yearData) return { rows: [], note: "אין נתוני ישובים לשנה הזו." };
+
+      const rows = [];
+
+      for (const name in yearData) {
+        const d = yearData[name];
+        const total = Number(d?.total || 0);
+
+        if (rankingMetric === "total") {
+          rows.push({ name, value: total, extra: null });
+          continue;
+        }
+
+        if (rankingMetric === "type") {
+          const br = d?.breakdown || {};
+          const v = Number(br?.[rankingCrimeType] || 0);
+          rows.push({ name, value: v, extra: null });
+          continue;
+        }
+
+        // rate
+        const pop = getPopulationForAuthority(name);
+        const rate = calcRatePer10k(total, pop);
+        if (rate == null) continue;
+        rows.push({ name, value: rate, extra: { pop, total } });
+      }
+
+      rows.sort((a,b)=>b.value - a.value);
+
+      let note = null;
+      if (rankingMetric === "rate") {
+        const totalCities = Object.keys(yearData).length;
+        const usedCities = rows.length;
+        note = (usedCities < totalCities)
+          ? `דירוג ל-10,000 משתמש רק ביישובים שיש להם אוכלוסייה (2019). חסרים: ${totalCities - usedCities}.`
+          : "דירוג ל-10,000 משתמש באוכלוסייה (2019) כבסיס אחיד לכל השנים.";
+      }
+
+      return { rows, note };
+    }
+
+    function wireRankingsControls(types) {
+      const mSel = document.getElementById("rankMetricSelect");
+      const nSel = document.getElementById("rankTopNSelect");
+      const tSel = document.getElementById("rankCrimeTypeSelect");
+      if (!mSel || !nSel || !tSel) return;
+
+      mSel.value = rankingMetric;
+      nSel.value = String(rankingTopN);
+
+      if (rankingMetric === "type" && !types.length) rankingMetric = "total";
+      if (currentMode === "merhav" && rankingMetric === "rate") rankingMetric = "total";
+      mSel.value = rankingMetric;
+
+      if (types.length) {
+        if (!rankingCrimeType) rankingCrimeType = types[0];
+        if (!types.includes(rankingCrimeType)) rankingCrimeType = types[0];
+        tSel.value = rankingCrimeType;
+      }
+
+      tSel.disabled = !(rankingMetric === "type" && types.length);
+
+      mSel.onchange = () => { rankingMetric = mSel.value; renderRankings(); };
+      nSel.onchange = () => { rankingTopN = Number(nSel.value) || 10; renderRankings(); };
+      tSel.onchange = () => { rankingCrimeType = tSel.value; renderRankings(); };
+    }
+
+    function renderRankings() {
+      const container = document.getElementById("rankings-content");
+      if (!container) return;
+
+      ensureRankingsDefaults();
+
+      const isMerhav = (currentMode === "merhav");
+      const types = isMerhav
+        ? Array.from(new Set(Object.keys(window.crimeByYearMerhav?.[currentYear] || {}).flatMap(n => Object.keys((window.crimeByYearMerhav?.[currentYear]?.[n]?.breakdown)||{})))).sort((a,b)=>a.localeCompare(b,"he"))
+        : getAllCrimeTypesForYear(currentYear);
+
+      if (!rankingCrimeType && types.length) rankingCrimeType = types[0];
+
+      const { rows, note } = buildRankingsRows();
+      const top = rows.slice(0, rankingTopN);
+
+      const metricOptions = isMerhav
+        ? `
+          <option value="total">סה״כ פשעים</option>
+          <option value="type">סוג עבירה ספציפי</option>
+        `
+        : `
+          <option value="total">סה״כ פשעים</option>
+          <option value="type">סוג עבירה ספציפי</option>
+          <option value="rate">יחסית לאוכלוסייה (ל־10,000)</option>
+        `;
+
+      const typeDisabled = (rankingMetric !== "type" || !types.length) ? "disabled" : "";
+
+      let html = `
+        <div class="message message-info" style="margin-bottom:12px;">
+          שנה: <strong>${currentYear}</strong> • מצב: <strong>${isMerhav ? "מרחבים" : "ישובים/רשויות"}</strong>
+        </div>
+
+        <div class="rank-controls">
+          <select id="rankMetricSelect">
+            ${metricOptions}
+          </select>
+
+          <select id="rankTopNSelect">
+            <option value="5">Top 5</option>
+            <option value="10">Top 10</option>
+            <option value="20">Top 20</option>
+          </select>
+
+          <select id="rankCrimeTypeSelect" class="full" ${typeDisabled}>
+            ${types.length ? types.map(t => `<option value="${escapeHtml(t)}">${escapeHtml(t)}</option>`).join("") : `<option value="">אין רשימת סוגים</option>`}
+          </select>
+        </div>
+      `;
+
+      if (note) html += `<div class="message message-warn">${note}</div>`;
+
+      if (!top.length) {
+        html += `<div class="message message-error">אין מספיק נתונים להצגת דירוג לפי הבחירה הנוכחית.</div>`;
+        container.innerHTML = html;
+        wireRankingsControls(types);
+        return;
+      }
+
+      html += `<div class="rank-list">`;
+      top.forEach((r, idx) => {
+        const sub = (rankingMetric === "rate" && r.extra)
+          ? `<div class="rank-sub">אוכלוסייה (2019): ${Number(r.extra.pop).toLocaleString()} • סה״כ אירועים: ${Number(r.extra.total).toLocaleString()}</div>`
+          : ``;
+
+        html += `
+          <div class="rank-item">
+            <div class="rank-left">
+              <div class="rank-num">${idx + 1}</div>
+              <div style="min-width:0;">
+                <div class="rank-name" title="${escapeHtml(r.name)}">${escapeHtml(r.name)}</div>
+                ${sub}
+              </div>
+            </div>
+            <div class="rank-right">${formatValueByMetric(r)}</div>
+          </div>
+        `;
       });
+      html += `</div>`;
+
+      container.innerHTML = html;
+      wireRankingsControls(types);
     }
 
     function initGovMap() {
@@ -1125,6 +1385,7 @@
 
         if (currentTab === "compare") updateCompareView();
         if (currentTab === "trends" && currentMode === "muni" && selectedCity) showTrends(selectedCity);
+        if (currentTab === "rankings") renderRankings();
       });
 
       govmap.createMap("map", {
@@ -1203,6 +1464,7 @@
       <div class="tab active" data-tab="single" onclick="switchTab('single')">תצוגה</div>
       <div class="tab" data-tab="compare" onclick="switchTab('compare')">השוואה</div>
       <div class="tab" data-tab="trends" onclick="switchTab('trends')">טרנדים</div>
+      <div class="tab" data-tab="rankings" onclick="switchTab('rankings')">דירוגים</div>
     </div>
 
     <div id="controls">
@@ -1252,6 +1514,12 @@
       <div class="tab-content" id="tab-trends">
         <div id="trends-content">
           <div class="message message-info">בחר רשות במפה כדי לראות טרנדים לאורך זמן</div>
+        </div>
+      </div>
+
+      <div class="tab-content" id="tab-rankings">
+        <div id="rankings-content">
+          <div class="message message-info">טוען דירוגים…</div>
         </div>
       </div>
     </div>
@@ -1319,49 +1587,20 @@
           • אם קובץ לא נפתח בלחיצה — בד״כ הוא לא נמצא באותה תיקייה ב-GitHub Pages או לא בוצע commit.
         </div>
 
-        <h3 style="margin:10px 0 8px; font-size:14px;">קישורים ל־Google Drive (כמו ששלחת)</h3>
+        <h3 style="margin:10px 0 8px; font-size:14px;">קישורים ל־Google Drive</h3>
         <ul style="margin:0; padding-right:18px; line-height:1.9; font-size:13px;">
-          <li>
-            אוכלוסייה (2019):
-            <a href="https://docs.google.com/spreadsheets/d/1AqhK1ovOJ_NeJwWHjfLDB_7D5xKJUmK0/edit?usp=drive_link&ouid=100662328335283862244&rtpof=true&sd=true"
-               target="_blank" rel="noopener noreferrer">Google Sheets</a>
-          </li>
-          <li>
-            פשיעה 2020:
-            <a href="https://drive.google.com/file/d/1zOvWHoSN0H8chmJLyrSowut358KhB5MX/view?usp=drive_link"
-               target="_blank" rel="noopener noreferrer">Google Drive</a>
-          </li>
-          <li>
-            פשיעה 2021:
-            <a href="https://drive.google.com/file/d/1NWuNUT9FuyV_b1fiZxsu_AgRfo9z9jM3/view?usp=drive_link"
-               target="_blank" rel="noopener noreferrer">Google Drive</a>
-          </li>
-          <li>
-            פשיעה 2022:
-            <a href="https://drive.google.com/file/d/1arrCYimvwigjEWud_iUQZbhiFrZJ6I1J/view?usp=drive_link"
-               target="_blank" rel="noopener noreferrer">Google Drive</a>
-          </li>
-          <li>
-            פשיעה 2023:
-            <a href="https://docs.google.com/spreadsheets/d/1AqhK1ovOJ_NeJwWHjfLDB_7D5xKJUmK0/edit?usp=drive_link&ouid=100662328335283862244&rtpof=true&sd=true"
-               target="_blank" rel="noopener noreferrer">Google Sheets</a>
-          </li>
-          <li>
-            פשיעה 2024:
-            <a href="https://drive.google.com/file/d/1ZV-DWHl1sxh7MG-a14e-ySHoPqda7h0N/view?usp=drive_link"
-               target="_blank" rel="noopener noreferrer">Google Drive</a>
-          </li>
-          <li>
-            פשיעה 2025:
-            <a href="https://drive.google.com/file/d/1QHlQegcXcTvSQz_zx3NEk37pdz5ieotp/view?usp=drive_link"
-               target="_blank" rel="noopener noreferrer">Google Drive</a>
-          </li>
+          <li>אוכלוסייה (2019): <a href="https://docs.google.com/spreadsheets/d/1AqhK1ovOJ_NeJwWHjfLDB_7D5xKJUmK0/edit?usp=drive_link&ouid=100662328335283862244&rtpof=true&sd=true" target="_blank" rel="noopener noreferrer">Google Sheets</a></li>
+          <li>פשיעה 2020: <a href="https://drive.google.com/file/d/1zOvWHoSN0H8chmJLyrSowut358KhB5MX/view?usp=drive_link" target="_blank" rel="noopener noreferrer">Google Drive</a></li>
+          <li>פשיעה 2021: <a href="https://drive.google.com/file/d/1NWuNUT9FuyV_b1fiZxsu_AgRfo9z9jM3/view?usp=drive_link" target="_blank" rel="noopener noreferrer">Google Drive</a></li>
+          <li>פשיעה 2022: <a href="https://drive.google.com/file/d/1arrCYimvwigjEWud_iUQZbhiFrZJ6I1J/view?usp=drive_link" target="_blank" rel="noopener noreferrer">Google Drive</a></li>
+          <li>פשיעה 2023: <a href="https://docs.google.com/spreadsheets/d/1AqhK1ovOJ_NeJwWHjfLDB_7D5xKJUmK0/edit?usp=drive_link&ouid=100662328335283862244&rtpof=true&sd=true" target="_blank" rel="noopener noreferrer">Google Sheets</a></li>
+          <li>פשיעה 2024: <a href="https://drive.google.com/file/d/1ZV-DWHl1sxh7MG-a14e-ySHoPqda7h0N/view?usp=drive_link" target="_blank" rel="noopener noreferrer">Google Drive</a></li>
+          <li>פשיעה 2025: <a href="https://drive.google.com/file/d/1QHlQegcXcTvSQz_zx3NEk37pdz5ieotp/view?usp=drive_link" target="_blank" rel="noopener noreferrer">Google Drive</a></li>
         </ul>
 
         <h3 style="margin:14px 0 8px; font-size:14px;">קבצי מקור (Raw) — אם קיימים אצלך בריפו</h3>
         <ul style="margin:0; padding-right:18px; line-height:1.9; font-size:13px;">
           <li><a href="p_libud_2019.xlsx" target="_blank" rel="noopener noreferrer">p_libud_2019.xlsx (אוכלוסייה)</a></li>
-
           <li><a href="20112025132757_2020_hangashat_meyda_plili.csv" target="_blank" rel="noopener noreferrer">2020_hangashat_meyda_plili.csv</a></li>
           <li><a href="19112025163039_2021_hangashat_meyda_plili.csv" target="_blank" rel="noopener noreferrer">2021_hangashat_meyda_plili.csv</a></li>
           <li><a href="19112025163039_2022_hangashat_meyda_plili.csv" target="_blank" rel="noopener noreferrer">2022_hangashat_meyda_plili.csv</a></li>
