@@ -500,6 +500,27 @@
       color: #666;
     }
 
+    /* ✅ Address search results */
+    #addrResults {
+      border: 1px solid #e0e0e0;
+      background: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+      max-height: 240px;
+      overflow-y: auto;
+      display: none;
+      margin-top: 8px;
+    }
+    .addr-item {
+      padding: 10px 12px;
+      cursor: pointer;
+      font-size: 13px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .addr-item:last-child { border-bottom: none; }
+    .addr-item:hover { background: #f5f9ff; }
+    .addr-sub { font-size: 12px; color: #666; margin-top: 3px; }
+
     @media (max-width: 768px) {
       #info-panel { width: calc(100% - 30px); left: 15px; right: 15px; max-height: calc(100vh - 100px); }
       #quick-stats { grid-template-columns: repeat(2, 1fr); }
@@ -541,6 +562,10 @@
     let layer125EntitiesCache = null;
     let yearRateMin = 0;
     let yearRateMax = 0;
+
+    // ✅ Address search state
+    let lastGeocodeReqId = 0;
+    let lastAddrItems = [];
 
     // -------------------- Normalize & Variants --------------------
     function normalizeKeyBase(name) {
@@ -826,16 +851,12 @@
     function extractWktFromGovmapItem(ent) {
       if (!ent) return null;
 
-      // לפעמים זה מגיע כ-wkt / WKT / geometryWKT וכו'
       const direct = ent.wkt || ent.WKT || ent.geometryWKT || ent.GeometryWKT;
-      if (typeof direct === "string" && direct.startsWith("POLYGON")) return direct;
-      if (typeof direct === "string" && direct.startsWith("MULTIPOLYGON")) return direct;
+      if (typeof direct === "string" && (direct.startsWith("POLYGON") || direct.startsWith("MULTIPOLYGON"))) return direct;
 
-      // לפעמים יושב בתוך Geometry / geom / Shape
       const g = ent.Geometry || ent.geometry || ent.geom || ent.Shape || ent.shape;
       if (typeof g === "string" && (g.startsWith("POLYGON") || g.startsWith("MULTIPOLYGON"))) return g;
 
-      // לפעמים בתוך Fields
       const attrs = fieldsToObject(ent.Fields || ent.fields);
       if (attrs) {
         const cand = attrs.WKT || attrs.wkt || attrs.Shape || attrs.shape || attrs.GEOM || attrs.geom;
@@ -845,12 +866,9 @@
       return null;
     }
 
-    // צבע אדום: alpha מתחזק לפי rate
     function rateToFillColor(rate) {
-      // clamp 0..1
       const t = (rate - yearRateMin) / (yearRateMax - yearRateMin);
       const clamped = Math.max(0, Math.min(1, t));
-      // alpha בין 0.10 ל-0.65
       const alpha = 0.10 + clamped * 0.55;
       return [255, 0, 0, alpha];
     }
@@ -874,30 +892,18 @@
       choroplethAllNames = [];
     }
 
-   async function fetchLayer125Entities() {
-  if (!mapInitialized) {
-    throw new Error("Map not initialized yet");
-  }
+    async function fetchLayer125Entities() {
+      if (!mapInitialized) throw new Error("Map not initialized yet");
+      if (!MUNICIPAL_LAYER) throw new Error("MUNICIPAL_LAYER is missing");
+      if (layer125EntitiesCache) return layer125EntitiesCache;
 
-  if (!MUNICIPAL_LAYER) {
-    throw new Error("MUNICIPAL_LAYER is missing");
-  }
+      const entitiesResp = await govmap.getLayerEntities({ layerName: String(MUNICIPAL_LAYER) });
+      const list = entitiesResp?.data || entitiesResp?.Data || entitiesResp || [];
+      if (!Array.isArray(list) || !list.length) throw new Error("Empty entities list from layer 125");
 
-  if (layer125EntitiesCache) return layer125EntitiesCache;
-
-  const entitiesResp = await govmap.getLayerEntities({
-    layerName: String(MUNICIPAL_LAYER)
-  });
-
-  const list = entitiesResp?.data || entitiesResp?.Data || entitiesResp || [];
-  if (!Array.isArray(list) || !list.length) {
-    throw new Error("Empty entities list from layer 125");
-  }
-
-  layer125EntitiesCache = list;
-  return list;
-}
-
+      layer125EntitiesCache = list;
+      return list;
+    }
 
     function buildAllChoroplethGeoms(entities) {
       const yearData = window.crimeByYear?.[currentYear];
@@ -950,18 +956,9 @@
     }
 
     async function paintAllMunicipalitiesByRate() {
-      if (!mapInitialized) {
-        alert("המפה עדיין לא נטענה.");
-        return;
-      }
-      if (currentMode !== "muni") {
-        alert("צביעה לכל הארץ זמינה רק במצב ישובים/רשויות.");
-        return;
-      }
-      if (currentMetric !== "rate") {
-        alert("כדי לצבוע לפי צבעים, העבר למדד 'ל-10,000 תושבים'.");
-        return;
-      }
+      if (!mapInitialized) { alert("המפה עדיין לא נטענה."); return; }
+      if (currentMode !== "muni") { alert("צביעה לכל הארץ זמינה רק במצב ישובים/רשויות."); return; }
+      if (currentMetric !== "rate") { alert("כדי לצבוע לפי צבעים, העבר למדד 'ל-10,000 תושבים'."); return; }
 
       choroplethCancelToken++;
       const myToken = choroplethCancelToken;
@@ -970,8 +967,6 @@
 
       try {
         clearAllPainted();
-
-        // בונים אינדקס של השנה הנוכחית לפני
         buildMuniIndexForYear(currentYear);
 
         const entities = await fetchLayer125Entities();
@@ -979,19 +974,13 @@
 
         const { wkts, names, symbols, skipped, used } = buildAllChoroplethGeoms(entities);
 
-        if (!used) {
-          setPaintStatus("לא נוצרו פוליגונים (ייתכן שחסרה גאומטריה/WKT או שאין התאמות/אוכלוסייה).");
-          return;
-        }
+        if (!used) { setPaintStatus("לא נוצרו פוליגונים (ייתכן שחסרה גאומטריה/WKT או שאין התאמות/אוכלוסייה)."); return; }
 
         const batchSize = 250;
         const totalBatches = Math.ceil(wkts.length / batchSize);
 
         for (let b = 0; b < totalBatches; b++) {
-          if (myToken !== choroplethCancelToken) {
-            setPaintStatus("הצביעה בוטלה.");
-            return;
-          }
+          if (myToken !== choroplethCancelToken) { setPaintStatus("הצביעה בוטלה."); return; }
 
           const from = b * batchSize;
           const to = Math.min((b + 1) * batchSize, wkts.length);
@@ -1035,8 +1024,6 @@
       if (br) br.classList.toggle("active", mode === "merhav");
 
       updateMetricButtonsUI();
-
-      // ✅ clear overlays when switching mode
       clearPaintAndStatus();
 
       const layerToShow = (mode === "muni") ? MUNICIPAL_LAYER : POLICE_MERHAV_LAYER;
@@ -1056,10 +1043,7 @@
       selectedCityKey = null;
       compareList = compareList.filter(c => c.mode === mode);
 
-      if (mode !== "muni" && currentTab === "trends") {
-        switchTab("single");
-        return;
-      }
+      if (mode !== "muni" && currentTab === "trends") { switchTab("single"); return; }
 
       if (currentTab === "compare") updateCompareView();
       else if (currentTab === "rankings") renderRankings();
@@ -1085,7 +1069,6 @@
       if (bAbs) bAbs.classList.toggle("active", metric === "abs");
       if (bRate) bRate.classList.toggle("active", metric === "rate");
 
-      // ✅ clear overlays when switching metric
       clearPaintAndStatus();
 
       if (currentTab === "single" && selectedCityKey) {
@@ -1099,10 +1082,7 @@
 
     // -------------------- Compare --------------------
     function addToCompare() {
-      if (!selectedCity) {
-        alert(`אנא בחר ${currentMode === "muni" ? "רשות" : "מרחב"} במפה תחילה`);
-        return;
-      }
+      if (!selectedCity) { alert(`אנא בחר ${currentMode === "muni" ? "רשות" : "מרחב"} במפה תחילה`); return; }
       if (!compareList.some(c => c.key === selectedCityKey && c.mode === currentMode)) {
         compareList.push({ name: selectedCity, key: selectedCityKey, mode: currentMode });
         updateCompareView();
@@ -1284,11 +1264,7 @@
         return;
       }
 
-      let series = yearlyData.map(d => ({
-        year: d.year,
-        value: d.total,
-        label: d.total.toLocaleString()
-      }));
+      let series = yearlyData.map(d => ({ year: d.year, value: d.total, label: d.total.toLocaleString() }));
 
       if (currentMetric === "rate") {
         const pop = getPopulationForAuthority(cityName);
@@ -1382,29 +1358,19 @@
         });
 
         const items = resp?.data || resp?.Data || [];
-        if (!items.length) {
-          showInfo("לא נמצא", "אין אובייקט באזור זה", "info");
-          return;
-        }
+        if (!items.length) { showInfo("לא נמצא", "אין אובייקט באזור זה", "info"); return; }
 
         const first = items[0];
         const attrs = first.Fields || first.Attributes || first;
 
         if (currentMode === "muni") {
           const nameFromMap = detectMunicipalityName(attrs);
-          if (!nameFromMap) {
-            console.log("❌ Municipality attributes:", attrs);
-            showInfo("שגיאה", "לא ניתן לזהות את שם הרשות", "error");
-            return;
-          }
+          if (!nameFromMap) { console.log("❌ Municipality attributes:", attrs); showInfo("שגיאה", "לא ניתן לזהות את שם הרשות", "error"); return; }
 
           const key = normalizeKey(nameFromMap);
           const entry = muniIndex[key] || muniIndex[nameVariants(nameFromMap)[0]];
 
-          if (!entry) {
-            showInfo("לא נמצאו נתונים", `אין נתוני פשיעה עבור <strong>${nameFromMap}</strong> בשנת ${currentYear}`, "error");
-            return;
-          }
+          if (!entry) { showInfo("לא נמצאו נתונים", `אין נתוני פשיעה עבור <strong>${nameFromMap}</strong> בשנת ${currentYear}`, "error"); return; }
 
           selectedCity = entry.name;
           selectedCityKey = nameVariants(entry.name)[0];
@@ -1419,21 +1385,14 @@
         }
 
         const merhavName = detectMerhavName(attrs);
-        if (!merhavName) {
-          console.log("❌ Merhav attributes:", attrs);
-          showInfo("שגיאה", "לא ניתן לזהות את שם מרחב המשטרה", "error");
-          return;
-        }
+        if (!merhavName) { console.log("❌ Merhav attributes:", attrs); showInfo("שגיאה", "לא ניתן לזהות את שם מרחב המשטרה", "error"); return; }
 
         const key = normalizeKey(merhavName);
         selectedCity = merhavName;
         selectedCityKey = key;
 
         const entry = merhavIndex[key];
-        if (!entry) {
-          showInfo("לא נמצאו נתונים", `אין נתוני פשיעה עבור <strong>${merhavName}</strong> בשנת ${currentYear}`, "error");
-          return;
-        }
+        if (!entry) { showInfo("לא נמצאו נתונים", `אין נתוני פשיעה עבור <strong>${merhavName}</strong> בשנת ${currentYear}`, "error"); return; }
 
         if (currentTab === "compare") { updateCompareView(); return; }
         if (currentTab === "rankings") { renderRankings(); return; }
@@ -1657,6 +1616,162 @@
       wireRankingsControls(types);
     }
 
+    // -------------------- ✅ Address Search (Geocode + Zoom) --------------------
+    function parseGeocodeList(resp) {
+      const list = resp?.data || resp?.Data || resp?.results || resp;
+      if (Array.isArray(list)) return list;
+      if (Array.isArray(list?.Result)) return list.Result;
+      return [];
+    }
+
+    function extractXY(item) {
+      const x = item?.X ?? item?.x ?? item?.CenterX ?? item?.centerX ?? item?.Lon ?? item?.lon;
+      const y = item?.Y ?? item?.y ?? item?.CenterY ?? item?.centerY ?? item?.Lat ?? item?.lat;
+      return { x: Number(x), y: Number(y) };
+    }
+
+    function renderAddrResults(items) {
+      const box = document.getElementById("addrResults");
+      if (!box) return;
+
+      lastAddrItems = items || [];
+
+      if (!items || !items.length) {
+        box.style.display = "block";
+        box.innerHTML = `<div class="addr-item">לא נמצאו תוצאות</div>`;
+        return;
+      }
+
+      box.style.display = "block";
+      box.innerHTML = items.map((it, idx) => {
+        const title = escapeHtml(it.__title || "תוצאה");
+        const sub = escapeHtml(it.__sub || "");
+        return `
+          <div class="addr-item" data-idx="${idx}">
+            <div style="font-weight:900; color:#222;">${title}</div>
+            ${sub ? `<div class="addr-sub">${sub}</div>` : ""}
+          </div>
+        `;
+      }).join("");
+
+      box.querySelectorAll(".addr-item").forEach(el => {
+        el.addEventListener("click", () => {
+          const idx = Number(el.dataset.idx);
+          const picked = lastAddrItems[idx];
+          if (picked) focusToGeocodeItem(picked);
+          box.style.display = "none";
+        });
+      });
+    }
+
+    function focusToGeocodeItem(item) {
+      if (!mapInitialized) return;
+
+      const { x, y } = extractXY(item);
+      if (!Number.isFinite(x) || !Number.isFinite(y)) {
+        showInfo("שגיאה", "התקבלה תוצאה בלי קואורדינטות X/Y (פתח קונסול לראות את הפריט)", "error");
+        console.log("Geocode item:", item);
+        return;
+      }
+
+      try { govmap.zoomToXY({ x, y, level: 10, marker: true }); }
+      catch (e) { console.warn("zoomToXY failed:", e); }
+
+      showInfo("כתובת", `התמקדתי לכתובת: <strong>${escapeHtml(item.__title || "תוצאה")}</strong>`, "info");
+    }
+
+    function setAddrLoading(msg) {
+      const box = document.getElementById("addrResults");
+      if (!box) return;
+      box.style.display = "block";
+      box.innerHTML = `<div class="addr-item">${escapeHtml(msg || "מחפש…")}</div>`;
+    }
+
+    function runGeocode(query) {
+      const q = String(query || "").trim();
+      if (!q) return;
+
+      if (!mapInitialized) {
+        showInfo("רגע", "המפה עדיין נטענת, נסה שוב בעוד רגע.", "warn");
+        return;
+      }
+
+      const myId = ++lastGeocodeReqId;
+      setAddrLoading("מחפש כתובת…");
+
+      const payload = { keyword: q, type: govmap.geocodeType ? govmap.geocodeType.AccuracyOnly : undefined };
+
+      let res;
+      try {
+        res = govmap.geocode(payload);
+      } catch (e) {
+        console.error("geocode threw:", e);
+        renderAddrResults([]);
+        return;
+      }
+
+      const onSuccess = (resp) => {
+        if (myId !== lastGeocodeReqId) return;
+        const list = parseGeocodeList(resp);
+
+        const mapped = list.slice(0, 10).map(r => {
+          const title =
+            r?.ResultLabel || r?.label || r?.Title || r?.title || r?.Address || r?.address || r?.Name || r?.name || "תוצאה";
+          const sub =
+            r?.City || r?.city || r?.Street || r?.street || r?.SubTitle || r?.subTitle || "";
+          return { ...r, __title: String(title), __sub: String(sub) };
+        });
+
+        renderAddrResults(mapped);
+      };
+
+      const onFail = (err) => {
+        if (myId !== lastGeocodeReqId) return;
+        console.error("geocode failed:", err);
+        renderAddrResults([]);
+      };
+
+      // תמיכה גם ב-Promise וגם ב-jQuery Deferred
+      if (res && typeof res.then === "function") {
+        res.then(onSuccess).catch(onFail);
+      } else if (res && typeof res.done === "function") {
+        res.done(onSuccess).fail(onFail);
+      } else {
+        // fallback
+        onFail(new Error("Unknown geocode return type"));
+      }
+    }
+
+    function initAddressSearchUI() {
+      const input = document.getElementById("addrInput");
+      const btn = document.getElementById("addrBtn");
+      const box = document.getElementById("addrResults");
+      if (!input || !btn || !box) return;
+
+      btn.addEventListener("click", () => runGeocode(input.value));
+
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") runGeocode(input.value);
+        if (e.key === "Escape") box.style.display = "none";
+      });
+
+      // חיפוש חי עם דיליי קצר
+      let t = null;
+      input.addEventListener("input", () => {
+        clearTimeout(t);
+        const v = input.value.trim();
+        if (v.length < 3) { box.style.display = "none"; return; }
+        t = setTimeout(() => runGeocode(v), 350);
+      });
+
+      // קליק מחוץ לסגירת התוצאות
+      document.addEventListener("click", (e) => {
+        if (!box.contains(e.target) && e.target !== input && e.target !== btn) {
+          box.style.display = "none";
+        }
+      });
+    }
+
     // -------------------- GovMap init --------------------
     function initGovMap() {
       if (!window.crimeByYear || typeof window.crimeByYear !== "object") {
@@ -1692,7 +1807,6 @@
       yearlyStats[currentYear] = calculateStats(currentYear);
       updateQuickStats();
 
-      // init legend
       computeYearRateRange(currentYear);
       updateLegendUI();
 
@@ -1710,7 +1824,6 @@
         selectedCity = null;
         selectedCityKey = null;
 
-        // ✅ clear choropleth when changing year
         clearPaintAndStatus();
 
         if (currentTab === "compare") updateCompareView();
@@ -1744,11 +1857,14 @@
 
           initAboutModal();
 
-          // wire paint buttons
+          // ✅ Wire paint buttons
           const paintBtn = document.getElementById("btnPaintAll");
           const clearBtn = document.getElementById("btnClearPaint");
           if (paintBtn) paintBtn.onclick = () => paintAllMunicipalitiesByRate();
           if (clearBtn) clearBtn.onclick = () => clearPaintAndStatus();
+
+          // ✅ Wire address search
+          initAddressSearchUI();
 
           const l = document.getElementById("loading");
           if (l) l.style.display = "none";
@@ -1850,6 +1966,18 @@
           <span id="legendMin">0</span>
           <span id="legendMax">0</span>
         </div>
+      </div>
+
+      <!-- ✅ Address search -->
+      <div style="margin-top:12px;">
+        <label style="display:block; font-weight:800; margin-bottom:6px;">חיפוש כתובת:</label>
+        <div style="display:flex; gap:8px;">
+          <input id="addrInput" type="text" placeholder="לדוגמה: דיזנגוף 50 תל אביב"
+            style="flex:1; padding:10px 12px; border-radius:8px; border:1px solid #ddd; font-size:13px;"
+          />
+          <button id="addrBtn" class="mode-btn" style="flex:0 0 auto; padding:10px 14px;">חפש</button>
+        </div>
+        <div id="addrResults"></div>
       </div>
 
       <div id="quick-stats" style="margin-top:12px;">
