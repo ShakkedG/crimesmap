@@ -664,7 +664,7 @@
     async function fetchLayerEntities() {
         if (layer125EntitiesCache) return layer125EntitiesCache;
         // FIXED: Sending BOTH casing styles to handle API inconsistencies
-        const res = await govmap.getLayerEntities({ layerName: MUNICIPAL_LAYER, LayerName: MUNICIPAL_LAYER });
+        const res = await govmap.getLayerEntities({ layerName:'125' });
         layer125EntitiesCache = res.data || res.Data || [];
         return layer125EntitiesCache;
     }
