@@ -947,71 +947,105 @@
     }
 
     function showTrends(cityName) {
-      const container = document.getElementById("trends-content");
-      if (!cityName) {
-        container.innerHTML = `<div class="message message-info">בחר רשות במפה כדי לראות טרנדים</div>`;
-        return;
+  const container = document.getElementById("trends-content");
+  if (!container) return;
+
+  if (!cityName) {
+    container.innerHTML = `<div class="message message-info">בחר רשות במפה כדי לראות טרנדים</div>`;
+    return;
+  }
+
+  const years = Object.keys(window.crimeByYear || {}).sort();
+  const yearlyData = [];
+
+  // ✅ במקום normalizeKey אחד בלבד — ננסה את כל הווריאנטים (עיריית/מועצה מקומית/אזורית וכו׳)
+  const variants = nameVariants(cityName); // כבר חוזר מנורמל (ללא רווחים/מקפים וכו')
+  const tryMatchInYear = (yearData) => {
+    if (!yearData) return null;
+
+    // 1) ניסיון ישיר לפי שם כפי שהוא (לפעמים זה עובד)
+    if (yearData[cityName]) return { matchedName: cityName, data: yearData[cityName] };
+
+    // 2) ניסיון לפי כל הווריאנטים (מנורמלים)
+    const keys = Object.keys(yearData);
+    for (const k of keys) {
+      const nk = normalizeKey(k);
+      if (variants.includes(nk)) {
+        return { matchedName: k, data: yearData[k] };
       }
-
-      const years = Object.keys(window.crimeByYear || {}).sort();
-      const key = normalizeKey(cityName);
-      const yearlyData = [];
-
-      years.forEach(year => {
-        const yearData = window.crimeByYear?.[year];
-        if (!yearData) return;
-
-        let cityData = yearData[cityName];
-        if (!cityData) {
-          const matchedName = Object.keys(yearData).find(k => normalizeKey(k) === key);
-          if (matchedName) cityData = yearData[matchedName];
-        }
-        if (cityData) yearlyData.push({ year, total: cityData.total || 0 });
-      });
-
-      if (!yearlyData.length) {
-        container.innerHTML = `<div class="message message-info">אין נתונים זמינים עבור ${cityName}</div>`;
-        return;
-      }
-
-      let series = yearlyData.map(d => ({ ...d, value: d.total, label: d.total.toLocaleString() }));
-
-      if (currentMetric === "rate") {
-        const pop = getPopulationForAuthority(cityName);
-        series = yearlyData.map(d => {
-          const rate = calcRatePer10k(d.total, pop);
-          return {
-            year: d.year,
-            value: rate == null ? 0 : rate,
-            label: rate == null ? "אין אוכלוסייה" : `${rate.toLocaleString()} /10k`
-          };
-        });
-      }
-
-      const maxVal = Math.max(...series.map(d => d.value), 1);
-
-      let html = `<h3 style="margin:0 0 16px 0;font-size:17px;color:#222;">${cityName}</h3>`;
-      if (currentMetric === "rate") {
-        const pop = getPopulationForAuthority(cityName);
-        if (!pop) {
-          html += `<div class="message message-warn" style="margin-bottom:16px;">אין אוכלוסייה ליישוב הזה — תצוגת ל-10,000 מסומנת כ-"אין אוכלוסייה".</div>`;
-        } else {
-          html += `<div class="message message-info" style="margin-bottom:16px;">תצוגה ל-10,000 תושבים • אוכלוסייה (2019): ${Number(pop).toLocaleString()}</div>`;
-        }
-      }
-
-      series.forEach(d => {
-        const pct = (d.value / maxVal) * 100;
-        html += `<div class="compare-bar">
-          <div class="compare-bar-name">${d.year}</div>
-          <div class="compare-bar-container">
-            <div class="compare-bar-fill" style="width:${pct}%">${d.label}</div>
-          </div>
-        </div>`;
-      });
-
-      container.innerHTML = html;
     }
+
+    return null;
+  };
+
+  years.forEach(year => {
+    const yearData = window.crimeByYear?.[year];
+    const match = tryMatchInYear(yearData);
+    if (match?.data) {
+      yearlyData.push({
+        year,
+        total: Number(match.data.total || 0),
+        matchedName: match.matchedName
+      });
+    }
+  });
+
+  if (!yearlyData.length) {
+    container.innerHTML = `<div class="message message-info">אין נתונים זמינים עבור ${cityName}</div>`;
+    return;
+  }
+
+  let series = yearlyData.map(d => ({
+    year: d.year,
+    value: d.total,
+    label: d.total.toLocaleString()
+  }));
+
+  // ✅ אם במצב rate: משתמש באוכלוסייה (2019) לפי שם העיר שנבחר (עם וריאנטים)
+  if (currentMetric === "rate") {
+    const pop = getPopulationForAuthority(cityName);
+    series = yearlyData.map(d => {
+      const rate = calcRatePer10k(d.total, pop);
+      return {
+        year: d.year,
+        value: rate == null ? 0 : rate,
+        label: rate == null ? "אין אוכלוסייה" : `${rate.toLocaleString()} /10k`
+      };
+    });
+  }
+
+  const maxVal = Math.max(...series.map(d => d.value), 1);
+
+  let html = `<h3 style="margin:0 0 16px 0;font-size:17px;color:#222;">${cityName}</h3>`;
+
+  if (currentMetric === "rate") {
+    const pop = getPopulationForAuthority(cityName);
+    if (!pop) {
+      html += `<div class="message message-warn" style="margin-bottom:16px;">אין אוכלוסייה ליישוב הזה — תצוגת ל-10,000 מסומנת כ-"אין אוכלוסייה".</div>`;
+    } else {
+      html += `<div class="message message-info" style="margin-bottom:16px;">תצוגה ל-10,000 תושבים • אוכלוסייה (2019): ${Number(pop).toLocaleString()}</div>`;
+    }
+  } else {
+    // בונוס קטן: מציג אם מצא שם שונה בנתונים באחת השנים
+    const diff = yearlyData.find(d => d.matchedName && d.matchedName !== cityName);
+    if (diff) {
+      html += `<div class="message message-info" style="margin-bottom:16px;">שמות תואמים בנתונים נמצאו גם כ־<strong>${diff.matchedName}</strong> (זה תקין).</div>`;
+    }
+  }
+
+  series.forEach(d => {
+    const pct = (d.value / maxVal) * 100;
+    html += `<div class="compare-bar">
+      <div class="compare-bar-name">${d.year}</div>
+      <div class="compare-bar-container">
+        <div class="compare-bar-fill" style="width:${pct}%">${d.label}</div>
+      </div>
+    </div>`;
+  });
+
+  container.innerHTML = html;
+}
+
 
     function fieldsToObject(fields) {
       if (!Array.isArray(fields)) return fields;
