@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>מפת פשיעה – גרסה סופית מתוקנת</title>
+  <title>מפת פשיעה – גרסה סופית (צביעה מתוקנת)</title>
 
   <script src="crimeByYear_2020_2025.js"></script>
   <script src="crimeByYearMerhav.js"></script>
@@ -663,7 +663,8 @@
 
     async function fetchLayerEntities() {
         if (layer125EntitiesCache) return layer125EntitiesCache;
-        const res = await govmap.getLayerEntities({ layerName: MUNICIPAL_LAYER });
+        // FIXED: Using LayerName (Capital L) which matches the GovMap API requirement
+        const res = await govmap.getLayerEntities({ LayerName: MUNICIPAL_LAYER });
         layer125EntitiesCache = res.data || res.Data || [];
         return layer125EntitiesCache;
     }
