@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>מפת פשיעה – לפי שנה (2020–2025) | ישובים / מרחבים</title>
 
+  <!-- DATA (Processed) -->
   <script src="crimeByYear_2020_2025.js"></script>
   <script src="crimeByYearMerhav.js"></script>
   <script src="PopulationDB.js"></script>
@@ -518,7 +519,7 @@
     const populationIndex = {};
 
     // Rankings state
-    let rankingMetric = "total";      // total | type | rate
+    let rankingMetric = "total";     // total | type | rate
     let rankingCrimeType = "";
     let rankingTopN = 10;
 
@@ -1087,10 +1088,8 @@
 
       try {
         const layerName = (currentMode === "muni") ? MUNICIPAL_LAYER : POLICE_MERHAV_LAYER;
-        // Fix: Send both layerName and LayerName for compatibility
         const resp = await govmap.getLayerData({
           LayerName: layerName,
-          layerName: layerName,
           Point: e.mapPoint,
           Radius: 300
         });
@@ -1581,8 +1580,8 @@
 
     function rateToColor(rate, minR, maxR){
       const t = (maxR > minR) ? clamp01((rate - minR) / (maxR - minR)) : 0.5;
-      const r = Math.round(lerp(0, 220, t));    // 0 -> 220
-      const g = Math.round(lerp(200, 20, t));   // 200 -> 20
+      const r = Math.round(lerp(0, 220, t));   // 0 -> 220
+      const g = Math.round(lerp(200, 20, t));  // 200 -> 20
       const b = 20;
       return [r,g,b];
     }
@@ -1598,10 +1597,7 @@
 
     function setMunicipalLayerOpacity(opacity){
       if (typeof govmap.setLayerOpacity === "function") {
-        try { 
-          // Fix: Sending both styles to be safe
-          govmap.setLayerOpacity({ layerName: MUNICIPAL_LAYER, LayerName: MUNICIPAL_LAYER, opacity }); 
-        } catch(e){}
+        try { govmap.setLayerOpacity({ layerName: MUNICIPAL_LAYER, opacity }); } catch(e){}
       }
     }
 
@@ -1660,8 +1656,7 @@
 
       let res;
       try {
-        // Fix: Sending both layerName styles to handle API inconsistencies
-        const r = govmap.getLayerEntities({ layerName: MUNICIPAL_LAYER, LayerName: MUNICIPAL_LAYER });
+        const r = govmap.getLayerEntities({ layerName: MUNICIPAL_LAYER });
         if (r && typeof r.then === "function") res = await r;
         else if (r && typeof r.done === "function") {
           res = await new Promise((resolve, reject) => r.done(resolve).fail(reject));
@@ -1670,7 +1665,7 @@
         }
       } catch (e) {
         console.error("getLayerEntities failed:", e);
-        showInfo("שגיאה", "נכשלתי למשוך ישויות מהשכבה לצורך צביעה (Missing layerName fix applied).", "error");
+        showInfo("שגיאה", "נכשלתי למשוך ישויות מהשכבה לצורך צביעה.", "error");
         return;
       }
 
@@ -1728,7 +1723,7 @@
 
         return {
           id: `${CHORO_NAME}_${i}`,
-          geometry: r.geometry || r.geom, // Fallback
+          geometry: r.geom,
           symbol,
           bubble
         };
@@ -1864,6 +1859,7 @@
     window.toggleChoropleth = toggleChoropleth;
   </script>
 
+  <!-- GOVMAP API -->
   <script src="https://www.govmap.gov.il/govmap/api/govmap.api.js" defer onload="initGovMap()"></script>
 </head>
 
@@ -1900,7 +1896,7 @@
         <button id="btnModeMerhav" class="mode-btn" onclick="setMode('merhav')">🚔 מרחבים</button>
 
         <button id="btnMetricAbs" class="mode-btn active" onclick="setMetric('abs')">🔢 כמות</button>
-        <button id="btnMetricRate" class="mode-btn" onclick="setMetric('rate')" title="זמין רק במצב ישובים/רשויות">👥 ל-10,000</button>
+        <button id="btnMetricRate" class="mode-btn" title="זמין רק במצב ישובים/רשויות">👥 ל-10,000</button>
 
         <button id="btnChoro" class="mode-btn full" onclick="toggleChoropleth()">
           🎨 צביעה ל-10,000 (ירוק→אדום)
@@ -1954,6 +1950,7 @@
     </div>
   </div>
 
+  <!-- SEARCH MODAL -->
   <div id="searchModal" class="modal" aria-hidden="true">
     <div id="searchOverlay" class="modalOverlay"></div>
 
@@ -1993,6 +1990,7 @@
     </div>
   </div>
 
+  <!-- ABOUT MODAL -->
   <div id="aboutModal" class="modal" aria-hidden="true">
     <div id="aboutOverlay" class="modalOverlay"></div>
 
