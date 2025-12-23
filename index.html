@@ -1,3 +1,15 @@
+<!--
+NOTES (חשוב לקרוא לפני):
+1) ביטלתי לגמרי שימוש ב-govmap.getLayerEntities (כי אצלך זה חוזר 500 בשרת).
+2) צביעה (Choropleth) נעשית ע"י טעינת קובץ גבולות GeoJSON מקומי + govmap.displayGeometries.
+3) אתה חייב לשים ליד index.html קובץ בשם:  muni_boundaries_ITM.geojson
+   - הקובץ צריך להיות באותה מערכת קואורדינטות של GovMap (בדרך כלל ITM / EPSG:2039).
+   - אם הקובץ שלך ב-lat/lon (WGS84) -> תעשה Reproject ב-QGIS ל-EPSG:2039 ואז ייצא GeoJSON חדש.
+4) בתוך ה-GeoJSON חייב להיות שדה שם רשות (properties) באחד מהשמות:
+   "שם רשות" / "שם רשות מקומית" / "NAME" / "SHEM_RASHUT" / "SHEM_YISHUV" וכו'.
+   (הקוד מנסה כמה שדות אוטומטית).
+-->
+
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
@@ -531,6 +543,15 @@
     let choroplethEnabled = false;
     const CHORO_NAME = "crime_rate_choropleth";
 
+    /***********************
+     * NOTE: גבולות לצביעה (GeoJSON מקומי) - בלי getLayerEntities
+     ***********************/
+    const BOUNDARY_GEOJSON_URL = "muni_boundaries_ITM.geojson"; // NOTE: קובץ ליד index.html
+    let muniBoundariesReady = false;
+    let muniBoundaryFeatures = []; // NOTE: [{name, keys:[normalized...], geometry}]
+
+    const NAME_FIELDS = ["שם רשות", "שם רשות מקומית", "שם ישוב", "SHEM_RASHUT", "SHEM_YISHUV", "NAME", "Name"];
+
     // -------------------- Normalize & Variants --------------------
     function normalizeKeyBase(name) {
       if (name == null) return "";
@@ -545,28 +566,28 @@
       return s.toLowerCase();
     }
 
-    function normalizeKey(name) { 
-      return normalizeKeyBase(name); 
+    function normalizeKey(name) {
+      return normalizeKeyBase(name);
     }
 
     function nameVariants(name) {
       if (!name) return [];
-      
+
       if (variantsCache.has(name)) {
         return variantsCache.get(name);
       }
-      
+
       const raw = String(name).trim();
       if (!raw) return [];
-      
+
       const withoutCityHall = raw.replace(/^עיריית\s+/g, "").replace(/^עיריה\s+/g, "");
       const withoutLocalCouncil = withoutCityHall.replace(/^מועצה\s+מקומית\s+/g, "");
       const withoutRegionalCouncil = withoutLocalCouncil.replace(/^מועצה\s+אזורית\s+/g, "");
-      
+
       const variants = [raw, withoutCityHall, withoutLocalCouncil, withoutRegionalCouncil]
         .map(normalizeKeyBase)
         .filter(Boolean);
-      
+
       variantsCache.set(name, variants);
       return variants;
     }
@@ -683,9 +704,9 @@
     function buildMerhavIndexForYear(year) {
       for (const k in merhavIndex) delete merhavIndex[k];
       const yearData = window.crimeByYearMerhav?.[year];
-      if (!yearData) { 
-        console.warn(`⚠️ No merhav data for year ${year}`); 
-        return; 
+      if (!yearData) {
+        console.warn(`⚠️ No merhav data for year ${year}`);
+        return;
       }
 
       for (const name in yearData) {
@@ -864,9 +885,9 @@
 
     // -------------------- Compare --------------------
     function addToCompare() {
-      if (!selectedCity) { 
-        alert(`אנא בחר ${currentMode === "muni" ? "רשות" : "מרחב"} במפה תחילה`); 
-        return; 
+      if (!selectedCity) {
+        alert(`אנא בחר ${currentMode === "muni" ? "רשות" : "מרחב"} במפה תחילה`);
+        return;
       }
       if (!compareList.some(c => c.key === selectedCityKey && c.mode === currentMode)) {
         compareList.push({ name: selectedCity, key: selectedCityKey, mode: currentMode });
@@ -1122,39 +1143,6 @@
       return null;
     }
 
-   function asPromise(x){
-  if (!x) return Promise.resolve(x);
-  if (typeof x.then === "function") return x;
-  if (typeof x.done === "function") {
-    return new Promise((res, rej) => x.done(res).fail(rej));
-  }
-  return Promise.resolve(x);
-}
-
-async function getLayerEntitiesSafe(layerId) {
-  const id = String(layerId ?? "").trim();
-  if (!id) throw new Error("layerId is empty");
-
-  // חובה: layerName + token (אחרת תקבל "Missing layerName" גם אם layerName קיים)
-  const params = {
-    layerName: id,
-    token: "ede9a5fd-7c23-432f-8ffb-d85feffa3f3c",
-
-    // אופציונלי לתאימות, לא מזיק:
-    LayerName: id,
-    Token: "ede9a5fd-7c23-432f-8ffb-d85feffa3f3c"
-  };
-
-  console.log("getLayerEntities params =>", params);
-
-  try {
-    return await asPromise(govmap.getLayerEntities(params));
-  } catch (e) {
-    console.error("getLayerEntities failed:", e);
-    throw e;
-  }
-}
-
     async function onMapClick(e) {
       if (!mapInitialized) return;
 
@@ -1167,9 +1155,9 @@ async function getLayerEntitiesSafe(layerId) {
         });
 
         const items = resp?.data || resp?.Data || [];
-        if (!items.length) { 
-          showInfo("לא נמצא", "אין אובייקט באזור זה", "info"); 
-          return; 
+        if (!items.length) {
+          showInfo("לא נמצא", "אין אובייקט באזור זה", "info");
+          return;
         }
 
         const first = items[0];
@@ -1177,17 +1165,17 @@ async function getLayerEntitiesSafe(layerId) {
 
         if (currentMode === "muni") {
           const nameFromMap = detectMunicipalityName(attrs);
-          if (!nameFromMap) { 
-            console.log("❌ Municipality attributes:", attrs); 
-            showInfo("שגיאה", "לא ניתן לזהות את שם הרשות", "error"); 
-            return; 
+          if (!nameFromMap) {
+            console.log("❌ Municipality attributes:", attrs);
+            showInfo("שגיאה", "לא ניתן לזהות את שם הרשות", "error");
+            return;
           }
 
           const key = normalizeKey(nameFromMap);
           const entry = muniIndex[key] || muniIndex[nameVariants(nameFromMap)[0]];
-          if (!entry) { 
-            showInfo("לא נמצאו נתונים", `אין נתוני פשיעה עבור <strong>${escapeHtml(nameFromMap)}</strong> בשנת ${currentYear}`, "error"); 
-            return; 
+          if (!entry) {
+            showInfo("לא נמצאו נתונים", `אין נתוני פשיעה עבור <strong>${escapeHtml(nameFromMap)}</strong> בשנת ${currentYear}`, "error");
+            return;
           }
 
           selectedCity = entry.name;
@@ -1203,10 +1191,10 @@ async function getLayerEntitiesSafe(layerId) {
         }
 
         const merhavName = detectMerhavName(attrs);
-        if (!merhavName) { 
-          console.log("❌ Merhav attributes:", attrs); 
-          showInfo("שגיאה", "לא ניתן לזהות את שם מרחב המשטרה", "error"); 
-          return; 
+        if (!merhavName) {
+          console.log("❌ Merhav attributes:", attrs);
+          showInfo("שגיאה", "לא ניתן לזהות את שם מרחב המשטרה", "error");
+          return;
         }
 
         const key = normalizeKey(merhavName);
@@ -1214,9 +1202,9 @@ async function getLayerEntitiesSafe(layerId) {
         selectedCityKey = key;
 
         const entry = merhavIndex[key];
-        if (!entry) { 
-          showInfo("לא נמצאו נתונים", `אין נתוני פשיעה עבור <strong>${escapeHtml(merhavName)}</strong> בשנת ${currentYear}`, "error"); 
-          return; 
+        if (!entry) {
+          showInfo("לא נמצאו נתונים", `אין נתוני פשיעה עבור <strong>${escapeHtml(merhavName)}</strong> בשנת ${currentYear}`, "error");
+          return;
         }
 
         if (currentTab === "compare") { updateCompareView(); return; }
@@ -1232,14 +1220,14 @@ async function getLayerEntitiesSafe(layerId) {
     }
 
     // -------------------- MODALS --------------------
-    function openModal(id){ 
-      const m=document.getElementById(id); 
-      if(m) m.style.display="block"; 
+    function openModal(id){
+      const m=document.getElementById(id);
+      if(m) m.style.display="block";
     }
-    
-    function closeModal(id){ 
-      const m=document.getElementById(id); 
-      if(m) m.style.display="none"; 
+
+    function closeModal(id){
+      const m=document.getElementById(id);
+      if(m) m.style.display="none";
     }
 
     function initModals(){
@@ -1346,9 +1334,9 @@ async function getLayerEntitiesSafe(layerId) {
         const d = yearData[name];
         const total = Number(d?.total || 0);
 
-        if (rankingMetric === "total") { 
-          rows.push({ name, value: total, extra: null }); 
-          continue; 
+        if (rankingMetric === "total") {
+          rows.push({ name, value: total, extra: null });
+          continue;
         }
 
         if (rankingMetric === "type") {
@@ -1552,10 +1540,10 @@ async function getLayerEntitiesSafe(layerId) {
         return;
       }
 
-      try { 
-        govmap.zoomToXY({ x, y, level: 10, marker: true }); 
-      } catch (e) { 
-        console.warn("zoomToXY failed:", e); 
+      try {
+        govmap.zoomToXY({ x, y, level: 10, marker: true });
+      } catch (e) {
+        console.warn("zoomToXY failed:", e);
       }
 
       const label = (!isBadTitle(item.__title) ? item.__title : (lastGeocodeQuery || "תוצאה"));
@@ -1589,8 +1577,8 @@ async function getLayerEntitiesSafe(layerId) {
       if (govmap.geocodeType?.AccuracyOnly) payload.type = govmap.geocodeType.AccuracyOnly;
 
       let res;
-      try { 
-        res = govmap.geocode(payload); 
+      try {
+        res = govmap.geocode(payload);
       } catch (e) {
         console.error("geocode threw:", e);
         showInfo("חיפוש כתובת", `שגיאה בחיפוש עבור: <strong>${escapeHtml(q)}</strong>`, "error");
@@ -1658,9 +1646,9 @@ async function getLayerEntitiesSafe(layerId) {
       input.addEventListener("input", () => {
         if (searchTimeout) clearTimeout(searchTimeout);
         const v = input.value.trim();
-        if (v.length < 3) { 
-          box.style.display = "none"; 
-          return; 
+        if (v.length < 3) {
+          box.style.display = "none";
+          return;
         }
         searchTimeout = setTimeout(() => runGeocode(v), 350);
       });
@@ -1672,7 +1660,7 @@ async function getLayerEntitiesSafe(layerId) {
       });
     }
 
-    // -------------------- Choropleth --------------------
+    // -------------------- Choropleth helpers --------------------
     function lerp(a,b,t){ return a + (b-a)*t; }
     function clamp01(x){ return Math.max(0, Math.min(1, x)); }
 
@@ -1685,7 +1673,7 @@ async function getLayerEntitiesSafe(layerId) {
     }
 
     function safeCall(fn, ...args){
-      try { return fn(...args); } 
+      try { return fn(...args); }
       catch(e) { return null; }
     }
 
@@ -1696,8 +1684,8 @@ async function getLayerEntitiesSafe(layerId) {
 
     function setMunicipalLayerOpacity(opacity){
       if (typeof govmap.setLayerOpacity === "function") {
-        try { 
-          govmap.setLayerOpacity({ layerName: MUNICIPAL_LAYER, opacity }); 
+        try {
+          govmap.setLayerOpacity({ layerName: MUNICIPAL_LAYER, opacity });
         } catch(e){}
       }
     }
@@ -1715,6 +1703,7 @@ async function getLayerEntitiesSafe(layerId) {
     }
 
     function toggleChoropleth(force){
+      // NOTE: צביעה זמינה רק ברשויות. אם המשתמש במרחבים -> נעביר אותו אוטומטית.
       if (currentMode !== "muni") {
         setMode("muni");
       }
@@ -1731,6 +1720,7 @@ async function getLayerEntitiesSafe(layerId) {
         return;
       }
 
+      // NOTE: צביעה היא תמיד לפי ל-10,000
       currentMetric = "rate";
       const bAbs = document.getElementById("btnMetricAbs");
       const bRate = document.getElementById("btnMetricRate");
@@ -1740,6 +1730,99 @@ async function getLayerEntitiesSafe(layerId) {
       renderChoropleth();
     }
 
+    // -------------------- NEW: Load boundaries GeoJSON --------------------
+    function pickNameFromProps(props){
+      if (!props) return null;
+      for (const f of NAME_FIELDS) {
+        if (props[f]) return String(props[f]).trim();
+      }
+      // NOTE: fallback - first string field
+      for (const k of Object.keys(props)) {
+        const v = props[k];
+        if (typeof v === "string" && v.trim()) return v.trim();
+      }
+      return null;
+    }
+
+    // NOTE: convert GeoJSON Polygon/MultiPolygon into ESRI polygon rings (ITM expected)
+    function geojsonFeatureToEsriPolygon(feat){
+      const geom = feat?.geometry;
+      if (!geom) return null;
+
+      const rings = [];
+
+      function pushPolygonCoords(coords){
+        for (const ring of coords) {
+          if (!Array.isArray(ring) || ring.length < 4) continue;
+
+          // NOTE: ensure closed ring
+          const first = ring[0];
+          const last  = ring[ring.length - 1];
+          const isClosed = last && first &&
+            Number(last[0]) === Number(first[0]) &&
+            Number(last[1]) === Number(first[1]);
+
+          const fixed = isClosed ? ring : [...ring, first];
+
+          rings.push(fixed.map(p => [Number(p[0]), Number(p[1])]));
+        }
+      }
+
+      if (geom.type === "Polygon") {
+        pushPolygonCoords(geom.coordinates);
+      } else if (geom.type === "MultiPolygon") {
+        for (const poly of geom.coordinates) pushPolygonCoords(poly);
+      } else {
+        return null;
+      }
+
+      if (!rings.length) return null;
+
+      // NOTE: GovMap עובד לרוב עם ITM (2039). אם זה גורם בעיה - אפשר למחוק spatialReference.
+      return {
+        rings,
+        spatialReference: { wkid: 2039 }
+      };
+    }
+
+    async function loadMunicipalityBoundaries(){
+      muniBoundariesReady = false;
+      muniBoundaryFeatures = [];
+
+      let gj;
+      try {
+        const res = await fetch(BOUNDARY_GEOJSON_URL, { cache: "no-store" });
+        if (!res.ok) throw new Error(`Failed to load ${BOUNDARY_GEOJSON_URL} (${res.status})`);
+        gj = await res.json();
+      } catch (e) {
+        console.error("❌ boundaries load failed:", e);
+        return false;
+      }
+
+      const feats = gj?.features;
+      if (!Array.isArray(feats) || !feats.length) {
+        console.error("❌ boundaries GeoJSON has no features");
+        return false;
+      }
+
+      let okCount = 0;
+      for (const feat of feats) {
+        const name = pickNameFromProps(feat?.properties);
+        const esriGeom = geojsonFeatureToEsriPolygon(feat);
+        if (!name || !esriGeom) continue;
+
+        // NOTE: keys = כל הווריאציות המנורמלות כדי להתאים לשמות בנתוני הפשיעה
+        const keys = nameVariants(name);
+        muniBoundaryFeatures.push({ name, keys, geometry: esriGeom });
+        okCount++;
+      }
+
+      muniBoundariesReady = okCount > 0;
+      console.log("✅ Boundaries loaded:", okCount);
+      return muniBoundariesReady;
+    }
+
+    // -------------------- NEW: Choropleth render using boundaries --------------------
     async function renderChoropleth(){
       if (!mapInitialized || !choroplethEnabled) return;
       if (currentMode !== "muni") return;
@@ -1750,31 +1833,29 @@ async function getLayerEntitiesSafe(layerId) {
         return;
       }
 
-      let res;
-      try {
-        res = await getLayerEntitiesSafe(MUNICIPAL_LAYER);
-      } catch (e) {
-        console.error("getLayerEntities failed:", e);
-        showInfo("שגיאה", "נכשלתי למשוך ישויות מהשכבה לצורך צביעה.", "error");
-        return;
+      // NOTE: טוען גבולות פעם אחת
+      if (!muniBoundariesReady) {
+        const ok = await loadMunicipalityBoundaries();
+        if (!ok) {
+          showInfo(
+            "שגיאה בצביעה",
+            `לא הצלחתי לטעון את קובץ הגבולות <code>${escapeHtml(BOUNDARY_GEOJSON_URL)}</code>.<br>
+             בדוק שהוא נמצא ליד <code>index.html</code> ושזה GeoJSON תקין וב-ITM.`,
+            "error"
+          );
+          return;
+        }
       }
 
-      const entities = res?.data || res?.Data || res?.entities || res?.Entities || res || [];
-      if (!Array.isArray(entities) || !entities.length) {
-        showInfo("שגיאה", "לא התקבלה רשימת ישויות מהשכבה.", "error");
-        return;
-      }
-
+      // NOTE: בונה רשימה של רשויות שיש להן גם גבול וגם נתוני פשיעה וגם אוכלוסייה
       const rows = [];
-      for (const ent of entities) {
-        const geom = ent?.Geometry || ent?.geometry || ent?.Geom || ent?.geom;
-        const attrs = ent?.Fields || ent?.fields || ent?.Attributes || ent?.attributes || ent;
 
-        const nameFromMap = detectMunicipalityName(attrs);
-        if (!nameFromMap || !geom) continue;
-
-        const key = normalizeKey(nameFromMap);
-        const entry = muniIndex[key] || muniIndex[nameVariants(nameFromMap)[0]];
+      for (const bf of muniBoundaryFeatures) {
+        // NOTE: מציאת entry בנתוני הפשיעה לפי אחד ה-keys
+        let entry = null;
+        for (const k of bf.keys) {
+          if (muniIndex[k]) { entry = muniIndex[k]; break; }
+        }
         if (!entry?.data) continue;
 
         const total = Number(entry.data.total || 0);
@@ -1782,11 +1863,21 @@ async function getLayerEntitiesSafe(layerId) {
         const rate = calcRatePer10k(total, pop);
         if (rate == null) continue;
 
-        rows.push({ name: entry.name, geom, total, pop, rate });
+        rows.push({
+          name: entry.name,
+          geom: bf.geometry,
+          total,
+          pop,
+          rate
+        });
       }
 
       if (!rows.length) {
-        showInfo("אין מספיק נתונים", "לא נמצאו רשויות עם אוכלוסייה כדי לחשב ל-10,000.", "warn");
+        showInfo(
+          "אין מספיק נתונים לצביעה",
+          `לא נמצאו רשויות שיש להן גם גבולות (GeoJSON), גם נתוני פשיעה, וגם אוכלוסייה.`,
+          "warn"
+        );
         return;
       }
 
@@ -1820,6 +1911,7 @@ async function getLayerEntitiesSafe(layerId) {
       clearChoropleth();
       setMunicipalLayerOpacity(0);
 
+      // NOTE: יש שתי חתימות נפוצות; אנחנו מנסים את שתיהן
       let ok = safeCall(govmap.displayGeometries, { name: CHORO_NAME, geometries });
       if (!ok) safeCall(govmap.displayGeometries, geometries, CHORO_NAME);
 
@@ -1906,10 +1998,10 @@ async function getLayerEntitiesSafe(layerId) {
           setMode(currentMode);
           setChoroBtnUI();
 
-          try { 
-            govmap.onEvent(govmap.events.CLICK).progress(onMapClick); 
-          } catch (e) { 
-            console.warn("⚠️ govmap click hook failed:", e); 
+          try {
+            govmap.onEvent(govmap.events.CLICK).progress(onMapClick);
+          } catch (e) {
+            console.warn("⚠️ govmap click hook failed:", e);
           }
 
           initModals();
@@ -2051,16 +2143,8 @@ async function getLayerEntitiesSafe(layerId) {
           במצב ישובים ניתן גם להציג <strong>ל־10,000</strong> לפי אוכלוסייה (קובץ PopulationDB.js).
         </div>
 
-        <h3 style="margin:0 0 10px 0;font-size:15px;color:#222;font-weight:1000;">קבצי נתונים שמופעלים בעמוד</h3>
-        <ul style="margin:0; padding-right:18px; line-height:1.8; color:#333; font-weight:800;">
-          <li><code>crimeByYear_2020_2025.js</code> – נתוני פשיעה לפי ישובים/רשויות לפי שנה</li>
-          <li><code>crimeByYearMerhav.js</code> – נתוני פשיעה לפי מרחבי משטרה לפי שנה</li>
-          <li><code>PopulationDB.js</code> – אוכלוסייה (לצורך חישוב ל־10,000)</li>
-        </ul>
-
         <div class="message message-warn" style="margin-top:12px;">
-          אם תצוגת <strong>ל־10,000</strong> חסרה לרשות מסוימת — זה אומר שאין לה אוכלוסייה בקובץ <code>PopulationDB.js</code>
-          לפי התאמת השמות (המערכת מנסה וריאציות אוטומטית).
+          NOTE: הצביעה (ירוק→אדום) משתמשת בקובץ גבולות מקומי <code>muni_boundaries_ITM.geojson</code> ולא ב-getLayerEntities.
         </div>
       </div>
     </div>
@@ -2098,3 +2182,5 @@ async function getLayerEntitiesSafe(layerId) {
       </div>
     </div>
   </div>
+</body>
+</html>
