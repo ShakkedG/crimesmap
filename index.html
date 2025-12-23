@@ -753,15 +753,12 @@
       } else if (tabName === "compare") {
         updateCompareView();
       } else if (tabName === "trends") {
-        if (currentMode !== "muni") {
-          const tc = document.getElementById("trends-content");
-          if (tc) tc.innerHTML = `<div class="message message-error">נתונים היסטוריים זמינים רק במצב ישובים/רשויות.</div>`;
-        } else if (selectedCity) {
-          showTrends(selectedCity);
-        } else {
-          const tc = document.getElementById("trends-content");
-          if (tc) tc.innerHTML = `<div class="message message-info">בחר רשות במפה כדי לראות נתונים היסטוריים</div>`;
+        const tc = document.getElementById("trends-content");
+        if (!selectedCity) {
+          if (tc) tc.innerHTML = `<div class="message message-info">בחר ${currentMode === "muni" ? "רשות" : "מרחב"} במפה כדי לראות נתונים היסטוריים</div>`;
+          return;
         }
+        showTrends(selectedCity, currentMode);
       } else if (tabName === "rankings") {
         renderRankings();
       }
@@ -803,13 +800,14 @@
       selectedCityKey = null;
       compareList = compareList.filter(c => c.mode === mode);
 
-      if (mode !== "muni" && currentTab === "trends") { switchTab("single"); return; }
-
       if (choroplethEnabled && mode === "muni") renderChoropleth();
 
       if (currentTab === "compare") updateCompareView();
       else if (currentTab === "rankings") renderRankings();
-      else {
+      else if (currentTab === "trends") {
+        const tc = document.getElementById("trends-content");
+        if (tc) tc.innerHTML = `<div class="message message-info">בחר ${mode === "muni" ? "רשות" : "מרחב"} במפה כדי לראות נתונים היסטוריים</div>`;
+      } else {
         showInfo(
           "מפה לפי " + (mode === "muni" ? "ישובים/רשויות" : "מרחבים"),
           `שנה נבחרת: ${currentYear}<br>לחץ על ${mode === "muni" ? "רשות" : "מרחב"} במפה כדי לראות נתונים`,
@@ -838,7 +836,7 @@
         if (entry) showEntry(entry);
       }
       if (currentTab === "compare") updateCompareView();
-      if (currentTab === "trends" && currentMode === "muni" && selectedCity) showTrends(selectedCity);
+      if (currentTab === "trends" && selectedCity) showTrends(selectedCity, currentMode);
       if (currentTab === "rankings") renderRankings();
     }
 
@@ -979,34 +977,53 @@
       container.innerHTML = html;
     }
 
-    // -------------------- Trends --------------------
-    function showTrends(cityName) {
+    // -------------------- Trends (works for muni + merhav) --------------------
+    function showTrends(entityName, mode = currentMode) {
       const container = document.getElementById("trends-content");
       if (!container) return;
 
-      if (!cityName) {
-        container.innerHTML = `<div class="message message-info">בחר רשות במפה כדי לראות נתונים היסטוריים</div>`;
+      if (!entityName) {
+        container.innerHTML = `<div class="message message-info">בחר ${mode === "muni" ? "רשות" : "מרחב"} במפה כדי לראות נתונים היסטוריים</div>`;
         return;
       }
 
-      const years = Object.keys(window.crimeByYear || {}).sort();
-      const variants = nameVariants(cityName);
+      // pick dataset by mode
+      const dataset = (mode === "muni") ? window.crimeByYear : window.crimeByYearMerhav;
+      if (!dataset || typeof dataset !== "object") {
+        container.innerHTML = `<div class="message message-error">אין נתוני ${mode === "muni" ? "ישובים/רשויות" : "מרחבים"} זמינים.</div>`;
+        return;
+      }
+
+      const years = Object.keys(dataset).sort();
       const yearlyData = [];
+      const targetKey = normalizeKey(entityName);
 
       const tryMatchInYear = (yearData) => {
         if (!yearData) return null;
-        if (yearData[cityName]) return { matchedName: cityName, data: yearData[cityName] };
 
+        // exact
+        if (yearData[entityName]) return { matchedName: entityName, data: yearData[entityName] };
+
+        // normalized scan
         const keys = Object.keys(yearData);
         for (const k of keys) {
-          const nk = normalizeKey(k);
-          if (variants.includes(nk)) return { matchedName: k, data: yearData[k] };
+          if (normalizeKey(k) === targetKey) return { matchedName: k, data: yearData[k] };
         }
+
+        // muni: also try variants
+        if (mode === "muni") {
+          const variants = nameVariants(entityName);
+          for (const k of keys) {
+            const nk = normalizeKey(k);
+            if (variants.includes(nk)) return { matchedName: k, data: yearData[k] };
+          }
+        }
+
         return null;
       };
 
       years.forEach(year => {
-        const yearData = window.crimeByYear?.[year];
+        const yearData = dataset?.[year];
         const match = tryMatchInYear(yearData);
         if (match?.data) {
           yearlyData.push({ year, total: Number(match.data.total || 0), matchedName: match.matchedName });
@@ -1014,14 +1031,16 @@
       });
 
       if (!yearlyData.length) {
-        container.innerHTML = `<div class="message message-info">אין נתונים זמינים עבור ${cityName}</div>`;
+        container.innerHTML = `<div class="message message-info">אין נתונים זמינים עבור ${entityName}</div>`;
         return;
       }
 
+      // series
       let series = yearlyData.map(d => ({ year: d.year, value: d.total, label: d.total.toLocaleString() }));
 
-      if (currentMetric === "rate") {
-        const pop = getPopulationForAuthority(cityName);
+      // rate only for muni
+      if (mode === "muni" && currentMetric === "rate") {
+        const pop = getPopulationForAuthority(entityName);
         series = yearlyData.map(d => {
           const rate = calcRatePer10k(d.total, pop);
           return {
@@ -1034,18 +1053,20 @@
 
       const maxVal = Math.max(...series.map(d => d.value), 1);
 
-      let html = `<h3 style="margin:0 0 12px 0;font-size:16px;color:#222;font-weight:1000;">${cityName}</h3>`;
+      let html = `<h3 style="margin:0 0 12px 0;font-size:16px;color:#222;font-weight:1000;">${entityName}</h3>`;
 
       const foundYears = new Set(yearlyData.map(d => d.year));
       const missingYears = years.filter(y => !foundYears.has(y));
       if (missingYears.length) {
-        html += `<div class="message message-warn">אין נתונים ליישוב הזה בשנים: <strong>${missingYears.join(", ")}</strong></div>`;
+        html += `<div class="message message-warn">אין נתונים עבור ${mode === "muni" ? "הרשות" : "המרחב"} בשנים: <strong>${missingYears.join(", ")}</strong></div>`;
       }
 
-      if (currentMetric === "rate") {
-        const pop = getPopulationForAuthority(cityName);
-        if (!pop) html += `<div class="message message-warn">אין אוכלוסייה ליישוב הזה — תצוגת ל-10,000 מסומנת כ-"אין אוכלוסייה".</div>`;
+      if (mode === "muni" && currentMetric === "rate") {
+        const pop = getPopulationForAuthority(entityName);
+        if (!pop) html += `<div class="message message-warn">אין אוכלוסייה לרשות הזו — תצוגת ל-10,000 מסומנת כ-"אין אוכלוסייה".</div>`;
         else html += `<div class="message message-info">אוכלוסייה (2019): ${Number(pop).toLocaleString()}</div>`;
+      } else if (mode === "merhav" && currentMetric === "rate") {
+        html += `<div class="message message-warn">ל-10,000 לא זמין במרחבים — מוצג כמות בלבד.</div>`;
       }
 
       series.forEach(d => {
@@ -1113,7 +1134,7 @@
 
           if (currentTab === "compare") { updateCompareView(); return; }
           if (currentTab === "single") { showEntry(entry); return; }
-          if (currentTab === "trends") { showTrends(selectedCity); return; }
+          if (currentTab === "trends") { showTrends(selectedCity, "muni"); return; }
           if (currentTab === "rankings") { renderRankings(); return; }
 
           showEntry(entry);
@@ -1132,6 +1153,8 @@
 
         if (currentTab === "compare") { updateCompareView(); return; }
         if (currentTab === "rankings") { renderRankings(); return; }
+        if (currentTab === "trends") { showTrends(selectedCity, "merhav"); return; }
+
         showEntry(entry);
 
       } catch (error) {
@@ -1173,7 +1196,7 @@
       });
     }
 
-    // Panel collapse (desktop+mobile)
+    // Panel collapse (desktop+mobile) - button text "הקטן/הגדל"
     function togglePanel(){
       const panel = document.getElementById("info-panel");
       if(!panel) return;
@@ -1182,8 +1205,8 @@
       const btn = document.getElementById("panelToggleBtn");
       if (btn) {
         const collapsed = panel.classList.contains("collapsed");
-        btn.textContent = collapsed ? "⬆ הרחבה" : "⬍ כיווץ";
-        btn.title = collapsed ? "הרחבה" : "כיווץ/הרחבה (במיוחד לנייד)";
+        btn.textContent = collapsed ? "➕ הגדל" : "➖ הקטן";
+        btn.title = collapsed ? "הגדל" : "הקטן/הגדל (במיוחד לנייד)";
       }
     }
 
@@ -1410,6 +1433,13 @@
       return { x: Number(x), y: Number(y) };
     }
 
+    function isBadTitle(t){
+      const s = String(t ?? "").trim();
+      if (!s) return true;
+      const low = s.toLowerCase();
+      return (s === "תוצאה" || low === "result" || low === "results" || low === "unknown");
+    }
+
     function renderAddrResults(items) {
       const box = document.getElementById("addrResults");
       if (!box) return;
@@ -1458,7 +1488,8 @@
       try { govmap.zoomToXY({ x, y, level: 10, marker: true }); }
       catch (e) { console.warn("zoomToXY failed:", e); }
 
-      const label = item.__title || lastGeocodeQuery || "תוצאה";
+      // ✅ כאן התיקון: תמיד להציג שם אמיתי, ואם אין – להציג את מה שהמשתמש חיפש
+      const label = (!isBadTitle(item.__title) ? item.__title : (lastGeocodeQuery || "תוצאה"));
       showInfo("כתובת", `התמקדתי לכתובת: <strong>${escapeHtml(label)}</strong>`, "info");
     }
 
@@ -1482,7 +1513,6 @@
 
       const myId = ++lastGeocodeReqId;
 
-      // שלא יישאר "התמקדתי..." מהחיפוש הקודם
       showInfo("חיפוש כתובת", `מחפש: <strong>${escapeHtml(q)}</strong>`, "info");
       setAddrLoading("מחפש כתובת…");
 
@@ -1510,24 +1540,22 @@
         }
 
         const mapped = list.slice(0, 10).map(r => {
-          // קודם שם מקום/יישוב, ואז כתובת, ואז fallback לחיפוש
-          const title =
-            r?.SettlementName || r?.settlementName ||
-            r?.PlaceName      || r?.placeName ||
-            r?.Name           || r?.name ||
-            r?.ResultLabel    || r?.resultLabel ||
-            r?.Address        || r?.address ||
-            r?.Title          || r?.title ||
-            r?.label ||
-            lastGeocodeQuery || "תוצאה";
+          const candidates = [
+            r?.SettlementName, r?.settlementName,
+            r?.PlaceName, r?.placeName,
+            r?.Name, r?.name,
+            r?.ResultLabel, r?.resultLabel,
+            r?.Address, r?.address,
+            r?.Title, r?.title,
+            r?.label
+          ].map(x => (x == null ? "" : String(x).trim())).filter(Boolean);
 
-          const sub =
-            r?.City || r?.city ||
-            r?.Region || r?.region ||
-            r?.Street || r?.street ||
-            r?.SubTitle || r?.subTitle || "";
+          let title = candidates.find(t => !isBadTitle(t)) || q; // ✅ אם אין שם טוב – זה תמיד יהיה למשל "עינת"
+          let sub =
+            (r?.City || r?.city || r?.Region || r?.region || r?.Street || r?.street || r?.SubTitle || r?.subTitle || "");
+          sub = String(sub || "").trim();
 
-          return { ...r, __title: String(title).trim(), __sub: String(sub).trim() };
+          return { ...r, __title: title, __sub: sub };
         });
 
         renderAddrResults(mapped);
@@ -1540,7 +1568,6 @@
         renderAddrResults([]);
       };
 
-      // supports Promise or jQuery Deferred
       if (res && typeof res.then === "function") res.then(onSuccess).catch(onFail);
       else if (res && typeof res.done === "function") res.done(onSuccess).fail(onFail);
       else onFail(new Error("Unknown geocode return type"));
@@ -1574,14 +1601,14 @@
       });
     }
 
-    // -------------------- Choropleth (Green -> Red by rate/10k) --------------------
+    // -------------------- Choropleth (kept as-is, but button works from any mode) --------------------
     function lerp(a,b,t){ return a + (b-a)*t; }
     function clamp01(x){ return Math.max(0, Math.min(1, x)); }
 
     function rateToColor(rate, minR, maxR){
       const t = (maxR > minR) ? clamp01((rate - minR) / (maxR - minR)) : 0.5;
-      const r = Math.round(lerp(0, 220, t));   // 0 -> 220
-      const g = Math.round(lerp(200, 20, t));  // 200 -> 20
+      const r = Math.round(lerp(0, 220, t));
+      const g = Math.round(lerp(200, 20, t));
       const b = 20;
       return [r,g,b];
     }
@@ -1605,21 +1632,19 @@
       const btn = document.getElementById("btnChoro");
       if (!btn) return;
 
-      const can = (currentMode === "muni");
-      btn.classList.toggle("disabled", !can);
-      btn.disabled = !can;
+      // ✅ הכפתור תמיד לחיץ; אם במרחבים הוא פשוט יעביר למצב רשויות ויפעיל
+      btn.classList.remove("disabled");
+      btn.disabled = false;
 
       btn.classList.toggle("active", !!choroplethEnabled);
       btn.textContent = choroplethEnabled ? "🎨 צביעה ל-10,000: פעיל" : "🎨 צביעה ל-10,000 (ירוק→אדום)";
-      btn.title = can ? "צובע את הרשויות לפי פשעים ל-10,000" : "זמין רק במצב ישובים/רשויות";
+      btn.title = "צביעה לפי פשעים ל-10,000 (אם אתה במרחבים – זה יעביר לרשויות)";
     }
 
     function toggleChoropleth(force){
+      // ✅ אם לוחצים במרחבים – עוברים לרשויות ואז מפעילים
       if (currentMode !== "muni") {
-        choroplethEnabled = false;
-        setChoroBtnUI();
-        showInfo("לא זמין", "מצב צביעה ל-10,000 זמין רק במצב ישובים/רשויות.", "error");
-        return;
+        setMode("muni");
       }
 
       choroplethEnabled = (typeof force === "boolean") ? force : !choroplethEnabled;
@@ -1634,7 +1659,6 @@
         return;
       }
 
-      // חובה להיות על rate כדי שזה יהיה הגיוני
       currentMetric = "rate";
       const bAbs = document.getElementById("btnMetricAbs");
       const bRate = document.getElementById("btnMetricRate");
@@ -1675,7 +1699,6 @@
         return;
       }
 
-      // בנה רשימה של rates + geometries
       const rows = [];
       for (const ent of entities) {
         const geom = ent?.Geometry || ent?.geometry || ent?.Geom || ent?.geom;
@@ -1708,7 +1731,6 @@
       const geometries = rows.map((r, i) => {
         const [rr, gg, bb] = rateToColor(r.rate, minR, maxR);
 
-        // נסיון לסימבולוגיה (ברוב המקרים מתקבל)
         const symbol = {
           type: "esriSFS",
           style: "esriSFSSolid",
@@ -1730,8 +1752,6 @@
       });
 
       clearChoropleth();
-
-      // כדי לראות נקי (אם הפונקציה קיימת)
       setMunicipalLayerOpacity(0);
 
       let ok = safeCall(govmap.displayGeometries, { name: CHORO_NAME, geometries });
@@ -1795,7 +1815,7 @@
         if (currentTab === "compare") updateCompareView();
         else if (currentTab === "trends") {
           const tc = document.getElementById("trends-content");
-          if (tc) tc.innerHTML = `<div class="message message-info">בחר רשות במפה כדי לראות נתונים היסטוריים</div>`;
+          if (tc) tc.innerHTML = `<div class="message message-info">בחר ${currentMode === "muni" ? "רשות" : "מרחב"} במפה כדי לראות נתונים היסטוריים</div>`;
         } else if (currentTab === "rankings") renderRankings();
         else {
           showInfo(
@@ -1879,7 +1899,7 @@
       <div id="header-actions">
         <button id="searchBtn" class="hbtn">🔎 חיפוש כתובת</button>
         <button id="aboutBtn" class="hbtn secondary">ℹ️ אודות + מקורות</button>
-        <button id="panelToggleBtn" class="hbtn secondary" title="כיווץ/הרחבה (במיוחד לנייד)">⬍ כיווץ</button>
+        <button id="panelToggleBtn" class="hbtn secondary" title="הקטן/הגדל (במיוחד לנייד)">➖ הקטן</button>
       </div>
     </div>
 
@@ -1938,7 +1958,7 @@
 
       <div class="tab-content" id="tab-trends">
         <div id="trends-content">
-          <div class="message message-info">בחר רשות במפה כדי לראות נתונים היסטוריים</div>
+          <div class="message message-info">בחר רשות/מרחב במפה כדי לראות נתונים היסטוריים</div>
         </div>
       </div>
 
@@ -1984,7 +2004,7 @@
         <div id="addrResults"></div>
 
         <div style="margin-top:12px; font-size:12px; color:#666; font-weight:800; line-height:1.5;">
-          טיפ לנייד: אחרי בחירת תוצאה, אפשר לכווץ את הפאנל עם כפתור “כיווץ” כדי לראות יותר מפה.
+          טיפ לנייד: אחרי בחירת תוצאה, אפשר להקטין את הפאנל עם כפתור “הקטן” כדי לראות יותר מפה.
         </div>
       </div>
     </div>
