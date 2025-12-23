@@ -24631,4 +24631,4 @@ window.crimeByYear = {
       }
   
   }
-};
+}
