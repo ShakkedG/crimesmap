@@ -12432,7 +12432,11 @@ window.crimeByYear = {
         "שאר עבירות": 5
       }
     },
-    
+    "Grand Total": {
+      "total": 414130,
+      "breakdown": {}
+    }
+  },
   "2023": {
     "כל הארץ": {
       "total": 125,
@@ -20623,7 +20627,11 @@ window.crimeByYear = {
         "עבירות תנועה": 16,
         "שאר עבירות": 2
       }
-
+    },
+    "Grand Total": {
+      "total": 394453,
+      "breakdown": {}
+    }
   },
   "2025": {
     "0": {
@@ -24629,6 +24637,10 @@ window.crimeByYear = {
         "עבירות תנועה": 8,
         "שאר עבירות": 2
       }
-  
+    },
+    "Grand Total": {
+      "total": 299697,
+      "breakdown": {}
+    }
   }
-}
+};
