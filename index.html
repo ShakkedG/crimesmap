@@ -25,6 +25,7 @@
     /* hide ESRI widgets if appear */
     .esri-layer-list, .esri-legend { display: none !important; }
 
+    /* PANEL */
     #info-panel {
       position: absolute;
       top: 15px;
@@ -32,8 +33,8 @@
       z-index: 9999;
       background: white;
       padding: 0;
-      border-radius: 8px;
-      width: 450px;
+      border-radius: 12px;
+      width: 430px;
       max-height: calc(100vh - 30px);
       box-shadow: 0 4px 12px rgba(0,0,0,0.15);
       font-size: 14px;
@@ -45,126 +46,138 @@
     #panel-header {
       background: linear-gradient(135deg, #0066cc 0%, #0052a3 100%);
       color: white;
-      padding: 16px 20px;
-      border-bottom: 1px solid #0052a3;
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(255,255,255,.15);
     }
-    #panel-header h1 { margin: 0; font-size: 18px; font-weight: 600; letter-spacing: -0.3px; }
-    #panel-header p  { margin: 6px 0 0 0; font-size: 13px; opacity: 0.92; line-height: 1.35; }
+    #panel-header h1 { margin: 0; font-size: 16px; font-weight: 800; letter-spacing: -0.3px; }
+    #panel-header p  { margin: 6px 0 0 0; font-size: 12px; opacity: 0.92; line-height: 1.35; }
+
+    #header-actions{
+      margin-top:10px;
+      display:flex;
+      gap:8px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    .hbtn{
+      padding:8px 12px;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,.35);
+      background: rgba(255,255,255,.15);
+      color:#fff;
+      font-weight:900;
+      cursor:pointer;
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      user-select:none;
+    }
+    .hbtn:active{ transform: translateY(1px); }
+    .hbtn.secondary{
+      background: rgba(0,0,0,.12);
+      border-color: rgba(255,255,255,.22);
+    }
 
     #tabs {
       display: flex;
+      gap: 0;
       background: #fafafa;
       border-bottom: 2px solid #e0e0e0;
     }
     .tab {
       flex: 1;
-      padding: 12px 10px;
+      padding: 10px 8px;
       text-align: center;
       cursor: pointer;
       border-bottom: 3px solid transparent;
       transition: all 0.2s ease;
-      font-size: 13px;
-      font-weight: 600;
+      font-size: 12px;
+      font-weight: 900;
       color: #666;
       user-select: none;
+      white-space: nowrap;
     }
     .tab:hover { background: #f0f0f0; color: #333; }
     .tab.active { background: white; border-bottom-color: #0066cc; color: #0066cc; }
 
     #controls {
-      padding: 16px 20px;
+      padding: 12px 14px;
       background: #fafafa;
       border-bottom: 1px solid #e0e0e0;
       flex-shrink: 0;
     }
 
-    #controls-row {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      margin-bottom: 12px;
+    .mode-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 10px;
     }
-
-    #controls label {
-      font-weight: 600;
-      font-size: 13px;
-      color: #333;
-      white-space: nowrap;
-      min-width: 70px;
-    }
-
-    #yearSelect {
-      flex: 1;
-      padding: 8px 12px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      font-size: 13px;
-      background: white;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    #yearSelect:hover { border-color: #0066cc; }
-    #yearSelect:focus {
-      outline: none;
-      border-color: #0066cc;
-      box-shadow: 0 0 0 3px rgba(0,102,204,0.1);
-    }
-
-    .mode-switch { display: flex; gap: 8px; margin-bottom: 12px; }
 
     .mode-btn {
-      flex: 1;
-      padding: 10px 12px;
-      border-radius: 6px;
+      padding: 10px 10px;
+      border-radius: 10px;
       border: 2px solid #ddd;
       background: white;
       cursor: pointer;
-      font-size: 13px;
-      font-weight: 800;
+      font-size: 12px;
+      font-weight: 900;
       color: #555;
-      transition: all 0.2s ease;
+      transition: all 0.15s ease;
       user-select: none;
+      text-align: center;
     }
-    .mode-btn:hover {
-      border-color: #0066cc;
-      color: #0066cc;
-      transform: translateY(-1px);
-    }
+    .mode-btn:hover { border-color: #0066cc; color: #0066cc; }
     .mode-btn.active {
       background: #0066cc;
       border-color: #0066cc;
       color: white;
-      box-shadow: 0 2px 6px rgba(0,102,204,0.3);
+      box-shadow: 0 2px 6px rgba(0,102,204,0.25);
     }
-
     .mode-btn.disabled {
-      opacity: 0.5;
+      opacity: 0.55;
       cursor: not-allowed !important;
-      transform: none !important;
-      box-shadow: none !important;
       border-color: #ddd !important;
       color: #666 !important;
       background: #fff !important;
       pointer-events: none;
     }
 
-    #quick-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    #controls-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    #controls label {
+      font-weight: 900;
+      font-size: 12px;
+      color: #333;
+      white-space: nowrap;
+    }
+    #yearSelect {
+      flex: 1;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      font-size: 13px;
+      background: white;
+      cursor: pointer;
+    }
 
+    #quick-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
     .stat-card {
       background: white;
-      padding: 12px;
-      border-radius: 6px;
+      padding: 10px;
+      border-radius: 10px;
       text-align: center;
       border: 1px solid #e0e0e0;
-      transition: all 0.2s;
     }
-    .stat-card:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-
-    .stat-value { font-size: 20px; font-weight: 900; color: #0066cc; margin-bottom: 4px; }
-    .stat-label { font-size: 10px; color: #777; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; }
+    .stat-value { font-size: 16px; font-weight: 1000; color: #0066cc; margin-bottom: 2px; }
+    .stat-label { font-size: 10px; color: #777; font-weight: 900; letter-spacing: .2px; }
 
     #info-content {
-      padding: 20px;
+      padding: 14px;
       overflow-y: auto;
       flex: 1;
       min-height: 0;
@@ -175,81 +188,71 @@
     .tab-content.active { display: block; }
 
     #info-title {
-      font-weight: 900;
-      font-size: 16px;
-      margin-bottom: 16px;
+      font-weight: 1000;
+      font-size: 15px;
+      margin-bottom: 12px;
       color: #222;
-      padding-bottom: 10px;
+      padding-bottom: 8px;
       border-bottom: 3px solid #0066cc;
     }
     #info-body { line-height: 1.6; color: #555; }
 
     .total-summary {
-      font-size: 28px;
-      font-weight: 900;
+      font-size: 24px;
+      font-weight: 1000;
       color: #0066cc;
-      margin: 16px 0 12px 0;
+      margin: 12px 0 10px 0;
       text-align: center;
-      padding: 18px;
+      padding: 14px;
       background: linear-gradient(135deg, #e7f3ff 0%, #f0f7ff 100%);
-      border-radius: 8px;
+      border-radius: 12px;
       border: 2px solid #b3d9ff;
-      box-shadow: 0 2px 6px rgba(0,102,204,0.1);
     }
 
     .sub-summary {
       margin-top: 0;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
       text-align: center;
-      font-size: 13px;
+      font-size: 12px;
       color: #444;
+      font-weight: 800;
     }
 
     .crime-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-      margin-top: 12px;
+      gap: 8px;
+      margin-top: 10px;
     }
-
     .crime-item {
       background: #fafafa;
-      padding: 14px;
-      border-radius: 8px;
+      padding: 12px;
+      border-radius: 12px;
       border: 1px solid #e0e0e0;
       border-right: 4px solid #0066cc;
-      transition: all 0.2s ease;
       display: flex;
       flex-direction: column;
       gap: 6px;
     }
-
-    .crime-item:hover {
-      background: #f0f7ff;
-      border-right-color: #0052a3;
-      transform: translateX(-3px);
-      box-shadow: 0 3px 8px rgba(0,0,0,0.12);
-    }
-
     .crime-name {
-      font-weight: 700;
+      font-weight: 900;
       color: #333;
       font-size: 12px;
-      line-height: 1.4;
-      min-height: 34px;
+      line-height: 1.35;
+      min-height: 32px;
       display: flex;
       align-items: center;
     }
-
-    .crime-count { font-weight: 900; color: #0066cc; font-size: 16px; }
+    .crime-count { font-weight: 1000; color: #0066cc; font-size: 15px; }
 
     .message {
-      padding: 14px 16px;
-      border-radius: 6px;
-      margin-bottom: 12px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      margin-bottom: 10px;
       font-size: 13px;
       border-right: 4px solid;
-      line-height: 1.5;
+      line-height: 1.55;
+      font-weight: 700;
     }
     .message-info  { background: #e7f3ff; color: #004080; border-right-color: #0066cc; }
     .message-warn  { background: #fff7e6; color: #7a4a00; border-right-color: #ffb300; }
@@ -261,8 +264,8 @@
       left: 50%;
       transform: translate(-50%, -50%);
       background: white;
-      padding: 30px 40px;
-      border-radius: 12px;
+      padding: 24px 28px;
+      border-radius: 14px;
       box-shadow: 0 4px 20px rgba(0,0,0,0.2);
       z-index: 10000;
       text-align: center;
@@ -270,7 +273,7 @@
     .spinner {
       width: 40px;
       height: 40px;
-      margin: 0 auto 16px;
+      margin: 0 auto 14px;
       border: 4px solid #e0e0e0;
       border-top: 4px solid #0066cc;
       border-radius: 50%;
@@ -278,31 +281,24 @@
     }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
+    /* Compare UI (keep) */
     .compare-city-tag {
       background: #e7f3ff;
       color: #0066cc;
-      padding: 8px 14px;
-      border-radius: 6px;
+      padding: 8px 12px;
+      border-radius: 10px;
       border: 1px solid #b3d9ff;
       display: inline-flex;
       align-items: center;
       gap: 8px;
       font-size: 13px;
-      font-weight: 800;
+      font-weight: 1000;
     }
     .compare-city-tag button {
-      border: none;
-      background: none;
-      color: #0066cc;
-      cursor: pointer;
-      font-size: 18px;
-      line-height: 1;
-      padding: 0;
-      width: 20px;
-      height: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      border: none; background: none; color: #0066cc;
+      cursor: pointer; font-size: 18px; line-height: 1;
+      padding: 0; width: 20px; height: 20px;
+      display: flex; align-items: center; justify-content: center;
       border-radius: 50%;
     }
     .compare-city-tag button:hover { background: #0066cc; color: white; }
@@ -313,19 +309,17 @@
       background: #0066cc;
       color: white;
       border: none;
-      border-radius: 6px;
+      border-radius: 12px;
       font-size: 14px;
-      font-weight: 800;
+      font-weight: 1000;
       cursor: pointer;
-      transition: all 0.2s;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
     }
-    .add-compare-btn:hover { background: #0052a3; }
 
-    .compare-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 12px; }
+    .compare-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 10px; }
     .compare-card {
       border: 1px solid #e0e0e0;
-      border-radius: 10px;
+      border-radius: 14px;
       padding: 12px;
       background: #fff;
       box-shadow: 0 2px 6px rgba(0,0,0,0.05);
@@ -338,10 +332,10 @@
       margin-bottom: 10px;
     }
     .compare-name {
-      font-weight: 900;
+      font-weight: 1000;
       color: #222;
       font-size: 14px;
-      max-width: 310px;
+      max-width: 280px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -349,7 +343,7 @@
     .compare-badges { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
     .badge {
       font-size: 11px;
-      font-weight: 900;
+      font-weight: 1000;
       padding: 6px 10px;
       border-radius: 999px;
       border: 1px solid #e0e0e0;
@@ -365,39 +359,38 @@
     .kpi {
       border: 1px solid #eee;
       background: #fafafa;
-      border-radius: 8px;
+      border-radius: 12px;
       padding: 10px;
       text-align: center;
     }
-    .kpi .kpi-value { font-weight: 900; color: #0066cc; font-size: 14px; margin-bottom: 4px; }
-    .kpi .kpi-label { font-size: 10px; font-weight: 900; color: #666; text-transform: uppercase; letter-spacing: .4px; }
+    .kpi .kpi-value { font-weight: 1000; color: #0066cc; font-size: 13px; margin-bottom: 4px; }
+    .kpi .kpi-label { font-size: 10px; font-weight: 1000; color: #666; letter-spacing: .2px; }
 
-    .compare-bars-title { margin-top: 12px; font-weight: 900; font-size: 14px; color: #222; }
-
+    .compare-bars-title { margin-top: 12px; font-weight: 1000; font-size: 14px; color: #222; }
     .compare-bar {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       margin: 10px 0;
       padding: 10px;
       background: #fafafa;
-      border-radius: 6px;
+      border-radius: 12px;
       border: 1px solid #e0e0e0;
     }
     .compare-bar-name {
-      width: 130px;
+      width: 120px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      font-size: 13px;
-      font-weight: 800;
+      font-size: 12px;
+      font-weight: 1000;
       color: #333;
     }
     .compare-bar-container {
       flex: 1;
-      height: 28px;
+      height: 26px;
       background: #f0f0f0;
-      border-radius: 6px;
+      border-radius: 10px;
       overflow: hidden;
       position: relative;
     }
@@ -410,106 +403,61 @@
       justify-content: flex-end;
       padding: 0 10px;
       font-size: 12px;
-      font-weight: 900;
-      transition: width 0.5s ease;
+      font-weight: 1000;
+      transition: width 0.35s ease;
       white-space: nowrap;
       min-width: 40px;
     }
 
-    /* ABOUT MODAL */
-    #aboutModal { display:none; position:fixed; inset:0; z-index:20000; }
-    #aboutOverlay { position:absolute; inset:0; background: rgba(0,0,0,.45); }
-
-    /* Rankings */
-    .rank-controls {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 12px;
-    }
-    .rank-controls select {
-      padding: 10px 12px;
-      border-radius: 8px;
-      border: 1px solid #ddd;
-      font-size: 13px;
-      background: #fff;
-    }
-    .rank-controls .full { grid-column: 1 / -1; }
-
-    .rank-list { display: grid; gap: 10px; }
-    .rank-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 12px;
-      border: 1px solid #e6e6e6;
-      background: #fafafa;
-      border-radius: 10px;
-    }
-    .rank-left { display: flex; align-items: center; gap: 10px; min-width: 0; }
-    .rank-num {
-      width: 32px; height: 32px; border-radius: 10px;
-      display: inline-flex; align-items: center; justify-content: center;
-      background: #e7f3ff; color: #0066cc; font-weight: 900;
-      flex: 0 0 auto;
-    }
-    .rank-name {
-      font-weight: 900; color: #222;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-      max-width: 250px;
-    }
-    .rank-right { font-weight: 900; color: #0066cc; white-space: nowrap; }
-    .rank-sub { font-size: 12px; color: #666; margin-top: 6px; }
-
-    /* ✅ Choropleth legend / controls */
-    #choropleth-legend {
-      margin-top: 10px;
-      padding: 10px 12px;
-      border-radius: 10px;
-      background: #fff;
-      border: 1px solid #e0e0e0;
-    }
-    .legend-title {
-      font-size: 12px;
-      font-weight: 900;
-      color: #333;
-      margin-bottom: 8px;
+    /* MODALS */
+    .modal { display:none; position:fixed; inset:0; z-index:20000; }
+    .modalOverlay { position:absolute; inset:0; background: rgba(0,0,0,.45); }
+    .modalCard {
+      position:relative;
+      width:min(760px, calc(100vw - 26px));
+      max-height: calc(100vh - 26px);
+      margin: 13px auto;
+      background:#fff;
+      border-radius:16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.25);
+      overflow:hidden;
       display:flex;
-      justify-content:space-between;
-      gap:10px;
+      flex-direction:column;
+    }
+    .modalHeader {
+      padding:14px 16px;
+      border-bottom:1px solid #e5e5e5;
+      display:flex;
       align-items:center;
-    }
-    .legend-bar {
-      height: 10px;
-      border-radius: 999px;
-      background: linear-gradient(90deg, rgba(255,0,0,0.12), rgba(255,0,0,0.55));
-      border: 1px solid rgba(200,0,0,0.25);
-    }
-    .legend-range {
-      display:flex;
       justify-content:space-between;
-      font-size: 11px;
-      color:#666;
-      margin-top: 6px;
-      font-weight: 800;
+      gap:12px;
+      background: linear-gradient(135deg, #0066cc 0%, #0052a3 100%);
+      color:#fff;
     }
-    #paintStatus {
-      margin-top: 8px;
-      font-size: 12px;
-      color: #666;
+    .modalHeaderTitle { font-weight:1000; font-size:15px; }
+    .modalClose {
+      border:none;
+      background: rgba(255,255,255,.18);
+      color:#fff;
+      width:40px;
+      height:40px;
+      border-radius:12px;
+      cursor:pointer;
+      font-size:20px;
+      font-weight:1000;
     }
+    .modalBody { padding:16px; overflow:auto; }
 
-    /* ✅ Address search results */
+    /* Search results list */
     #addrResults {
       border: 1px solid #e0e0e0;
       background: #fff;
-      border-radius: 10px;
+      border-radius: 14px;
       overflow: hidden;
-      max-height: 240px;
+      max-height: 320px;
       overflow-y: auto;
       display: none;
-      margin-top: 8px;
+      margin-top: 10px;
     }
     .addr-item {
       padding: 10px 12px;
@@ -521,13 +469,24 @@
     .addr-item:hover { background: #f5f9ff; }
     .addr-sub { font-size: 12px; color: #666; margin-top: 3px; }
 
+    /* Mobile bottom sheet */
     @media (max-width: 768px) {
-      #info-panel { width: calc(100% - 30px); left: 15px; right: 15px; max-height: calc(100vh - 100px); }
-      #quick-stats { grid-template-columns: repeat(2, 1fr); }
+      #info-panel{
+        left: 0; right: 0; top: auto; bottom: 0;
+        width: 100%;
+        max-height: none;
+        height: 62vh;
+        border-radius: 18px 18px 0 0;
+      }
+      #info-panel.collapsed{
+        height: 120px;
+      }
+      #info-content{ padding: 12px; }
       .crime-grid { grid-template-columns: 1fr; }
-      #panel-header h1 { font-size: 16px; }
       .compare-kpis { grid-template-columns: 1fr; }
-      .rank-controls { grid-template-columns: 1fr; }
+      .tab { font-size: 12px; }
+      #tabs { overflow-x:auto; }
+      #tabs .tab{ min-width: 90px; }
     }
   </style>
 
@@ -544,7 +503,7 @@
     let currentMetric = "abs";  // abs | rate (muni only)
 
     let selectedCity = null;
-    let selectedCityKey = null; // normalized variant key
+    let selectedCityKey = null;
     let compareList = [];
 
     const muniIndex = {};
@@ -556,14 +515,7 @@
     let rankingCrimeType = "";
     let rankingTopN = 10;
 
-    // ✅ Choropleth state
-    let choroplethAllNames = [];
-    let choroplethCancelToken = 0;
-    let layer125EntitiesCache = null;
-    let yearRateMin = 0;
-    let yearRateMax = 0;
-
-    // ✅ Address search state
+    // Address search state
     let lastGeocodeReqId = 0;
     let lastAddrItems = [];
 
@@ -648,8 +600,8 @@
       const headerP = document.querySelector("#panel-header p");
       if (headerP) {
         headerP.innerHTML = rateAvailable
-          ? `מצב נוכחי: <strong>ישובים/רשויות</strong><br>תצוגת אוכלוסייה/ל-10,000 זמינה רק כאן`
-          : `מצב נוכחי: <strong>מרחבים</strong><br>תצוגת אוכלוסייה/ל-10,000 <strong>לא זמינה</strong> במרחבים`;
+          ? `מצב נוכחי: <strong>ישובים/רשויות</strong><br>ל-10,000 זמין רק כאן`
+          : `מצב נוכחי: <strong>מרחבים</strong><br>ל-10,000 לא זמין במרחבים`;
       }
 
       if (!rateAvailable && currentMetric === "rate") {
@@ -795,226 +747,14 @@
           showTrends(selectedCity);
         } else {
           const tc = document.getElementById("trends-content");
-          if (tc) tc.innerHTML = `<div class="message message-info">בחר רשות במפה כדי לראות נתונים היסטוריים </div>`;
+          if (tc) tc.innerHTML = `<div class="message message-info">בחר רשות במפה כדי לראות נתונים היסטוריים</div>`;
         }
       } else if (tabName === "rankings") {
         renderRankings();
       }
     }
 
-    // -------------------- Choropleth utils --------------------
-    function setPaintStatus(msg) {
-      const el = document.getElementById("paintStatus");
-      if (el) el.textContent = msg || "";
-    }
-
-    function computeYearRateRange(year) {
-      yearRateMin = 0;
-      yearRateMax = 0;
-
-      const yd = window.crimeByYear?.[year];
-      if (!yd) return;
-
-      let min = Infinity;
-      let max = -Infinity;
-
-      for (const name in yd) {
-        const total = Number(yd?.[name]?.total || 0);
-        const pop = getPopulationForAuthority(name);
-        const rate = calcRatePer10k(total, pop);
-        if (rate == null) continue;
-        if (rate < min) min = rate;
-        if (rate > max) max = rate;
-      }
-
-      if (!Number.isFinite(min) || !Number.isFinite(max)) {
-        yearRateMin = 0;
-        yearRateMax = 0;
-        return;
-      }
-
-      yearRateMin = Math.floor(min);
-      yearRateMax = Math.ceil(max);
-      if (yearRateMax <= yearRateMin) yearRateMax = yearRateMin + 1;
-    }
-
-    function updateLegendUI() {
-      const minEl = document.getElementById("legendMin");
-      const maxEl = document.getElementById("legendMax");
-      const yearEl = document.getElementById("legendYear");
-      if (minEl) minEl.textContent = yearRateMin.toLocaleString();
-      if (maxEl) maxEl.textContent = yearRateMax.toLocaleString();
-      if (yearEl) yearEl.textContent = String(currentYear);
-    }
-
-    // מחלץ WKT מתוך entity שמוחזר מ-getLayerEntities
-    function extractWktFromGovmapItem(ent) {
-      if (!ent) return null;
-
-      const direct = ent.wkt || ent.WKT || ent.geometryWKT || ent.GeometryWKT;
-      if (typeof direct === "string" && (direct.startsWith("POLYGON") || direct.startsWith("MULTIPOLYGON"))) return direct;
-
-      const g = ent.Geometry || ent.geometry || ent.geom || ent.Shape || ent.shape;
-      if (typeof g === "string" && (g.startsWith("POLYGON") || g.startsWith("MULTIPOLYGON"))) return g;
-
-      const attrs = fieldsToObject(ent.Fields || ent.fields);
-      if (attrs) {
-        const cand = attrs.WKT || attrs.wkt || attrs.Shape || attrs.shape || attrs.GEOM || attrs.geom;
-        if (typeof cand === "string" && (cand.startsWith("POLYGON") || cand.startsWith("MULTIPOLYGON"))) return cand;
-      }
-
-      return null;
-    }
-
-    function rateToFillColor(rate) {
-      const t = (rate - yearRateMin) / (yearRateMax - yearRateMin);
-      const clamped = Math.max(0, Math.min(1, t));
-      const alpha = 0.10 + clamped * 0.55;
-      return [255, 0, 0, alpha];
-    }
-
-    function extractNameFromEntity(ent) {
-      const attrs = fieldsToObject(ent?.Fields || ent?.fields || ent) || ent;
-      const candidates = ["שם רשות", "שם רשות מקומית", "שם ישוב", "ישוב סופי", "SHEM_YISHUV", "Name", "NAME", "TITLE"];
-      for (const c of candidates) if (attrs && attrs[c]) return attrs[c];
-      return null;
-    }
-
-    function clearAllPainted() {
-      if (!mapInitialized) return;
-      if (!choroplethAllNames.length) return;
-
-      const chunk = 400;
-      for (let i = 0; i < choroplethAllNames.length; i += chunk) {
-        const part = choroplethAllNames.slice(i, i + chunk);
-        try { govmap.clearGeometriesByName(part); } catch (e) {}
-      }
-      choroplethAllNames = [];
-    }
-
-    async function fetchLayer125Entities() {
-      if (!mapInitialized) throw new Error("Map not initialized yet");
-      if (!MUNICIPAL_LAYER) throw new Error("MUNICIPAL_LAYER is missing");
-      if (layer125EntitiesCache) return layer125EntitiesCache;
-
-      const entitiesResp = await govmap.getLayerEntities({ layerName: String(MUNICIPAL_LAYER) });
-      const list = entitiesResp?.data || entitiesResp?.Data || entitiesResp || [];
-      if (!Array.isArray(list) || !list.length) throw new Error("Empty entities list from layer 125");
-
-      layer125EntitiesCache = list;
-      return list;
-    }
-
-    function buildAllChoroplethGeoms(entities) {
-      const yearData = window.crimeByYear?.[currentYear];
-      if (!yearData) return { wkts: [], names: [], symbols: [], skipped: 0, used: 0 };
-
-      computeYearRateRange(currentYear);
-      updateLegendUI();
-
-      const wkts = [];
-      const names = [];
-      const symbols = [];
-      let skipped = 0;
-      let used = 0;
-
-      for (let i = 0; i < entities.length; i++) {
-        const ent = entities[i];
-
-        const name = extractNameFromEntity(ent);
-        if (!name) { skipped++; continue; }
-
-        const key = normalizeKey(name);
-        const entry = muniIndex[key] || muniIndex[nameVariants(name)[0]];
-        if (!entry) { skipped++; continue; }
-
-        const total = Number(entry.data?.total || 0);
-        const pop = getPopulationForAuthority(entry.name);
-        const rate = calcRatePer10k(total, pop);
-        if (rate == null) { skipped++; continue; }
-
-        const wkt = extractWktFromGovmapItem(ent);
-        if (!wkt) { skipped++; continue; }
-
-        const fillColor = rateToFillColor(rate);
-
-        wkts.push(wkt);
-        const geomName = `__choropleth_all__${currentYear}__${used}`;
-        names.push(geomName);
-        choroplethAllNames.push(geomName);
-
-        symbols.push({
-          outlineColor: [180, 0, 0, 0.35],
-          outlineWidth: 1,
-          fillColor
-        });
-
-        used++;
-      }
-
-      return { wkts, names, symbols, skipped, used };
-    }
-
-    async function paintAllMunicipalitiesByRate() {
-      if (!mapInitialized) { alert("המפה עדיין לא נטענה."); return; }
-      if (currentMode !== "muni") { alert("צביעה לכל הארץ זמינה רק במצב ישובים/רשויות."); return; }
-      if (currentMetric !== "rate") { alert("כדי לצבוע לפי צבעים, העבר למדד 'ל-10,000 תושבים'."); return; }
-
-      choroplethCancelToken++;
-      const myToken = choroplethCancelToken;
-
-      setPaintStatus("טוען רשימת ישובים…");
-
-      try {
-        clearAllPainted();
-        buildMuniIndexForYear(currentYear);
-
-        const entities = await fetchLayer125Entities();
-        setPaintStatus(`מכין פוליגונים… (ישובים בשכבה: ${entities.length.toLocaleString()})`);
-
-        const { wkts, names, symbols, skipped, used } = buildAllChoroplethGeoms(entities);
-
-        if (!used) { setPaintStatus("לא נוצרו פוליגונים (ייתכן שחסרה גאומטריה/WKT או שאין התאמות/אוכלוסייה)."); return; }
-
-        const batchSize = 250;
-        const totalBatches = Math.ceil(wkts.length / batchSize);
-
-        for (let b = 0; b < totalBatches; b++) {
-          if (myToken !== choroplethCancelToken) { setPaintStatus("הצביעה בוטלה."); return; }
-
-          const from = b * batchSize;
-          const to = Math.min((b + 1) * batchSize, wkts.length);
-
-          setPaintStatus(`מצייר… ${to.toLocaleString()} / ${wkts.length.toLocaleString()} (אצווה ${b + 1}/${totalBatches})`);
-
-          const data = {
-            wkts: wkts.slice(from, to),
-            names: names.slice(from, to),
-            geometryType: govmap.geometryType.POLYGON,
-            clearExisting: false,
-            defaultSymbol: { outlineColor: [180, 0, 0, 0.35], outlineWidth: 1, fillColor: [255,0,0,0.12] },
-            symbols: symbols.slice(from, to),
-            data: { tooltips: new Array(to - from).fill(""), bubbles: new Array(to - from).fill(""), bubbleUrl: "" }
-          };
-
-          await govmap.displayGeometries(data).catch(err => console.warn("displayGeometries batch failed:", err));
-          await new Promise(r => setTimeout(r, 20));
-        }
-
-        setPaintStatus(`✅ הסתיים. צוירו ${used.toLocaleString()} פוליגונים. דילגנו על ${skipped.toLocaleString()} (ללא התאמה/אוכלוסייה/גאומטריה).`);
-      } catch (err) {
-        console.error(err);
-        setPaintStatus("❌ שגיאה בצביעה: " + (err?.message || err));
-      }
-    }
-
-    // -------------------- Mode / Metric (✅ clears paint) --------------------
-    function clearPaintAndStatus() {
-      choroplethCancelToken++;
-      clearAllPainted();
-      setPaintStatus("");
-    }
-
+    // -------------------- Mode / Metric --------------------
     function setMode(mode) {
       currentMode = mode;
 
@@ -1024,7 +764,6 @@
       if (br) br.classList.toggle("active", mode === "merhav");
 
       updateMetricButtonsUI();
-      clearPaintAndStatus();
 
       const layerToShow = (mode === "muni") ? MUNICIPAL_LAYER : POLICE_MERHAV_LAYER;
       const layerToHide = (mode === "muni") ? POLICE_MERHAV_LAYER : MUNICIPAL_LAYER;
@@ -1069,8 +808,6 @@
       if (bAbs) bAbs.classList.toggle("active", metric === "abs");
       if (bRate) bRate.classList.toggle("active", metric === "rate");
 
-      clearPaintAndStatus();
-
       if (currentTab === "single" && selectedCityKey) {
         const entry = muniIndex[selectedCityKey] || muniIndex[nameVariants(selectedCityKey)[0]];
         if (entry) showEntry(entry);
@@ -1112,7 +849,7 @@
       const filteredList = compareList.filter(c => c.mode === currentMode);
 
       if (filteredList.length > 0) {
-        html += '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;">';
+        html += '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;">';
         filteredList.forEach(item => {
           html += `<div class="compare-city-tag">${item.name}<button onclick="removeFromCompare('${item.key}')" title="הסר">×</button></div>`;
         });
@@ -1140,7 +877,7 @@
       } else if (metricIsRate) {
         const missing = rows.filter(r => r.rate == null).length;
         if (missing > 0) {
-          html += `<div class="message message-warn">יש <strong>${missing}</strong> רשויות בלי אוכלוסייה: הן יוצגו כ-"לא נמצא" ולא כ-0.</div>`;
+          html += `<div class="message message-warn">יש <strong>${missing}</strong> רשויות בלי אוכלוסייה: יוצגו כ-"לא נמצא".</div>`;
         } else {
           html += `<div class="message message-info">השוואה לפי <strong>ל-10,000 תושבים</strong> (אוכלוסייה 2019).</div>`;
         }
@@ -1199,13 +936,8 @@
 
         let pct, label;
         if (metricIsRate) {
-          if (value == null) {
-            pct = 7;
-            label = "לא נמצא";
-          } else {
-            pct = (value / maxVal) * 100;
-            label = `${value.toLocaleString()} /10k`;
-          }
+          if (value == null) { pct = 7; label = "לא נמצא"; }
+          else { pct = (value / maxVal) * 100; label = `${value.toLocaleString()} /10k`; }
         } else {
           pct = (value / maxVal) * 100;
           label = Number(value).toLocaleString();
@@ -1280,35 +1012,18 @@
 
       const maxVal = Math.max(...series.map(d => d.value), 1);
 
-      let html = `<h3 style="margin:0 0 16px 0;font-size:17px;color:#222;">${cityName}</h3>`;
+      let html = `<h3 style="margin:0 0 12px 0;font-size:16px;color:#222;font-weight:1000;">${cityName}</h3>`;
 
-      const matchedDifferent = yearlyData.find(d => d.matchedName && d.matchedName !== cityName);
       const foundYears = new Set(yearlyData.map(d => d.year));
       const missingYears = years.filter(y => !foundYears.has(y));
-
-      if (matchedDifferent) {
-        html += `<div class="message message-info" style="margin-bottom:12px;">
-          נמצא גם בשם תואם בדאטה: <strong>${matchedDifferent.matchedName}</strong> (תקין)
-        </div>`;
-      }
-
       if (missingYears.length) {
-        html += `<div class="message message-warn" style="margin-bottom:12px;">
-          אין נתונים ליישוב הזה בשנים: <strong>${missingYears.join(", ")}</strong>
-        </div>`;
+        html += `<div class="message message-warn">אין נתונים ליישוב הזה בשנים: <strong>${missingYears.join(", ")}</strong></div>`;
       }
 
       if (currentMetric === "rate") {
         const pop = getPopulationForAuthority(cityName);
-        if (!pop) {
-          html += `<div class="message message-warn" style="margin-bottom:12px;">
-            אין אוכלוסייה ליישוב הזה — תצוגת ל-10,000 מסומנת כ-"אין אוכלוסייה".
-          </div>`;
-        } else {
-          html += `<div class="message message-info" style="margin-bottom:12px;">
-            תצוגה ל-10,000 תושבים • אוכלוסייה (2019): ${Number(pop).toLocaleString()}
-          </div>`;
-        }
+        if (!pop) html += `<div class="message message-warn">אין אוכלוסייה ליישוב הזה — תצוגת ל-10,000 מסומנת כ-"אין אוכלוסייה".</div>`;
+        else html += `<div class="message message-info">אוכלוסייה (2019): ${Number(pop).toLocaleString()}</div>`;
       }
 
       series.forEach(d => {
@@ -1369,7 +1084,6 @@
 
           const key = normalizeKey(nameFromMap);
           const entry = muniIndex[key] || muniIndex[nameVariants(nameFromMap)[0]];
-
           if (!entry) { showInfo("לא נמצאו נתונים", `אין נתוני פשיעה עבור <strong>${nameFromMap}</strong> בשנת ${currentYear}`, "error"); return; }
 
           selectedCity = entry.name;
@@ -1404,17 +1118,44 @@
       }
     }
 
-    // -------------------- ABOUT MODAL --------------------
-    function openAbout() { const m = document.getElementById("aboutModal"); if (m) m.style.display = "block"; }
-    function closeAbout(){ const m = document.getElementById("aboutModal"); if (m) m.style.display = "none"; }
-    function initAboutModal() {
-      const btn = document.getElementById("aboutBtn");
-      const overlay = document.getElementById("aboutOverlay");
-      const closeBtn = document.getElementById("aboutCloseBtn");
-      if (btn) btn.addEventListener("click", openAbout);
-      if (overlay) overlay.addEventListener("click", closeAbout);
-      if (closeBtn) closeBtn.addEventListener("click", closeAbout);
-      document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeAbout(); });
+    // -------------------- MODALS --------------------
+    function openModal(id){ const m=document.getElementById(id); if(m) m.style.display="block"; }
+    function closeModal(id){ const m=document.getElementById(id); if(m) m.style.display="none"; }
+
+    function initModals(){
+      // About
+      const aboutBtn = document.getElementById("aboutBtn");
+      const aboutClose = document.getElementById("aboutCloseBtn");
+      const aboutOverlay = document.getElementById("aboutOverlay");
+      if (aboutBtn) aboutBtn.addEventListener("click", ()=>openModal("aboutModal"));
+      if (aboutClose) aboutClose.addEventListener("click", ()=>closeModal("aboutModal"));
+      if (aboutOverlay) aboutOverlay.addEventListener("click", ()=>closeModal("aboutModal"));
+
+      // Search
+      const searchBtn = document.getElementById("searchBtn");
+      const searchClose = document.getElementById("searchCloseBtn");
+      const searchOverlay = document.getElementById("searchOverlay");
+      if (searchBtn) searchBtn.addEventListener("click", ()=>{
+        openModal("searchModal");
+        const inp = document.getElementById("addrInput");
+        if (inp) setTimeout(()=>inp.focus(), 50);
+      });
+      if (searchClose) searchClose.addEventListener("click", ()=>closeModal("searchModal"));
+      if (searchOverlay) searchOverlay.addEventListener("click", ()=>closeModal("searchModal"));
+
+      document.addEventListener("keydown", (e)=>{
+        if(e.key==="Escape"){
+          closeModal("aboutModal");
+          closeModal("searchModal");
+        }
+      });
+    }
+
+    // Panel collapse (mobile)
+    function togglePanel(){
+      const panel = document.getElementById("info-panel");
+      if(!panel) return;
+      panel.classList.toggle("collapsed");
     }
 
     // -------------------- Rankings --------------------
@@ -1563,19 +1304,21 @@
       const typeDisabled = (rankingMetric !== "type" || !types.length) ? "disabled" : "";
 
       let html = `
-        <div class="message message-info" style="margin-bottom:12px;">
+        <div class="message message-info" style="margin-bottom:10px;">
           שנה: <strong>${currentYear}</strong> • מצב: <strong>${isMerhav ? "מרחבים" : "ישובים/רשויות"}</strong>
         </div>
 
-        <div class="rank-controls">
-          <select id="rankMetricSelect">${metricOptions}</select>
-          <select id="rankTopNSelect">
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-bottom:10px;">
+          <select id="rankMetricSelect" style="padding:10px 12px;border-radius:12px;border:1px solid #ddd;background:#fff;font-weight:900;">
+            ${metricOptions}
+          </select>
+          <select id="rankTopNSelect" style="padding:10px 12px;border-radius:12px;border:1px solid #ddd;background:#fff;font-weight:900;">
             <option value="5">Top 5</option>
             <option value="10">Top 10</option>
             <option value="20">Top 20</option>
           </select>
 
-          <select id="rankCrimeTypeSelect" class="full" ${typeDisabled}>
+          <select id="rankCrimeTypeSelect" style="grid-column: 1 / -1; padding:10px 12px;border-radius:12px;border:1px solid #ddd;background:#fff;font-weight:900;" ${typeDisabled}>
             ${types.length ? types.map(t => `<option value="${escapeHtml(t)}">${escapeHtml(t)}</option>`).join("")
               : `<option value="">אין רשימת סוגים</option>`}
           </select>
@@ -1591,22 +1334,30 @@
         return;
       }
 
-      html += `<div class="rank-list">`;
+      html += `<div style="display:grid; gap:10px;">`;
       top.forEach((r, idx) => {
         const sub = (rankingMetric === "rate" && r.extra)
-          ? `<div class="rank-sub">אוכלוסייה (2019): ${Number(r.extra.pop).toLocaleString()} • סה״כ אירועים: ${Number(r.extra.total).toLocaleString()}</div>`
+          ? `<div style="font-size:12px;color:#666;margin-top:6px;font-weight:800;">
+              אוכלוסייה (2019): ${Number(r.extra.pop).toLocaleString()} • סה״כ אירועים: ${Number(r.extra.total).toLocaleString()}
+            </div>`
           : ``;
 
         html += `
-          <div class="rank-item">
-            <div class="rank-left">
-              <div class="rank-num">${idx + 1}</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;border:1px solid #e6e6e6;background:#fafafa;border-radius:14px;">
+            <div style="display:flex;align-items:center;gap:10px;min-width:0;">
+              <div style="width:32px;height:32px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:#e7f3ff;color:#0066cc;font-weight:1000;flex:0 0 auto;">
+                ${idx + 1}
+              </div>
               <div style="min-width:0;">
-                <div class="rank-name" title="${escapeHtml(r.name)}">${escapeHtml(r.name)}</div>
+                <div style="font-weight:1000;color:#222;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:260px;" title="${escapeHtml(r.name)}">
+                  ${escapeHtml(r.name)}
+                </div>
                 ${sub}
               </div>
             </div>
-            <div class="rank-right">${formatValueByMetric(r)}</div>
+            <div style="font-weight:1000;color:#0066cc;white-space:nowrap;">
+              ${formatValueByMetric(r)}
+            </div>
           </div>
         `;
       });
@@ -1616,7 +1367,7 @@
       wireRankingsControls(types);
     }
 
-    // -------------------- ✅ Address Search (Geocode + Zoom) --------------------
+    // -------------------- Address Search (Geocode + Zoom) --------------------
     function parseGeocodeList(resp) {
       const list = resp?.data || resp?.Data || resp?.results || resp;
       if (Array.isArray(list)) return list;
@@ -1648,7 +1399,7 @@
         const sub = escapeHtml(it.__sub || "");
         return `
           <div class="addr-item" data-idx="${idx}">
-            <div style="font-weight:900; color:#222;">${title}</div>
+            <div style="font-weight:1000; color:#222;">${title}</div>
             ${sub ? `<div class="addr-sub">${sub}</div>` : ""}
           </div>
         `;
@@ -1660,6 +1411,7 @@
           const picked = lastAddrItems[idx];
           if (picked) focusToGeocodeItem(picked);
           box.style.display = "none";
+          closeModal("searchModal");
         });
       });
     }
@@ -1731,13 +1483,12 @@
         renderAddrResults([]);
       };
 
-      // תמיכה גם ב-Promise וגם ב-jQuery Deferred
+      // supports Promise or jQuery Deferred
       if (res && typeof res.then === "function") {
         res.then(onSuccess).catch(onFail);
       } else if (res && typeof res.done === "function") {
         res.done(onSuccess).fail(onFail);
       } else {
-        // fallback
         onFail(new Error("Unknown geocode return type"));
       }
     }
@@ -1755,7 +1506,6 @@
         if (e.key === "Escape") box.style.display = "none";
       });
 
-      // חיפוש חי עם דיליי קצר
       let t = null;
       input.addEventListener("input", () => {
         clearTimeout(t);
@@ -1764,7 +1514,6 @@
         t = setTimeout(() => runGeocode(v), 350);
       });
 
-      // קליק מחוץ לסגירת התוצאות
       document.addEventListener("click", (e) => {
         if (!box.contains(e.target) && e.target !== input && e.target !== btn) {
           box.style.display = "none";
@@ -1807,9 +1556,6 @@
       yearlyStats[currentYear] = calculateStats(currentYear);
       updateQuickStats();
 
-      computeYearRateRange(currentYear);
-      updateLegendUI();
-
       sel.addEventListener("change", e => {
         currentYear = e.target.value;
 
@@ -1818,18 +1564,13 @@
         yearlyStats[currentYear] = calculateStats(currentYear);
         updateQuickStats();
 
-        computeYearRateRange(currentYear);
-        updateLegendUI();
-
         selectedCity = null;
         selectedCityKey = null;
-
-        clearPaintAndStatus();
 
         if (currentTab === "compare") updateCompareView();
         else if (currentTab === "trends") {
           const tc = document.getElementById("trends-content");
-          if (tc) tc.innerHTML = `<div class="message message-info">בחר רשות במפה כדי לראות נתונים היסטוריים </div>`;
+          if (tc) tc.innerHTML = `<div class="message message-info">בחר רשות במפה כדי לראות נתונים היסטוריים</div>`;
         } else if (currentTab === "rankings") renderRankings();
         else {
           showInfo(
@@ -1855,16 +1596,11 @@
           try { govmap.onEvent(govmap.events.CLICK).progress(onMapClick); }
           catch (e) { console.warn("⚠️ govmap click hook failed:", e); }
 
-          initAboutModal();
-
-          // ✅ Wire paint buttons
-          const paintBtn = document.getElementById("btnPaintAll");
-          const clearBtn = document.getElementById("btnClearPaint");
-          if (paintBtn) paintBtn.onclick = () => paintAllMunicipalitiesByRate();
-          if (clearBtn) clearBtn.onclick = () => clearPaintAndStatus();
-
-          // ✅ Wire address search
+          initModals();
           initAddressSearchUI();
+
+          const toggleBtn = document.getElementById("panelToggleBtn");
+          if (toggleBtn) toggleBtn.addEventListener("click", togglePanel);
 
           const l = document.getElementById("loading");
           if (l) l.style.display = "none";
@@ -1872,7 +1608,7 @@
           if (!popOk) {
             showInfo(
               "שים לב",
-              "PopulationDB.js לא נטען או לא תקין — תצוגת אוכלוסייה/ל-10,000 לא תהיה זמינה בכל המקומות, אבל כמות ופירוט עבירות עובדים כרגיל.",
+              "PopulationDB.js לא נטען או לא תקין — תצוגת אוכלוסייה/ל-10,000 תהיה חלקית, אבל כמות ופירוט עבירות עובדים כרגיל.",
               "warn"
             );
           } else {
@@ -1902,7 +1638,7 @@
 <body>
   <div id="loading">
     <div class="spinner"></div>
-    <div style="font-size:15px;color:#333;font-weight:700;">טוען מפה...</div>
+    <div style="font-size:14px;color:#333;font-weight:900;">טוען מפה...</div>
   </div>
 
   <div id="map"></div>
@@ -1910,77 +1646,36 @@
   <div id="info-panel">
     <div id="panel-header">
       <h1>🗺️ מפת פשיעה בישראל</h1>
-      <p>מצב נוכחי: <strong>ישובים/רשויות</strong><br>תצוגת אוכלוסייה/ל-10,000 זמינה רק כאן</p>
+      <p>מצב נוכחי: <strong>ישובים/רשויות</strong><br>ל-10,000 זמין רק כאן</p>
 
-      <div style="margin-top:10px; display:flex; gap:8px;">
-        <button id="aboutBtn" style="
-          padding:8px 12px;
-          border-radius:8px;
-          border:1px solid rgba(255,255,255,.35);
-          background: rgba(255,255,255,.15);
-          color:#fff;
-          font-weight:800;
-          cursor:pointer;
-        ">ℹ️ אודות + מקורות</button>
+      <div id="header-actions">
+        <button id="searchBtn" class="hbtn">🔎 חיפוש כתובת</button>
+        <button id="aboutBtn" class="hbtn secondary">ℹ️ אודות + מקורות</button>
+        <button id="panelToggleBtn" class="hbtn secondary" title="כיווץ/הרחבה (במיוחד לנייד)">⬍ כיווץ</button>
       </div>
     </div>
 
     <div id="tabs">
       <div class="tab active" data-tab="single" onclick="switchTab('single')">תצוגה</div>
       <div class="tab" data-tab="compare" onclick="switchTab('compare')">השוואה</div>
-      <div class="tab" data-tab="trends" onclick="switchTab('trends')">נתונים היסטוריים</div>
+      <div class="tab" data-tab="trends" onclick="switchTab('trends')">היסטוריה</div>
       <div class="tab" data-tab="rankings" onclick="switchTab('rankings')">דירוגים</div>
     </div>
 
     <div id="controls">
-      <div class="mode-switch">
-        <button id="btnModeMuni" class="mode-btn active" onclick="setMode('muni')">🏘️ מצב ישובים/רשויות</button>
-        <button id="btnModeMerhav" class="mode-btn" onclick="setMode('merhav')">🚔 מצב מרחבים</button>
-      </div>
-
-      <div class="mode-switch">
+      <div class="mode-grid">
+        <button id="btnModeMuni" class="mode-btn active" onclick="setMode('muni')">🏘️ ישובים/רשויות</button>
+        <button id="btnModeMerhav" class="mode-btn" onclick="setMode('merhav')">🚔 מרחבים</button>
         <button id="btnMetricAbs" class="mode-btn active" onclick="setMetric('abs')">🔢 כמות</button>
-        <button id="btnMetricRate" class="mode-btn" title="זמין רק במצב ישובים/רשויות">👥 ל-10,000 תושבים</button>
+        <button id="btnMetricRate" class="mode-btn" title="זמין רק במצב ישובים/רשויות">👥 ל-10,000</button>
       </div>
 
       <div id="controls-row">
-        <label for="yearSelect">בחר שנה:</label>
+        <label for="yearSelect">שנה:</label>
         <select id="yearSelect"></select>
       </div>
 
-      <!-- ✅ Choropleth buttons -->
-      <div style="display:flex; gap:8px; margin-top:10px;">
-        <button id="btnPaintAll" class="mode-btn" style="flex:1;">🎨 צביעה לכל הארץ (ל־10,000)</button>
-        <button id="btnClearPaint" class="mode-btn" style="flex:1;">🧹 נקה צביעה</button>
-      </div>
-      <div id="paintStatus"></div>
-
-      <!-- ✅ Legend -->
-      <div id="choropleth-legend">
-        <div class="legend-title">
-          <span>מקרא צבעים (ל־10,000)</span>
-          <span style="font-size:11px; opacity:.9;">שנה: <strong id="legendYear"></strong></span>
-        </div>
-        <div class="legend-bar"></div>
-        <div class="legend-range">
-          <span id="legendMin">0</span>
-          <span id="legendMax">0</span>
-        </div>
-      </div>
-
-      <!-- ✅ Address search -->
-      <div style="margin-top:12px;">
-        <label style="display:block; font-weight:800; margin-bottom:6px;">חיפוש כתובת:</label>
-        <div style="display:flex; gap:8px;">
-          <input id="addrInput" type="text" placeholder="לדוגמה: דיזנגוף 50 תל אביב"
-            style="flex:1; padding:10px 12px; border-radius:8px; border:1px solid #ddd; font-size:13px;"
-          />
-          <button id="addrBtn" class="mode-btn" style="flex:0 0 auto; padding:10px 14px;">חפש</button>
-        </div>
-        <div id="addrResults"></div>
-      </div>
-
-      <div id="quick-stats" style="margin-top:12px;">
+      <div id="quick-stats">
         <div class="stat-card">
           <div class="stat-value" id="stat-municipalities">-</div>
           <div class="stat-label">רשויות</div>
@@ -2010,7 +1705,7 @@
 
       <div class="tab-content" id="tab-trends">
         <div id="trends-content">
-          <div class="message message-info">בחר רשות במפה כדי לראות נתונים היסטוריים </div>
+          <div class="message message-info">בחר רשות במפה כדי לראות נתונים היסטוריים</div>
         </div>
       </div>
 
@@ -2022,52 +1717,62 @@
     </div>
   </div>
 
-  <!-- ABOUT MODAL -->
-  <div id="aboutModal">
-    <div id="aboutOverlay"></div>
+  <!-- SEARCH MODAL -->
+  <div id="searchModal" class="modal" aria-hidden="true">
+    <div id="searchOverlay" class="modalOverlay"></div>
 
-    <div role="dialog" aria-modal="true" aria-labelledby="aboutTitle" style="
-      position:relative;
-      width:min(720px, calc(100vw - 30px));
-      max-height: calc(100vh - 30px);
-      margin: 15px auto;
-      background:#fff;
-      border-radius:14px;
-      box-shadow: 0 10px 30px rgba(0,0,0,.25);
-      overflow:hidden;
-      display:flex;
-      flex-direction:column;
-    ">
-      <div style="
-        padding:16px 18px;
-        border-bottom:1px solid #e5e5e5;
-        display:flex;
-        align-items:center;
-        justify-content:space-between;
-        gap:12px;
-        background: linear-gradient(135deg, #0066cc 0%, #0052a3 100%);
-        color:#fff;
-      ">
+    <div class="modalCard" role="dialog" aria-modal="true" aria-labelledby="searchTitle">
+      <div class="modalHeader">
         <div>
-          <div id="aboutTitle" style="font-weight:900; font-size:16px;">אודות + מקורות נתונים</div>
+          <div id="searchTitle" class="modalHeaderTitle">🔎 חיפוש כתובת + זום</div>
+          <div style="opacity:.92; font-size:12px; margin-top:4px; line-height:1.3;">
+            כתוב כתובת (לדוגמה: דיזנגוף 50 תל אביב) ואז בחר תוצאה כדי להתמקד במפה
+          </div>
+        </div>
+        <button id="searchCloseBtn" class="modalClose" aria-label="סגור">×</button>
+      </div>
+
+      <div class="modalBody">
+        <div style="display:flex; gap:8px; align-items:center;">
+          <input id="addrInput" type="text" placeholder="לדוגמה: דיזנגוף 50 תל אביב"
+            style="flex:1; padding:12px 12px; border-radius:12px; border:1px solid #ddd; font-size:14px; font-weight:800;"
+          />
+          <button id="addrBtn" style="
+            padding:12px 14px;
+            border-radius:12px;
+            border:2px solid #0066cc;
+            background:#0066cc;
+            color:#fff;
+            font-weight:1000;
+            cursor:pointer;
+          ">חפש</button>
+        </div>
+
+        <div id="addrResults"></div>
+
+        <div style="margin-top:12px; font-size:12px; color:#666; font-weight:800; line-height:1.5;">
+          טיפ לנייד: אחרי בחירת תוצאה, אפשר לכווץ את הפאנל עם כפתור “כיווץ” כדי לראות יותר מפה.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ABOUT MODAL -->
+  <div id="aboutModal" class="modal" aria-hidden="true">
+    <div id="aboutOverlay" class="modalOverlay"></div>
+
+    <div class="modalCard" role="dialog" aria-modal="true" aria-labelledby="aboutTitle">
+      <div class="modalHeader">
+        <div>
+          <div id="aboutTitle" class="modalHeaderTitle">ℹ️ אודות + מקורות נתונים</div>
           <div style="opacity:.92; font-size:12px; margin-top:4px; line-height:1.3;">
             הקישורים כאן מאפשרים לראות/להוריד את הקבצים ששימשו לבניית האתר
           </div>
         </div>
-        <button id="aboutCloseBtn" aria-label="סגור" style="
-          border:none;
-          background: rgba(255,255,255,.18);
-          color:#fff;
-          width:38px;
-          height:38px;
-          border-radius:10px;
-          cursor:pointer;
-          font-size:20px;
-          font-weight:900;
-        ">×</button>
+        <button id="aboutCloseBtn" class="modalClose" aria-label="סגור">×</button>
       </div>
 
-      <div style="padding:16px 18px; overflow:auto;">
+      <div class="modalBody">
         <div style="
           padding:12px 12px;
           border:1px solid #e8e8e8;
@@ -2077,11 +1782,12 @@
           line-height:1.6;
           color:#333;
           font-size:13px;
+          font-weight:800;
         ">
           <strong>הערות:</strong><br>
           • נתוני אוכלוסייה משמשים רק לחישוב “ל-10,000” במצב ישובים/רשויות.<br>
-          • <strong>גילוי נאות:</strong> נתוני האוכלוסייה הם לשנת <strong>2019</strong> בלבד, ואינם מתעדכנים לפי שנה (כל השנים משתמשות באותו בסיס אוכלוסייה).<br>
-          • אם קובץ לא נפתח בלחיצה — בד״כ הוא לא נמצא באותה תיקייה ב-GitHub Pages או לא בוצע commit.
+          • נתוני האוכלוסייה הם לשנת <strong>2019</strong> בלבד (בסיס אחיד לכל השנים).<br>
+          • אם מתקבלת שגיאה “Unexpected end of input” — בד"כ קובץ ה-JS של הנתונים לא הועלה תקין או נחתך.
         </div>
 
         <h3 style="margin:10px 0 8px; font-size:14px;">קישורים ל־Google Drive</h3>
@@ -2102,9 +1808,8 @@
           <li><a href="PopulationDB.js" target="_blank" rel="noopener noreferrer">PopulationDB.js</a></li>
         </ul>
 
-        <div style="margin-top:14px; font-size:12px; color:#666;">
-          טיפ: כדי שהקישורים המקומיים יעבדו ב-GitHub Pages, ודא שכל הקבצים נמצאים באותה תיקייה של index.html (או עדכן את הנתיב ב-href).<br>
-          אם השמות בריפו כוללים (2) או (4) — חייבים לעדכן פה את ה-href בדיוק לשם האמיתי.
+        <div style="margin-top:14px; font-size:12px; color:#666; font-weight:800;">
+          כדי שהקישורים המקומיים יעבדו ב-GitHub Pages: כל הקבצים חייבים להיות באותה תיקייה של index.html (או לעדכן נתיבים).
         </div>
       </div>
     </div>
