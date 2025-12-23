@@ -1452,7 +1452,7 @@
 
       box.style.display = "block";
       box.innerHTML = items.map((it, idx) => {
-      const title = escapeHtml(it.__title || lastGeocodeQuery || "תוצאה");
+        const title = escapeHtml(it.__title || "תוצאה");
         const sub = escapeHtml(it.__sub || "");
         return `
           <div class="addr-item" data-idx="${idx}">
@@ -1527,27 +1527,13 @@
         if (myId !== lastGeocodeReqId) return;
         const list = parseGeocodeList(resp);
 
-       const mapped = list.slice(0, 10).map(r => {
-  // ✅ נסה קודם שם יישוב/שם אובייקט, ואז כתובת, ואז כללי
-  const title =
-    r?.SettlementName || r?.settlementName ||
-    r?.PlaceName      || r?.placeName ||
-    r?.Name           || r?.name ||
-    r?.ResultLabel    || r?.resultLabel ||
-    r?.Address        || r?.address ||
-    r?.Title          || r?.title ||
-    r?.label ||
-    lastGeocodeQuery || "תוצאה";
-
-  const sub =
-    r?.City || r?.city ||
-    r?.Region || r?.region ||
-    r?.Street || r?.street ||
-    r?.SubTitle || r?.subTitle || "";
-
-  return { ...r, __title: String(title).trim(), __sub: String(sub).trim() };
-});
-
+        const mapped = list.slice(0, 10).map(r => {
+          const title =
+            r?.ResultLabel || r?.label || r?.Title || r?.title || r?.Address || r?.address || r?.Name || r?.name || "תוצאה";
+          const sub =
+            r?.City || r?.city || r?.Street || r?.street || r?.SubTitle || r?.subTitle || "";
+          return { ...r, __title: String(title), __sub: String(sub) };
+        });
 
         renderAddrResults(mapped);
       };
