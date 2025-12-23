@@ -29,7 +29,8 @@
     #info-panel {
       position: absolute;
       top: 15px;
-      left: 15px;
+      right: 15px;     /* ✅ RTL-friendly (moved to right) */
+      left: auto;
       z-index: 9999;
       background: white;
       padding: 0;
@@ -41,6 +42,25 @@
       overflow: hidden;
       display: flex;
       flex-direction: column;
+      transition: width .2s ease, height .2s ease;
+    }
+
+    /* ✅ Collapse works on desktop + mobile */
+    #info-panel.collapsed{
+      width: 340px;
+      height: 92px;
+      max-height: 92px;
+    }
+    #info-panel.collapsed #tabs,
+    #info-panel.collapsed #controls,
+    #info-panel.collapsed #info-content{
+      display:none !important;
+    }
+    #info-panel.collapsed #panel-header p{
+      display:none !important;
+    }
+    #info-panel.collapsed #header-actions{
+      margin-top: 8px;
     }
 
     #panel-header {
@@ -48,6 +68,7 @@
       color: white;
       padding: 14px 16px;
       border-bottom: 1px solid rgba(255,255,255,.15);
+      user-select:none;
     }
     #panel-header h1 { margin: 0; font-size: 16px; font-weight: 800; letter-spacing: -0.3px; }
     #panel-header p  { margin: 6px 0 0 0; font-size: 12px; opacity: 0.92; line-height: 1.35; }
@@ -71,6 +92,7 @@
       gap:8px;
       align-items:center;
       user-select:none;
+      white-space:nowrap;
     }
     .hbtn:active{ transform: translateY(1px); }
     .hbtn.secondary{
@@ -163,6 +185,18 @@
       font-size: 13px;
       background: white;
       cursor: pointer;
+    }
+
+    /* ✅ New: quick address search button inside controls row */
+    #quickSearchBtn{
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid #0066cc;
+      background: #0066cc;
+      color: #fff;
+      font-weight: 1000;
+      cursor: pointer;
+      white-space: nowrap;
     }
 
     #quick-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
@@ -480,6 +514,7 @@
       }
       #info-panel.collapsed{
         height: 120px;
+        max-height: 120px;
       }
       #info-content{ padding: 12px; }
       .crime-grid { grid-template-columns: 1fr; }
@@ -817,7 +852,7 @@
       if (currentTab === "rankings") renderRankings();
     }
 
-    // -------------------- Compare --------------------
+    // -------------------- Compare (keep) --------------------
     function addToCompare() {
       if (!selectedCity) { alert(`אנא בחר ${currentMode === "muni" ? "רשות" : "מרחב"} במפה תחילה`); return; }
       if (!compareList.some(c => c.key === selectedCityKey && c.mode === currentMode)) {
@@ -825,12 +860,10 @@
         updateCompareView();
       }
     }
-
     function removeFromCompare(key) {
       compareList = compareList.filter(c => c.key !== key || c.mode !== currentMode);
       updateCompareView();
     }
-
     function updateCompareView() {
       const container = document.getElementById("compare-content");
       if (!container) return;
@@ -876,11 +909,8 @@
         html += `<div class="message message-info">במצב מרחבים ההשוואה היא לפי כמות בלבד (אין אוכלוסייה).</div>`;
       } else if (metricIsRate) {
         const missing = rows.filter(r => r.rate == null).length;
-        if (missing > 0) {
-          html += `<div class="message message-warn">יש <strong>${missing}</strong> רשויות בלי אוכלוסייה: יוצגו כ-"לא נמצא".</div>`;
-        } else {
-          html += `<div class="message message-info">השוואה לפי <strong>ל-10,000 תושבים</strong> (אוכלוסייה 2019).</div>`;
-        }
+        if (missing > 0) html += `<div class="message message-warn">יש <strong>${missing}</strong> רשויות בלי אוכלוסייה: יוצגו כ-"לא נמצא".</div>`;
+        else html += `<div class="message message-info">השוואה לפי <strong>ל-10,000 תושבים</strong> (אוכלוסייה 2019).</div>`;
       } else {
         html += `<div class="message message-info">טיפ: מעבר ל־<strong>ל-10,000</strong> משווה יחסית לגודל אוכלוסייה (2019).</div>`;
       }
@@ -920,9 +950,7 @@
       const title = metricIsRate ? `השוואה לפי ל-10,000 (${currentYear})` : `השוואה לפי כמות (${currentYear})`;
       html += `<div class="compare-bars-title">${title}</div>`;
 
-      const values = rows
-        .map(r => metricIsRate ? r.rate : r.total)
-        .filter(v => v != null && Number.isFinite(v));
+      const values = rows.map(r => metricIsRate ? r.rate : r.total).filter(v => v != null && Number.isFinite(v));
       const maxVal = Math.max(...values, 1);
 
       const sorted = [...rows].sort((a, b) => {
@@ -933,7 +961,6 @@
 
       sorted.forEach(r => {
         const value = metricIsRate ? r.rate : r.total;
-
         let pct, label;
         if (metricIsRate) {
           if (value == null) { pct = 7; label = "לא נמצא"; }
@@ -954,7 +981,7 @@
       container.innerHTML = html;
     }
 
-    // -------------------- Trends --------------------
+    // -------------------- Trends (keep) --------------------
     function showTrends(cityName) {
       const container = document.getElementById("trends-content");
       if (!container) return;
@@ -986,9 +1013,7 @@
       years.forEach(year => {
         const yearData = window.crimeByYear?.[year];
         const match = tryMatchInYear(yearData);
-        if (match?.data) {
-          yearlyData.push({ year, total: Number(match.data.total || 0), matchedName: match.matchedName });
-        }
+        if (match?.data) yearlyData.push({ year, total: Number(match.data.total || 0), matchedName: match.matchedName });
       });
 
       if (!yearlyData.length) {
@@ -1002,11 +1027,7 @@
         const pop = getPopulationForAuthority(cityName);
         series = yearlyData.map(d => {
           const rate = calcRatePer10k(d.total, pop);
-          return {
-            year: d.year,
-            value: rate == null ? 0 : rate,
-            label: rate == null ? "אין אוכלוסייה" : `${rate.toLocaleString()} /10k`
-          };
+          return { year: d.year, value: rate == null ? 0 : rate, label: rate == null ? "אין אוכלוסייה" : `${rate.toLocaleString()} /10k` };
         });
       }
 
@@ -1131,17 +1152,17 @@
       if (aboutClose) aboutClose.addEventListener("click", ()=>closeModal("aboutModal"));
       if (aboutOverlay) aboutOverlay.addEventListener("click", ()=>closeModal("aboutModal"));
 
-      // Search
+      // Search (header button)
       const searchBtn = document.getElementById("searchBtn");
       const searchClose = document.getElementById("searchCloseBtn");
       const searchOverlay = document.getElementById("searchOverlay");
-      if (searchBtn) searchBtn.addEventListener("click", ()=>{
-        openModal("searchModal");
-        const inp = document.getElementById("addrInput");
-        if (inp) setTimeout(()=>inp.focus(), 50);
-      });
+      if (searchBtn) searchBtn.addEventListener("click", ()=>openSearchModal());
       if (searchClose) searchClose.addEventListener("click", ()=>closeModal("searchModal"));
       if (searchOverlay) searchOverlay.addEventListener("click", ()=>closeModal("searchModal"));
+
+      // Search (controls button)
+      const quickSearchBtn = document.getElementById("quickSearchBtn");
+      if (quickSearchBtn) quickSearchBtn.addEventListener("click", ()=>openSearchModal());
 
       document.addEventListener("keydown", (e)=>{
         if(e.key==="Escape"){
@@ -1149,16 +1170,45 @@
           closeModal("searchModal");
         }
       });
+
+      // ✅ Click header expands when collapsed
+      const header = document.getElementById("panel-header");
+      if (header) {
+        header.addEventListener("dblclick", togglePanel);
+        header.addEventListener("click", (e)=>{
+          const panel = document.getElementById("info-panel");
+          if(panel?.classList.contains("collapsed")){
+            // avoid expanding when clicking buttons
+            if (e.target && (e.target.closest("button") || e.target.closest("a"))) return;
+            togglePanel();
+          }
+        });
+      }
     }
 
-    // Panel collapse (mobile)
+    function openSearchModal(){
+      openModal("searchModal");
+      const inp = document.getElementById("addrInput");
+      if (inp) setTimeout(()=>inp.focus(), 50);
+    }
+
+    // ✅ Panel collapse (works everywhere now)
     function togglePanel(){
       const panel = document.getElementById("info-panel");
+      const btn = document.getElementById("panelToggleBtn");
       if(!panel) return;
+
       panel.classList.toggle("collapsed");
+      const collapsed = panel.classList.contains("collapsed");
+
+      if (btn){
+        btn.textContent = collapsed ? "⬍ הרחבה" : "⬍ כיווץ";
+        btn.title = collapsed ? "הרחב את הפאנל" : "כיווץ הפאנל";
+        btn.setAttribute("aria-expanded", String(!collapsed));
+      }
     }
 
-    // -------------------- Rankings --------------------
+    // -------------------- Rankings (keep as-is) --------------------
     function escapeHtml(s) {
       return String(s ?? "")
         .replace(/&/g, "&amp;")
@@ -1367,7 +1417,7 @@
       wireRankingsControls(types);
     }
 
-    // -------------------- Address Search (Geocode + Zoom) --------------------
+    // -------------------- Address Search (✅ GovMap geocode + zoom) --------------------
     function parseGeocodeList(resp) {
       const list = resp?.data || resp?.Data || resp?.results || resp;
       if (Array.isArray(list)) return list;
@@ -1379,6 +1429,13 @@
       const x = item?.X ?? item?.x ?? item?.CenterX ?? item?.centerX ?? item?.Lon ?? item?.lon;
       const y = item?.Y ?? item?.y ?? item?.CenterY ?? item?.centerY ?? item?.Lat ?? item?.lat;
       return { x: Number(x), y: Number(y) };
+    }
+
+    function extractZoomLevel(item){
+      const z = item?.ZoomLevel ?? item?.zoomLevel ?? item?.Level ?? item?.level ?? item?.Zoom ?? item?.zoom;
+      const zn = Number(z);
+      if (Number.isFinite(zn) && zn > 0) return zn;
+      return 10; // default
     }
 
     function renderAddrResults(items) {
@@ -1420,13 +1477,15 @@
       if (!mapInitialized) return;
 
       const { x, y } = extractXY(item);
+      const level = extractZoomLevel(item);
+
       if (!Number.isFinite(x) || !Number.isFinite(y)) {
         showInfo("שגיאה", "התקבלה תוצאה בלי קואורדינטות X/Y (פתח קונסול לראות את הפריט)", "error");
         console.log("Geocode item:", item);
         return;
       }
 
-      try { govmap.zoomToXY({ x, y, level: 10, marker: true }); }
+      try { govmap.zoomToXY({ x, y, level, marker: true }); }
       catch (e) { console.warn("zoomToXY failed:", e); }
 
       showInfo("כתובת", `התמקדתי לכתובת: <strong>${escapeHtml(item.__title || "תוצאה")}</strong>`, "info");
@@ -1451,7 +1510,9 @@
       const myId = ++lastGeocodeReqId;
       setAddrLoading("מחפש כתובת…");
 
-      const payload = { keyword: q, type: govmap.geocodeType ? govmap.geocodeType.AccuracyOnly : undefined };
+      // ✅ GovMap API geocode
+      const payload = { keyword: q };
+      if (govmap.geocodeType?.AccuracyOnly) payload.type = govmap.geocodeType.AccuracyOnly;
 
       let res;
       try {
@@ -1484,13 +1545,9 @@
       };
 
       // supports Promise or jQuery Deferred
-      if (res && typeof res.then === "function") {
-        res.then(onSuccess).catch(onFail);
-      } else if (res && typeof res.done === "function") {
-        res.done(onSuccess).fail(onFail);
-      } else {
-        onFail(new Error("Unknown geocode return type"));
-      }
+      if (res && typeof res.then === "function") res.then(onSuccess).catch(onFail);
+      else if (res && typeof res.done === "function") res.done(onSuccess).fail(onFail);
+      else onFail(new Error("Unknown geocode return type"));
     }
 
     function initAddressSearchUI() {
@@ -1649,9 +1706,9 @@
       <p>מצב נוכחי: <strong>ישובים/רשויות</strong><br>ל-10,000 זמין רק כאן</p>
 
       <div id="header-actions">
-        <button id="searchBtn" class="hbtn">🔎 חיפוש כתובת</button>
-        <button id="aboutBtn" class="hbtn secondary">ℹ️ אודות + מקורות</button>
-        <button id="panelToggleBtn" class="hbtn secondary" title="כיווץ/הרחבה (במיוחד לנייד)">⬍ כיווץ</button>
+        <button id="searchBtn" class="hbtn" type="button">🔎 חיפוש כתובת</button>
+        <button id="aboutBtn" class="hbtn secondary" type="button">ℹ️ אודות + מקורות</button>
+        <button id="panelToggleBtn" class="hbtn secondary" type="button" aria-expanded="true" title="כיווץ/הרחבה">⬍ כיווץ</button>
       </div>
     </div>
 
@@ -1664,15 +1721,16 @@
 
     <div id="controls">
       <div class="mode-grid">
-        <button id="btnModeMuni" class="mode-btn active" onclick="setMode('muni')">🏘️ ישובים/רשויות</button>
-        <button id="btnModeMerhav" class="mode-btn" onclick="setMode('merhav')">🚔 מרחבים</button>
-        <button id="btnMetricAbs" class="mode-btn active" onclick="setMetric('abs')">🔢 כמות</button>
-        <button id="btnMetricRate" class="mode-btn" title="זמין רק במצב ישובים/רשויות">👥 ל-10,000</button>
+        <button id="btnModeMuni" class="mode-btn active" onclick="setMode('muni')" type="button">🏘️ ישובים/רשויות</button>
+        <button id="btnModeMerhav" class="mode-btn" onclick="setMode('merhav')" type="button">🚔 מרחבים</button>
+        <button id="btnMetricAbs" class="mode-btn active" onclick="setMetric('abs')" type="button">🔢 כמות</button>
+        <button id="btnMetricRate" class="mode-btn" title="זמין רק במצב ישובים/רשויות" type="button">👥 ל-10,000</button>
       </div>
 
       <div id="controls-row">
         <label for="yearSelect">שנה:</label>
         <select id="yearSelect"></select>
+        <button id="quickSearchBtn" type="button">🔎 כתובת</button>
       </div>
 
       <div id="quick-stats">
@@ -1729,7 +1787,7 @@
             כתוב כתובת (לדוגמה: דיזנגוף 50 תל אביב) ואז בחר תוצאה כדי להתמקד במפה
           </div>
         </div>
-        <button id="searchCloseBtn" class="modalClose" aria-label="סגור">×</button>
+        <button id="searchCloseBtn" class="modalClose" aria-label="סגור" type="button">×</button>
       </div>
 
       <div class="modalBody">
@@ -1737,7 +1795,7 @@
           <input id="addrInput" type="text" placeholder="לדוגמה: דיזנגוף 50 תל אביב"
             style="flex:1; padding:12px 12px; border-radius:12px; border:1px solid #ddd; font-size:14px; font-weight:800;"
           />
-          <button id="addrBtn" style="
+          <button id="addrBtn" type="button" style="
             padding:12px 14px;
             border-radius:12px;
             border:2px solid #0066cc;
@@ -1769,7 +1827,7 @@
             הקישורים כאן מאפשרים לראות/להוריד את הקבצים ששימשו לבניית האתר
           </div>
         </div>
-        <button id="aboutCloseBtn" class="modalClose" aria-label="סגור">×</button>
+        <button id="aboutCloseBtn" class="modalClose" aria-label="סגור" type="button">×</button>
       </div>
 
       <div class="modalBody">
