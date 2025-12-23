@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+כ<!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
   <meta charset="utf-8" />
@@ -1103,6 +1103,25 @@
       for (const c of candidates) if (attrs && attrs[c]) return attrs[c];
       return null;
     }
+    async function getLayerEntitiesSafe(layerId) {
+  if (!layerId) throw new Error("layerId is empty");
+
+  // נסיון 1: LayerName (הכי נפוץ)
+  try {
+    const r1 = govmap.getLayerEntities({ LayerName: layerId });
+    if (r1 && typeof r1.then === "function") return await r1;
+    if (r1 && typeof r1.done === "function") return await new Promise((res, rej) => r1.done(res).fail(rej));
+    return r1;
+  } catch (e1) {
+    // נסיון 2: layerName (fallback)
+    const r2 = govmap.getLayerEntities({ layerName: layerId });
+    if (r2 && typeof r2.then === "function") return await r2;
+    if (r2 && typeof r2.done === "function") return await new Promise((res, rej) => r2.done(res).fail(rej));
+    return r2;
+  }
+}
+
+    
 
     async function onMapClick(e) {
       if (!mapInitialized) return;
@@ -1678,9 +1697,10 @@
         return;
       }
 
-      let res;
+      
       try {
-        const r = govmap.getLayerEntities({ layerName: MUNICIPAL_LAYER });
+        const res = await getLayerEntitiesSafe(MUNICIPAL_LAYER);
+
         if (r && typeof r.then === "function") res = await r;
         else if (r && typeof r.done === "function") {
           res = await new Promise((resolve, reject) => r.done(resolve).fail(reject));
