@@ -1122,21 +1122,38 @@
       return null;
     }
 
-    async function getLayerEntitiesSafe(layerId) {
-      if (!layerId) throw new Error("layerId is empty");
+   function asPromise(x){
+  if (!x) return Promise.resolve(x);
+  if (typeof x.then === "function") return x;
+  if (typeof x.done === "function") {
+    return new Promise((res, rej) => x.done(res).fail(rej));
+  }
+  return Promise.resolve(x);
+}
 
-      try {
-        const r1 = govmap.getLayerEntities({ LayerName: layerId });
-        if (r1 && typeof r1.then === "function") return await r1;
-        if (r1 && typeof r1.done === "function") return await new Promise((res, rej) => r1.done(res).fail(rej));
-        return r1;
-      } catch (e1) {
-        const r2 = govmap.getLayerEntities({ layerName: layerId });
-        if (r2 && typeof r2.then === "function") return await r2;
-        if (r2 && typeof r2.done === "function") return await new Promise((res, rej) => r2.done(res).fail(rej));
-        return r2;
-      }
-    }
+async function getLayerEntitiesSafe(layerId) {
+  const id = String(layerId ?? "").trim();
+  if (!id) throw new Error("layerId is empty");
+
+  // חובה: layerName + token (אחרת תקבל "Missing layerName" גם אם layerName קיים)
+  const params = {
+    layerName: id,
+    token: "ede9a5fd-7c23-432f-8ffb-d85feffa3f3c",
+
+    // אופציונלי לתאימות, לא מזיק:
+    LayerName: id,
+    Token: "ede9a5fd-7c23-432f-8ffb-d85feffa3f3c"
+  };
+
+  console.log("getLayerEntities params =>", params);
+
+  try {
+    return await asPromise(govmap.getLayerEntities(params));
+  } catch (e) {
+    console.error("getLayerEntities failed:", e);
+    throw e;
+  }
+}
 
     async function onMapClick(e) {
       if (!mapInitialized) return;
