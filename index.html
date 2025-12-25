@@ -1728,22 +1728,36 @@
     }
 
     // ✅ התיקון הקריטי: פונקציית ניקוי משודרגת
-    function clearChoropleth(){
-        try {
-            // נסיון 1: ניקוי כללי
-            if (typeof govmap.clearGeometries === "function") govmap.clearGeometries();
+  // ✅ ניקוי משודרג (לא משנה לוגיקה, רק יותר יציב)
+function clearChoropleth() {
+  const namesToClear = Array.isArray(activeChoroplethNames) ? [...activeChoroplethNames] : [];
 
-            // נסיון 2: ניקוי לפי שמות ספציפיים (אם נשמרו)
-            if (Array.isArray(activeChoroplethNames) && activeChoroplethNames.length > 0) {
-                if (typeof govmap.clearGeometriesByName === "function") {
-                    govmap.clearGeometriesByName(activeChoroplethNames);
-                }
-            }
-        } catch(e) {
-            console.warn("Clear failed", e);
-        }
-        activeChoroplethNames = []; // איפוס
+  try {
+    // קודם ננסה למחוק לפי שמות (הכי מדויק)
+    if (namesToClear.length && typeof govmap.clearGeometriesByName === "function") {
+      try {
+        govmap.clearGeometriesByName(namesToClear);
+      } catch (e) {
+        // אם יש גרסה שמקבלת שם בודד / פורמט אחר – ננסה אחד אחד
+        namesToClear.forEach(n => {
+          try { govmap.clearGeometriesByName([n]); } catch (_) {}
+          try { govmap.clearGeometriesByName(n); } catch (_) {}
+        });
+      }
     }
+
+    // ואז ניקוי כללי (כמו שהיה אצלך)
+    if (typeof govmap.clearGeometries === "function") {
+      govmap.clearGeometries();
+    }
+  } catch (e) {
+    console.warn("Clear failed", e);
+  }
+
+  // איפוס רק בסוף
+  activeChoroplethNames = [];
+}
+
 
     function setMunicipalLayerOpacity(opacity){
       if(typeof govmap.setLayerOpacity === "function"){
@@ -1806,109 +1820,109 @@
       await renderChoropleth();
     }
 
-    async function renderChoropleth(){
-      if(!mapInitialized || !choroplethEnabled) return;
-      if(currentMode !== "muni") return;
+   async function renderChoropleth(){
+  if(!mapInitialized || !choroplethEnabled) return;
+  if(currentMode !== "muni") return;
 
-      if(!muniBoundariesLoaded){
-        const ok = await loadMuniBoundariesGeojson();
-        if(!ok) return;
-      }
+  if(!muniBoundariesLoaded){
+    const ok = await loadMuniBoundariesGeojson();
+    if(!ok) return;
+  }
 
-      const yearData = window.crimeByYear?.[currentYear];
-      if(!yearData){
-        showInfo("שגיאה","אין נתונים לשנה שנבחרה.","error");
-        return;
-      }
+  const yearData = window.crimeByYear?.[currentYear];
+  if(!yearData){
+    showInfo("שגיאה","אין נתונים לשנה שנבחרה.","error");
+    return;
+  }
 
-      const rows = [];
-      const missingGeom = [];
+  // ✅ חשוב: לנקות קודם (כדי שלא נאפס את השמות החדשים בטעות)
+  clearChoropleth();
 
-      for(const name in yearData){
-        const d = yearData[name];
-        const total = Number(d?.total || 0);
+  const rows = [];
+  const missingGeom = [];
 
-        const popRaw = getPopulationForAuthority(name);
-        const pop = (popRaw == null ? 0 : Number(popRaw));
-        const rate = calcRatePer10k(total, pop);
+  for(const name in yearData){
+    const d = yearData[name];
+    const total = Number(d?.total || 0);
 
-        const wkt = findWktForCrimeName(name);
-        if(!wkt){ missingGeom.push(name); continue; }
+    const popRaw = getPopulationForAuthority(name);
+    const pop = (popRaw == null ? 0 : Number(popRaw));
+    const rate = calcRatePer10k(total, pop);
 
-        rows.push({ name, wkt, total, pop, rate });
-      }
+    const wkt = findWktForCrimeName(name);
+    if(!wkt){ missingGeom.push(name); continue; }
 
-      if(!rows.length){
-        showInfo("אין מספיק נתונים","לא נמצאו רשויות עם גבול כדי לצבוע.","warn");
-        return;
-      }
+    rows.push({ name, wkt, total, pop, rate });
+  }
 
-      const rates = rows.map(r=>r.rate);
-      const minR  = Math.min(...rates);
-      const maxR  = Math.max(...rates);
+  if(!rows.length){
+    showInfo("אין מספיק נתונים","לא נמצאו רשויות עם גבול כדי לצבוע.","warn");
+    return;
+  }
 
-      const wkts = [], names = [], symbols = [];
-      const tooltips = [];
+  const rates = rows.map(r=>r.rate);
+  const minR  = Math.min(...rates);
+  const maxR  = Math.max(...rates);
 
-      for(let i=0;i<rows.length;i++){
-        const r = rows[i];
-        const [rr,gg,bb] = rateToColor(r.rate, minR, maxR);
+  const wkts = [], names = [], symbols = [];
+  const tooltips = [];
 
-        wkts.push(r.wkt);
-        
-        // יצירת שם ייחודי ושמירתו במערך הגלובלי
-        const uniqueName = `${CHORO_NAME}_${i}`;
-        names.push(uniqueName);
+  for(let i=0;i<rows.length;i++){
+    const r = rows[i];
+    const [rr,gg,bb] = rateToColor(r.rate, minR, maxR);
 
-        symbols.push({
-          fillColor:    [rr, gg, bb, 0.55],
-          outlineColor: [25, 25, 25, 0.85],
-          outlineWidth: 2
-        });
+    wkts.push(r.wkt);
 
-        tooltips.push(`${r.name} • ${r.rate.toLocaleString()} /10k`);
-      }
-      
-      // ✅ עדכון המשתנה הגלובלי כדי שנוכל לנקות אח"כ
-      activeChoroplethNames = names;
+    const uniqueName = `${CHORO_NAME}_${i}`;
+    names.push(uniqueName);
 
-      try{
-        clearChoropleth();
+    symbols.push({
+      fillColor:    [rr, gg, bb, 0.55],
+      outlineColor: [25, 25, 25, 0.85],
+      outlineWidth: 2
+    });
 
-        const payload = {
-          wkts,
-          names,
-          geometryType: (govmap.geometryType?.POLYGON ?? govmap.geometryType?.Polygon ?? 3),
-          clearExisting: true,
-          showBubble: false,
-          symbols,
-          data: { tooltips }
-        };
+    tooltips.push(`${r.name} • ${r.rate.toLocaleString()} /10k`);
+  }
 
-        const ret = govmap.displayGeometries(payload);
-        if(ret && typeof ret.then === "function") await ret;
+  try{
+    const payload = {
+      wkts,
+      names,
+      geometryType: (govmap.geometryType?.POLYGON ?? govmap.geometryType?.Polygon ?? 3),
+      clearExisting: true,
+      showBubble: false,
+      symbols,
+      data: { tooltips }
+    };
 
-        setMunicipalLayerOpacity(0);
+    const ret = govmap.displayGeometries(payload);
+    if(ret && typeof ret.then === "function") await ret;
 
-      }catch(e){
-        console.error("displayGeometries failed:", e);
-        setMunicipalLayerOpacity(100);
-        showInfo("שגיאה", `נכשלתי לצייר גיאומטריות: ${escapeHtml(e?.message || e)}`, "error");
-        return;
-      }
+    // ✅ רק אחרי שהציור הצליח – שומרים שמות לניקוי עתידי
+    activeChoroplethNames = names;
 
-      let extra = "";
-      if(missingGeom.length){
-        extra = `<br><span style="font-size:13px;opacity:.9;">לא נמצאה גיאומטריה ל-${missingGeom.length} רשויות (פערי שמות בין הנתונים לגבולות).</span>`;
-        console.log("Missing geometry for:", missingGeom);
-      }
+    setMunicipalLayerOpacity(0);
 
-      showInfo(
-        "צביעה לפי ל-10,000",
-        `ירוק = נמוך • כתום = בינוני • אדום = גבוה<br>טווח: <b>${minR.toLocaleString()}</b> עד <b>${maxR.toLocaleString()}</b>${extra}`,
-        "info"
-      );
-    }
+  }catch(e){
+    console.error("displayGeometries failed:", e);
+    setMunicipalLayerOpacity(100);
+    showInfo("שגיאה", `נכשלתי לצייר גיאומטריות: ${escapeHtml(e?.message || e)}`, "error");
+    return;
+  }
+
+  let extra = "";
+  if(missingGeom.length){
+    extra = `<br><span style="font-size:13px;opacity:.9;">לא נמצאה גיאומטריה ל-${missingGeom.length} רשויות (פערי שמות בין הנתונים לגבולות).</span>`;
+    console.log("Missing geometry for:", missingGeom);
+  }
+
+  showInfo(
+    "צביעה לפי ל-10,000",
+    `ירוק = נמוך • כתום = בינוני • אדום = גבוה<br>טווח: <b>${minR.toLocaleString()}</b> עד <b>${maxR.toLocaleString()}</b>${extra}`,
+    "info"
+  );
+}
 
     // -------------------- GovMap init --------------------
     function initGovMap() {
