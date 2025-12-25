@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>מפת פשיעה – לפי שנה (2020–2025) | ישובים / מרחבים</title>
 
-  <!-- DATA (Processed) -->
   <script src="crimeByYear_2020_2025.js"></script>
   <script src="crimeByYearMerhav.js"></script>
   <script src="PopulationDB.js"></script>
@@ -18,7 +17,7 @@
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
       overflow: hidden;
       background: #f5f5f5;
-      font-size: 15px; /* ⬅️ הגדלת בסיס פונט */
+      font-size: 15px;
     }
 
     #map { width: 100%; height: 100%; position: relative; }
@@ -95,7 +94,7 @@
       cursor: pointer;
       border-bottom: 3px solid transparent;
       transition: all 0.2s ease;
-      font-size: 13px; /* ⬅️ הגדל */
+      font-size: 13px;
       font-weight: 1000;
       color: #666;
       user-select: none;
@@ -124,7 +123,7 @@
       border: 2px solid #ddd;
       background: white;
       cursor: pointer;
-      font-size: 13px; /* ⬅️ הגדל */
+      font-size: 13px;
       font-weight: 1000;
       color: #555;
       transition: all 0.15s ease;
@@ -156,7 +155,7 @@
     }
     #controls label {
       font-weight: 1000;
-      font-size: 13px; /* ⬅️ הגדל */
+      font-size: 13px;
       color: #333;
       white-space: nowrap;
     }
@@ -165,7 +164,7 @@
       padding: 10px 12px;
       border-radius: 10px;
       border: 1px solid #ccc;
-      font-size: 14px; /* ⬅️ הגדל */
+      font-size: 14px;
       background: white;
       cursor: pointer;
       font-weight: 900;
@@ -180,7 +179,7 @@
       border: 1px solid #e0e0e0;
     }
     .stat-value { font-size: 18px; font-weight: 1000; color: #0066cc; margin-bottom: 3px; }
-    .stat-label { font-size: 12px; color: #777; font-weight: 1000; letter-spacing: .2px; } /* ⬅️ הגדל */
+    .stat-label { font-size: 12px; color: #777; font-weight: 1000; letter-spacing: .2px; }
 
     #info-content {
       padding: 14px;
@@ -195,7 +194,7 @@
 
     #info-title {
       font-weight: 1000;
-      font-size: 16px; /* ⬅️ הגדל */
+      font-size: 16px;
       margin-bottom: 12px;
       color: #222;
       padding-bottom: 8px;
@@ -204,7 +203,7 @@
     #info-body { line-height: 1.6; color: #555; }
 
     .total-summary {
-      font-size: 26px; /* ⬅️ הגדל */
+      font-size: 26px;
       font-weight: 1000;
       color: #0066cc;
       margin: 12px 0 10px 0;
@@ -219,7 +218,7 @@
       margin-top: 0;
       margin-bottom: 12px;
       text-align: center;
-      font-size: 13px; /* ⬅️ הגדל */
+      font-size: 13px;
       color: #444;
       font-weight: 900;
     }
@@ -243,19 +242,19 @@
     .crime-name {
       font-weight: 1000;
       color: #333;
-      font-size: 13px; /* ⬅️ הגדל */
+      font-size: 13px;
       line-height: 1.35;
       min-height: 32px;
       display: flex;
       align-items: center;
     }
-    .crime-count { font-weight: 1000; color: #0066cc; font-size: 17px; } /* ⬅️ הגדל */
+    .crime-count { font-weight: 1000; color: #0066cc; font-size: 17px; }
 
     .message {
       padding: 12px 14px;
       border-radius: 10px;
       margin-bottom: 10px;
-      font-size: 13.5px; /* ⬅️ הגדל */
+      font-size: 13.5px;
       border-right: 4px solid;
       line-height: 1.55;
       font-weight: 800;
@@ -348,7 +347,7 @@
     }
     .compare-badges { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
     .badge {
-      font-size: 12px; /* ⬅️ הגדל */
+      font-size: 12px;
       font-weight: 1000;
       padding: 6px 10px;
       border-radius: 999px;
@@ -369,8 +368,8 @@
       padding: 10px;
       text-align: center;
     }
-    .kpi .kpi-value { font-weight: 1000; color: #0066cc; font-size: 14px; margin-bottom: 4px; } /* ⬅️ הגדל */
-    .kpi .kpi-label { font-size: 11px; font-weight: 1000; color: #666; letter-spacing: .2px; } /* ⬅️ הגדל */
+    .kpi .kpi-value { font-weight: 1000; color: #0066cc; font-size: 14px; margin-bottom: 4px; }
+    .kpi .kpi-label { font-size: 11px; font-weight: 1000; color: #666; letter-spacing: .2px; }
 
     .compare-bars-title { margin-top: 12px; font-weight: 1000; font-size: 14px; color: #222; }
     .compare-bar {
@@ -388,13 +387,13 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      font-size: 12.5px; /* ⬅️ הגדל */
+      font-size: 12.5px;
       font-weight: 1000;
       color: #333;
     }
     .compare-bar-container {
       flex: 1;
-      height: 28px; /* ⬅️ קצת יותר גבוה */
+      height: 28px;
       background: #f0f0f0;
       border-radius: 10px;
       overflow: hidden;
@@ -408,7 +407,7 @@
       align-items: center;
       justify-content: flex-end;
       padding: 0 10px;
-      font-size: 13px; /* ⬅️ הגדל */
+      font-size: 13px;
       font-weight: 1000;
       transition: width 0.35s ease;
       white-space: nowrap;
@@ -468,7 +467,7 @@
     .addr-item {
       padding: 10px 12px;
       cursor: pointer;
-      font-size: 14px; /* ⬅️ הגדל */
+      font-size: 14px;
       border-bottom: 1px solid #f0f0f0;
       font-weight: 800;
     }
@@ -505,7 +504,6 @@
     const POLICE_MERHAV_LAYER = "200550";
     const TOKEN = "ede9a5fd-7c23-432f-8ffb-d85feffa3f3c";
 
-    // ⬅️ שים את הקובץ הזה ליד index.html (אותה תיקייה)
     const MUNI_BOUNDARIES_GEOJSON_URL = "muni_boundaries_ITM.geojson";
 
     let mapInitialized = false;
@@ -535,8 +533,10 @@
 
     let choroplethEnabled = false;
     const CHORO_NAME = "crime_rate_choropleth";
+    
+    // ✅ התיקון: רשימה גלובלית לשמירת השמות שציירנו
+    let activeChoroplethNames = [];
 
-    // ⬅️ אינדקס גיאומטריות (מה-GeoJSON)
     let muniBoundariesIndex = {}; // normalizedKey -> WKT
 
     // -------------------- Normalize & Variants --------------------
@@ -598,7 +598,6 @@
       return null;
     }
 
-    // ✅ שינוי מינימלי: אם אין אוכלוסייה -> מניחים 0 (לא null)
     function calcRatePer10k(total, pop) {
       if (!Number.isFinite(Number(total))) return 0;
       const p = Number(pop);
@@ -606,7 +605,6 @@
       return Math.round((Number(total) / p) * 10000 * 10) / 10;
     }
 
-    // ✅ שינוי מינימלי: אם אין -> מציגים 0
     function fmtMaybe(num) {
       if (num == null) return "0";
       return Number(num).toLocaleString();
@@ -723,7 +721,7 @@
 
       const total = (typeof d.total === "number") ? d.total : null;
       const popRaw = (currentMode === "muni") ? getPopulationForAuthority(entry.name) : null;
-      const pop = (popRaw == null ? 0 : Number(popRaw)); // ✅ הנחה 0
+      const pop = (popRaw == null ? 0 : Number(popRaw));
 
       if (total != null) {
         if (currentMetric === "rate" && currentMode === "muni") {
@@ -813,10 +811,9 @@
         }
       }
 
-      // ✅ כבר היה אצלך: כיבוי צביעה במעבר למרחבים
       if (mode !== "muni") {
         choroplethEnabled = false;
-        clearChoropleth();
+        clearChoropleth(); // ✅ ניקוי וודאי
         setMunicipalLayerOpacity(100);
       }
       setChoroBtnUI();
@@ -843,10 +840,8 @@
 
     function setMetric(metric) {
       if (metric === "rate" && currentMode !== "muni") {
-        showInfo("לא זמין", "תצוגת אוכלוסייה / ל-10,000 זמינה רק במצב ישובים/רשויות.", "error");
-        return;
+        alert("לא זמין במרחבים"); return;
       }
-
       currentMetric = metric;
 
       const bAbs = document.getElementById("btnMetricAbs");
@@ -919,7 +914,7 @@
       const rows = filteredList.map(item => {
         const total = index[item.key]?.data?.total ?? 0;
         const popRaw = (currentMode === "muni") ? getPopulationForAuthority(item.name) : null;
-        const pop = (popRaw == null ? 0 : Number(popRaw)); // ✅ הנחה 0
+        const pop = (popRaw == null ? 0 : Number(popRaw));
         const rate = (currentMode === "muni") ? calcRatePer10k(total, pop) : null;
         return { name: item.name, total, pop, rate, hasPop: popRaw != null };
       });
@@ -1058,7 +1053,7 @@
 
       if (mode === "muni" && currentMetric === "rate") {
         const popRaw = getPopulationForAuthority(entityName);
-        const pop = (popRaw == null ? 0 : Number(popRaw)); // ✅ הנחה 0
+        const pop = (popRaw == null ? 0 : Number(popRaw));
         series = yearlyData.map(d => {
           const rate = calcRatePer10k(d.total, pop);
           return {
@@ -1613,7 +1608,7 @@
       });
     }
 
-    // ===================== GEOJSON -> WKT (working choropleth from INDEX 7) =====================
+    // ===================== GEOJSON -> WKT =====================
     let muniBoundariesLoaded = false;
     let muniBoundariesLoadError = null;
 
@@ -1697,7 +1692,6 @@
     function lerp(a,b,t){ return a + (b-a)*t; }
     function clamp01(x){ return Math.max(0, Math.min(1, x)); }
 
-    // ✅ שינוי מינימלי: ירוק -> כתום -> אדום
     function rateToColor(rate, minR, maxR){
       const t = (maxR > minR) ? clamp01((rate - minR) / (maxR - minR)) : 0.5;
 
@@ -1722,17 +1716,24 @@
       }
     }
 
-  function clearChoropleth(){
-  // ניקוי פשוט וישיר
-  try{
-    if(typeof govmap.clearGeometries === "function"){
-      govmap.clearGeometries();
-      console.log("✅ Cleared all geometries");
+    // ✅ התיקון הקריטי: פונקציית ניקוי משודרגת
+    function clearChoropleth(){
+        try {
+            // נסיון 1: ניקוי כללי
+            if (typeof govmap.clearGeometries === "function") govmap.clearGeometries();
+
+            // נסיון 2: ניקוי לפי שמות ספציפיים (אם נשמרו)
+            if (Array.isArray(activeChoroplethNames) && activeChoroplethNames.length > 0) {
+                if (typeof govmap.clearGeometriesByName === "function") {
+                    govmap.clearGeometriesByName(activeChoroplethNames);
+                }
+            }
+        } catch(e) {
+            console.warn("Clear failed", e);
+        }
+        activeChoroplethNames = []; // איפוס
     }
-  }catch(e){
-    console.error("❌ Failed to clear:", e);
-  }
-}
+
     function setMunicipalLayerOpacity(opacity){
       if(typeof govmap.setLayerOpacity === "function"){
         try{ govmap.setLayerOpacity({ layerName: MUNICIPAL_LAYER, opacity }); }catch(e){}
@@ -1758,21 +1759,20 @@
       }
     }
 
- async function toggleChoropleth(){
-  if(currentMode !== "muni") setMode("muni");
+    async function toggleChoropleth(){
+      if(currentMode !== "muni") setMode("muni");
 
-  choroplethEnabled = !choroplethEnabled;
-  setChoroBtnUI();
+      choroplethEnabled = !choroplethEnabled;
+      setChoroBtnUI();
 
-  if(!mapInitialized) return;
+      if(!mapInitialized) return;
 
-  if(!choroplethEnabled){
-    clearChoropleth();
-    setMunicipalLayerOpacity(100);
-    showInfo("צביעה כובתה","חזרתי לתצוגה רגילה.","info");
-    return;
-  }
-  // ... המשך
+      if(!choroplethEnabled){
+        clearChoropleth();
+        setMunicipalLayerOpacity(100);
+        showInfo("צביעה כובתה","חזרתי לתצוגה רגילה.","info");
+        return;
+      }
 
       const ok = await loadMuniBoundariesGeojson();
       if(!ok){
@@ -1818,8 +1818,8 @@
         const total = Number(d?.total || 0);
 
         const popRaw = getPopulationForAuthority(name);
-        const pop = (popRaw == null ? 0 : Number(popRaw)); // ✅ הנחה 0
-        const rate = calcRatePer10k(total, pop);           // ✅ לא יחזיר null
+        const pop = (popRaw == null ? 0 : Number(popRaw));
+        const rate = calcRatePer10k(total, pop);
 
         const wkt = findWktForCrimeName(name);
         if(!wkt){ missingGeom.push(name); continue; }
@@ -1844,7 +1844,10 @@
         const [rr,gg,bb] = rateToColor(r.rate, minR, maxR);
 
         wkts.push(r.wkt);
-        names.push(`${CHORO_NAME}_${i}`);
+        
+        // יצירת שם ייחודי ושמירתו במערך הגלובלי
+        const uniqueName = `${CHORO_NAME}_${i}`;
+        names.push(uniqueName);
 
         symbols.push({
           fillColor:    [rr, gg, bb, 0.55],
@@ -1854,6 +1857,9 @@
 
         tooltips.push(`${r.name} • ${r.rate.toLocaleString()} /10k`);
       }
+      
+      // ✅ עדכון המשתנה הגלובלי כדי שנוכל לנקות אח"כ
+      activeChoroplethNames = names;
 
       try{
         clearChoropleth();
@@ -1863,20 +1869,14 @@
           names,
           geometryType: (govmap.geometryType?.POLYGON ?? govmap.geometryType?.Polygon ?? 3),
           clearExisting: true,
-
-          // ✅ שינוי מינימלי: מבטל חלון/בועה שנפתח בלחיצה
           showBubble: false,
-
           symbols,
-
-          // נשאיר Tooltips בלבד (אם נתמך אצלך)
           data: { tooltips }
         };
 
         const ret = govmap.displayGeometries(payload);
         if(ret && typeof ret.then === "function") await ret;
 
-        // hide the municipal outline layer so the choropleth is clean
         setMunicipalLayerOpacity(0);
 
       }catch(e){
@@ -2038,7 +2038,7 @@
         <button id="btnModeMerhav" class="mode-btn" onclick="setMode('merhav')" aria-label="מצב מרחבים משטרתיים">🚔 מרחבים</button>
 
         <button id="btnMetricAbs" class="mode-btn active" onclick="setMetric('abs')" aria-label="תצוגת כמות">🔢 כמות</button>
-        <button id="btnMetricRate" class="mode-btn" aria-label="תצוגת ל-10,000 תושבים">👥 ל-10,000</button>
+        <button id="btnMetricRate" class="mode-btn" title="זמין רק במצב ישובים/רשויות">👥 ל-10,000</button>
 
         <button id="btnChoro" class="mode-btn full" onclick="toggleChoropleth()" aria-label="צביעה לפי ל-10,000">
           🎨 צביעה ל-10,000 (ירוק→אדום)
@@ -2092,7 +2092,6 @@
     </div>
   </div>
 
-  <!-- About Modal -->
   <div id="aboutModal" class="modal" aria-hidden="true">
     <div id="aboutOverlay" class="modalOverlay" aria-hidden="true"></div>
     <div class="modalCard" role="dialog" aria-modal="true" aria-label="אודות ומקורות">
@@ -2114,7 +2113,6 @@
     </div>
   </div>
 
-  <!-- Search Modal -->
   <div id="searchModal" class="modal" aria-hidden="true">
     <div id="searchOverlay" class="modalOverlay" aria-hidden="true"></div>
     <div class="modalCard" role="dialog" aria-modal="true" aria-label="חיפוש כתובת">
