@@ -537,7 +537,7 @@
     const CHORO_NAME = "crime_rate_choropleth";
 
     // ⬅️ אינדקס גיאומטריות (מה-GeoJSON)
-    let muniBoundariesIndex = {}; // normalizedKey -> esri polygon geometry
+    let muniBoundariesIndex = {}; // normalizedKey -> WKT
 
     // -------------------- Normalize & Variants --------------------
     function normalizeKeyBase(name) {
@@ -598,13 +598,17 @@
       return null;
     }
 
+    // ✅ שינוי מינימלי: אם אין אוכלוסייה -> מניחים 0 (לא null)
     function calcRatePer10k(total, pop) {
-      if (!pop || pop <= 0 || !Number.isFinite(total)) return null;
-      return Math.round((total / pop) * 10000 * 10) / 10;
+      if (!Number.isFinite(Number(total))) return 0;
+      const p = Number(pop);
+      if (!Number.isFinite(p) || p <= 0) return 0;
+      return Math.round((Number(total) / p) * 10000 * 10) / 10;
     }
 
+    // ✅ שינוי מינימלי: אם אין -> מציגים 0
     function fmtMaybe(num) {
-      if (num == null) return "לא נמצא";
+      if (num == null) return "0";
       return Number(num).toLocaleString();
     }
 
@@ -718,22 +722,18 @@
       let html = "";
 
       const total = (typeof d.total === "number") ? d.total : null;
-      const pop = (currentMode === "muni") ? getPopulationForAuthority(entry.name) : null;
+      const popRaw = (currentMode === "muni") ? getPopulationForAuthority(entry.name) : null;
+      const pop = (popRaw == null ? 0 : Number(popRaw)); // ✅ הנחה 0
 
       if (total != null) {
         if (currentMetric === "rate" && currentMode === "muni") {
           const rate = calcRatePer10k(total, pop);
-          if (rate == null) {
-            html += `<div class="total-summary">${Number(total).toLocaleString()} אירועים</div>`;
-            html += `<div class="message message-warn">אין נתון אוכלוסייה עבור <strong>${escapeHtml(entry.name)}</strong>, לכן תצוגת <strong>ל-10,000</strong> לא זמינה ליישוב הזה.</div>`;
-          } else {
-            html += `<div class="total-summary">${rate.toLocaleString()} ל-10,000</div>`;
-            html += `<div class="sub-summary">אוכלוסייה (2019): ${Number(pop).toLocaleString()} • סה"כ אירועים: ${Number(total).toLocaleString()}</div>`;
-          }
+          html += `<div class="total-summary">${rate.toLocaleString()} ל-10,000</div>`;
+          html += `<div class="sub-summary">אוכלוסייה (2019): ${Number(pop).toLocaleString()} • סה"כ אירועים: ${Number(total).toLocaleString()}</div>`;
         } else {
           html += `<div class="total-summary">${Number(total).toLocaleString()} אירועים</div>`;
           if (currentMode === "muni") {
-            html += `<div class="sub-summary">אוכלוסייה (2019): ${pop ? Number(pop).toLocaleString() : "לא נמצא"}</div>`;
+            html += `<div class="sub-summary">אוכלוסייה (2019): ${Number(pop).toLocaleString()}</div>`;
           }
         }
       }
@@ -813,6 +813,7 @@
         }
       }
 
+      // ✅ כבר היה אצלך: כיבוי צביעה במעבר למרחבים
       if (mode !== "muni") {
         choroplethEnabled = false;
         clearChoropleth();
@@ -917,20 +918,16 @@
 
       const rows = filteredList.map(item => {
         const total = index[item.key]?.data?.total ?? 0;
-        const pop = (currentMode === "muni") ? getPopulationForAuthority(item.name) : null;
+        const popRaw = (currentMode === "muni") ? getPopulationForAuthority(item.name) : null;
+        const pop = (popRaw == null ? 0 : Number(popRaw)); // ✅ הנחה 0
         const rate = (currentMode === "muni") ? calcRatePer10k(total, pop) : null;
-        return { name: item.name, total, pop, rate, hasPop: pop != null };
+        return { name: item.name, total, pop, rate, hasPop: popRaw != null };
       });
 
       if (currentMode !== "muni") {
         html += `<div class="message message-info">במצב מרחבים ההשוואה היא לפי כמות בלבד (אין אוכלוסייה).</div>`;
       } else if (metricIsRate) {
-        const missing = rows.filter(r => r.rate == null).length;
-        if (missing > 0) {
-          html += `<div class="message message-warn">יש <strong>${missing}</strong> רשויות בלי אוכלוסייה: יוצגו כ-"לא נמצא".</div>`;
-        } else {
-          html += `<div class="message message-info">השוואה לפי <strong>ל-10,000 תושבים</strong> (אוכלוסייה 2019).</div>`;
-        }
+        html += `<div class="message message-info">השוואה לפי <strong>ל-10,000 תושבים</strong> (אוכלוסייה 2019; חסר = 0).</div>`;
       } else {
         html += `<div class="message message-info">טיפ: מעבר ל־<strong>ל-10,000</strong> משווה יחסית לגודל אוכלוסייה (2019).</div>`;
       }
@@ -939,7 +936,7 @@
       rows.forEach(r => {
         const badges = [];
         badges.push(metricIsRate ? `<span class="badge">מדד: ל-10,000</span>` : `<span class="badge">מדד: כמות</span>`);
-        if (currentMode === "muni" && !r.hasPop) badges.push(`<span class="badge badge-warn">אין אוכלוסייה</span>`);
+        if (currentMode === "muni" && !r.hasPop) badges.push(`<span class="badge badge-warn">אוכלוסייה הונחה 0</span>`);
 
         html += `
           <div class="compare-card">
@@ -958,7 +955,7 @@
                 <div class="kpi-label">אוכלוסייה</div>
               </div>
               <div class="kpi">
-                <div class="kpi-value">${currentMode === "muni" ? (r.rate == null ? "לא נמצא" : r.rate.toLocaleString()) : "—"}</div>
+                <div class="kpi-value">${currentMode === "muni" ? (r.rate == null ? "—" : r.rate.toLocaleString()) : "—"}</div>
                 <div class="kpi-label">ל-10,000</div>
               </div>
             </div>
@@ -986,10 +983,10 @@
 
         let pct, label;
         if (metricIsRate) {
-          if (value == null) { pct = 7; label = "לא נמצא"; }
-          else { pct = (value / maxVal) * 100; label = `${value.toLocaleString()} /10k`; }
+          pct = (Number(value) / maxVal) * 100;
+          label = `${Number(value).toLocaleString()} /10k`;
         } else {
-          pct = (value / maxVal) * 100;
+          pct = (Number(value) / maxVal) * 100;
           label = Number(value).toLocaleString();
         }
 
@@ -1060,13 +1057,14 @@
       let series = yearlyData.map(d => ({ year: d.year, value: d.total, label: d.total.toLocaleString() }));
 
       if (mode === "muni" && currentMetric === "rate") {
-        const pop = getPopulationForAuthority(entityName);
+        const popRaw = getPopulationForAuthority(entityName);
+        const pop = (popRaw == null ? 0 : Number(popRaw)); // ✅ הנחה 0
         series = yearlyData.map(d => {
           const rate = calcRatePer10k(d.total, pop);
           return {
             year: d.year,
-            value: rate == null ? 0 : rate,
-            label: rate == null ? "אין אוכלוסייה" : `${rate.toLocaleString()} /10k`
+            value: rate,
+            label: `${rate.toLocaleString()} /10k`
           };
         });
       }
@@ -1082,9 +1080,9 @@
       }
 
       if (mode === "muni" && currentMetric === "rate") {
-        const pop = getPopulationForAuthority(entityName);
-        if (!pop) html += `<div class="message message-warn">אין אוכלוסייה לרשות הזו — תצוגת ל-10,000 מסומנת כ-"אין אוכלוסייה".</div>`;
-        else html += `<div class="message message-info">אוכלוסייה (2019): ${Number(pop).toLocaleString()}</div>`;
+        const popRaw = getPopulationForAuthority(entityName);
+        const pop = (popRaw == null ? 0 : Number(popRaw));
+        html += `<div class="message message-info">אוכלוסייה (2019): ${Number(pop).toLocaleString()} (חסר = 0)</div>`;
       }
 
       series.forEach(d => {
@@ -1319,9 +1317,9 @@
           continue;
         }
 
-        const pop = getPopulationForAuthority(name);
+        const popRaw = getPopulationForAuthority(name);
+        const pop = (popRaw == null ? 0 : Number(popRaw));
         const rate = calcRatePer10k(total, pop);
-        if (rate == null) continue;
         rows.push({ name, value: rate, extra: { pop, total } });
       }
 
@@ -1329,11 +1327,7 @@
 
       let note = null;
       if (rankingMetric === "rate") {
-        const totalCities = Object.keys(yearData).length;
-        const usedCities = rows.length;
-        note = (usedCities < totalCities)
-          ? `דירוג ל-10,000 משתמש רק ביישובים שיש להם אוכלוסייה (2019). חסרים: ${totalCities - usedCities}.`
-          : "דירוג ל-10,000 משתמש באוכלוסייה (2019) כבסיס אחיד לכל השנים.";
+        note = "דירוג ל-10,000 משתמש באוכלוסייה (2019); חסר אוכלוסייה הונח כ-0.";
       }
 
       return { rows, note };
@@ -1619,27 +1613,7 @@
       });
     }
 
-    // -------------------- Choropleth helpers --------------------
-    function lerp(a,b,t){ return a + (b-a)*t; }
-    function clamp01(x){ return Math.max(0, Math.min(1, x)); }
-
-    function rateToColor(rate, minR, maxR){
-      const t = (maxR > minR) ? clamp01((rate - minR) / (maxR - minR)) : 0.5;
-      const r = Math.round(lerp(0, 220, t));
-      const g = Math.round(lerp(200, 20, t));
-      const b = 20;
-      return [r,g,b];
-    }
-
-    function safeCall(fn, ...args){
-      try { return fn(...args); } catch(e) { return null; }
-    }
-
-    
     // ===================== GEOJSON -> WKT (working choropleth from INDEX 7) =====================
-    // NOTE: GovMap works reliably with wkts[] + geometryType=POLYGON. This is the exact approach that
-    // worked in index (7).html. We keep ALL other features of index (8) and only swap the choropleth engine.
-
     let muniBoundariesLoaded = false;
     let muniBoundariesLoadError = null;
 
@@ -1686,7 +1660,6 @@
         const gj = await res.json();
         const feats = Array.isArray(gj?.features) ? gj.features : [];
 
-        // reuse the existing index (8) object name, but store WKT strings by normalized name
         muniBoundariesIndex = {};
 
         for(const f of feats){
@@ -1711,32 +1684,45 @@
     }
 
     function findWktForCrimeName(crimeName){
-      // Try multiple variants so names align between crime DB and boundary GeoJSON
       const vars = [crimeName, ...(Array.isArray(nameVariants(crimeName)) ? nameVariants(crimeName) : [])];
       for(const v of vars){
         const wkt = muniBoundariesIndex?.[normalizeKey(v)];
         if(wkt) return wkt;
       }
-      // fallback: try normalized base directly
       const wkt2 = muniBoundariesIndex?.[normalizeKey(crimeName)];
       return wkt2 || null;
     }
 
-    // ===================== CHOROPLETH (WKT) =====================
+    // -------------------- Choropleth helpers --------------------
     function lerp(a,b,t){ return a + (b-a)*t; }
     function clamp01(x){ return Math.max(0, Math.min(1, x)); }
 
-    // Green -> Red (high contrast)
+    // ✅ שינוי מינימלי: ירוק -> כתום -> אדום
     function rateToColor(rate, minR, maxR){
-      const t = (maxR>minR) ? clamp01((rate-minR)/(maxR-minR)) : 0.5;
-      const r = Math.round(lerp(20, 240, t));
-      const g = Math.round(lerp(210,  20, t));
-      const b =  25;
-      return [r,g,b];
+      const t = (maxR > minR) ? clamp01((rate - minR) / (maxR - minR)) : 0.5;
+
+      const low  = [  0, 210,  60];
+      const mid  = [255, 160,   0];
+      const high = [240,  20,  20];
+
+      if (t < 0.5) {
+        const tt = t / 0.5;
+        return [
+          Math.round(lerp(low[0], mid[0], tt)),
+          Math.round(lerp(low[1], mid[1], tt)),
+          Math.round(lerp(low[2], mid[2], tt)),
+        ];
+      } else {
+        const tt = (t - 0.5) / 0.5;
+        return [
+          Math.round(lerp(mid[0], high[0], tt)),
+          Math.round(lerp(mid[1], high[1], tt)),
+          Math.round(lerp(mid[2], high[2], tt)),
+        ];
+      }
     }
 
     function clearChoropleth(){
-      // Keep it robust across GovMap API versions
       try{
         if(typeof govmap.clearGeometriesByName === "function"){
           try{ govmap.clearGeometriesByName([CHORO_NAME]); return; }catch(e){}
@@ -1774,7 +1760,6 @@
     }
 
     async function toggleChoropleth(){
-      // Choropleth only makes sense for municipalities
       if(currentMode !== "muni") setMode("muni");
 
       choroplethEnabled = !choroplethEnabled;
@@ -1801,7 +1786,6 @@
         return;
       }
 
-      // Choropleth is always per-10k
       currentMetric = "rate";
       const absBtn = document.getElementById("btnMetricAbs");
       const rateBtn = document.getElementById("btnMetricRate");
@@ -1832,9 +1816,10 @@
       for(const name in yearData){
         const d = yearData[name];
         const total = Number(d?.total || 0);
-        const pop = getPopulationForAuthority(name);
-        const rate = calcRatePer10k(total, pop);
-        if(rate == null) continue;
+
+        const popRaw = getPopulationForAuthority(name);
+        const pop = (popRaw == null ? 0 : Number(popRaw)); // ✅ הנחה 0
+        const rate = calcRatePer10k(total, pop);           // ✅ לא יחזיר null
 
         const wkt = findWktForCrimeName(name);
         if(!wkt){ missingGeom.push(name); continue; }
@@ -1843,7 +1828,7 @@
       }
 
       if(!rows.length){
-        showInfo("אין מספיק נתונים","לא נמצאו רשויות עם אוכלוסייה + גבול כדי לחשב ל-10,000.","warn");
+        showInfo("אין מספיק נתונים","לא נמצאו רשויות עם גבול כדי לצבוע.","warn");
         return;
       }
 
@@ -1852,18 +1837,7 @@
       const maxR  = Math.max(...rates);
 
       const wkts = [], names = [], symbols = [];
-      const tooltips = [], headers = [];
-
-      const bubbleHTML = `
-        <div style="direction:rtl;font-family:Arial;padding:6px 4px;line-height:1.6;">
-          <div style="font-weight:900;font-size:14px;margin-bottom:6px;">{0}</div>
-          <div style="font-size:13px;">
-            ל-10,000: <b>{1}</b><br/>
-            אוכלוסייה (2019): <b>{2}</b><br/>
-            סה״כ אירועים: <b>{3}</b>
-          </div>
-        </div>`;
-      const bubbleHTMLParameters = [];
+      const tooltips = [];
 
       for(let i=0;i<rows.length;i++){
         const r = rows[i];
@@ -1879,13 +1853,6 @@
         });
 
         tooltips.push(`${r.name} • ${r.rate.toLocaleString()} /10k`);
-        headers.push(r.name);
-        bubbleHTMLParameters.push([
-          r.name,
-          `${r.rate.toLocaleString()} /10k`,
-          Number(r.pop).toLocaleString(),
-          Number(r.total).toLocaleString()
-        ]);
       }
 
       try{
@@ -1896,9 +1863,14 @@
           names,
           geometryType: (govmap.geometryType?.POLYGON ?? govmap.geometryType?.Polygon ?? 3),
           clearExisting: true,
-          showBubble: true,
+
+          // ✅ שינוי מינימלי: מבטל חלון/בועה שנפתח בלחיצה
+          showBubble: false,
+
           symbols,
-          data: { tooltips, headers, bubbleHTML, bubbleHTMLParameters }
+
+          // נשאיר Tooltips בלבד (אם נתמך אצלך)
+          data: { tooltips }
         };
 
         const ret = govmap.displayGeometries(payload);
@@ -1922,20 +1894,12 @@
 
       showInfo(
         "צביעה לפי ל-10,000",
-        `ירוק = נמוך • אדום = גבוה<br>טווח: <b>${minR.toLocaleString()}</b> עד <b>${maxR.toLocaleString()}</b>${extra}`,
+        `ירוק = נמוך • כתום = בינוני • אדום = גבוה<br>טווח: <b>${minR.toLocaleString()}</b> עד <b>${maxR.toLocaleString()}</b>${extra}`,
         "info"
       );
     }
 
-    function resetChoropleth(){
-      choroplethEnabled = false;
-      clearChoropleth();
-      setMunicipalLayerOpacity(100);
-      setChoroBtnUI();
-      showInfo("איפוס צביעה","חזרתי לתצוגה רגילה.","info");
-    }
-
-// -------------------- GovMap init --------------------
+    // -------------------- GovMap init --------------------
     function initGovMap() {
       if (!window.crimeByYear || typeof window.crimeByYear !== "object") {
         showInfo("שגיאה", "לא ניתן לטעון את קובץ הנתונים crimeByYear_2020_2025.js", "error");
@@ -1945,9 +1909,7 @@
       }
       if (!window.crimeByYearMerhav) console.warn("⚠️ crimeByYearMerhav.js לא נטען");
 
-      const popOk = buildPopulationIndex();
-      if (!popOk) console.warn("⚠️ Population data missing -> rate view will be partially unavailable");
-
+      buildPopulationIndex();
       updateMetricButtonsUI();
 
       const years = Object.keys(window.crimeByYear).sort();
@@ -2022,7 +1984,6 @@
           const l = document.getElementById("loading");
           if (l) l.style.display = "none";
 
-          // לא טוענים גבולות ישר — רק כשנלחץ על צביעה (כדי להאיץ טעינה).
           showInfo("מפה לפי ישובים/רשויות", `שנה נבחרת: ${currentYear}<br>לחץ על רשות במפה כדי לראות נתונים`, "info");
 
           console.log("✅ Map initialized successfully");
