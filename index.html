@@ -1722,18 +1722,17 @@
       }
     }
 
-    function clearChoropleth(){
-      try{
-        if(typeof govmap.clearGeometriesByName === "function"){
-          try{ govmap.clearGeometriesByName([CHORO_NAME]); return; }catch(e){}
-          try{ govmap.clearGeometriesByName({ names:[CHORO_NAME] }); return; }catch(e){}
-        }
-      }catch(e){}
-      try{
-        if(typeof govmap.clearGeometries === "function") govmap.clearGeometries();
-      }catch(e){}
+  function clearChoropleth(){
+  // ניקוי פשוט וישיר
+  try{
+    if(typeof govmap.clearGeometries === "function"){
+      govmap.clearGeometries();
+      console.log("✅ Cleared all geometries");
     }
-
+  }catch(e){
+    console.error("❌ Failed to clear:", e);
+  }
+}
     function setMunicipalLayerOpacity(opacity){
       if(typeof govmap.setLayerOpacity === "function"){
         try{ govmap.setLayerOpacity({ layerName: MUNICIPAL_LAYER, opacity }); }catch(e){}
@@ -1759,20 +1758,21 @@
       }
     }
 
-    async function toggleChoropleth(){
-      if(currentMode !== "muni") setMode("muni");
+ async function toggleChoropleth(){
+  if(currentMode !== "muni") setMode("muni");
 
-      choroplethEnabled = !choroplethEnabled;
-      setChoroBtnUI();
+  choroplethEnabled = !choroplethEnabled;
+  setChoroBtnUI();
 
-      if(!mapInitialized) return;
+  if(!mapInitialized) return;
 
-      if(!choroplethEnabled){
-        clearChoropleth();
-        setMunicipalLayerOpacity(100);
-        showInfo("צביעה כובתה","חזרתי לתצוגה רגילה.","info");
-        return;
-      }
+  if(!choroplethEnabled){
+    clearChoropleth();
+    setMunicipalLayerOpacity(100);
+    showInfo("צביעה כובתה","חזרתי לתצוגה רגילה.","info");
+    return;
+  }
+  // ... המשך
 
       const ok = await loadMuniBoundariesGeojson();
       if(!ok){
