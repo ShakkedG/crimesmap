@@ -9,6 +9,8 @@
   <script src="crimeByYearMerhav.js"></script>
   <script src="PopulationDB.js"></script>
 
+  <script src="muni_boundaries.js"></script> 
+
   <style>
     * { box-sizing: border-box; }
 
@@ -37,6 +39,7 @@
       width: 430px;
       max-height: calc(100vh - 30px);
       box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      font-size: 14px;
       overflow: hidden;
       display: flex;
       flex-direction: column;
@@ -534,7 +537,7 @@
     let choroplethEnabled = false;
     const CHORO_NAME = "crime_rate_choropleth";
     
-    // ✅ התיקון: רשימה גלובלית לשמירת השמות שציירנו
+    // ✅ רשימה לשמירת שמות הפוליגונים שציירנו (כדי שנוכל למחוק אותם)
     let activeChoroplethNames = [];
 
     let muniBoundariesIndex = {}; // normalizedKey -> WKT
@@ -1649,11 +1652,19 @@
 
       muniBoundariesLoadError = null;
       try{
-        const res = await fetch(MUNI_BOUNDARIES_GEOJSON_URL, { cache: "no-store" });
-        if(!res.ok) throw new Error(`fetch failed (${res.status})`);
-
-        const gj = await res.json();
-        const feats = Array.isArray(gj?.features) ? gj.features : [];
+        let feats = [];
+        
+        // 1) Try loading from variable (local file bypass)
+        if (window.MUNI_DATA && window.MUNI_DATA.features) {
+             console.log("✅ Using window.MUNI_DATA");
+             feats = window.MUNI_DATA.features;
+        } else {
+             // 2) Try loading via fetch
+             const res = await fetch(MUNI_BOUNDARIES_GEOJSON_URL, { cache: "no-store" });
+             if(!res.ok) throw new Error(`fetch failed (${res.status})`);
+             const gj = await res.json();
+             feats = Array.isArray(gj?.features) ? gj.features : [];
+        }
 
         muniBoundariesIndex = {};
 
@@ -1759,7 +1770,7 @@
       }
     }
 
-    async function toggleChoropleth(){
+    async function toggleChoropleth(force){
       if(currentMode !== "muni") setMode("muni");
 
       choroplethEnabled = !choroplethEnabled;
@@ -1780,7 +1791,7 @@
         setChoroBtnUI();
         showInfo(
           "לא הצלחתי לצבוע",
-          `לא ניתן לטעון את <code>${escapeHtml(MUNI_BOUNDARIES_GEOJSON_URL)}</code>.<br>ודא שהוא ליד <code>index.html</code> ושאתה פותח דרך שרת (לא file://).`,
+          `לא ניתן לטעון את קובץ הגבולות.<br>ודא שהוא ליד <code>index.html</code> ושאתה פותח דרך שרת (לא file://).`,
           "error"
         );
         return;
@@ -2019,45 +2030,45 @@
       <p>מצב נוכחי: <strong>ישובים/רשויות</strong><br>ל-10,000 זמין רק כאן</p>
 
       <div id="header-actions">
-        <button id="searchBtn" class="hbtn" aria-label="חיפוש כתובת">🔎 חיפוש כתובת</button>
-        <button id="aboutBtn" class="hbtn secondary" aria-label="אודות ומקורות">ℹ️ אודות + מקורות</button>
-        <button id="panelToggleBtn" class="hbtn secondary" aria-label="הקטן או הגדל פאנל">➖ הקטן</button>
+        <button id="searchBtn" class="hbtn">🔎 חיפוש כתובת</button>
+        <button id="aboutBtn" class="hbtn secondary">ℹ️ אודות</button>
+        <button id="panelToggleBtn" class="hbtn secondary" title="כיווץ/הרחבה">⬍ כיווץ</button>
       </div>
     </div>
 
-    <div id="tabs" role="tablist">
-      <div class="tab active" data-tab="single" onclick="switchTab('single')" role="tab" aria-selected="true">תצוגה</div>
-      <div class="tab" data-tab="compare" onclick="switchTab('compare')" role="tab" aria-selected="false">השוואה</div>
-      <div class="tab" data-tab="trends" onclick="switchTab('trends')" role="tab" aria-selected="false">היסטוריה</div>
-      <div class="tab" data-tab="rankings" onclick="switchTab('rankings')" role="tab" aria-selected="false">דירוגים</div>
+    <div id="tabs">
+      <div class="tab active" data-tab="single" onclick="switchTab('single')">תצוגה</div>
+      <div class="tab" data-tab="compare" onclick="switchTab('compare')">השוואה</div>
+      <div class="tab" data-tab="trends" onclick="switchTab('trends')">היסטוריה</div>
+      <div class="tab" data-tab="rankings" onclick="switchTab('rankings')">דירוגים</div>
     </div>
 
     <div id="controls">
       <div class="mode-grid">
-        <button id="btnModeMuni" class="mode-btn active" onclick="setMode('muni')" aria-label="מצב ישובים ורשויות">🏘️ ישובים/רשויות</button>
-        <button id="btnModeMerhav" class="mode-btn" onclick="setMode('merhav')" aria-label="מצב מרחבים משטרתיים">🚔 מרחבים</button>
+        <button id="btnModeMuni" class="mode-btn active" onclick="setMode('muni')">🏘️ ישובים</button>
+        <button id="btnModeMerhav" class="mode-btn" onclick="setMode('merhav')">🚔 מרחבים</button>
 
-        <button id="btnMetricAbs" class="mode-btn active" onclick="setMetric('abs')" aria-label="תצוגת כמות">🔢 כמות</button>
-        <button id="btnMetricRate" class="mode-btn" title="זמין רק במצב ישובים/רשויות">👥 ל-10,000</button>
+        <button id="btnMetricAbs" class="mode-btn active" onclick="setMetric('abs')">🔢 כמות</button>
+        <button id="btnMetricRate" class="mode-btn" onclick="setMetric('rate')" title="זמין רק במצב ישובים">👥 ל-10,000</button>
 
-        <button id="btnChoro" class="mode-btn full" onclick="toggleChoropleth()" aria-label="צביעה לפי ל-10,000">
+        <button id="btnChoro" class="mode-btn full" onclick="toggleChoropleth()">
           🎨 צביעה ל-10,000 (ירוק→אדום)
         </button>
       </div>
 
       <div id="controls-row">
         <label for="yearSelect">שנה:</label>
-        <select id="yearSelect" aria-label="בחירת שנה"></select>
+        <select id="yearSelect"></select>
       </div>
 
-      <div id="quick-stats" role="region" aria-label="סטטיסטיקות מהירות">
+      <div id="quick-stats">
         <div class="stat-card">
           <div class="stat-value" id="stat-municipalities">-</div>
           <div class="stat-label">רשויות</div>
         </div>
         <div class="stat-card">
           <div class="stat-value" id="stat-total">-</div>
-          <div class="stat-label">סה"כ אירועים</div>
+          <div class="stat-label">סה"כ</div>
         </div>
         <div class="stat-card">
           <div class="stat-value" id="stat-avg">-</div>
@@ -2067,80 +2078,62 @@
     </div>
 
     <div id="info-content">
-      <div class="tab-content active" id="tab-single" role="tabpanel">
+      <div class="tab-content active" id="tab-single">
         <div id="info-title">טוען נתונים...</div>
         <div id="info-body"></div>
       </div>
 
-      <div class="tab-content" id="tab-compare" role="tabpanel">
+      <div class="tab-content" id="tab-compare">
         <div id="compare-content">
-          <div class="message message-info">בחר ישובים/רשויות או מרחבים במפה והוסף להשוואה</div>
+          <div class="message message-info">בחר ישובים במפה והוסף להשוואה</div>
         </div>
       </div>
 
-      <div class="tab-content" id="tab-trends" role="tabpanel">
+      <div class="tab-content" id="tab-trends">
         <div id="trends-content">
-          <div class="message message-info">בחר רשות/מרחב במפה כדי לראות נתונים היסטוריים</div>
+          <div class="message message-info">בחר רשות במפה לצפייה בהיסטוריה</div>
         </div>
       </div>
 
-      <div class="tab-content" id="tab-rankings" role="tabpanel">
+      <div class="tab-content" id="tab-rankings">
         <div id="rankings-content">
-          <div class="message message-info">בחר שנה ומצב ואז כנס לדירוגים כדי לראות Top 5/10/20.</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div id="aboutModal" class="modal" aria-hidden="true">
-    <div id="aboutOverlay" class="modalOverlay" aria-hidden="true"></div>
-    <div class="modalCard" role="dialog" aria-modal="true" aria-label="אודות ומקורות">
-      <div class="modalHeader">
-        <div class="modalHeaderTitle">ℹ️ אודות + מקורות</div>
-        <button id="aboutCloseBtn" class="modalClose" aria-label="סגור">×</button>
-      </div>
-      <div class="modalBody">
-        <div class="message message-info" style="margin-bottom:12px;">
-          האתר מציג נתוני פשיעה לפי שנה (2020–2025) בשתי תצוגות: <strong>ישובים/רשויות</strong> ו־<strong>מרחבים</strong>.
-          במצב ישובים ניתן גם להציג <strong>ל־10,000</strong> לפי אוכלוסייה (קובץ PopulationDB.js).
-        </div>
-
-        <div class="message message-warn" style="margin-top:12px;">
-          הצביעה מבוססת על קובץ גבולות: <code>muni_boundaries_ITM.geojson</code> (חייב להיות ליד index.html).<br>
-          אם אין צביעה – לרוב זו בעיית התאמת שמות או שהקובץ לא נטען.
+          <div class="message message-info">טוען דירוגים...</div>
         </div>
       </div>
     </div>
   </div>
 
   <div id="searchModal" class="modal" aria-hidden="true">
-    <div id="searchOverlay" class="modalOverlay" aria-hidden="true"></div>
-    <div class="modalCard" role="dialog" aria-modal="true" aria-label="חיפוש כתובת">
+    <div id="searchOverlay" class="modalOverlay"></div>
+    <div class="modalCard" role="dialog">
       <div class="modalHeader">
         <div class="modalHeaderTitle">🔎 חיפוש כתובת</div>
-        <button id="searchCloseBtn" class="modalClose" aria-label="סגור">×</button>
+        <button id="searchCloseBtn" class="modalClose">×</button>
       </div>
       <div class="modalBody">
-        <div style="display:flex; gap:10px; align-items:center;">
-          <input
-            id="addrInput"
-            type="text"
-            placeholder="לדוגמה: עינת / תל אביב / רחוב + מספר"
-            style="flex:1; padding:12px 12px; border-radius:12px; border:1px solid #ddd; font-size:14px; font-weight:800;"
-            aria-label="הקלד כתובת לחיפוש"
-          />
-          <button
-            id="addrBtn"
-            style="padding:12px 14px; border-radius:12px; border:none; background:#0066cc; color:#fff; font-weight:1000; cursor:pointer;"
-            aria-label="חפש"
-          >חפש</button>
+        <div style="display:flex; gap:8px;">
+          <input id="addrInput" type="text" placeholder="לדוגמה: דיזנגוף 50 תל אביב" style="flex:1; padding:10px; border-radius:8px; border:1px solid #ccc;">
+          <button id="addrBtn" style="padding:10px 14px; background:#0066cc; color:white; border:none; border-radius:8px; cursor:pointer;">חפש</button>
         </div>
+        <div id="addrResults"></div>
+      </div>
+    </div>
+  </div>
 
-        <div id="addrResults" aria-label="תוצאות חיפוש כתובת"></div>
-
-        <div class="message message-info" style="margin-top:12px;">
-          טיפ: אפשר פשוט להקליד שם יישוב (למשל <strong>עינת</strong>) — התוצאות יוצגו עם שם ברור.
-        </div>
+  <div id="aboutModal" class="modal" aria-hidden="true">
+    <div id="aboutOverlay" class="modalOverlay"></div>
+    <div class="modalCard" role="dialog">
+      <div class="modalHeader">
+        <div class="modalHeaderTitle">ℹ️ אודות + מקורות</div>
+        <button id="aboutCloseBtn" class="modalClose">×</button>
+      </div>
+      <div class="modalBody">
+        <p>מפת פשיעה אינטראקטיבית המבוססת על נתוני משטרת ישראל.</p>
+        <ul>
+            <li><strong>נתוני פשיעה:</strong> מעובדים ממאגרי מידע משטרתיים (2020-2025).</li>
+            <li><strong>אוכלוסייה:</strong> נתוני למ"ס (2019) לחישוב יחס ל-10,000 נפש.</li>
+        </ul>
+        <p>פותח כשירות לציבור להנגשת מידע.</p>
       </div>
     </div>
   </div>
