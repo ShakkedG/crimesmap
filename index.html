@@ -599,7 +599,9 @@
     }
 
     function calcRatePer10k(total, pop) {
-      if (!pop || pop <= 0 || !Number.isFinite(total)) return null;
+      // בקשה: אם אין אוכלוסייה -> נניח 0 (והיחס יהיה 0)
+      if (!Number.isFinite(total)) return 0;
+      if (!Number.isFinite(pop) || pop <= 0) return 0;
       return Math.round((total / pop) * 10000 * 10) / 10;
     }
 
@@ -1620,14 +1622,86 @@
     }
 
     // -------------------- Choropleth helpers --------------------
+
+    // ---- גבולות רשויות ל"צביעה" (נטען מ-GeoJSON מקומי) ----
+    const MUNI_GEOJSON_URL = "muni_boundaries_ITM.geojson"; // אותו תיקייה כמו index.html
+    let __MUNI_BOUNDARIES__ = [];
+    let __MUNI_BOUNDARIES_BY_KEY__ = Object.create(null);
+    let __MUNI_BOUNDARIES_LOADED__ = false;
+
+    function getMuniNameFromGeoProps(props){
+      if (!props) return null;
+      return (
+        props["שם רשות"] || props["שם רשות מקומית"] || props["שם_רשות"] ||
+        props["SHEM_YISHUV"] || props["NAME"] || props["Name"] ||
+        props["MUNI_NAME"] || props["MUNI_HEB"] || props["muni_name"] || props["name"]
+      );
+    }
+
+    function buildMuniGeoIndex(features){
+      __MUNI_BOUNDARIES_BY_KEY__ = Object.create(null);
+      __MUNI_BOUNDARIES__ = features || [];
+      for (const f of __MUNI_BOUNDARIES__){
+        const nm = getMuniNameFromGeoProps(f?.properties);
+        if (!nm) continue;
+        const key = normalizeKey(nm);
+        if (!__MUNI_BOUNDARIES_BY_KEY__[key]) __MUNI_BOUNDARIES_BY_KEY__[key] = f;
+      }
+      console.log("✅ Boundaries loaded:", __MUNI_BOUNDARIES__.length);
+      __MUNI_BOUNDARIES_LOADED__ = true;
+      return true;
+    }
+
+    async function loadMuniBoundariesGeojson(){
+      if (__MUNI_BOUNDARIES_LOADED__) return true;
+      try{
+        const r = await fetch(MUNI_GEOJSON_URL, { cache: "no-store" });
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        const gj = await r.json();
+        const feats = Array.isArray(gj?.features) ? gj.features : [];
+        buildMuniGeoIndex(feats);
+        return true;
+      }catch(e){
+        console.warn("⚠️ Failed loading boundaries:", e);
+        __MUNI_BOUNDARIES_LOADED__ = false;
+        return false;
+      }
+    }
+
+    // המרה GeoJSON -> WKT (פשוט, מספיק לפוליגון/מולטיפוליגון)
+    function geojsonGeomToWkt(geom){
+      if (!geom) return null;
+      const type = geom.type;
+      const coords = geom.coordinates;
+
+      const ringToStr = (ring) => ring.map(p => `${p[0]} ${p[1]}`).join(",");
+      const polyToStr = (poly) => `(${poly.map(r => `(${ringToStr(r)})`).join(",")})`;
+
+      if (type === "Polygon") return `POLYGON${polyToStr(coords)}`;
+      if (type === "MultiPolygon") return `MULTIPOLYGON(${coords.map(p => polyToStr(p)).join(",")})`;
+      return null;
+    }
+
     function lerp(a,b,t){ return a + (b-a)*t; }
     function clamp01(x){ return Math.max(0, Math.min(1, x)); }
 
     function rateToColor(rate, minR, maxR){
+      // ירוק -> כתום -> אדום (קונטרסט גבוה)
       const t = (maxR > minR) ? clamp01((rate - minR) / (maxR - minR)) : 0.5;
-      const r = Math.round(lerp(0, 220, t));
-      const g = Math.round(lerp(200, 20, t));
-      const b = 20;
+
+      const green  = [  0, 200,   0];
+      const orange = [255, 165,   0];
+      const red    = [220,   0,   0];
+
+      let c1, c2, tt;
+      if (t < 0.5){
+        c1 = green; c2 = orange; tt = t / 0.5;
+      } else {
+        c1 = orange; c2 = red; tt = (t - 0.5) / 0.5;
+      }
+      const r = Math.round(lerp(c1[0], c2[0], tt));
+      const g = Math.round(lerp(c1[1], c2[1], tt));
+      const b = Math.round(lerp(c1[2], c2[2], tt));
       return [r,g,b];
     }
 
@@ -1635,307 +1709,265 @@
       try { return fn(...args); } catch(e) { return null; }
     }
 
-    
-    // ===================== GEOJSON -> WKT (working choropleth from INDEX 7) =====================
-    // NOTE: GovMap works reliably with wkts[] + geometryType=POLYGON. This is the exact approach that
-    // worked in index (7).html. We keep ALL other features of index (8) and only swap the choropleth engine.
-
-    let muniBoundariesLoaded = false;
-    let muniBoundariesLoadError = null;
-
-    function ensureClosedRing(coords){
-      if(!Array.isArray(coords) || coords.length<3) return coords;
-      const first = coords[0];
-      const last  = coords[coords.length-1];
-      if(first && last && first[0]===last[0] && first[1]===last[1]) return coords;
-      return coords.concat([[first[0], first[1]]]);
-    }
-    function ringToWkt(ring){
-      const r = ensureClosedRing(ring);
-      return r.map(p => `${Number(p[0]).toFixed(3)} ${Number(p[1]).toFixed(3)}`).join(", ");
-    }
-    function geojsonGeomToWkt(geom){
-      if(!geom || !geom.type) return null;
-
-      if(geom.type === "Polygon"){
-        const rings = (geom.coordinates||[]).map(ringToWkt);
-        if(!rings.length) return null;
-        return `POLYGON((${rings[0]})${rings.slice(1).map(h=>`,(${h})`).join("")})`;
-      }
-      if(geom.type === "MultiPolygon"){
-        const polys = geom.coordinates || [];
-        const parts = polys.map(poly=>{
-          const rings = (poly||[]).map(ringToWkt);
-          if(!rings.length) return null;
-          return `((${rings[0]})${rings.slice(1).map(h=>`,(${h})`).join("")})`;
-        }).filter(Boolean);
-        if(!parts.length) return null;
-        return `MULTIPOLYGON(${parts.join(",")})`;
-      }
-      return null;
-    }
-
-    async function loadMuniBoundariesGeojson(){
-      if(muniBoundariesLoaded) return true;
-
-      muniBoundariesLoadError = null;
-      try{
-        const res = await fetch(MUNI_BOUNDARIES_GEOJSON_URL, { cache: "no-store" });
-        if(!res.ok) throw new Error(`fetch failed (${res.status})`);
-
-        const gj = await res.json();
-        const feats = Array.isArray(gj?.features) ? gj.features : [];
-
-        // reuse the existing index (8) object name, but store WKT strings by normalized name
-        muniBoundariesIndex = {};
-
-        for(const f of feats){
-          const name = f?.properties?.name;
-          const wkt  = geojsonGeomToWkt(f?.geometry);
-          if(!name || !wkt) continue;
-          muniBoundariesIndex[normalizeKey(name)] = wkt;
-        }
-
-        muniBoundariesLoaded = true;
-        console.log("✅ Boundaries loaded:", Object.keys(muniBoundariesIndex).length);
-        return true;
-
-      }catch(e){
-        muniBoundariesLoadError = e;
-        console.error("❌ Failed loading muni boundaries:", e);
-        return false;
-
-      }finally{
-        setChoroBtnUI();
-      }
-    }
-
-    function findWktForCrimeName(crimeName){
-      // Try multiple variants so names align between crime DB and boundary GeoJSON
-      const vars = [crimeName, ...(Array.isArray(nameVariants(crimeName)) ? nameVariants(crimeName) : [])];
-      for(const v of vars){
-        const wkt = muniBoundariesIndex?.[normalizeKey(v)];
-        if(wkt) return wkt;
-      }
-      // fallback: try normalized base directly
-      const wkt2 = muniBoundariesIndex?.[normalizeKey(crimeName)];
-      return wkt2 || null;
-    }
-
-    // ===================== CHOROPLETH (WKT) =====================
-    function lerp(a,b,t){ return a + (b-a)*t; }
-    function clamp01(x){ return Math.max(0, Math.min(1, x)); }
-
-    // Green -> Red (high contrast)
-    function rateToColor(rate, minR, maxR){
-      const t = (maxR>minR) ? clamp01((rate-minR)/(maxR-minR)) : 0.5;
-      const r = Math.round(lerp(20, 240, t));
-      const g = Math.round(lerp(210,  20, t));
-      const b =  25;
-      return [r,g,b];
-    }
-
     function clearChoropleth(){
-      // Keep it robust across GovMap API versions
-      try{
-        if(typeof govmap.clearGeometriesByName === "function"){
-          try{ govmap.clearGeometriesByName([CHORO_NAME]); return; }catch(e){}
-          try{ govmap.clearGeometriesByName({ names:[CHORO_NAME] }); return; }catch(e){}
-        }
-      }catch(e){}
-      try{
-        if(typeof govmap.clearGeometries === "function") govmap.clearGeometries();
-      }catch(e){}
+      // תאימות ל-API שונה בין גרסאות
+      safeCall(govmap.clearGeometriesByName, CHORO_NAME);
+      safeCall(govmap.clearGeometriesByName, { name: CHORO_NAME });
+      // fallback ישן
+      safeCall(govmap.clearGeometries, CHORO_NAME);
     }
 
     function setMunicipalLayerOpacity(opacity){
-      if(typeof govmap.setLayerOpacity === "function"){
-        try{ govmap.setLayerOpacity({ layerName: MUNICIPAL_LAYER, opacity }); }catch(e){}
+      if (typeof govmap.setLayerOpacity === "function") {
+        try { govmap.setLayerOpacity({ layerName: MUNICIPAL_LAYER, opacity }); } catch(e){}
       }
     }
 
     function setChoroBtnUI(){
       const btn = document.getElementById("btnChoro");
-      if(!btn) return;
+      if (!btn) return;
 
-      btn.classList.toggle("active", !!choroplethEnabled);
       btn.classList.remove("disabled");
       btn.disabled = false;
 
-      if(!muniBoundariesLoaded){
-        btn.textContent = "🎨 צביעה ל-10,000 (טוען גבולות...)";
-        btn.title = muniBoundariesLoadError
-          ? "נכשל לטעון GeoJSON. ודא שהקובץ קיים ושאתה בשרת (GitHub Pages/localhost)."
-          : "טוען GeoJSON של גבולות הרשויות...";
-      }else{
-        btn.textContent = choroplethEnabled ? "🎨 צביעה ל-10,000: פעיל" : "🎨 צביעה ל-10,000 (ירוק→אדום)";
-        btn.title = "צביעה לפי ל-10,000";
+      btn.classList.toggle("active", !!choroplethEnabled);
+      btn.textContent = choroplethEnabled ? "🎨 צביעה ל-10,000: פעיל" : "🎨 צביעה ל-10,000 (ירוק→כתום→אדום)";
+      btn.title = "הדלק/כבה צביעה לפי פשעים ל-10,000 (במרחבים זה יתכבה אוטומטית)";
+    }
+
+    // --------- ⬅️ טעינת גבולות מהרשויות (GeoJSON) ---------
+    async function loadMuniBoundaries(url = MUNI_BOUNDARIES_GEOJSON_URL) {
+      const res = await fetch(url, { cache: "no-store" });
+      if (!res.ok) throw new Error(`Failed to load boundaries: ${res.status}`);
+      const gj = await res.json();
+      muniBoundariesIndex = buildBoundariesIndexFromGeoJSON(gj);
+      console.log("✅ Boundaries loaded:", Object.keys(muniBoundariesIndex).length);
+    }
+
+    function buildBoundariesIndexFromGeoJSON(gj) {
+      const out = {};
+      const feats = gj?.features || [];
+      for (const f of feats) {
+        const name = f?.properties?.name || f?.properties?.NAME || f?.properties?.Name;
+        const geom = f?.geometry;
+        if (!name || !geom) continue;
+
+        const esriGeom = geojsonToEsriPolygon2D(geom);
+        if (!esriGeom) continue;
+
+        for (const v of nameVariants(name)) {
+          if (!out[v]) out[v] = esriGeom;
+        }
+      }
+      return out;
+    }
+
+    // ⬅️ הכי חשוב: להוריד Z ולהשאיר [x,y] בלבד
+    function geojsonToEsriPolygon2D(geom) {
+      const wkid = 2039; // ITM
+      const t = geom?.type;
+      const coords = geom?.coordinates;
+      if (!t || !coords) return null;
+
+      const ring2d = (ring) => {
+        const r = (ring || [])
+          .map(pt => [Number(pt[0]), Number(pt[1])]) // ⬅️ drop Z
+          .filter(p => Number.isFinite(p[0]) && Number.isFinite(p[1]));
+        if (r.length < 3) return null;
+
+        const [x0,y0] = r[0];
+        const [xN,yN] = r[r.length - 1];
+        if (x0 !== xN || y0 !== yN) r.push([x0,y0]); // close ring
+        return r;
+      };
+
+      let rings = [];
+
+      if (t === "Polygon") {
+        for (const r of coords) {
+          const rr = ring2d(r);
+          if (rr) rings.push(rr);
+        }
+      } else if (t === "MultiPolygon") {
+        for (const poly of coords) {
+          for (const r of poly) {
+            const rr = ring2d(r);
+            if (rr) rings.push(rr);
+          }
+        }
+      } else {
+        return null;
+      }
+
+      if (!rings.length) return null;
+
+      return { rings, spatialReference: { wkid } };
+    }
+
+    function getBoundaryGeomForAuthority(authorityName) {
+      // מחפש לפי וריאציות (כמו שעשית לאוכלוסייה)
+      for (const v of nameVariants(authorityName)) {
+        if (muniBoundariesIndex[v]) return muniBoundariesIndex[v];
+      }
+      return null;
+    }
+
+    function displayGeometriesCompat(payloadObj, payloadArr, altName) {
+      // מחזיר true אם לא נזרקה שגיאה באחת מהחתימות
+      try {
+        govmap.displayGeometries(payloadObj);
+        return true;
+      } catch (e1) {
+        try {
+          govmap.displayGeometries(payloadArr, altName);
+          return true;
+        } catch (e2) {
+          console.error("displayGeometries failed:", e1, e2);
+          return false;
+        }
       }
     }
 
-    async function toggleChoropleth(){
-      // Choropleth only makes sense for municipalities
-      if(currentMode !== "muni") setMode("muni");
+    // ⬅️ הפכנו ל-async כדי שנוכל לטעון GeoJSON בפעם הראשונה
+    function toggleChoropleth(force){
+      // תמיד עובד רק על רשויות; אם עברו למרחבים – נמשיך, אבל הצביעה תכבה כשעוברים למרחבים
+      if (currentMode !== "muni") {
+        // אם אתה במרחבים ולוחץ על הכפתור – נעביר לרשויות ואז נדליק
+        setMode("muni");
+      }
 
-      choroplethEnabled = !choroplethEnabled;
+      choroplethEnabled = (typeof force === "boolean") ? force : !choroplethEnabled;
       setChoroBtnUI();
 
-      if(!mapInitialized) return;
+      if (!mapInitialized) return;
 
-      if(!choroplethEnabled){
+      if (!choroplethEnabled){
         clearChoropleth();
         setMunicipalLayerOpacity(100);
-        showInfo("צביעה כובתה","חזרתי לתצוגה רגילה.","info");
+        // לא פותחים שום חלון/בועה – פשוט חוזרים לרגיל
+        showInfo("צביעה כובתה", "חזרתי לתצוגה רגילה.", "info");
         return;
       }
 
-      const ok = await loadMuniBoundariesGeojson();
-      if(!ok){
-        choroplethEnabled = false;
-        setChoroBtnUI();
+      // כשמדליקים צביעה – עוברים אוטומטית ל-10,000
+      currentMetric = "rate";
+      const bAbs = document.getElementById("btnMetricAbs");
+      const bRate = document.getElementById("btnMetricRate");
+      if (bAbs) bAbs.classList.remove("active");
+      if (bRate) bRate.classList.add("active");
+
+      renderChoropleth();
+    }
+
+    async function renderChoropleth(){
+      if (!mapInitialized || !choroplethEnabled) return;
+      if (currentMode !== "muni") return;
+
+      const yearData = window.crimeByYear?.[currentYear];
+      if (!yearData) {
+        showInfo("שגיאה", "אין נתונים לשנה שנבחרה.", "error");
+        return;
+      }
+
+      // ודא שגבולות נטענו (GeoJSON מקומי)
+      const okLoad = await loadMuniBoundariesGeojson();
+      if (!okLoad || !__MUNI_BOUNDARIES__.length){
         showInfo(
-          "לא הצלחתי לצבוע",
-          `לא ניתן לטעון את <code>${escapeHtml(MUNI_BOUNDARIES_GEOJSON_URL)}</code>.<br>ודא שהוא ליד <code>index.html</code> ושאתה פותח דרך שרת (לא file://).`,
+          "שגיאה",
+          "לא הצלחתי לטעון את קובץ הגבולות muni_boundaries_ITM.geojson. ודא שהוא נמצא ליד index.html וש-GitHub Pages מגיש אותו.",
           "error"
         );
         return;
       }
 
-      // Choropleth is always per-10k
-      currentMetric = "rate";
-      const absBtn = document.getElementById("btnMetricAbs");
-      const rateBtn = document.getElementById("btnMetricRate");
-      if(absBtn) absBtn.classList.remove("active");
-      if(rateBtn) rateBtn.classList.add("active");
-
-      await renderChoropleth();
-    }
-
-    async function renderChoropleth(){
-      if(!mapInitialized || !choroplethEnabled) return;
-      if(currentMode !== "muni") return;
-
-      if(!muniBoundariesLoaded){
-        const ok = await loadMuniBoundariesGeojson();
-        if(!ok) return;
-      }
-
-      const yearData = window.crimeByYear?.[currentYear];
-      if(!yearData){
-        showInfo("שגיאה","אין נתונים לשנה שנבחרה.","error");
-        return;
-      }
-
+      // 1) נבנה קודם rows כדי לחשב min/max
       const rows = [];
-      const missingGeom = [];
+      for (const f of __MUNI_BOUNDARIES__){
+        const nmGeo = getMuniNameFromGeoProps(f?.properties);
+        if (!nmGeo) continue;
 
-      for(const name in yearData){
-        const d = yearData[name];
-        const total = Number(d?.total || 0);
-        const pop = getPopulationForAuthority(name);
-        const rate = calcRatePer10k(total, pop);
-        if(rate == null) continue;
+        const key = normalizeKey(nmGeo);
+        const entry = muniIndex[key] || muniIndex[nameVariants(nmGeo)[0]];
+        if (!entry?.data) continue;
 
-        const wkt = findWktForCrimeName(name);
-        if(!wkt){ missingGeom.push(name); continue; }
+        const total = Number(entry.data.total || 0);
 
-        rows.push({ name, wkt, total, pop, rate });
+        // בקשה: אם אין אוכלוסייה -> נניח 0 (והיחס יהיה 0)
+        const popRaw = getPopulationForAuthority(entry.name);
+        const pop = (popRaw == null || !Number.isFinite(Number(popRaw))) ? 0 : Number(popRaw);
+        const rate = (pop > 0) ? calcRatePer10k(total, pop) : 0;
+
+        const wkt = geojsonGeomToWkt(f?.geometry);
+        if (!wkt) continue;
+
+        rows.push({ name: entry.name, wkt, total, pop, rate });
       }
 
-      if(!rows.length){
-        showInfo("אין מספיק נתונים","לא נמצאו רשויות עם אוכלוסייה + גבול כדי לחשב ל-10,000.","warn");
+      if (!rows.length){
+        showInfo("אין מספיק נתונים", "לא הצלחתי להתאים בין גבולות הרשויות לנתוני הפשיעה.", "warn");
         return;
       }
 
-      const rates = rows.map(r=>r.rate);
-      const minR  = Math.min(...rates);
-      const maxR  = Math.max(...rates);
+      const rates = rows.map(r => r.rate);
+      const minR = Math.min(...rates);
+      const maxR = Math.max(...rates);
 
-      const wkts = [], names = [], symbols = [];
-      const tooltips = [], headers = [];
+      // 2) יוצרים payload ל-GovMap (בלי Bubble/חלון צד)
+      const wkts = [];
+      const names = [];
+      const symbols = [];
+      const tooltips = [];
 
-      const bubbleHTML = `
-        <div style="direction:rtl;font-family:Arial;padding:6px 4px;line-height:1.6;">
-          <div style="font-weight:900;font-size:14px;margin-bottom:6px;">{0}</div>
-          <div style="font-size:13px;">
-            ל-10,000: <b>{1}</b><br/>
-            אוכלוסייה (2019): <b>{2}</b><br/>
-            סה״כ אירועים: <b>{3}</b>
-          </div>
-        </div>`;
-      const bubbleHTMLParameters = [];
-
-      for(let i=0;i<rows.length;i++){
-        const r = rows[i];
-        const [rr,gg,bb] = rateToColor(r.rate, minR, maxR);
+      rows.forEach((r) => {
+        const [rr, gg, bb] = rateToColor(r.rate, minR, maxR);
 
         wkts.push(r.wkt);
-        names.push(`${CHORO_NAME}_${i}`);
+        names.push(r.name);
 
         symbols.push({
-          fillColor:    [rr, gg, bb, 0.55],
-          outlineColor: [25, 25, 25, 0.85],
-          outlineWidth: 2
+          type: "esriSFS",
+          style: "esriSFSSolid",
+          color: [rr, gg, bb, 180], // קונטרסט גבוה
+          outline: { type: "esriSLS", style: "esriSLSSolid", color: [0, 0, 0, 200], width: 1.5 }
         });
 
-        tooltips.push(`${r.name} • ${r.rate.toLocaleString()} /10k`);
-        headers.push(r.name);
-        bubbleHTMLParameters.push([
-          r.name,
-          `${r.rate.toLocaleString()} /10k`,
-          Number(r.pop).toLocaleString(),
-          Number(r.total).toLocaleString()
-        ]);
-      }
+        // tooltip קצר (לא חלון צד)
+        tooltips.push(`${r.name}: ${r.rate.toLocaleString()} /10k`);
+      });
+
+      clearChoropleth();
+      setMunicipalLayerOpacity(0);
+
+      const payload = {
+        wkts,
+        names,
+        symbols,
+        clearExisting: true,
+        showBubble: false,   // זה מבטל את החלון שנפתח בלחיצה
+        data: {
+          tooltips,
+          headers: [],
+          bubbleHTMLParameters: []
+        }
+      };
 
       try{
-        clearChoropleth();
-
-        const payload = {
-          wkts,
-          names,
-          geometryType: (govmap.geometryType?.POLYGON ?? govmap.geometryType?.Polygon ?? 3),
-          clearExisting: true,
-          showBubble: true,
-          symbols,
-          data: { tooltips, headers, bubbleHTML, bubbleHTMLParameters }
-        };
-
-        const ret = govmap.displayGeometries(payload);
-        if(ret && typeof ret.then === "function") await ret;
-
-        // hide the municipal outline layer so the choropleth is clean
-        setMunicipalLayerOpacity(0);
-
+        govmap.displayGeometries(payload);
       }catch(e){
         console.error("displayGeometries failed:", e);
+        showInfo("שגיאה", "נכשלתי להציג גיאומטריות לצביעה. בדוק קונסול.", "error");
         setMunicipalLayerOpacity(100);
-        showInfo("שגיאה", `נכשלתי לצייר גיאומטריות: ${escapeHtml(e?.message || e)}`, "error");
         return;
-      }
-
-      let extra = "";
-      if(missingGeom.length){
-        extra = `<br><span style="font-size:13px;opacity:.9;">לא נמצאה גיאומטריה ל-${missingGeom.length} רשויות (פערי שמות בין הנתונים לגבולות).</span>`;
-        console.log("Missing geometry for:", missingGeom);
       }
 
       showInfo(
         "צביעה לפי ל-10,000",
-        `ירוק = נמוך • אדום = גבוה<br>טווח: <b>${minR.toLocaleString()}</b> עד <b>${maxR.toLocaleString()}</b>${extra}`,
+        `ירוק = נמוך • כתום = בינוני • אדום = גבוה<br>טווח: <b>${minR.toLocaleString()}</b> עד <b>${maxR.toLocaleString()}</b><br><span style="font-size:12px;opacity:.9;">לחץ על המפה כרגיל כדי לראות נתונים בפאנל (אין חלון צד).</span>`,
         "info"
       );
     }
 
-    function resetChoropleth(){
-      choroplethEnabled = false;
-      clearChoropleth();
-      setMunicipalLayerOpacity(100);
-      setChoroBtnUI();
-      showInfo("איפוס צביעה","חזרתי לתצוגה רגילה.","info");
-    }
-
-// -------------------- GovMap init --------------------
+    // -------------------- GovMap init --------------------
     function initGovMap() {
       if (!window.crimeByYear || typeof window.crimeByYear !== "object") {
         showInfo("שגיאה", "לא ניתן לטעון את קובץ הנתונים crimeByYear_2020_2025.js", "error");
@@ -2007,6 +2039,9 @@
         visibleLayers: [MUNICIPAL_LAYER],
         onLoad: () => {
           mapInitialized = true;
+
+          // טוען גבולות רשויות (לצביעה) ברקע
+          loadMuniBoundariesGeojson();
 
           setMode(currentMode);
           setChoroBtnUI();
