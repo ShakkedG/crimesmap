@@ -1820,7 +1820,7 @@ function clearChoropleth() {
       await renderChoropleth();
     }
 
-   async function renderChoropleth(){
+  async function renderChoropleth(){
   if(!mapInitialized || !choroplethEnabled) return;
   if(currentMode !== "muni") return;
 
@@ -1835,12 +1835,13 @@ function clearChoropleth() {
     return;
   }
 
-  // ✅ חשוב: לנקות קודם (כדי שלא נאפס את השמות החדשים בטעות)
   clearChoropleth();
 
   const rows = [];
   const missingGeom = [];
 
+  const blackList = []; // ישובים עם שם שמתחיל ב"ללא שיפוט"
+  
   for(const name in yearData){
     const d = yearData[name];
     const total = Number(d?.total || 0);
@@ -1850,7 +1851,15 @@ function clearChoropleth() {
     const rate = calcRatePer10k(total, pop);
 
     const wkt = findWktForCrimeName(name);
-    if(!wkt){ missingGeom.push(name); continue; }
+    if(!wkt){ 
+      missingGeom.push(name); 
+      continue; 
+    }
+
+    // בודקים אם שם הישוב מתחיל ב"ללא שיפוט"
+    if (name.startsWith("ללא שיפוט")) {
+      blackList.push(name);  // מוסיפים לרשימה את הישובים האלה
+    }
 
     rows.push({ name, wkt, total, pop, rate });
   }
@@ -1860,24 +1869,23 @@ function clearChoropleth() {
     return;
   }
 
-  const rates = rows.map(r=>r.rate);
+  const rates = rows.map(r => r.rate);
   const minR  = Math.min(...rates);
   const maxR  = Math.max(...rates);
 
-  const wkts = [], names = [], symbols = [];
-  const tooltips = [];
+  const wkts = [], names = [], symbols = [], tooltips = [];
 
-  for(let i=0;i<rows.length;i++){
+  // צביעה של הישובים הרגילים
+  for(let i = 0; i < rows.length; i++){
     const r = rows[i];
-    const [rr,gg,bb] = rateToColor(r.rate, minR, maxR);
+    const [rr, gg, bb] = rateToColor(r.rate, minR, maxR);
 
     wkts.push(r.wkt);
-
     const uniqueName = `${CHORO_NAME}_${i}`;
     names.push(uniqueName);
 
     symbols.push({
-      fillColor:    [rr, gg, bb, 0.55],
+      fillColor: [rr, gg, bb, 0.55],
       outlineColor: [25, 25, 25, 0.85],
       outlineWidth: 2
     });
@@ -1885,7 +1893,23 @@ function clearChoropleth() {
     tooltips.push(`${r.name} • ${r.rate.toLocaleString()} /10k`);
   }
 
-  try{
+  // הוספת שכבה שחורה על הישובים עם "ללא שיפוט"
+  for (let i = 0; i < blackList.length; i++) {
+    const blackName = blackList[i];
+    const wkt = findWktForCrimeName(blackName);
+    if (wkt) {
+      wkts.push(wkt);
+      names.push(`${CHORO_NAME}_black_${i}`);
+      symbols.push({
+        fillColor: [0, 0, 0, 0.75],  // צבע שחור עם שקיפות
+        outlineColor: [25, 25, 25, 0.85],
+        outlineWidth: 2
+      });
+      tooltips.push(`${blackName} (ללא שיפוט)`);
+    }
+  }
+
+  try {
     const payload = {
       wkts,
       names,
@@ -1897,14 +1921,12 @@ function clearChoropleth() {
     };
 
     const ret = govmap.displayGeometries(payload);
-    if(ret && typeof ret.then === "function") await ret;
+    if (ret && typeof ret.then === "function") await ret;
 
-    // ✅ רק אחרי שהציור הצליח – שומרים שמות לניקוי עתידי
     activeChoroplethNames = names;
-
     setMunicipalLayerOpacity(0);
 
-  }catch(e){
+  } catch (e) {
     console.error("displayGeometries failed:", e);
     setMunicipalLayerOpacity(100);
     showInfo("שגיאה", `נכשלתי לצייר גיאומטריות: ${escapeHtml(e?.message || e)}`, "error");
@@ -1912,7 +1934,7 @@ function clearChoropleth() {
   }
 
   let extra = "";
-  if(missingGeom.length){
+  if (missingGeom.length) {
     extra = `<br><span style="font-size:13px;opacity:.9;">לא נמצאה גיאומטריה ל-${missingGeom.length} רשויות (פערי שמות בין הנתונים לגבולות).</span>`;
     console.log("Missing geometry for:", missingGeom);
   }
@@ -1923,6 +1945,7 @@ function clearChoropleth() {
     "info"
   );
 }
+
 
     // -------------------- GovMap init --------------------
     function initGovMap() {
