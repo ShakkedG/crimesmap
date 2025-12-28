@@ -527,7 +527,7 @@
 
     let rankingMetric = "total";
     let rankingCrimeType = "";
-    let rankingTopN = 10;
+    let rankingTopN = 20;  // Set to 20 by default
 
     let lastGeocodeReqId = 0;
     let lastAddrItems = [];
@@ -1351,7 +1351,7 @@
       tSel.disabled = !(rankingMetric === "type" && types.length);
 
       mSel.onchange = () => { rankingMetric = mSel.value; renderRankings(); };
-      nSel.onchange = () => { rankingTopN = Number(nSel.value) || 10; renderRankings(); };
+      nSel.onchange = () => { rankingTopN = Number(nSel.value) || 20; renderRankings(); };
       tSel.onchange = () => { rankingCrimeType = tSel.value; renderRankings(); };
     }
 
@@ -1385,8 +1385,6 @@
             ${metricOptions}
           </select>
           <select id="rankTopNSelect" style="padding:10px 12px;border-radius:12px;border:1px solid #ddd;background:#fff;font-weight:1000;font-size:13px;">
-            <option value="5">Top 5</option>
-            <option value="10">Top 10</option>
             <option value="20">Top 20</option>
           </select>
 
