@@ -1629,94 +1629,26 @@
 
     function findWktForCrimeName(crimeName){
       const vars = [crimeName, ...(Array.isArray(nameVariants(crimeName)) ? nameVariants(crimeName) : [])];
-      for(const v of vars){
+      for (const v of vars) {
         const wkt = muniBoundariesIndex?.[normalizeKey(v)];
-        if(wkt) return wkt;
+        if (wkt) return wkt;
       }
+      const wkt2 = muniBoundariesIndex?.[normalizeKey(crimeName)];
+      return wkt2 || null;
+    }
 
-    function isNoJurisdictionBoundaryName(name){
+    // Returns true if the boundary name (from the boundaries GeoJSON) is flagged as "no jurisdiction"
+    // (i.e., its name starts with "ללא שיפוט").
+    function isNoJurisdictionBoundaryName(name) {
       const vars = [name, ...(Array.isArray(nameVariants(name)) ? nameVariants(name) : [])];
-      for(const v of vars){
+      for (const v of vars) {
         const nk = normalizeKey(v);
         if (muniBoundaryNoJur?.[nk]) return true;
       }
       return false;
     }
 
-      const wkt2 = muniBoundariesIndex?.[normalizeKey(crimeName)];
-      return wkt2 || null;
-    }
-    // -------------------- Missing geometry (for rankings) --------------------
-    function computeMissingGeometryForYear(year){
-      if (!muniBoundariesLoaded) return null;
-      const yearData = window.crimeByYear?.[year];
-      const set = new Set();
-      if (!yearData) { missingGeomByYear[year] = set; return set; }
-
-      for (const name in yearData){
-        const wkt = findWktForCrimeName(name);
-        if (!wkt) set.add(name);
-      }
-      missingGeomByYear[year] = set;
-      return set;
-    }
-
-    async function ensureBoundariesAndMissing(year){
-      if (!muniBoundariesLoaded){
-        const ok = await loadMuniBoundariesGeojson();
-        if (!ok) return false;
-      }
-      computeMissingGeometryForYear(year);
-      return true;
-    }
-
-    // -------------------- Selection outline --------------------
-    function clearSelectedOutline(){
-      try{
-        if (typeof govmap?.clearGeometriesByName === "function"){
-          try { govmap.clearGeometriesByName([SELECT_OUTLINE_NAME]); } catch(e){}
-          try { govmap.clearGeometriesByName(SELECT_OUTLINE_NAME); } catch(e){}
-        }
-      }catch(e){}
-    }
-
-    async function drawSelectedOutline(name){
-      if (!choroplethEnabled || currentMode !== "muni") return;
-      if (!mapInitialized) return;
-      if (!muniBoundariesLoaded){
-        const ok = await loadMuniBoundariesGeojson();
-        if (!ok) return;
-      }
-
-      const wkt = findWktForCrimeName(name);
-      if (!wkt) return;
-
-      clearSelectedOutline();
-
-      const payload = {
-        wkts: [wkt],
-        names: [SELECT_OUTLINE_NAME],
-        geometryType: (govmap.geometryType?.POLYGON ?? govmap.geometryType?.Polygon ?? 3),
-        clearExisting: false,
-        showBubble: false,
-        symbols: [{
-          fillColor: [0, 0, 0, 0],
-          outlineColor: [0, 0, 0, 1],
-          outlineWidth: 4
-        }],
-        data: { tooltips: [String(name)] }
-      };
-
-      try{
-        const ret = govmap.displayGeometries(payload);
-        if (ret && typeof ret.then === "function") await ret;
-      }catch(e){
-        // do nothing; selection is a nice-to-have
-      }
-    }
-
-
-    // -------------------- Choropleth helpers --------------------
+// -------------------- Choropleth helpers --------------------
     function lerp(a,b,t){ return a + (b-a)*t; }
     function clamp01(x){ return Math.max(0, Math.min(1, x)); }
 
