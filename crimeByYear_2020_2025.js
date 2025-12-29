@@ -24912,5 +24912,5 @@ window.crimeByYear = {
       "breakdown": {}
     }
   }
-}
+
 };
