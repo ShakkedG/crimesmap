@@ -535,6 +535,7 @@
     let activeChoroplethNames = [];
 
     let muniBoundariesIndex = {}; // normalizedKey -> WKT
+    let muniBoundariesMeta = [];  // [{ name, wkt }]
 
     // -------------------- Normalize & Variants --------------------
     function normalizeKeyBase(name) {
@@ -1559,13 +1560,16 @@
         }
 
         muniBoundariesIndex = {};
+        muniBoundariesMeta = [];
 
         for(const f of feats){
           const name = f?.properties?.name;
           const wkt  = geojsonGeomToWkt(f?.geometry);
           if(!name || !wkt) continue;
           muniBoundariesIndex[normalizeKey(name)] = wkt;
+          muniBoundariesMeta.push({ name: String(name), wkt });
         }
+
 
         muniBoundariesLoaded = true;
         console.log("✅ Boundaries loaded:", Object.keys(muniBoundariesIndex).length);
@@ -1726,15 +1730,29 @@
         return;
       }
 
-      clearChoropleth();
+            clearChoropleth();
 
       const normalRows = [];
-      const noJurRows = [];
       const missingGeom = [];
 
       const NO_JUR_PREFIX = "ללא שיפוט";
 
+      // Collect all boundaries whose NAME starts with "ללא שיפוט" (from the boundaries GeoJSON),
+      // even if they do not appear in the crime dataset for this year.
+      const noJurRows = (Array.isArray(muniBoundariesMeta) ? muniBoundariesMeta : [])
+        .filter(b => String(b?.name || "").trim().startsWith(NO_JUR_PREFIX) && b?.wkt)
+        .map(b => ({
+          name: String(b.name).trim(),
+          wkt: b.wkt,
+          total: 0,
+          pop: 0,
+          rate: 0
+        }));
+
       for(const name in yearData){
+        // Always render "ללא שיפוט" as gray based on the map/boundaries names
+        if (String(name || "").trim().startsWith(NO_JUR_PREFIX)) continue;
+
         const d = yearData[name];
         const total = Number(d?.total || 0);
 
@@ -1748,11 +1766,7 @@
           continue; 
         }
 
-        const isNoJur = String(name || "").trim().startsWith(NO_JUR_PREFIX);
-        const row = { name, wkt, total, pop, rate };
-
-        if (isNoJur) noJurRows.push(row);
-        else normalRows.push(row);
+        normalRows.push({ name, wkt, total, pop, rate });
       }
 
       const allRows = [...normalRows, ...noJurRows];
