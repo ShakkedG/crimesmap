@@ -534,7 +534,15 @@
     const CHORO_NAME = "crime_rate_choropleth";
     let activeChoroplethNames = [];
 
+    // Selection outline (to mimic "selected" state when choropleth hides the base layer)
+    const SELECT_OUTLINE_NAME = "selected_outline";
+
+    // Missing geometry tracking (year -> Set of settlement names that don't have a boundary)
+    const missingGeomByYear = {};
+
+
     let muniBoundariesIndex = {}; // normalizedKey -> WKT
+    let muniBoundaryNoJur = {};   // normalizedKey -> boolean (name starts with "ללא שיפוט")
     let muniBoundariesMeta = [];  // [{ name, wkt }]
 
     // -------------------- Normalize & Variants --------------------
@@ -811,6 +819,7 @@
 
       if (mode !== "muni") {
         choroplethEnabled = false;
+        clearSelectedOutline();
         clearChoropleth();
         setMunicipalLayerOpacity(100);
       }
@@ -1150,6 +1159,8 @@
           selectedCity = entry.name;
           selectedCityKey = nameVariants(entry.name)[0];
 
+          if (choroplethEnabled) { await drawSelectedOutline(selectedCity); }
+
           if (currentTab === "compare") { updateCompareView(); return; }
           if (currentTab === "single") { showEntry(entry); return; }
           if (currentTab === "trends") { showTrends(selectedCity, "muni"); return; }
@@ -1238,7 +1249,7 @@
     }
 
     // -------------------- Rankings (תמיד Top 20, לפי מצב המדד באתר) --------------------
-    function renderRankings() {
+    async function renderRankings(){
       const container = document.getElementById("rankings-content");
       if (!container) return;
 
@@ -1246,6 +1257,26 @@
 
       const isMerhav = (currentMode === "merhav");
       const metricIsRate = (!isMerhav && currentMetric === "rate");
+
+
+      // Exclude settlements with missing geometry (only in muni mode)
+      let missingSet = null;
+      let excludedCount = 0;
+      let missingFilterFailed = false;
+      if (!isMerhav) {
+        try {
+          const ok = await ensureBoundariesAndMissing(currentYear);
+          if (ok) {
+            missingSet = missingGeomByYear[currentYear] || new Set();
+          } else {
+            missingFilterFailed = true;
+            missingSet = null;
+          }
+        } catch (e) {
+          missingFilterFailed = true;
+          missingSet = null;
+        }
+      }
 
       const yearData = isMerhav
         ? window.crimeByYearMerhav?.[currentYear]
@@ -1258,6 +1289,7 @@
 
       const rows = [];
       for (const name in yearData) {
+        if (missingSet && missingSet.has(name)) { excludedCount++; continue; }
         const d = yearData[name];
         const total = Number(d?.total || 0);
 
@@ -1278,7 +1310,7 @@
       const header = `
         <div class="message message-info" style="margin-bottom:10px;">
           שנה: <strong>${currentYear}</strong> • מצב: <strong>${isMerhav ? "מרחבים" : "ישובים/רשויות"}</strong><br>
-          דירוג אוטומטי לפי: <strong>${metricIsRate ? "ל-10,000" : "כמות (אבסולוטי)"}</strong> • Top ${topN}
+          דירוג אוטומטי לפי: <strong>${metricIsRate ? "ל-10,000" : "כמות (אבסולוטי)"}</strong> • Top ${topN}          ${(!isMerhav && missingSet && excludedCount) ? `<br><span style="font-size:12.5px;opacity:.95;">הוחרגו ${excludedCount.toLocaleString()} ישובים ללא גיאומטריה (Missing Geometry).</span>` : ""}
         </div>
       `;
 
@@ -1288,6 +1320,9 @@
       }
 
       let note = "";
+      if (!isMerhav && missingFilterFailed) {
+        note += `<div class="message message-warn">לא הצלחתי לטעון גבולות רשויות, לכן הדירוג כולל גם ישובים ללא גיאומטריה.</div>`;
+      }
       if (metricIsRate) {
         note = `<div class="message message-warn">דירוג ל-10,000 משתמש באוכלוסייה (2019); חסר אוכלוסייה הונח כ-0.</div>`;
       } else if (isMerhav) {
@@ -1561,17 +1596,24 @@
 
         muniBoundariesIndex = {};
         muniBoundariesMeta = [];
+        muniBoundaryNoJur = {};
 
         for(const f of feats){
           const name = f?.properties?.name;
           const wkt  = geojsonGeomToWkt(f?.geometry);
           if(!name || !wkt) continue;
-          muniBoundariesIndex[normalizeKey(name)] = wkt;
-          muniBoundariesMeta.push({ name: String(name), wkt });
+
+          const rawName = String(name).trim();
+          const nk = normalizeKey(rawName);
+
+          muniBoundariesIndex[nk] = wkt;
+          muniBoundaryNoJur[nk] = rawName.startsWith("ללא שיפוט");
+          muniBoundariesMeta.push({ name: rawName, wkt });
         }
 
 
         muniBoundariesLoaded = true;
+        computeMissingGeometryForYear(currentYear);
         console.log("✅ Boundaries loaded:", Object.keys(muniBoundariesIndex).length);
         return true;
 
@@ -1591,9 +1633,88 @@
         const wkt = muniBoundariesIndex?.[normalizeKey(v)];
         if(wkt) return wkt;
       }
+
+    function isNoJurisdictionBoundaryName(name){
+      const vars = [name, ...(Array.isArray(nameVariants(name)) ? nameVariants(name) : [])];
+      for(const v of vars){
+        const nk = normalizeKey(v);
+        if (muniBoundaryNoJur?.[nk]) return true;
+      }
+      return false;
+    }
+
       const wkt2 = muniBoundariesIndex?.[normalizeKey(crimeName)];
       return wkt2 || null;
     }
+    // -------------------- Missing geometry (for rankings) --------------------
+    function computeMissingGeometryForYear(year){
+      if (!muniBoundariesLoaded) return null;
+      const yearData = window.crimeByYear?.[year];
+      const set = new Set();
+      if (!yearData) { missingGeomByYear[year] = set; return set; }
+
+      for (const name in yearData){
+        const wkt = findWktForCrimeName(name);
+        if (!wkt) set.add(name);
+      }
+      missingGeomByYear[year] = set;
+      return set;
+    }
+
+    async function ensureBoundariesAndMissing(year){
+      if (!muniBoundariesLoaded){
+        const ok = await loadMuniBoundariesGeojson();
+        if (!ok) return false;
+      }
+      computeMissingGeometryForYear(year);
+      return true;
+    }
+
+    // -------------------- Selection outline --------------------
+    function clearSelectedOutline(){
+      try{
+        if (typeof govmap?.clearGeometriesByName === "function"){
+          try { govmap.clearGeometriesByName([SELECT_OUTLINE_NAME]); } catch(e){}
+          try { govmap.clearGeometriesByName(SELECT_OUTLINE_NAME); } catch(e){}
+        }
+      }catch(e){}
+    }
+
+    async function drawSelectedOutline(name){
+      if (!choroplethEnabled || currentMode !== "muni") return;
+      if (!mapInitialized) return;
+      if (!muniBoundariesLoaded){
+        const ok = await loadMuniBoundariesGeojson();
+        if (!ok) return;
+      }
+
+      const wkt = findWktForCrimeName(name);
+      if (!wkt) return;
+
+      clearSelectedOutline();
+
+      const payload = {
+        wkts: [wkt],
+        names: [SELECT_OUTLINE_NAME],
+        geometryType: (govmap.geometryType?.POLYGON ?? govmap.geometryType?.Polygon ?? 3),
+        clearExisting: false,
+        showBubble: false,
+        symbols: [{
+          fillColor: [0, 0, 0, 0],
+          outlineColor: [0, 0, 0, 1],
+          outlineWidth: 4
+        }],
+        data: { tooltips: [String(name)] }
+      };
+
+      try{
+        const ret = govmap.displayGeometries(payload);
+        if (ret && typeof ret.then === "function") await ret;
+      }catch(e){
+        // do nothing; selection is a nice-to-have
+      }
+    }
+
 
     // -------------------- Choropleth helpers --------------------
     function lerp(a,b,t){ return a + (b-a)*t; }
@@ -1687,6 +1808,7 @@
       if(!mapInitialized) return;
 
       if(!choroplethEnabled){
+        clearSelectedOutline();
         clearChoropleth();
         setMunicipalLayerOpacity(100);
         showInfo("צביעה כובתה","חזרתי לתצוגה רגילה.","info");
@@ -1716,146 +1838,152 @@
     }
 
     async function renderChoropleth(){
-      if(!mapInitialized || !choroplethEnabled) return;
-      if(currentMode !== "muni") return;
+  if(!mapInitialized || !choroplethEnabled) return;
+  if(currentMode !== "muni") return;
 
-      if(!muniBoundariesLoaded){
-        const ok = await loadMuniBoundariesGeojson();
-        if(!ok) return;
-      }
+  if(!muniBoundariesLoaded){
+    const ok = await loadMuniBoundariesGeojson();
+    if(!ok) return;
+  }
 
-      const yearData = window.crimeByYear?.[currentYear];
-      if(!yearData){
-        showInfo("שגיאה","אין נתונים לשנה שנבחרה.","error");
-        return;
-      }
+  const yearData = window.crimeByYear?.[currentYear];
+  if(!yearData){
+    showInfo("שגיאה","אין נתונים לשנה שנבחרה.","error");
+    return;
+  }
 
-            clearChoropleth();
+  clearChoropleth();
 
-      const normalRows = [];
-      const missingGeom = [];
+  const coloredRows = [];
+  const noJurRows = [];
+  const missingGeom = [];
 
-      const NO_JUR_PREFIX = "ללא שיפוט";
+  for(const name in yearData){
+    const d = yearData[name];
+    const total = Number(d?.total || 0);
 
-      // Collect all boundaries whose NAME starts with "ללא שיפוט" (from the boundaries GeoJSON),
-      // even if they do not appear in the crime dataset for this year.
-      const noJurRows = (Array.isArray(muniBoundariesMeta) ? muniBoundariesMeta : [])
-        .filter(b => String(b?.name || "").trim().startsWith(NO_JUR_PREFIX) && b?.wkt)
-        .map(b => ({
-          name: String(b.name).trim(),
-          wkt: b.wkt,
-          total: 0,
-          pop: 0,
-          rate: 0
-        }));
+    const popRaw = getPopulationForAuthority(name);
+    const pop = (popRaw == null ? 0 : Number(popRaw));
+    const rate = calcRatePer10k(total, pop);
 
-      for(const name in yearData){
-        // Always render "ללא שיפוט" as gray based on the map/boundaries names
-        if (String(name || "").trim().startsWith(NO_JUR_PREFIX)) continue;
-
-        const d = yearData[name];
-        const total = Number(d?.total || 0);
-
-        const popRaw = getPopulationForAuthority(name);
-        const pop = (popRaw == null ? 0 : Number(popRaw));
-        const rate = calcRatePer10k(total, pop);
-
-        const wkt = findWktForCrimeName(name);
-        if(!wkt){ 
-          missingGeom.push(name); 
-          continue; 
-        }
-
-        normalRows.push({ name, wkt, total, pop, rate });
-      }
-
-      const allRows = [...normalRows, ...noJurRows];
-
-      if(!allRows.length){
-        showInfo("אין מספיק נתונים","לא נמצאו רשויות עם גבול כדי לצבוע.","warn");
-        return;
-      }
-
-      // טווח לצביעה ירוק→אדום: רק הרשויות שאינן "ללא שיפוט"
-      const refRates = normalRows.length ? normalRows.map(r => r.rate) : allRows.map(r => r.rate);
-      const minR  = Math.min(...refRates);
-      const maxR  = Math.max(...refRates);
-
-      const wkts = [], names = [], symbols = [], tooltips = [];
-
-      // צביעה רגילה (ירוק→אדום)
-      for(let i = 0; i < normalRows.length; i++){
-        const r = normalRows[i];
-        const [rr, gg, bb] = rateToColor(r.rate, minR, maxR);
-
-        wkts.push(r.wkt);
-        const uniqueName = `${CHORO_NAME}_${i}`;
-        names.push(uniqueName);
-
-        symbols.push({
-          fillColor: [rr, gg, bb, 0.55],
-          outlineColor: [25, 25, 25, 0.85],
-          outlineWidth: 2
-        });
-
-        tooltips.push(`${r.name} • ${r.rate.toLocaleString()} /10k`);
-      }
-
-      // "ללא שיפוט" → אפור
-      const base = normalRows.length;
-      for(let i = 0; i < noJurRows.length; i++){
-        const r = noJurRows[i];
-
-        wkts.push(r.wkt);
-        names.push(`${CHORO_NAME}_nojur_${i}`);
-
-        symbols.push({
-          fillColor: [140, 140, 140, 0.65],
-          outlineColor: [25, 25, 25, 0.85],
-          outlineWidth: 2
-        });
-
-        tooltips.push(`${r.name} (ללא שיפוט)`);
-      }
-
-      try {
-        const payload = {
-          wkts,
-          names,
-          geometryType: (govmap.geometryType?.POLYGON ?? govmap.geometryType?.Polygon ?? 3),
-          clearExisting: true,
-          showBubble: false,
-          symbols,
-          data: { tooltips }
-        };
-
-        const ret = govmap.displayGeometries(payload);
-        if (ret && typeof ret.then === "function") await ret;
-
-        activeChoroplethNames = names;
-        setMunicipalLayerOpacity(0);
-
-      } catch (e) {
-        console.error("displayGeometries failed:", e);
-        setMunicipalLayerOpacity(100);
-        showInfo("שגיאה", `נכשלתי לצייר גיאומטריות: ${escapeHtml(e?.message || e)}`, "error");
-        return;
-      }
-
-      let extra = "";
-      if (missingGeom.length) {
-        extra = `<br><span style="font-size:13px;opacity:.9;">לא נמצאה גיאומטריה ל-${missingGeom.length} רשויות (פערי שמות בין הנתונים לגבולות).</span>`;
-        console.log("Missing geometry for:", missingGeom);
-      }
-
-      const noj = noJurRows.length ? `<br><span style="font-size:13px;opacity:.9;">"ללא שיפוט" צבוע באפור.</span>` : "";
-
-      showInfo(
-        "צביעה לפי ל-10,000",
-        `ירוק = נמוך • כתום = בינוני • אדום = גבוה<br>טווח: <b>${minR.toLocaleString()}</b> עד <b>${maxR.toLocaleString()}</b>${noj}${extra}`,
-        "info"
-      );
+    const wkt = findWktForCrimeName(name);
+    if(!wkt){
+      missingGeom.push(name);
+      continue;
     }
+
+    const noJur = isNoJurisdictionBoundaryName(name);
+
+    const row = { name, wkt, total, pop, rate, noJur };
+    if(noJur) noJurRows.push(row);
+    else coloredRows.push(row);
+  }
+
+  if(!coloredRows.length && !noJurRows.length){
+    showInfo("אין מספיק נתונים","לא נמצאו רשויות עם גבול כדי לצבוע.","warn");
+    return;
+  }
+
+  // --- Color scale rule ---
+  // ירוק = הכי מעט פשיעה (ל-10,000)
+  // אדום = המקום השני עם הכי הרבה פשיעה
+  // המקום הראשון (הכי הרבה) יהיה באותו צבע כמו המקום השני
+  const rates = coloredRows.map(r => r.rate).filter(v => Number.isFinite(v));
+  const minR = rates.length ? Math.min(...rates) : 0;
+
+  const sortedDesc = [...rates].sort((a,b)=>b-a);
+  const maxActual = sortedDesc.length ? sortedDesc[0] : 1;
+  const maxForColor = (sortedDesc.length >= 2) ? sortedDesc[1] : maxActual; // 2nd highest
+  const colorMax = (maxForColor > minR) ? maxForColor : maxActual;
+
+  const wkts = [], names = [], symbols = [], tooltips = [];
+  let i = 0;
+
+  const pushPoly = (wkt, nm, sym, tip) => {
+    wkts.push(wkt);
+    names.push(nm);
+    symbols.push(sym);
+    tooltips.push(tip);
+  };
+
+  // Colored polygons (exclude "ללא שיפוט")
+  for(const r of coloredRows){
+    const clampedRate = (sortedDesc.length >= 2) ? Math.min(r.rate, maxForColor) : r.rate;
+    const [rr, gg, bb] = rateToColor(clampedRate, minR, colorMax);
+
+    const uniqueName = `${CHORO_NAME}_${i++}`;
+    pushPoly(
+      r.wkt,
+      uniqueName,
+      {
+        fillColor: [rr, gg, bb, 0.55],
+        outlineColor: [25, 25, 25, 0.85],
+        outlineWidth: 2
+      },
+      `${r.name} • ${r.rate.toLocaleString()} /10k`
+    );
+  }
+
+  // Grey polygons for boundaries whose name in the layer starts with "ללא שיפוט"
+  for(const r of noJurRows){
+    const uniqueName = `${CHORO_NAME}_noj_${i++}`;
+    pushPoly(
+      r.wkt,
+      uniqueName,
+      {
+        fillColor: [140, 140, 140, 0.65],
+        outlineColor: [25, 25, 25, 0.85],
+        outlineWidth: 2
+      },
+      `${r.name} (ללא שיפוט)`
+    );
+  }
+
+  try {
+    const payload = {
+      wkts,
+      names,
+      geometryType: (govmap.geometryType?.POLYGON ?? govmap.geometryType?.Polygon ?? 3),
+      clearExisting: true,
+      showBubble: false,
+      symbols,
+      data: { tooltips }
+    };
+
+    const ret = govmap.displayGeometries(payload);
+    if (ret && typeof ret.then === "function") await ret;
+
+    activeChoroplethNames = names;
+
+    // חשוב: לא לאפס ל-0 כדי ש־getLayerData יעבוד בלחיצות גם כשהצביעה פעילה
+    setMunicipalLayerOpacity(1);
+
+  } catch (e) {
+    console.error("displayGeometries failed:", e);
+    setMunicipalLayerOpacity(100);
+    showInfo("שגיאה", `נכשלתי לצייר גיאומטריות: ${escapeHtml(e?.message || e)}`, "error");
+    return;
+  }
+
+  let extra = "";
+  if (missingGeom.length) {
+    extra += `<br><span style="font-size:13px;opacity:.9;">לא נמצאה גיאומטריה ל-${missingGeom.length} רשויות (פערי שמות בין הנתונים לגבולות).</span>`;
+    console.log("Missing geometry for:", missingGeom);
+  }
+  if (noJurRows.length) {
+    extra += `<br><span style="font-size:13px;opacity:.9;">אפור = ${noJurRows.length} ישובים שמתחילים ב-"ללא שיפוט" בשכבה.</span>`;
+  }
+
+  const maxNote = (sortedDesc.length >= 2)
+    ? `<br><span style="font-size:13px;opacity:.9;">הסקאלה האדומה מחושבת לפי המקום השני בגובהו (${maxForColor.toLocaleString()} /10k). המקום הראשון מוצג באותו צבע.</span>`
+    : "";
+
+  showInfo(
+    "צביעה לפי ל-10,000",
+    `ירוק = נמוך • כתום = בינוני • אדום = גבוה<br>טווח: <b>${minR.toLocaleString()}</b> עד <b>${colorMax.toLocaleString()}</b>${maxNote}${extra}`,
+    "info"
+  );
+}
 
     // -------------------- GovMap init --------------------
     function initGovMap() {
@@ -1900,6 +2028,8 @@
 
         selectedCity = null;
         selectedCityKey = null;
+        clearSelectedOutline();
+        if (muniBoundariesLoaded) computeMissingGeometryForYear(currentYear);
 
         if (choroplethEnabled && currentMode === "muni") renderChoropleth();
 
