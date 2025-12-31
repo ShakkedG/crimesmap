@@ -1818,7 +1818,7 @@
         tooltips.push(`${r.name} (ללא שיפוט)`);
       }
 
-      try {
+   try {
         const payload = {
           wkts,
           names,
@@ -1826,15 +1826,15 @@
           clearExisting: true,
           showBubble: false,
           symbols,
-          data: { tooltips }
+          data: { tooltips },
+          allowIdentify: false  // ✅ השורה החדשה
         };
 
         const ret = govmap.displayGeometries(payload);
         if (ret && typeof ret.then === "function") await ret;
 
         activeChoroplethNames = names;
-        setMunicipalLayerOpacity(0);
-
+        setMunicipalLayerOpacity(30);  // ✅ שונה מ-0 ל-30
       } catch (e) {
         console.error("displayGeometries failed:", e);
         setMunicipalLayerOpacity(100);
