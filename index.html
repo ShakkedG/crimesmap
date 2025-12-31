@@ -1624,32 +1624,17 @@
     }
 
     // ✅ ניקוי משודרג (לא משנה לוגיקה, רק יותר יציב)
-    function clearChoropleth() {
-      const namesToClear = Array.isArray(activeChoroplethNames) ? [...activeChoroplethNames] : [];
-
+   function clearChoropleth() {
+      // ✅ תמיד ננקה הכל - פשוט ויעיל
       try {
-        // קודם ננסה למחוק לפי שמות (הכי מדויק)
-        if (namesToClear.length && typeof govmap.clearGeometriesByName === "function") {
-          try {
-            govmap.clearGeometriesByName(namesToClear);
-          } catch (e) {
-            // אם יש גרסה שמקבלת שם בודד / פורמט אחר – ננסה אחד אחד
-            namesToClear.forEach(n => {
-              try { govmap.clearGeometriesByName([n]); } catch (_) {}
-              try { govmap.clearGeometriesByName(n); } catch (_) {}
-            });
-          }
-        }
-
-        // ואז ניקוי כללי
         if (typeof govmap.clearGeometries === "function") {
           govmap.clearGeometries();
         }
       } catch (e) {
-        console.warn("Clear failed", e);
+        console.warn("Clear geometries failed", e);
       }
 
-      // איפוס רק בסוף
+      // איפוס המערך
       activeChoroplethNames = [];
     }
 
@@ -1824,23 +1809,25 @@ function setChoroBtnUI(){
         tooltips.push(`${r.name} (ללא שיפוט)`);
       }
 
-   try {
+  try {
         const payload = {
           wkts,
           names,
           geometryType: (govmap.geometryType?.POLYGON ?? govmap.geometryType?.Polygon ?? 3),
-          clearExisting: true,
+          clearExisting: true,  // ✅ תמיד נקה גיאומטריות קיימות
           showBubble: false,
           symbols,
           data: { tooltips },
-          allowIdentify: false  // ✅ השורה החדשה
+          allowIdentify: false,  // ✅ מאפשר לחיצה לעבור דרך הצביעה
+          isInteractive: false   // ✅ פרמטר נוסף שאולי עוזר
         };
 
         const ret = govmap.displayGeometries(payload);
         if (ret && typeof ret.then === "function") await ret;
 
         activeChoroplethNames = names;
-        setMunicipalLayerOpacity(30);  // ✅ שונה מ-0 ל-30
+        setMunicipalLayerOpacity(30);
+
       } catch (e) {
         console.error("displayGeometries failed:", e);
         setMunicipalLayerOpacity(100);
