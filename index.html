@@ -536,7 +536,6 @@ let currentYear = "2025";
     let searchTimeout = null;
 
     let choroplethEnabled = false;
-      choroplethGeomNameToEntry = {};
     const CHORO_NAME = "crime_rate_choropleth";
     let activeChoroplethNames = [];
 
@@ -546,6 +545,10 @@ let currentYear = "2025";
 
     let muniBoundariesIndex = {}; // normalizedKey -> WKT
     let muniBoundariesMeta = [];  // [{ name, wkt }]
+
+    // GeoJSON boundaries loading state (declare early to avoid TDZ issues)
+    let muniBoundariesLoaded = false;
+    let muniBoundariesLoadError = null;
 
     // ✅ Loading: שלא ייתקע לעולם
     function hideLoading() {
@@ -1537,8 +1540,6 @@ let currentYear = "2025";
     }
 
     // ===================== GEOJSON -> WKT =====================
-    let muniBoundariesLoaded = false;
-    let muniBoundariesLoadError = null;
 
     function ensureClosedRing(coords){
       if(!Array.isArray(coords) || coords.length<3) return coords;
