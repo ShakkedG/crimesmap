@@ -1629,19 +1629,34 @@
     }
 
     // ✅ ניקוי משודרג (לא משנה לוגיקה, רק יותר יציב)
-   function clearChoropleth() {
-      // ✅ תמיד ננקה הכל - פשוט ויעיל
-      try {
-        if (typeof govmap.clearGeometries === "function") {
-          govmap.clearGeometries();
-        }
-      } catch (e) {
-        console.warn("Clear geometries failed", e);
-      }
-
-      // איפוס המערך
-      activeChoroplethNames = [];
+  function clearChoropleth() {
+  try {
+    if (typeof govmap.clearGeometries === "function") {
+      // נסה לנקות לפי שמות (אם ה-API דורש)
+      try { govmap.clearGeometries({ names: activeChoroplethNames }); } catch (e) {}
+      try { govmap.clearGeometries(activeChoroplethNames); } catch (e) {}
+      // נסה ניקוי כללי (אם נתמך)
+      try { govmap.clearGeometries(); } catch (e) {}
     }
+  } catch (e) {}
+
+  // Fallback אגרסיבי: "צייר כלום" עם clearExisting=true (מוחק הכל בוודאות בהרבה מקרים)
+  try {
+    if (typeof govmap.displayGeometries === "function") {
+      const geomType = (govmap.geometryType?.POLYGON ?? govmap.geometryType?.Polygon ?? 3);
+      govmap.displayGeometries({
+        wkts: [],
+        names: [],
+        geometryType: geomType,
+        clearExisting: true,
+        showBubble: false
+      });
+    }
+  } catch (e) {}
+
+  activeChoroplethNames = [];
+}
+
 
     function setMunicipalLayerOpacity(opacity){
       if(typeof govmap.setLayerOpacity === "function"){
