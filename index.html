@@ -11,8 +11,7 @@
 
   <!-- אם יש לך קובץ JS שמגדיר window.MUNI_DATA אפשר להחזיר את השורה הבאה.
        כרגע היא הוסרה כדי לא לגרום ל-404 ב-GitHub Pages:
-       <script src="muni_boundaries.js"></script>
-  -->
+-->
 
   <style>
     * { box-sizing: border-box; }
@@ -1216,13 +1215,9 @@ let currentYear = "2025";
 
 
     // -------------------- Bind map click (robust) --------------------
-    function bindMapClick() {
-      // no-op: we rely on createMap(onClick) because displayGeometries overlays can block govmap.events.CLICK
-    }
-      } catch (e) {
-        console.warn("⚠️ bindMapClick failed:", e);
-      }
-    }
+    // GovMap click is handled via createMap({ onClick: onMapClick }).
+    // When Choropleth (displayGeometries) is active, clicking polygons shows a bubble that triggers selection.
+    function bindMapClick() { /* no-op */ }
 
     // -------------------- MODALS --------------------
     function openModal(id){
@@ -1913,7 +1908,9 @@ showInfo("צביעה כובתה","חזרתי לתצוגה רגילה.","info");
 
           // ✅ שולחים את שתי האפשרויות כדי לכסות וריאציות ב-API
           clearExisting: true,
-showBubble: true,
+          showBubble: true,
+          allowIdentify: true,
+          isInteractive: true,
           bubbleHTML: `<div dir="rtl" style="font-family:Arial;min-width:220px">
   <div style="font-weight:1000;margin-bottom:6px">{0}</div>
   <div style="font-weight:900;color:#0066cc">{1}</div>
