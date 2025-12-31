@@ -1776,17 +1776,22 @@
         return;
       }
 
-      // טווח לצביעה ירוק→אדום: רק הרשויות שאינן "ללא שיפוט"
+    // טווח לצביעה ירוק→אדום: משתמש במקום ה-2 (ולא ה-1) כדי להתעלם מאאוטליירים
       const refRates = normalRows.length ? normalRows.map(r => r.rate) : allRows.map(r => r.rate);
-      const minR  = Math.min(...refRates);
-      const maxR  = Math.max(...refRates);
+      const sortedRates = [...refRates].sort((a, b) => a - b);
+      
+      const minR = sortedRates[0] || 0;  // הנמוך ביותר
+      const maxR = sortedRates.length >= 2 ? sortedRates[sortedRates.length - 2] : sortedRates[sortedRates.length - 1];  // השני בגובהו
 
       const wkts = [], names = [], symbols = [], tooltips = [];
 
-      // צביעה רגילה (ירוק→אדום)
+     // צביעה רגילה (ירוק→אדום)
       for(let i = 0; i < normalRows.length; i++){
         const r = normalRows[i];
-        const [rr, gg, bb] = rateToColor(r.rate, minR, maxR);
+        
+        // ✅ כל ישוב מעל ה-maxR (השני בגובהו) יקבל את אותו צבע אדום מקסימלי
+        const cappedRate = Math.min(r.rate, maxR);
+        const [rr, gg, bb] = rateToColor(cappedRate, minR, maxR);
 
         wkts.push(r.wkt);
         const uniqueName = `${CHORO_NAME}_${i}`;
