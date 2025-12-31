@@ -513,7 +513,8 @@
     const TOKEN = "ede9a5fd-7c23-432f-8ffb-d85feffa3f3c";
 
     const MUNI_BOUNDARIES_GEOJSON_URL = "muni_boundaries_ITM.geojson";
-
+    
+    let activeChoroIds = [];
     let mapInitialized = false;
     let currentYear = "2025";
     let yearlyStats = {};
@@ -1629,33 +1630,41 @@
     }
 
     // ✅ ניקוי משודרג (לא משנה לוגיקה, רק יותר יציב)
-  function clearChoropleth() {
+function clearChoropleth() {
+  // 1) נסה לנקות לפי IDs (הכי בטוח)
   try {
-    if (typeof govmap.clearGeometries === "function") {
-      // נסה לנקות לפי שמות (אם ה-API דורש)
-      try { govmap.clearGeometries({ names: activeChoroplethNames }); } catch (e) {}
-      try { govmap.clearGeometries(activeChoroplethNames); } catch (e) {}
-      // נסה ניקוי כללי (אם נתמך)
-      try { govmap.clearGeometries(); } catch (e) {}
+    if (Array.isArray(activeChoroIds) && activeChoroIds.length && typeof govmap.clearGeometriesById === "function") {
+      try { govmap.clearGeometriesById(activeChoroIds); } catch (e) {}
+      try { govmap.clearGeometriesById({ ids: activeChoroIds }); } catch (e) {}
     }
   } catch (e) {}
 
-  // Fallback אגרסיבי: "צייר כלום" עם clearExisting=true (מוחק הכל בוודאות בהרבה מקרים)
+  // 2) נסה לנקות לפי שמות
+  try {
+    if (Array.isArray(activeChoroplethNames) && activeChoroplethNames.length && typeof govmap.clearGeometriesByName === "function") {
+      try { govmap.clearGeometriesByName(activeChoroplethNames); } catch (e) {}
+      try { govmap.clearGeometriesByName({ names: activeChoroplethNames }); } catch (e) {}
+    }
+  } catch (e) {}
+
+  // 3) fallback אגרסיבי: צייר "כלום" עם clearExistings=true
   try {
     if (typeof govmap.displayGeometries === "function") {
-      const geomType = (govmap.geometryType?.POLYGON ?? govmap.geometryType?.Polygon ?? 3);
+      const gt = (govmap.geometryType?.POLYGON ?? govmap.geometryType?.Polygon ?? 3);
       govmap.displayGeometries({
         wkts: [],
         names: [],
-        geometryType: geomType,
-        clearExisting: true,
+        geometryType: gt,
+        clearExistings: true,
         showBubble: false
       });
     }
   } catch (e) {}
 
+  activeChoroIds = [];
   activeChoroplethNames = [];
 }
+
 
 
     function setMunicipalLayerOpacity(opacity){
@@ -1835,23 +1844,25 @@ async function toggleChoropleth(force){
       }
 
   try {
-        const payload = {
-          wkts,
-          names,
-          geometryType: (govmap.geometryType?.POLYGON ?? govmap.geometryType?.Polygon ?? 3),
-          clearExisting: true,  // ✅ תמיד נקה גיאומטריות קיימות
-          showBubble: false,
-          symbols,
-          data: { tooltips },
-          allowIdentify: false,  // ✅ מאפשר לחיצה לעבור דרך הצביעה
-          isInteractive: false   // ✅ פרמטר נוסף שאולי עוזר
-        };
+      const payload = {
+  wkts,
+  names,
+  geometryType: (govmap.geometryType?.POLYGON ?? govmap.geometryType?.Polygon ?? 3),
+  clearExistings: true,   // ✅ זה השם הנכון בתיעוד
+  showBubble: false,
+  symbols,
+  data: { tooltips }
+};
 
-        const ret = govmap.displayGeometries(payload);
-        if (ret && typeof ret.then === "function") await ret;
+let ids = govmap.displayGeometries(payload);
+if (ids && typeof ids.then === "function") ids = await ids;
 
-        activeChoroplethNames = names;
-        setMunicipalLayerOpacity(30);
+// ✅ שמור IDs לניקוי עתידי
+activeChoroIds = Array.isArray(ids) ? ids : [];
+activeChoroplethNames = names;
+
+setMunicipalLayerOpacity(30);
+
 
       } catch (e) {
         console.error("displayGeometries failed:", e);
