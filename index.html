@@ -1765,7 +1765,7 @@ function setChoroBtnUI(){
          const value = (currentMetric === "rate") ? rate : total;
 
 
-        normalRows.push({ name, wkt, total, pop, rate });
+        normalRows.push({ name, wkt, total, pop, rate, value });
       }
 
       const allRows = [...normalRows, ...noJurRows];
