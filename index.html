@@ -1955,7 +1955,16 @@ async function toggleChoropleth(force){
           setMode(currentMode);
           setChoroBtnUI();
 
-          try { govmap.onEvent(govmap.events.CLICK).progress(onMapClick); } catch (e) {}
+        if (!choroplethEnabled) {
+  clearChoropleth();
+  setMunicipalLayerOpacity(100);
+
+  // חיזוק: ודא שקליקים עדיין מחוברים
+  try { govmap.onEvent(govmap.events.CLICK).progress(onMapClick); } catch(e) {}
+
+  showInfo("צביעה כובתה","חזרתי לתצוגה רגילה.","info");
+  return;
+}
 
           initModals();
           initAddressSearchUI();
