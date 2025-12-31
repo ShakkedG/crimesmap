@@ -1658,8 +1658,7 @@
         try{ govmap.setLayerOpacity({ layerName: MUNICIPAL_LAYER, opacity }); }catch(e){}
       }
     }
-
-    function setChoroBtnUI(){
+function setChoroBtnUI(){
       const btn = document.getElementById("btnChoro");
       if(!btn) return;
 
@@ -1668,17 +1667,18 @@
       btn.disabled = false;
 
       if(!muniBoundariesLoaded){
-        btn.textContent = "🎨 צביעה ל-10,000";
+        btn.textContent = "🎨 צביעה";
         btn.title = muniBoundariesLoadError
           ? "נכשל לטעון GeoJSON. ודא שהקובץ קיים ושאתה בשרת (GitHub Pages/localhost)."
           : "טוען GeoJSON של גבולות הרשויות...";
       }else{
-        btn.textContent = choroplethEnabled ? "🎨 צביעה ל-10,000: פעיל" : "🎨 צביעה ל-10,000 (ירוק→אדום)";
-        btn.title = "צביעה לפי ל-10,000";
+        const metricText = currentMetric === "rate" ? "ל-10,000" : "כמות";
+        btn.textContent = choroplethEnabled ? `🎨 צביעה (${metricText}): פעיל` : `🎨 צביעה (ירוק→אדום)`;
+        btn.title = `צביעה לפי ${metricText}`;
       }
     }
 
-    async function toggleChoropleth(force){
+   async function toggleChoropleth(force){
       if(currentMode !== "muni") setMode("muni");
 
       choroplethEnabled = !choroplethEnabled;
@@ -1705,11 +1705,7 @@
         return;
       }
 
-      currentMetric = "rate";
-      const absBtn = document.getElementById("btnMetricAbs");
-      const rateBtn = document.getElementById("btnMetricRate");
-      if(absBtn) absBtn.classList.remove("active");
-      if(rateBtn) rateBtn.classList.add("active");
+    
 
       await renderChoropleth();
       if (currentTab === "rankings") renderRankings();
@@ -1746,7 +1742,8 @@
           wkt: b.wkt,
           total: 0,
           pop: 0,
-          rate: 0
+          rate: 0,
+           value: 0  // ✅ ערך אחיד לצביעה
         }));
 
       for(const name in yearData){
@@ -1765,6 +1762,8 @@
           missingGeom.push(name); 
           continue; 
         }
+         const value = (currentMetric === "rate") ? rate : total;
+
 
         normalRows.push({ name, wkt, total, pop, rate });
       }
@@ -1777,21 +1776,21 @@
       }
 
     // טווח לצביעה ירוק→אדום: משתמש במקום ה-2 (ולא ה-1) כדי להתעלם מאאוטליירים
-      const refRates = normalRows.length ? normalRows.map(r => r.rate) : allRows.map(r => r.rate);
-      const sortedRates = [...refRates].sort((a, b) => a - b);
+      // ✅ טווח לצביעה: משתמש במקום ה-2 כדי להתעלם מאאוטליירים
+      const refValues = normalRows.map(r => r.value);
+      const sortedValues = [...refValues].sort((a, b) => a - b);
       
-      const minR = sortedRates[0] || 0;  // הנמוך ביותר
-      const maxR = sortedRates.length >= 2 ? sortedRates[sortedRates.length - 2] : sortedRates[sortedRates.length - 1];  // השני בגובהו
-
+      const minVal = sortedValues[0] || 0;
+      const maxVal = sortedValues.length >= 2 ? sortedValues[sortedValues.length - 2] : sortedValues[sortedValues.length - 1];
       const wkts = [], names = [], symbols = [], tooltips = [];
 
-     // צביעה רגילה (ירוק→אדום)
+   // צביעה רגילה (ירוק→אדום)
       for(let i = 0; i < normalRows.length; i++){
         const r = normalRows[i];
         
-        // ✅ כל ישוב מעל ה-maxR (השני בגובהו) יקבל את אותו צבע אדום מקסימלי
-        const cappedRate = Math.min(r.rate, maxR);
-        const [rr, gg, bb] = rateToColor(cappedRate, minR, maxR);
+        // ✅ כל ישוב מעל ה-maxVal (השני בגובהו) יקבל את אותו צבע אדום מקסימלי
+        const cappedValue = Math.min(r.value, maxVal);
+        const [rr, gg, bb] = rateToColor(cappedValue, minVal, maxVal);
 
         wkts.push(r.wkt);
         const uniqueName = `${CHORO_NAME}_${i}`;
@@ -1803,7 +1802,12 @@
           outlineWidth: 2
         });
 
-        tooltips.push(`${r.name} • ${r.rate.toLocaleString()} /10k`);
+        // ✅ Tooltip משתנה לפי המדד
+        const tooltipText = (currentMetric === "rate") 
+          ? `${r.name} • ${r.rate.toLocaleString()} /10k`
+          : `${r.name} • ${r.total.toLocaleString()} אירועים`;
+        
+        tooltips.push(tooltipText);
       }
 
       // "ללא שיפוט" → אפור
@@ -1855,9 +1859,15 @@
 
       const noj = noJurRows.length ? `<br><span style="font-size:13px;opacity:.9;">"ללא שיפוט" צבוע באפור.</span>` : "";
 
+     // ✅ הודעה משתנה לפי המדד
+      const metricTitle = (currentMetric === "rate") ? "צביעה לפי ל-10,000" : "צביעה לפי כמות";
+      const rangeText = (currentMetric === "rate")
+        ? `טווח: <b>${minVal.toLocaleString()}</b> עד <b>${maxVal.toLocaleString()}</b> /10k`
+        : `טווח: <b>${minVal.toLocaleString()}</b> עד <b>${maxVal.toLocaleString()}</b> אירועים`;
+
       showInfo(
-        "צביעה לפי ל-10,000",
-        `ירוק = נמוך • כתום = בינוני • אדום = גבוה<br>טווח: <b>${minR.toLocaleString()}</b> עד <b>${maxR.toLocaleString()}</b>${noj}${extra}`,
+        metricTitle,
+        `ירוק = נמוך • כתום = בינוני • אדום = גבוה<br>${rangeText} (ישובים מעל המקום ה-2 מוצגים באדום מקסימלי)${noj}${extra}`,
         "info"
       );
     }
@@ -2004,7 +2014,7 @@
         <button id="btnMetricRate" class="mode-btn" onclick="setMetric('rate')" title="זמין רק במצב ישובים">👥 ל-10,000</button>
 
         <button id="btnChoro" class="mode-btn full" onclick="toggleChoropleth()">
-          🎨 צביעה ל-10,000 (ירוק→אדום)
+          🎨 צביעה (ירוק→אדום)
         </button>
       </div>
 
