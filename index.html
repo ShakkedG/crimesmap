@@ -243,15 +243,20 @@
       gap: 6px;
     }
     .crime-name {
-      font-weight: 1000;
-      color: #333;
-      font-size: 13px;
-      line-height: 1.35;
-      min-height: 32px;
-      display: flex;
-      align-items: center;
-    }
-    .crime-count { font-weight: 1000; color: #0066cc; font-size: 17px; }
+  font-weight: 1000;
+  color: #333;
+  font-size: 17px;        /* ✅ היה 13px */
+  line-height: 1.35;
+  min-height: 0;          /* ✅ מבטל מינימום גובה שגורם לרווחים מוזרים */
+  display: flex;
+  align-items: center;
+}
+
+.crime-count {
+  font-weight: 1000;
+  color: #0066cc;
+  font-size: 17px;        /* נשאר כמו אצלך */
+}
 
     .message {
       padding: 12px 14px;
@@ -1663,35 +1668,40 @@ function setChoroBtnUI(){
       }
     }
 
-   async function toggleChoropleth(force){
-      if(currentMode !== "muni") setMode("muni");
+async function toggleChoropleth(force){
+  if (currentMode !== "muni") setMode("muni");
 
-      choroplethEnabled = !choroplethEnabled;
-      setChoroBtnUI();
+  // ✅ מאפשר להשתמש ב-force אם תרצה (true=הפעל, false=כבה)
+  if (typeof force === "boolean") choroplethEnabled = force;
+  else choroplethEnabled = !choroplethEnabled;
 
-      if(!mapInitialized) return;
+  setChoroBtnUI();
 
-      if(!choroplethEnabled){
-        clearChoropleth();
-        setMunicipalLayerOpacity(100);
-        showInfo("צביעה כובתה","חזרתי לתצוגה רגילה.","info");
-        return;
-      }
+  if (!mapInitialized) return;
 
-      const ok = await loadMuniBoundariesGeojson();
-      if(!ok){
-        choroplethEnabled = false;
-        setChoroBtnUI();
-        showInfo(
-          "לא הצלחתי לצבוע",
-          `לא ניתן לטעון את קובץ הגבולות.<br>ודא שהוא ליד <code>index.html</code> ושאתה פותח דרך שרת (לא file://).`,
-          "error"
-        );
-        return;
-      }
-      await renderChoropleth();
-      if (currentTab === "rankings") renderRankings();
-    }
+  if (!choroplethEnabled) {
+    clearChoropleth();
+    setMunicipalLayerOpacity(100);
+    showInfo("צביעה כובתה","חזרתי לתצוגה רגילה.","info");
+    return;
+  }
+
+  const ok = await loadMuniBoundariesGeojson();
+  if (!ok) {
+    choroplethEnabled = false;
+    setChoroBtnUI();
+    showInfo(
+      "לא הצלחתי לצבוע",
+      `לא ניתן לטעון את קובץ הגבולות.<br>ודא שהוא ליד <code>index.html</code> ושאתה פותח דרך שרת (לא file://).`,
+      "error"
+    );
+    return;
+  }
+
+  await renderChoropleth();
+  if (currentTab === "rankings") renderRankings();
+}
+
 
     async function renderChoropleth(){
       if(!mapInitialized || !choroplethEnabled) return;
@@ -1978,7 +1988,7 @@ function setChoroBtnUI(){
       <div id="header-actions">
         <button id="searchBtn" class="hbtn">🔎 חיפוש כתובת</button>
         <button id="aboutBtn" class="hbtn secondary">ℹ️ אודות</button>
-        <button id="panelToggleBtn" class="hbtn secondary" title="כיווץ/הרחבה">⬍ כיווץ</button>
+       <button id="panelToggleBtn" class="hbtn secondary" title="כיווץ/הרחבה">➖ הקטן</button>
       </div>
     </div>
 
