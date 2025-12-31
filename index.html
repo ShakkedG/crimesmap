@@ -243,20 +243,15 @@
       gap: 6px;
     }
     .crime-name {
-  font-weight: 1000;
-  color: #333;
-  font-size: 17px;        /* ✅ היה 13px */
-  line-height: 1.35;
-  min-height: 0;          /* ✅ מבטל מינימום גובה שגורם לרווחים מוזרים */
-  display: flex;
-  align-items: center;
-}
-
-.crime-count {
-  font-weight: 1000;
-  color: #0066cc;
-  font-size: 17px;        /* נשאר כמו אצלך */
-}
+      font-weight: 1000;
+      color: #333;
+      font-size: 13px;
+      line-height: 1.35;
+      min-height: 32px;
+      display: flex;
+      align-items: center;
+    }
+    .crime-count { font-weight: 1000; color: #0066cc; font-size: 17px; }
 
     .message {
       padding: 12px 14px;
@@ -513,8 +508,7 @@
     const TOKEN = "ede9a5fd-7c23-432f-8ffb-d85feffa3f3c";
 
     const MUNI_BOUNDARIES_GEOJSON_URL = "muni_boundaries_ITM.geojson";
-    
-    let activeChoroIds = [];
+
     let mapInitialized = false;
     let currentYear = "2025";
     let yearlyStats = {};
@@ -1630,42 +1624,19 @@
     }
 
     // ✅ ניקוי משודרג (לא משנה לוגיקה, רק יותר יציב)
-function clearChoropleth() {
-  // 1) נסה לנקות לפי IDs (הכי בטוח)
-  try {
-    if (Array.isArray(activeChoroIds) && activeChoroIds.length && typeof govmap.clearGeometriesById === "function") {
-      try { govmap.clearGeometriesById(activeChoroIds); } catch (e) {}
-      try { govmap.clearGeometriesById({ ids: activeChoroIds }); } catch (e) {}
+   function clearChoropleth() {
+      // ✅ תמיד ננקה הכל - פשוט ויעיל
+      try {
+        if (typeof govmap.clearGeometries === "function") {
+          govmap.clearGeometries();
+        }
+      } catch (e) {
+        console.warn("Clear geometries failed", e);
+      }
+
+      // איפוס המערך
+      activeChoroplethNames = [];
     }
-  } catch (e) {}
-
-  // 2) נסה לנקות לפי שמות
-  try {
-    if (Array.isArray(activeChoroplethNames) && activeChoroplethNames.length && typeof govmap.clearGeometriesByName === "function") {
-      try { govmap.clearGeometriesByName(activeChoroplethNames); } catch (e) {}
-      try { govmap.clearGeometriesByName({ names: activeChoroplethNames }); } catch (e) {}
-    }
-  } catch (e) {}
-
-  // 3) fallback אגרסיבי: צייר "כלום" עם clearExistings=true
-  try {
-    if (typeof govmap.displayGeometries === "function") {
-      const gt = (govmap.geometryType?.POLYGON ?? govmap.geometryType?.Polygon ?? 3);
-      govmap.displayGeometries({
-        wkts: [],
-        names: [],
-        geometryType: gt,
-        clearExistings: true,
-        showBubble: false
-      });
-    }
-  } catch (e) {}
-
-  activeChoroIds = [];
-  activeChoroplethNames = [];
-}
-
-
 
     function setMunicipalLayerOpacity(opacity){
       if(typeof govmap.setLayerOpacity === "function"){
@@ -1692,40 +1663,35 @@ function setChoroBtnUI(){
       }
     }
 
-async function toggleChoropleth(force){
-  if (currentMode !== "muni") setMode("muni");
+   async function toggleChoropleth(force){
+      if(currentMode !== "muni") setMode("muni");
 
-  // ✅ מאפשר להשתמש ב-force אם תרצה (true=הפעל, false=כבה)
-  if (typeof force === "boolean") choroplethEnabled = force;
-  else choroplethEnabled = !choroplethEnabled;
+      choroplethEnabled = !choroplethEnabled;
+      setChoroBtnUI();
 
-  setChoroBtnUI();
+      if(!mapInitialized) return;
 
-  if (!mapInitialized) return;
+      if(!choroplethEnabled){
+        clearChoropleth();
+        setMunicipalLayerOpacity(100);
+        showInfo("צביעה כובתה","חזרתי לתצוגה רגילה.","info");
+        return;
+      }
 
-  if (!choroplethEnabled) {
-    clearChoropleth();
-    setMunicipalLayerOpacity(100);
-    showInfo("צביעה כובתה","חזרתי לתצוגה רגילה.","info");
-    return;
-  }
-
-  const ok = await loadMuniBoundariesGeojson();
-  if (!ok) {
-    choroplethEnabled = false;
-    setChoroBtnUI();
-    showInfo(
-      "לא הצלחתי לצבוע",
-      `לא ניתן לטעון את קובץ הגבולות.<br>ודא שהוא ליד <code>index.html</code> ושאתה פותח דרך שרת (לא file://).`,
-      "error"
-    );
-    return;
-  }
-
-  await renderChoropleth();
-  if (currentTab === "rankings") renderRankings();
-}
-
+      const ok = await loadMuniBoundariesGeojson();
+      if(!ok){
+        choroplethEnabled = false;
+        setChoroBtnUI();
+        showInfo(
+          "לא הצלחתי לצבוע",
+          `לא ניתן לטעון את קובץ הגבולות.<br>ודא שהוא ליד <code>index.html</code> ושאתה פותח דרך שרת (לא file://).`,
+          "error"
+        );
+        return;
+      }
+      await renderChoropleth();
+      if (currentTab === "rankings") renderRankings();
+    }
 
     async function renderChoropleth(){
       if(!mapInitialized || !choroplethEnabled) return;
@@ -1844,25 +1810,23 @@ async function toggleChoropleth(force){
       }
 
   try {
-      const payload = {
-  wkts,
-  names,
-  geometryType: (govmap.geometryType?.POLYGON ?? govmap.geometryType?.Polygon ?? 3),
-  clearExistings: true,   // ✅ זה השם הנכון בתיעוד
-  showBubble: false,
-  symbols,
-  data: { tooltips }
-};
+        const payload = {
+          wkts,
+          names,
+          geometryType: (govmap.geometryType?.POLYGON ?? govmap.geometryType?.Polygon ?? 3),
+          clearExisting: true,  // ✅ תמיד נקה גיאומטריות קיימות
+          showBubble: false,
+          symbols,
+          data: { tooltips },
+          allowIdentify: false,  // ✅ מאפשר לחיצה לעבור דרך הצביעה
+          isInteractive: false   // ✅ פרמטר נוסף שאולי עוזר
+        };
 
-let ids = govmap.displayGeometries(payload);
-if (ids && typeof ids.then === "function") ids = await ids;
+        const ret = govmap.displayGeometries(payload);
+        if (ret && typeof ret.then === "function") await ret;
 
-// ✅ שמור IDs לניקוי עתידי
-activeChoroIds = Array.isArray(ids) ? ids : [];
-activeChoroplethNames = names;
-
-setMunicipalLayerOpacity(30);
-
+        activeChoroplethNames = names;
+        setMunicipalLayerOpacity(30);
 
       } catch (e) {
         console.error("displayGeometries failed:", e);
@@ -1966,16 +1930,7 @@ setMunicipalLayerOpacity(30);
           setMode(currentMode);
           setChoroBtnUI();
 
-        if (!choroplethEnabled) {
-  clearChoropleth();
-  setMunicipalLayerOpacity(100);
-
-  // חיזוק: ודא שקליקים עדיין מחוברים
-  try { govmap.onEvent(govmap.events.CLICK).progress(onMapClick); } catch(e) {}
-
-  showInfo("צביעה כובתה","חזרתי לתצוגה רגילה.","info");
-  return;
-}
+          try { govmap.onEvent(govmap.events.CLICK).progress(onMapClick); } catch (e) {}
 
           initModals();
           initAddressSearchUI();
@@ -2023,7 +1978,7 @@ setMunicipalLayerOpacity(30);
       <div id="header-actions">
         <button id="searchBtn" class="hbtn">🔎 חיפוש כתובת</button>
         <button id="aboutBtn" class="hbtn secondary">ℹ️ אודות</button>
-       <button id="panelToggleBtn" class="hbtn secondary" title="כיווץ/הרחבה">➖ הקטן</button>
+        <button id="panelToggleBtn" class="hbtn secondary" title="כיווץ/הרחבה">⬍ כיווץ</button>
       </div>
     </div>
 
