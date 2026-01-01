@@ -1114,6 +1114,12 @@
     }
 
     async function onMapClick(e) {
+      console.log("✅ onMapClick fired", {
+    currentMode,
+    currentYear,
+    hasMapPoint: !!e?.mapPoint,
+    mapPoint: e?.mapPoint
+  })
       if (!mapInitialized) return;
 
       try {
