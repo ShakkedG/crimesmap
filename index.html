@@ -1663,7 +1663,7 @@
     }
 
     // ניקוי גאומטריות הצביעה (async כדי לוודא שלא מצטברות שכבות שחוסמות קליקים)
-    async function clearChoropleth(silent){
+    async function clearChoropleth(silent=false){
       const names = Array.isArray(activeChoroplethNames) ? activeChoroplethNames.slice() : [];
       const ids   = Array.isArray(activeChoroplethIds) ? activeChoroplethIds.slice() : [];
 
@@ -1685,10 +1685,8 @@
         }
       } catch (e) {}
 
-      // 3) "ניקוי חזק" (אם ה-API לא מחק בפועל):
-      // שולחים displayGeometries ריק עם clearExisting/clearExistings=true.
-      // אם גרסת השרת תומכת בזה - זה מוחק כל גאומטריה קיימת.
-      try{
+      // 3) "ניקוי חזק": displayGeometries ריק עם clearExisting/clearExistings=true
+      try {
         if (typeof govmap.displayGeometries === "function") {
           await awaitGov(govmap.displayGeometries({
             wkts: [],
@@ -1699,24 +1697,12 @@
             showBubble: false
           }));
         }
-      }catch(e){}
-
-      if (!silent) {
-        try { if (typeof govmap.setDefaultTool === "function") govmap.setDefaultTool(); } catch(e){}
-        rebindMapClick();
-      }
-    }
-
-      try {
-        if (names.length && typeof govmap.clearGeometriesByName === "function") {
-          govmap.clearGeometriesByName(names);
-        }
       } catch (e) {}
 
-      // אם נשאר משהו תקוע - fallback (לא תמיד קיים)
+      // 4) Last resort: clear all geometries (אם קיים)
       try {
         if (typeof govmap.clearGeometries === "function") {
-          govmap.clearGeometries();
+          await awaitGov(govmap.clearGeometries());
         }
       } catch (e) {}
 
