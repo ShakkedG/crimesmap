@@ -1701,162 +1701,236 @@
       if (currentTab === "rankings") renderRankings();
     }
 
-    async function renderChoropleth(){
-      if(!mapInitialized || !choroplethEnabled) return;
-      if(currentMode !== "muni") return;
+   async function renderChoropleth(){
+  if(!mapInitialized || !choroplethEnabled) return;
+  if(currentMode !== "muni") return;
 
-      if(!muniBoundariesLoaded){
-        const ok = await loadMuniBoundariesGeojson();
-        if(!ok) return;
-      }
+  if(!muniBoundariesLoaded){
+    const ok = await loadMuniBoundariesGeojson();
+    if(!ok) return;
+  }
 
-      const yearData = window.crimeByYear?.[currentYear];
-      if(!yearData){
-        showInfo("שגיאה","אין נתונים לשנה שנבחרה.","error");
-        return;
-      }
+  const yearData = window.crimeByYear?.[currentYear];
+  if(!yearData){
+    showInfo("שגיאה","אין נתונים לשנה שנבחרה.","error");
+    return;
+  }
 
-      clearChoropleth();
+  clearChoropleth();
 
-      const normalRows = [];
-      const missingGeom = [];
+  const normalRows = [];
+  const missingGeom = [];
 
-      const NO_JUR_PREFIX = "ללא שיפוט";
+  const NO_JUR_PREFIX = "ללא שיפוט";
 
-      // Collect all boundaries whose NAME starts with "ללא שיפוט" (from the boundaries GeoJSON),
-      // even if they do not appear in the crime dataset for this year.
-      const noJurRows = (Array.isArray(muniBoundariesMeta) ? muniBoundariesMeta : [])
-        .filter(b => String(b?.name || "").trim().startsWith(NO_JUR_PREFIX) && b?.wkt)
-        .map(b => ({
-          name: String(b.name).trim(),
-          wkt: b.wkt,
-          total: 0,
-          pop: 0,
-          rate: 0,
-          value: 0
-        }));
+  const noJurRows = (Array.isArray(muniBoundariesMeta) ? muniBoundariesMeta : [])
+    .filter(b => String(b?.name || "").trim().startsWith(NO_JUR_PREFIX) && b?.wkt)
+    .map(b => ({
+      name: String(b.name).trim(),
+      wkt: b.wkt,
+      total: 0,
+      pop: 0,
+      rate: 0,
+      value: 0
+    }));
 
-      for(const name in yearData){
-        // Always render "ללא שיפוט" as gray based on the map/boundaries names
-        if (String(name || "").trim().startsWith(NO_JUR_PREFIX)) continue;
+  for(const name in yearData){
+    if (String(name || "").trim().startsWith(NO_JUR_PREFIX)) continue;
 
-        const d = yearData[name];
-        const total = Number(d?.total || 0);
+    const d = yearData[name];
+    const total = Number(d?.total || 0);
 
-        const popRaw = getPopulationForAuthority(name);
-        const pop = (popRaw == null ? 0 : Number(popRaw));
-        const rate = calcRatePer10k(total, pop);
+    const popRaw = getPopulationForAuthority(name);
+    const pop = (popRaw == null ? 0 : Number(popRaw));
+    const rate = calcRatePer10k(total, pop);
 
-        const wkt = findWktForCrimeName(name);
-        if(!wkt){ 
-          missingGeom.push(name); 
-          continue; 
-        }
-
-        const value = (currentMetric === "rate") ? rate : total;
-        normalRows.push({ name, wkt, total, pop, rate, value });
-      }
-
-      const allRows = [...normalRows, ...noJurRows];
-
-      if(!allRows.length){
-        showInfo("אין מספיק נתונים","לא נמצאו רשויות עם גבול כדי לצבוע.","warn");
-        return;
-      }
-
-      // ✅ טווח לצביעה: משתמש במקום ה-2 כדי להתעלם מאאוטליירים
-      const refValues = normalRows.map(r => r.value);
-      const sortedValues = [...refValues].sort((a, b) => a - b);
-
-      const minVal = sortedValues[0] || 0;
-      const maxVal = sortedValues.length >= 2 ? sortedValues[sortedValues.length - 2] : (sortedValues[sortedValues.length - 1] || 0);
-
-      const wkts = [], names = [], symbols = [], tooltips = [];
-
-      // צביעה רגילה (ירוק→אדום)
-      for(let i = 0; i < normalRows.length; i++){
-        const r = normalRows[i];
-
-        // ✅ כל ישוב מעל ה-maxVal יקבל את אותו צבע אדום מקסימלי
-        const cappedValue = Math.min(r.value, maxVal);
-        const [rr, gg, bb] = rateToColor(cappedValue, minVal, maxVal);
-
-        wkts.push(r.wkt);
-        const uniqueName = `${CHORO_NAME}_${i}`;
-        names.push(uniqueName);
-
-        symbols.push({
-          fillColor: [rr, gg, bb, 0.55],
-          outlineColor: [25, 25, 25, 0.85],
-          outlineWidth: 2
-        });
-
-        const tooltipText = (currentMetric === "rate") 
-          ? `${r.name} • ${r.rate.toLocaleString()} /10k`
-          : `${r.name} • ${r.total.toLocaleString()} אירועים`;
-
-        tooltips.push(tooltipText);
-      }
-
-      // "ללא שיפוט" → אפור
-      for(let i = 0; i < noJurRows.length; i++){
-        const r = noJurRows[i];
-
-        wkts.push(r.wkt);
-        names.push(`${CHORO_NAME}_nojur_${i}`);
-
-        symbols.push({
-          fillColor: [140, 140, 140, 0.65],
-          outlineColor: [25, 25, 25, 0.85],
-          outlineWidth: 2
-        });
-
-        tooltips.push(`${r.name} (ללא שיפוט)`);
-      }
-
-      try {
-        const payload = {
-          wkts,
-          names,
-          geometryType: (govmap.geometryType?.POLYGON ?? govmap.geometryType?.Polygon ?? 3),
-          clearExisting: true,
-          showBubble: false,
-          symbols,
-          data: { tooltips },
-          allowIdentify: false
-        };
-
-        const ret = govmap.displayGeometries(payload);
-        if (ret && typeof ret.then === "function") await ret;
-
-        activeChoroplethNames = names;
-        setMunicipalLayerOpacity(30);
-      } catch (e) {
-        console.error("displayGeometries failed:", e);
-        setMunicipalLayerOpacity(100);
-        showInfo("שגיאה", `נכשלתי לצייר גיאומטריות: ${escapeHtml(e?.message || e)}`, "error");
-        return;
-      }
-
-      let extra = "";
-      if (missingGeom.length) {
-        extra = `<br><span style="font-size:13px;opacity:.9;">לא נמצאה גיאומטריה ל-${missingGeom.length} רשויות (פערי שמות בין הנתונים לגבולות).</span>`;
-        console.log("Missing geometry for:", missingGeom);
-      }
-
-      const noj = noJurRows.length ? `<br><span style="font-size:13px;opacity:.9;">"ללא שיפוט" צבוע באפור.</span>` : "";
-
-      const metricTitle = (currentMetric === "rate") ? "צביעה לפי ל-10,000" : "צביעה לפי כמות";
-      const rangeText = (currentMetric === "rate")
-        ? `טווח: <b>${minVal.toLocaleString()}</b> עד <b>${maxVal.toLocaleString()}</b> /10k`
-        : `טווח: <b>${minVal.toLocaleString()}</b> עד <b>${maxVal.toLocaleString()}</b> אירועים`;
-
-      showInfo(
-        metricTitle,
-        `ירוק = נמוך • כתום = בינוני • אדום = גבוה<br>${rangeText} (ישובים מעל המקום ה-2 מוצגים באדום מקסימלי)${noj}${extra}`,
-        "info"
-      );
+    const wkt = findWktForCrimeName(name);
+    if(!wkt){ 
+      missingGeom.push(name); 
+      continue; 
     }
+
+    const value = (currentMetric === "rate") ? rate : total;
+    normalRows.push({ name, wkt, total, pop, rate, value });
+  }
+
+  const allRows = [...normalRows, ...noJurRows];
+
+  if(!allRows.length){
+    showInfo("אין מספיק נתונים","לא נמצאו רשויות עם גבול כדי לצבוע.","warn");
+    return;
+  }
+
+  const refValues = normalRows.map(r => r.value);
+  const sortedValues = [...refValues].sort((a, b) => a - b);
+
+  const minVal = sortedValues[0] || 0;
+  const maxVal = sortedValues.length >= 2 ? sortedValues[sortedValues.length - 2] : (sortedValues[sortedValues.length - 1] || 0);
+
+  const wkts = [], names = [], symbols = [], tooltips = [], customData = [];
+
+  // ✅ שומרים mapping בין שם הגיאומטריה לשם הרשות
+  const nameToMuniMap = {};
+
+  for(let i = 0; i < normalRows.length; i++){
+    const r = normalRows[i];
+
+    const cappedValue = Math.min(r.value, maxVal);
+    const [rr, gg, bb] = rateToColor(cappedValue, minVal, maxVal);
+
+    wkts.push(r.wkt);
+    const uniqueName = `${CHORO_NAME}_${i}`;
+    names.push(uniqueName);
+    
+    // ✅ שומרים את המיפוי
+    nameToMuniMap[uniqueName] = r.name;
+
+    symbols.push({
+      fillColor: [rr, gg, bb, 0.55],
+      outlineColor: [25, 25, 25, 0.85],
+      outlineWidth: 2
+    });
+
+    const tooltipText = (currentMetric === "rate") 
+      ? `${r.name} • ${r.rate.toLocaleString()} /10k`
+      : `${r.name} • ${r.total.toLocaleString()} אירועים`;
+
+    tooltips.push(tooltipText);
+    customData.push({ municipalityName: r.name }); // ✅ נתון מותאם אישית
+  }
+
+  for(let i = 0; i < noJurRows.length; i++){
+    const r = noJurRows[i];
+
+    wkts.push(r.wkt);
+    const uniqueName = `${CHORO_NAME}_nojur_${i}`;
+    names.push(uniqueName);
+    nameToMuniMap[uniqueName] = r.name;
+
+    symbols.push({
+      fillColor: [140, 140, 140, 0.65],
+      outlineColor: [25, 25, 25, 0.85],
+      outlineWidth: 2
+    });
+
+    tooltips.push(`${r.name} (ללא שיפוט)`);
+    customData.push({ municipalityName: r.name });
+  }
+
+  try {
+    const payload = {
+      wkts,
+      names,
+      geometryType: (govmap.geometryType?.POLYGON ?? govmap.geometryType?.Polygon ?? 3),
+      clearExisting: true,
+      showBubble: false,
+      symbols,
+      data: { 
+        tooltips,
+        customData // ✅ נתונים מותאמים אישית שנוכל לקרוא אותם בקליק
+      },
+      allowIdentify: true, // ✅ מאפשר identify
+      
+      // ✅ Callback שיופעל בקליק על גיאומטריה
+      onClick: (geomData) => {
+        console.log("🖱️ Geometry clicked!", geomData);
+        handleChoroplethClick(geomData, nameToMuniMap);
+      }
+    };
+
+    const ret = govmap.displayGeometries(payload);
+    if (ret && typeof ret.then === "function") await ret;
+
+    activeChoroplethNames = names;
+    setMunicipalLayerOpacity(30);
+  } catch (e) {
+    console.error("displayGeometries failed:", e);
+    setMunicipalLayerOpacity(100);
+    showInfo("שגיאה", `נכשלתי לצייר גיאומטריות: ${escapeHtml(e?.message || e)}`, "error");
+    return;
+  }
+
+  let extra = "";
+  if (missingGeom.length) {
+    extra = `<br><span style="font-size:13px;opacity:.9;">לא נמצאה גיאומטריה ל-${missingGeom.length} רשויות (פערי שמות בין הנתונים לגבולות).</span>`;
+    console.log("Missing geometry for:", missingGeom);
+  }
+
+  const noj = noJurRows.length ? `<br><span style="font-size:13px;opacity:.9;">"ללא שיפוט" צבוע באפור.</span>` : "";
+
+  const metricTitle = (currentMetric === "rate") ? "צביעה לפי ל-10,000" : "צביעה לפי כמות";
+  const rangeText = (currentMetric === "rate")
+    ? `טווח: <b>${minVal.toLocaleString()}</b> עד <b>${maxVal.toLocaleString()}</b> /10k`
+    : `טווח: <b>${minVal.toLocaleString()}</b> עד <b>${maxVal.toLocaleString()}</b> אירועים`;
+
+  showInfo(
+    metricTitle,
+    `ירוק = נמוך • כתום = בינוני • אדום = גבוה<br>${rangeText} (ישובים מעל המקום ה-2 מוצגים באדום מקסימלי)${noj}${extra}`,
+    "info"
+  );
+}
+
+// ✅ פונקציה חדשה לטיפול בקליק על צביעה
+function handleChoroplethClick(geomData, nameToMuniMap) {
+  console.log("🎯 Handling choropleth click", geomData);
+  
+  // נסה למצוא את שם הרשות מה-geometry data
+  let municipalityName = null;
+  
+  // אופציה 1: מה-customData
+  if (geomData?.customData?.municipalityName) {
+    municipalityName = geomData.customData.municipalityName;
+  }
+  
+  // אופציה 2: מה-name של הגיאומטריה
+  if (!municipalityName && geomData?.name && nameToMuniMap[geomData.name]) {
+    municipalityName = nameToMuniMap[geomData.name];
+  }
+  
+  // אופציה 3: מה-tooltip
+  if (!municipalityName && geomData?.tooltip) {
+    const match = geomData.tooltip.match(/^([^•]+)/);
+    if (match) municipalityName = match[1].trim();
+  }
+  
+  if (!municipalityName) {
+    console.warn("Could not extract municipality name from geometry click");
+    return;
+  }
+  
+  console.log("✅ Found municipality:", municipalityName);
+  
+  // מצא את הכניסה בנתונים
+  const key = normalizeKey(municipalityName);
+  const entry = muniIndex[key] || muniIndex[nameVariants(municipalityName)[0]];
+  
+  if (!entry) {
+    showInfo("לא נמצאו נתונים", `אין נתוני פשיעה עבור <strong>${escapeHtml(municipalityName)}</strong>`, "warn");
+    return;
+  }
+  
+  selectedCity = entry.name;
+  selectedCityKey = nameVariants(entry.name)[0];
+  
+  if (currentTab === "compare") { 
+    updateCompareView(); 
+    return; 
+  }
+  if (currentTab === "single") { 
+    showEntry(entry); 
+    return; 
+  }
+  if (currentTab === "trends") { 
+    showTrends(selectedCity, "muni"); 
+    return; 
+  }
+  if (currentTab === "rankings") { 
+    renderRankings(); 
+    return; 
+  }
+  
+  showEntry(entry);
+}
 
     // -------------------- GovMap init --------------------
     function initGovMap() {
