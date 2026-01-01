@@ -1200,6 +1200,81 @@
       } catch (e) {}
     }
 
+    // -------------------- Choropleth click-through fix --------------------
+    // GovMap draws displayGeometries as an overlay that may capture pointer events after it finishes rendering.
+    // We force click-through by temporarily setting pointer-events:none on the *top* element at the map center,
+    // but only if doing so reveals another underlying element (so we don't break the base map surface).
+    let choroClickThroughTimer = null;
+    let choroClickThroughObserver = null;
+    const choroPointerEventsBackup = new Map(); // Element -> previous inline pointer-events value
+
+    function _restoreChoroPointerEvents(){
+      for (const [el, prev] of choroPointerEventsBackup.entries()) {
+        try { el.style.pointerEvents = prev; } catch (e) {}
+      }
+      choroPointerEventsBackup.clear();
+    }
+
+    function ensureChoroClickThroughOnce(){
+      if (!choroplethEnabled) return;
+      const mapEl = document.getElementById("map");
+      if (!mapEl) return;
+
+      const r = mapEl.getBoundingClientRect();
+      if (!r.width || !r.height) return;
+
+      const cx = r.left + r.width / 2;
+      const cy = r.top + r.height / 2;
+
+      const top1 = document.elementFromPoint(cx, cy);
+      if (!top1 || !mapEl.contains(top1)) return;
+
+      // If the top element is already click-through, nothing to do.
+      if (getComputedStyle(top1).pointerEvents === "none") return;
+
+      const prev = top1.style.pointerEvents || "";
+
+      // Probe: only keep pointer-events:none if another element becomes top afterwards.
+      top1.style.pointerEvents = "none";
+      const top2 = document.elementFromPoint(cx, cy);
+
+      const ok = !!(top2 && top2 !== top1 && mapEl.contains(top2));
+      if (ok) {
+        if (!choroPointerEventsBackup.has(top1)) choroPointerEventsBackup.set(top1, prev);
+      } else {
+        // Revert: this was likely the base map surface.
+        top1.style.pointerEvents = prev;
+      }
+    }
+
+    function startChoroClickThroughWatch(){
+      stopChoroClickThroughWatch();
+
+      // Run repeatedly because the overlay often appears *after* displayGeometries resolves.
+      let tries = 0;
+      choroClickThroughTimer = setInterval(() => {
+        if (!choroplethEnabled) { stopChoroClickThroughWatch(); return; }
+        ensureChoroClickThroughOnce();
+        tries++;
+        if (tries >= 60) stopChoroClickThroughWatch(); // ~12s
+      }, 200);
+
+      const mapEl = document.getElementById("map");
+      if (mapEl && typeof MutationObserver !== "undefined") {
+        choroClickThroughObserver = new MutationObserver(() => {
+          if (choroplethEnabled) ensureChoroClickThroughOnce();
+        });
+        choroClickThroughObserver.observe(mapEl, { childList: true, subtree: true, attributes: true, attributeFilter: ["style", "class"] });
+      }
+    }
+
+    function stopChoroClickThroughWatch(){
+      if (choroClickThroughTimer) { clearInterval(choroClickThroughTimer); choroClickThroughTimer = null; }
+      if (choroClickThroughObserver) { choroClickThroughObserver.disconnect(); choroClickThroughObserver = null; }
+      _restoreChoroPointerEvents();
+    }
+
+
     // -------------------- MODALS --------------------
     function openModal(id){ const m=document.getElementById(id); if(m) m.style.display="block"; }
     function closeModal(id){ const m=document.getElementById(id); if(m) m.style.display="none"; }
@@ -1664,6 +1739,8 @@
 
     // ניקוי גאומטריות הצביעה (async כדי לוודא שלא מצטברות שכבות שחוסמות קליקים)
     async function clearChoropleth(silent=false){
+      stopChoroClickThroughWatch();
+
       const names = Array.isArray(activeChoroplethNames) ? activeChoroplethNames.slice() : [];
       const ids   = Array.isArray(activeChoroplethIds) ? activeChoroplethIds.slice() : [];
 
@@ -1742,6 +1819,9 @@
       }
 
       await renderChoropleth();
+      startChoroClickThroughWatch();
+      ensureChoroClickThroughOnce();
+
 
       // ✅ אחרי ציור: חוזרים לכלי ברירת מחדל ומוודאים שיש CLICK
       try { if (typeof govmap.setDefaultTool === "function") govmap.setDefaultTool(); } catch(e){}
@@ -1885,6 +1965,9 @@
         // ✅ קריטי: אחרי ציור, להחזיר כלי ברירת מחדל ולחבר click מחדש
         try { if (typeof govmap.setDefaultTool === "function") govmap.setDefaultTool(); } catch(e){}
         rebindMapClick();
+        // Ensure choropleth overlay doesn't block pointer events after it finishes rendering
+        startChoroClickThroughWatch();
+        ensureChoroClickThroughOnce();
 
       } catch (e) {
         console.error("displayGeometries failed:", e);
