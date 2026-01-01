@@ -508,7 +508,7 @@
     const TOKEN = "ede9a5fd-7c23-432f-8ffb-d85feffa3f3c";
 
     const MUNI_BOUNDARIES_GEOJSON_URL = "muni_boundaries_ITM.geojson";
-
+    let clickHookStamp = 0;
     let mapInitialized = false;
     let currentYear = "2025";
     let yearlyStats = {};
@@ -595,6 +595,26 @@
       }
       return null;
     }
+    function ensureMapClickHook() {
+  if (!mapInitialized) return;
+
+  // מחזיר את המפה לכלי ברירת מחדל (Pan) — מומלץ אחרי פעולות גיאומטריות :contentReference[oaicite:1]{index=1}
+  try { govmap.setDefaultTool(); } catch (e) {}
+
+  // מחבר מחדש CLICK בצורה "בטוחה" (בלי בעיית כפילויות)
+  const stamp = ++clickHookStamp;
+
+  try {
+    govmap.onEvent(govmap.events.CLICK).progress((evt) => {
+      // רק החיבור האחרון פעיל
+      if (stamp !== clickHookStamp) return;
+      onMapClick(evt);
+    });
+  } catch (e) {
+    console.warn("Failed to bind CLICK:", e);
+  }
+}
+
 
     function calcRatePer10k(total, pop) {
       if (!Number.isFinite(Number(total))) return 0;
@@ -856,6 +876,8 @@
       if (currentTab === "compare") updateCompareView();
       if (currentTab === "trends" && selectedCity) showTrends(selectedCity, currentMode);
       if (currentTab === "rankings") renderRankings();
+      ensureMapClickHook();
+
     }
 
     // -------------------- Compare --------------------
@@ -1630,19 +1652,25 @@
     }
 
     // ✅ ניקוי משודרג (לא משנה לוגיקה, רק יותר יציב)
-   function clearChoropleth() {
-      // ✅ תמיד ננקה הכל - פשוט ויעיל
-      try {
-        if (typeof govmap.clearGeometries === "function") {
-          govmap.clearGeometries();
-        }
-      } catch (e) {
-        console.warn("Clear geometries failed", e);
-      }
-
-      // איפוס המערך
-      activeChoroplethNames = [];
+function clearChoropleth() {
+  try {
+    // עדיף למחוק רק את הגיאומטריות שהוספנו לפי השמות
+    if (activeChoroplethNames?.length && typeof govmap.clearGeometriesByName === "function") {
+      govmap.clearGeometriesByName(activeChoroplethNames);
+    } else if (typeof govmap.clearGeometries === "function") {
+      // fallback (פחות מומלץ)
+      govmap.clearGeometries();
     }
+  } catch (e) {
+    console.warn("Clear geometries failed", e);
+  }
+
+  activeChoroplethNames = [];
+
+  // קריטי: אחרי ניקוי/ציור לפעמים GovMap “שובר” את CLICK
+  ensureMapClickHook();
+}
+
 
     function setMunicipalLayerOpacity(opacity){
       if(typeof govmap.setLayerOpacity === "function"){
@@ -1669,35 +1697,56 @@ function setChoroBtnUI(){
       }
     }
 
-   async function toggleChoropleth(force){
-      if(currentMode !== "muni") setMode("muni");
+  async function toggleChoropleth() {
+  // Always force muni mode for choropleth
+  if (currentMode !== "muni") setMode("muni");
 
-      choroplethEnabled = !choroplethEnabled;
-      setChoroBtnUI();
+  // Toggle state
+  choroplethEnabled = !choroplethEnabled;
+  setChoroBtnUI();
 
-      if(!mapInitialized) return;
+  if (!mapInitialized) return;
 
-      if(!choroplethEnabled){
-        clearChoropleth();
-        setMunicipalLayerOpacity(100);
-        showInfo("צביעה כובתה","חזרתי לתצוגה רגילה.","info");
-        return;
-      }
+  // If turning OFF
+  if (!choroplethEnabled) {
+    clearChoropleth();              // uses names when possible + rehooks click
+    setMunicipalLayerOpacity(100);  // restore base layer visibility
+    ensureMapClickHook();           // extra safety
+    showInfo("צביעה כובתה", "חזרתי לתצוגה רגילה.", "info");
+    return;
+  }
 
-      const ok = await loadMuniBoundariesGeojson();
-      if(!ok){
-        choroplethEnabled = false;
-        setChoroBtnUI();
-        showInfo(
-          "לא הצלחתי לצבוע",
-          `לא ניתן לטעון את קובץ הגבולות.<br>ודא שהוא ליד <code>index.html</code> ושאתה פותח דרך שרת (לא file://).`,
-          "error"
-        );
-        return;
-      }
-      await renderChoropleth();
-      if (currentTab === "rankings") renderRankings();
-    }
+  // Turning ON: make sure boundaries are loaded
+  const ok = await loadMuniBoundariesGeojson();
+  if (!ok) {
+    choroplethEnabled = false;
+    setChoroBtnUI();
+    setMunicipalLayerOpacity(100);
+    ensureMapClickHook();
+    showInfo(
+      "לא הצלחתי לצבוע",
+      `לא ניתן לטעון את קובץ הגבולות.<br>ודא שהוא ליד <code>index.html</code> ושאתה פותח דרך שרת (לא file://).`,
+      "error"
+    );
+    return;
+  }
+
+  // Render
+  await renderChoropleth();
+
+  // Ensure base layer is visible but subdued (renderChoropleth sets it to 30 on success)
+  if (!choroplethEnabled) {
+    // renderChoropleth might have turned it off due to error
+    setMunicipalLayerOpacity(100);
+  }
+
+  // Clicks sometimes break after displayGeometries -> rehook
+  ensureMapClickHook();
+
+  // Refresh dependent views
+  if (currentTab === "rankings") renderRankings();
+}
+
 
     async function renderChoropleth(){
       if(!mapInitialized || !choroplethEnabled) return;
@@ -1819,31 +1868,35 @@ function setChoroBtnUI(){
         tooltips.push(`${r.name} (ללא שיפוט)`);
       }
 
-  try {
-        const payload = {
-          wkts,
-          names,
-          geometryType: (govmap.geometryType?.POLYGON ?? govmap.geometryType?.Polygon ?? 3),
-          clearExisting: true,  // ✅ תמיד נקה גיאומטריות קיימות
-          showBubble: false,
-          symbols,
-          data: { tooltips },
-          allowIdentify: false,  // ✅ מאפשר לחיצה לעבור דרך הצביעה
-          isInteractive: false   // ✅ פרמטר נוסף שאולי עוזר
-        };
+ try {
+  const payload = {
+    wkts,
+    names,
+    geometryType: (govmap.geometryType?.POLYGON ?? govmap.geometryType?.Polygon ?? 3),
+    clearExistings: true,   // ✅ השם הנכון בפרמטרים של GovMap
+    showBubble: false,
+    symbols,
+    data: { tooltips }
+  };
 
-        const ret = govmap.displayGeometries(payload);
-        if (ret && typeof ret.then === "function") await ret;
+  const ret = govmap.displayGeometries(payload);
+  if (ret && typeof ret.then === "function") await ret;
 
-        activeChoroplethNames = names;
-        setMunicipalLayerOpacity(30);
+  activeChoroplethNames = names;
 
-      } catch (e) {
-        console.error("displayGeometries failed:", e);
-        setMunicipalLayerOpacity(100);
-        showInfo("שגיאה", `נכשלתי לצייר גיאומטריות: ${escapeHtml(e?.message || e)}`, "error");
-        return;
-      }
+  // שקיפות לשכבה המקורית (הרשויות), והצביעה נשארת מעל
+  setMunicipalLayerOpacity(30);
+
+  // קריטי: אחרי ציור — להחזיר כלי + לחבר מחדש CLICK
+  ensureMapClickHook();
+
+} catch (e) {
+  console.error("displayGeometries failed:", e);
+  setMunicipalLayerOpacity(100);
+  showInfo("שגיאה", `נכשלתי לצייר גיאומטריות: ${escapeHtml(e?.message || e)}`, "error");
+  return;
+}
+
 
       let extra = "";
       if (missingGeom.length) {
