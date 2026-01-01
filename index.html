@@ -804,7 +804,7 @@
 
       if (mode !== "muni") {
         choroplethEnabled = false;
-        clearChoropleth(true);
+        await clearChoropleth(true);
         setMunicipalLayerOpacity(100);
       }
       setChoroBtnUI();
@@ -1648,7 +1648,22 @@
 
     // ✅ ניקוי אמיתי של displayGeometries: לפי Name/Id (ולא clearDrawings).
     // displayGeometries מחזיר IDs, ואפשר למחוק לפי ID או לפי Name. (הדוגמה הרשמית משתמשת ב-clearGeometriesById/ByName)
-    function clearChoropleth(silent){
+    function awaitGov(ret){
+      if(!ret) return Promise.resolve(null);
+      if(typeof ret.then === "function") return ret;
+      if(typeof ret.done === "function"){
+        return new Promise((resolve, reject)=>{
+          try{
+            ret.done(resolve);
+            ret.fail(reject);
+          }catch(e){ resolve(null); }
+        });
+      }
+      return Promise.resolve(ret);
+    }
+
+    // ניקוי גאומטריות הצביעה (async כדי לוודא שלא מצטברות שכבות שחוסמות קליקים)
+    async function clearChoropleth(silent){
       const names = Array.isArray(activeChoroplethNames) ? activeChoroplethNames.slice() : [];
       const ids   = Array.isArray(activeChoroplethIds) ? activeChoroplethIds.slice() : [];
 
@@ -1656,10 +1671,42 @@
       activeChoroplethNames = [];
       activeChoroplethIds = [];
 
+      // 1) Prefer clear by IDs (הכי אמין)
       try {
         if (ids.length && typeof govmap.clearGeometriesById === "function") {
-          govmap.clearGeometriesById(ids);
+          await awaitGov(govmap.clearGeometriesById(ids));
         }
+      } catch (e) {}
+
+      // 2) Fallback: clear by Names
+      try {
+        if (names.length && typeof govmap.clearGeometriesByName === "function") {
+          await awaitGov(govmap.clearGeometriesByName(names));
+        }
+      } catch (e) {}
+
+      // 3) "ניקוי חזק" (אם ה-API לא מחק בפועל):
+      // שולחים displayGeometries ריק עם clearExisting/clearExistings=true.
+      // אם גרסת השרת תומכת בזה - זה מוחק כל גאומטריה קיימת.
+      try{
+        if (typeof govmap.displayGeometries === "function") {
+          await awaitGov(govmap.displayGeometries({
+            wkts: [],
+            names: [],
+            geometryType: (govmap.geometryType?.POLYGON ?? govmap.geometryType?.Polygon ?? 3),
+            clearExisting: true,
+            clearExistings: true,
+            showBubble: false
+          }));
+        }
+      }catch(e){}
+
+      if (!silent) {
+        try { if (typeof govmap.setDefaultTool === "function") govmap.setDefaultTool(); } catch(e){}
+        rebindMapClick();
+      }
+    }
+
       } catch (e) {}
 
       try {
@@ -1690,7 +1737,7 @@
       if(!mapInitialized) return;
 
       if(!choroplethEnabled){
-        clearChoropleth(true);
+        await clearChoropleth(true);
         setMunicipalLayerOpacity(100);
         try { if (typeof govmap.setDefaultTool === "function") govmap.setDefaultTool(); } catch(e){}
         rebindMapClick();
