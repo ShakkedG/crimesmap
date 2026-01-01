@@ -9,7 +9,7 @@
   <script src="crimeByYearMerhav.js"></script>
   <script src="PopulationDB.js"></script>
 
-  <script src="muni_boundaries.js"></script>
+  
 
   <style>
     * { box-sizing: border-box; }
@@ -779,7 +779,7 @@
     }
 
     // -------------------- Mode / Metric --------------------
-    function setMode(mode) {
+    async function setMode(mode) {
       currentMode = mode;
 
       const bm = document.getElementById("btnModeMuni");
@@ -1729,7 +1729,7 @@
     }
 
     async function toggleChoropleth(){
-      if(currentMode !== "muni") setMode("muni");
+      if(currentMode !== "muni") await setMode("muni");
 
       choroplethEnabled = !choroplethEnabled;
       setChoroBtnUI();
