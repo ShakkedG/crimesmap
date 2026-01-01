@@ -9,11 +9,10 @@
   <script src="crimeByYearMerhav.js"></script>
   <script src="PopulationDB.js"></script>
 
-  <script src="muni_boundaries.js"></script> 
+  <script src="muni_boundaries.js"></script>
 
   <style>
     * { box-sizing: border-box; }
-
     html, body {
       margin: 0; padding: 0; height: 100%;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
@@ -21,10 +20,7 @@
       background: #f5f5f5;
       font-size: 15px;
     }
-
     #map { width: 100%; height: 100%; position: relative; }
-
-    /* hide ESRI widgets if appear */
     .esri-layer-list, .esri-legend { display: none !important; }
 
     /* PANEL */
@@ -289,7 +285,7 @@
     }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-    /* Compare UI */
+    /* Compare */
     .compare-city-tag {
       background: #e7f3ff;
       color: #0066cc;
@@ -456,7 +452,6 @@
     }
     .modalBody { padding:16px; overflow:auto; }
 
-    /* Search results list */
     #addrResults {
       border: 1px solid #e0e0e0;
       background: #fff;
@@ -478,13 +473,11 @@
     .addr-item:hover { background: #f5f9ff; }
     .addr-sub { font-size: 12.5px; color: #666; margin-top: 3px; font-weight: 700; }
 
-    /* Collapse behavior (desktop + mobile) */
     #info-panel.collapsed { max-height: 120px; height: 120px; }
     #info-panel.collapsed #tabs,
     #info-panel.collapsed #controls,
     #info-panel.collapsed #info-content { display:none; }
 
-    /* Mobile bottom sheet */
     @media (max-width: 768px) {
       #info-panel{
         left: 0; right: 0; top: auto; bottom: 0;
@@ -506,9 +499,8 @@
     const MUNICIPAL_LAYER = "125";
     const POLICE_MERHAV_LAYER = "200550";
     const TOKEN = "ede9a5fd-7c23-432f-8ffb-d85feffa3f3c";
-
     const MUNI_BOUNDARIES_GEOJSON_URL = "muni_boundaries_ITM.geojson";
-    let clickHookStamp = 0;
+
     let mapInitialized = false;
     let currentYear = "2025";
     let yearlyStats = {};
@@ -530,9 +522,11 @@
     let lastGeocodeQuery = "";
     let searchTimeout = null;
 
+    // Choropleth
     let choroplethEnabled = false;
     const CHORO_NAME = "crime_rate_choropleth";
     let activeChoroplethNames = [];
+    let activeChoroplethIds = [];
 
     let muniBoundariesIndex = {}; // normalizedKey -> WKT
     let muniBoundariesMeta = [];  // [{ name, wkt }]
@@ -595,26 +589,6 @@
       }
       return null;
     }
-    function ensureMapClickHook() {
-  if (!mapInitialized) return;
-
-  // מחזיר את המפה לכלי ברירת מחדל (Pan) — מומלץ אחרי פעולות גיאומטריות :contentReference[oaicite:1]{index=1}
-  try { govmap.setDefaultTool(); } catch (e) {}
-
-  // מחבר מחדש CLICK בצורה "בטוחה" (בלי בעיית כפילויות)
-  const stamp = ++clickHookStamp;
-
-  try {
-    govmap.onEvent(govmap.events.CLICK).progress((evt) => {
-      // רק החיבור האחרון פעיל
-      if (stamp !== clickHookStamp) return;
-      onMapClick(evt);
-    });
-  } catch (e) {
-    console.warn("Failed to bind CLICK:", e);
-  }
-}
-
 
     function calcRatePer10k(total, pop) {
       if (!Number.isFinite(Number(total))) return 0;
@@ -709,7 +683,6 @@
         console.warn(`⚠️ No merhav data for year ${year}`); 
         return; 
       }
-
       for (const name in yearData) {
         merhavIndex[normalizeKey(name)] = { name, data: yearData[name] };
       }
@@ -831,7 +804,7 @@
 
       if (mode !== "muni") {
         choroplethEnabled = false;
-        clearChoropleth();
+        clearChoropleth(true);
         setMunicipalLayerOpacity(100);
       }
       setChoroBtnUI();
@@ -854,6 +827,10 @@
           "info"
         );
       }
+
+      // ✅ אחרי שינוי מצב - חוזרים לכלי ברירת מחדל ומבטיחים הרשמה ללחיצה
+      try { if (typeof govmap.setDefaultTool === "function") govmap.setDefaultTool(); } catch(e){}
+      rebindMapClick();
     }
 
     function setMetric(metric) {
@@ -867,7 +844,11 @@
       if (bAbs) bAbs.classList.toggle("active", metric === "abs");
       if (bRate) bRate.classList.toggle("active", metric === "rate");
 
-      if (choroplethEnabled && currentMode === "muni") renderChoropleth();
+      // ✅ כשמשנים מדד בזמן צביעה - מציירים מחדש + מוודאים שהלחיצה נשארת עובדת
+      if (choroplethEnabled && currentMode === "muni") renderChoropleth().finally(() => {
+        try { if (typeof govmap.setDefaultTool === "function") govmap.setDefaultTool(); } catch(e){}
+        rebindMapClick();
+      });
 
       if (currentTab === "single" && selectedCityKey) {
         const entry = muniIndex[selectedCityKey] || muniIndex[nameVariants(selectedCityKey)[0]];
@@ -876,8 +857,6 @@
       if (currentTab === "compare") updateCompareView();
       if (currentTab === "trends" && selectedCity) showTrends(selectedCity, currentMode);
       if (currentTab === "rankings") renderRankings();
-      ensureMapClickHook();
-
     }
 
     // -------------------- Compare --------------------
@@ -1076,11 +1055,7 @@
         const pop = (popRaw == null ? 0 : Number(popRaw));
         series = yearlyData.map(d => {
           const rate = calcRatePer10k(d.total, pop);
-          return {
-            year: d.year,
-            value: rate,
-            label: `${rate.toLocaleString()} /10k`
-          };
+          return { year: d.year, value: rate, label: `${rate.toLocaleString()} /10k` };
         });
       }
 
@@ -1136,12 +1111,6 @@
     }
 
     async function onMapClick(e) {
-      console.log("✅ onMapClick fired", {
-    currentMode,
-    currentYear,
-    hasMapPoint: !!e?.mapPoint,
-    mapPoint: e?.mapPoint
-  })
       if (!mapInitialized) return;
 
       try {
@@ -1215,15 +1184,25 @@
       }
     }
 
+    // ✅ פתרון לבעיה שלך: לפעמים displayGeometries "גונב" את ה-click.
+    // לכן כל פעם אחרי כיבוי/הדלקה/שינוי מדד/ציור מחדש — מסירים הרשמה ומרשימים מחדש.
+    function rebindMapClick() {
+      if (!mapInitialized) return;
+      try {
+        if (typeof govmap.unbindEvent === "function") {
+          govmap.unbindEvent(govmap.events.CLICK);
+        }
+      } catch (e) {}
+
+      try {
+        const h = govmap.onEvent(govmap.events.CLICK);
+        if (h && typeof h.progress === "function") h.progress(onMapClick);
+      } catch (e) {}
+    }
+
     // -------------------- MODALS --------------------
-    function openModal(id){ 
-      const m=document.getElementById(id); 
-      if(m) m.style.display="block"; 
-    }
-    function closeModal(id){ 
-      const m=document.getElementById(id); 
-      if(m) m.style.display="none"; 
-    }
+    function openModal(id){ const m=document.getElementById(id); if(m) m.style.display="block"; }
+    function closeModal(id){ const m=document.getElementById(id); if(m) m.style.display="none"; }
 
     function initModals(){
       const aboutBtn = document.getElementById("aboutBtn");
@@ -1265,20 +1244,16 @@
       }
     }
 
-    // -------------------- Rankings (תמיד Top 20, לפי מצב המדד באתר) --------------------
+    // -------------------- Rankings --------------------
     function renderRankings() {
       const container = document.getElementById("rankings-content");
       if (!container) return;
 
       const topN = 20;
-
       const isMerhav = (currentMode === "merhav");
       const metricIsRate = (!isMerhav && currentMetric === "rate");
 
-      const yearData = isMerhav
-        ? window.crimeByYearMerhav?.[currentYear]
-        : window.crimeByYear?.[currentYear];
-
+      const yearData = isMerhav ? window.crimeByYearMerhav?.[currentYear] : window.crimeByYear?.[currentYear];
       if (!yearData) {
         container.innerHTML = `<div class="message message-error">אין נתונים לשנה הזו.</div>`;
         return;
@@ -1300,7 +1275,6 @@
       }
 
       rows.sort((a,b)=> (b.value || 0) - (a.value || 0));
-
       const top = rows.slice(0, topN);
 
       const header = `
@@ -1575,12 +1549,10 @@
       try{
         let feats = [];
 
-        // 1) Try loading from variable (local file bypass)
         if (window.MUNI_DATA && window.MUNI_DATA.features) {
              console.log("✅ Using window.MUNI_DATA");
              feats = window.MUNI_DATA.features;
         } else {
-             // 2) Try loading via fetch
              const res = await fetch(MUNI_BOUNDARIES_GEOJSON_URL, { cache: "no-store" });
              if(!res.ok) throw new Error(`fetch failed (${res.status})`);
              const gj = await res.json();
@@ -1597,7 +1569,6 @@
           muniBoundariesIndex[normalizeKey(name)] = wkt;
           muniBoundariesMeta.push({ name: String(name), wkt });
         }
-
 
         muniBoundariesLoaded = true;
         console.log("✅ Boundaries loaded:", Object.keys(muniBoundariesIndex).length);
@@ -1619,8 +1590,7 @@
         const wkt = muniBoundariesIndex?.[normalizeKey(v)];
         if(wkt) return wkt;
       }
-      const wkt2 = muniBoundariesIndex?.[normalizeKey(crimeName)];
-      return wkt2 || null;
+      return muniBoundariesIndex?.[normalizeKey(crimeName)] || null;
     }
 
     // -------------------- Choropleth helpers --------------------
@@ -1629,7 +1599,6 @@
 
     function rateToColor(rate, minR, maxR){
       const t = (maxR > minR) ? clamp01((rate - minR) / (maxR - minR)) : 0.5;
-
       const low  = [  0, 210,  60];
       const mid  = [255, 160,   0];
       const high = [240,  20,  20];
@@ -1651,33 +1620,13 @@
       }
     }
 
-    // ✅ ניקוי משודרג (לא משנה לוגיקה, רק יותר יציב)
-function clearChoropleth() {
-  try {
-    // עדיף למחוק רק את הגיאומטריות שהוספנו לפי השמות
-    if (activeChoroplethNames?.length && typeof govmap.clearGeometriesByName === "function") {
-      govmap.clearGeometriesByName(activeChoroplethNames);
-    } else if (typeof govmap.clearGeometries === "function") {
-      // fallback (פחות מומלץ)
-      govmap.clearGeometries();
-    }
-  } catch (e) {
-    console.warn("Clear geometries failed", e);
-  }
-
-  activeChoroplethNames = [];
-
-  // קריטי: אחרי ניקוי/ציור לפעמים GovMap “שובר” את CLICK
-  ensureMapClickHook();
-}
-
-
     function setMunicipalLayerOpacity(opacity){
       if(typeof govmap.setLayerOpacity === "function"){
         try{ govmap.setLayerOpacity({ layerName: MUNICIPAL_LAYER, opacity }); }catch(e){}
       }
     }
-function setChoroBtnUI(){
+
+    function setChoroBtnUI(){
       const btn = document.getElementById("btnChoro");
       if(!btn) return;
 
@@ -1697,56 +1646,78 @@ function setChoroBtnUI(){
       }
     }
 
-  async function toggleChoropleth() {
-  // Always force muni mode for choropleth
-  if (currentMode !== "muni") setMode("muni");
+    // ✅ ניקוי אמיתי של displayGeometries: לפי Name/Id (ולא clearDrawings).
+    // displayGeometries מחזיר IDs, ואפשר למחוק לפי ID או לפי Name. (הדוגמה הרשמית משתמשת ב-clearGeometriesById/ByName)
+    function clearChoropleth(silent){
+      const names = Array.isArray(activeChoroplethNames) ? activeChoroplethNames.slice() : [];
+      const ids   = Array.isArray(activeChoroplethIds) ? activeChoroplethIds.slice() : [];
 
-  // Toggle state
-  choroplethEnabled = !choroplethEnabled;
-  setChoroBtnUI();
+      // reset state first (כדי שלא ננסה פעמיים)
+      activeChoroplethNames = [];
+      activeChoroplethIds = [];
 
-  if (!mapInitialized) return;
+      try {
+        if (ids.length && typeof govmap.clearGeometriesById === "function") {
+          govmap.clearGeometriesById(ids);
+        }
+      } catch (e) {}
 
-  // If turning OFF
-  if (!choroplethEnabled) {
-    clearChoropleth();              // uses names when possible + rehooks click
-    setMunicipalLayerOpacity(100);  // restore base layer visibility
-    ensureMapClickHook();           // extra safety
-    showInfo("צביעה כובתה", "חזרתי לתצוגה רגילה.", "info");
-    return;
-  }
+      try {
+        if (names.length && typeof govmap.clearGeometriesByName === "function") {
+          govmap.clearGeometriesByName(names);
+        }
+      } catch (e) {}
 
-  // Turning ON: make sure boundaries are loaded
-  const ok = await loadMuniBoundariesGeojson();
-  if (!ok) {
-    choroplethEnabled = false;
-    setChoroBtnUI();
-    setMunicipalLayerOpacity(100);
-    ensureMapClickHook();
-    showInfo(
-      "לא הצלחתי לצבוע",
-      `לא ניתן לטעון את קובץ הגבולות.<br>ודא שהוא ליד <code>index.html</code> ושאתה פותח דרך שרת (לא file://).`,
-      "error"
-    );
-    return;
-  }
+      // אם נשאר משהו תקוע - fallback (לא תמיד קיים)
+      try {
+        if (typeof govmap.clearGeometries === "function") {
+          govmap.clearGeometries();
+        }
+      } catch (e) {}
 
-  // Render
-  await renderChoropleth();
+      if (!silent) {
+        try { if (typeof govmap.setDefaultTool === "function") govmap.setDefaultTool(); } catch(e){}
+        rebindMapClick();
+      }
+    }
 
-  // Ensure base layer is visible but subdued (renderChoropleth sets it to 30 on success)
-  if (!choroplethEnabled) {
-    // renderChoropleth might have turned it off due to error
-    setMunicipalLayerOpacity(100);
-  }
+    async function toggleChoropleth(){
+      if(currentMode !== "muni") setMode("muni");
 
-  // Clicks sometimes break after displayGeometries -> rehook
-  ensureMapClickHook();
+      choroplethEnabled = !choroplethEnabled;
+      setChoroBtnUI();
 
-  // Refresh dependent views
-  if (currentTab === "rankings") renderRankings();
-}
+      if(!mapInitialized) return;
 
+      if(!choroplethEnabled){
+        clearChoropleth(true);
+        setMunicipalLayerOpacity(100);
+        try { if (typeof govmap.setDefaultTool === "function") govmap.setDefaultTool(); } catch(e){}
+        rebindMapClick();
+        showInfo("צביעה כובתה","חזרתי לתצוגה רגילה.","info");
+        return;
+      }
+
+      const ok = await loadMuniBoundariesGeojson();
+      if(!ok){
+        choroplethEnabled = false;
+        setChoroBtnUI();
+        showInfo(
+          "לא הצלחתי לצבוע",
+          `לא ניתן לטעון את קובץ הגבולות.<br>ודא שהוא ליד <code>index.html</code> ושאתה פותח דרך שרת (לא file://).`,
+          "error"
+        );
+        return;
+      }
+
+      await renderChoropleth();
+
+      // ✅ אחרי ציור: חוזרים לכלי ברירת מחדל ומוודאים שיש CLICK
+      try { if (typeof govmap.setDefaultTool === "function") govmap.setDefaultTool(); } catch(e){}
+      rebindMapClick();
+
+      if (currentTab === "rankings") renderRankings();
+    }
 
     async function renderChoropleth(){
       if(!mapInitialized || !choroplethEnabled) return;
@@ -1757,25 +1728,20 @@ function setChoroBtnUI(){
         if(!ok) return;
       }
 
-    const yearData = window.crimeByYear?.[currentYear];
+      const yearData = window.crimeByYear?.[currentYear];
       if(!yearData){
         showInfo("שגיאה","אין נתונים לשנה שנבחרה.","error");
         return;
       }
 
-      // ✅ ניקוי מפורש לפני ציור חדש
-      clearChoropleth();
-      
-      // ✅ המתן קצת כדי לתת ל-GovMap לסיים את הניקוי
-      await new Promise(resolve => setTimeout(resolve, 100));
+      // ✅ לפני ציור חדש: למחוק רק מה שיצרנו, בצורה רשמית (id/name)
+      clearChoropleth(true);
 
       const normalRows = [];
       const missingGeom = [];
 
       const NO_JUR_PREFIX = "ללא שיפוט";
 
-      // Collect all boundaries whose NAME starts with "ללא שיפוט" (from the boundaries GeoJSON),
-      // even if they do not appear in the crime dataset for this year.
       const noJurRows = (Array.isArray(muniBoundariesMeta) ? muniBoundariesMeta : [])
         .filter(b => String(b?.name || "").trim().startsWith(NO_JUR_PREFIX) && b?.wkt)
         .map(b => ({
@@ -1784,11 +1750,10 @@ function setChoroBtnUI(){
           total: 0,
           pop: 0,
           rate: 0,
-           value: 0  // ✅ ערך אחיד לצביעה
+          value: 0
         }));
 
       for(const name in yearData){
-        // Always render "ללא שיפוט" as gray based on the map/boundaries names
         if (String(name || "").trim().startsWith(NO_JUR_PREFIX)) continue;
 
         const d = yearData[name];
@@ -1799,42 +1764,33 @@ function setChoroBtnUI(){
         const rate = calcRatePer10k(total, pop);
 
         const wkt = findWktForCrimeName(name);
-        if(!wkt){ 
-          missingGeom.push(name); 
-          continue; 
-        }
-         const value = (currentMetric === "rate") ? rate : total;
+        if(!wkt){ missingGeom.push(name); continue; }
 
-
+        const value = (currentMetric === "rate") ? rate : total;
         normalRows.push({ name, wkt, total, pop, rate, value });
       }
 
       const allRows = [...normalRows, ...noJurRows];
-
       if(!allRows.length){
         showInfo("אין מספיק נתונים","לא נמצאו רשויות עם גבול כדי לצבוע.","warn");
         return;
       }
 
-    // טווח לצביעה ירוק→אדום: משתמש במקום ה-2 (ולא ה-1) כדי להתעלם מאאוטליירים
-      // ✅ טווח לצביעה: משתמש במקום ה-2 כדי להתעלם מאאוטליירים
       const refValues = normalRows.map(r => r.value);
       const sortedValues = [...refValues].sort((a, b) => a - b);
-      
-      const minVal = sortedValues[0] || 0;
-      const maxVal = sortedValues.length >= 2 ? sortedValues[sortedValues.length - 2] : sortedValues[sortedValues.length - 1];
-      const wkts = [], names = [], symbols = [], tooltips = [];
 
-   // צביעה רגילה (ירוק→אדום)
+      const minVal = sortedValues[0] || 0;
+      const maxVal = sortedValues.length >= 2 ? sortedValues[sortedValues.length - 2] : (sortedValues[sortedValues.length - 1] || 0);
+
+      const wkts = [], names = [], symbols = [], tooltips = [], bubbles = [];
+
       for(let i = 0; i < normalRows.length; i++){
         const r = normalRows[i];
-        
-        // ✅ כל ישוב מעל ה-maxVal (השני בגובהו) יקבל את אותו צבע אדום מקסימלי
         const cappedValue = Math.min(r.value, maxVal);
         const [rr, gg, bb] = rateToColor(cappedValue, minVal, maxVal);
 
         wkts.push(r.wkt);
-        const uniqueName = `${CHORO_NAME}_${i}`;
+        const uniqueName = `${CHORO_NAME}_${Date.now()}_${i}`; // ✅ ייחודי כדי למנוע "היתקעות" בשם
         names.push(uniqueName);
 
         symbols.push({
@@ -1843,21 +1799,20 @@ function setChoroBtnUI(){
           outlineWidth: 2
         });
 
-        // ✅ Tooltip משתנה לפי המדד
-        const tooltipText = (currentMetric === "rate") 
+        const tooltipText = (currentMetric === "rate")
           ? `${r.name} • ${r.rate.toLocaleString()} /10k`
           : `${r.name} • ${r.total.toLocaleString()} אירועים`;
-        
+
         tooltips.push(tooltipText);
+        bubbles.push(""); // ✅ משבית בועיות
       }
 
-      // "ללא שיפוט" → אפור
-      const base = normalRows.length;
       for(let i = 0; i < noJurRows.length; i++){
         const r = noJurRows[i];
 
         wkts.push(r.wkt);
-        names.push(`${CHORO_NAME}_nojur_${i}`);
+        const uniqueName = `${CHORO_NAME}_nojur_${Date.now()}_${i}`;
+        names.push(uniqueName);
 
         symbols.push({
           fillColor: [140, 140, 140, 0.65],
@@ -1866,37 +1821,47 @@ function setChoroBtnUI(){
         });
 
         tooltips.push(`${r.name} (ללא שיפוט)`);
+        bubbles.push("");
       }
 
- try {
-  const payload = {
-    wkts,
-    names,
-    geometryType: (govmap.geometryType?.POLYGON ?? govmap.geometryType?.Polygon ?? 3),
-    clearExistings: true,   // ✅ השם הנכון בפרמטרים של GovMap
-    showBubble: false,
-    symbols,
-    data: { tooltips }
-  };
+      try {
+        const payload = {
+          wkts,
+          names,
+          geometryType: (govmap.geometryType?.POLYGON ?? govmap.geometryType?.Polygon ?? 3),
+          symbols,
+          // ✅ docs מציגים גם clearExisting וגם clearExistings (יש חוסר עקביות בדוגמאות),
+          // אז שולחים את שניהם כדי להיות חסין לגרסה.
+          clearExisting: true,
+          clearExistings: true,
+          showBubble: false,
+          data: { tooltips, bubbles, bubbleUrl: "" }
+        };
 
-  const ret = govmap.displayGeometries(payload);
-  if (ret && typeof ret.then === "function") await ret;
+        const ret = govmap.displayGeometries(payload);
+        let ids = null;
+        if (ret && typeof ret.then === "function") {
+          const resp = await ret;
+          ids = resp?.data || resp?.Data || resp; // בדוגמא הרשמית: response.data הוא ids
+        } else {
+          ids = ret?.data || ret?.Data || ret;
+        }
 
-  activeChoroplethNames = names;
+        activeChoroplethNames = names;
+        if (Array.isArray(ids)) activeChoroplethIds = ids;
 
-  // שקיפות לשכבה המקורית (הרשויות), והצביעה נשארת מעל
-  setMunicipalLayerOpacity(30);
+        setMunicipalLayerOpacity(30);
 
-  // קריטי: אחרי ציור — להחזיר כלי + לחבר מחדש CLICK
-  ensureMapClickHook();
+        // ✅ קריטי: אחרי ציור, להחזיר כלי ברירת מחדל ולחבר click מחדש
+        try { if (typeof govmap.setDefaultTool === "function") govmap.setDefaultTool(); } catch(e){}
+        rebindMapClick();
 
-} catch (e) {
-  console.error("displayGeometries failed:", e);
-  setMunicipalLayerOpacity(100);
-  showInfo("שגיאה", `נכשלתי לצייר גיאומטריות: ${escapeHtml(e?.message || e)}`, "error");
-  return;
-}
-
+      } catch (e) {
+        console.error("displayGeometries failed:", e);
+        setMunicipalLayerOpacity(100);
+        showInfo("שגיאה", `נכשלתי לצייר גיאומטריות: ${escapeHtml(e?.message || e)}`, "error");
+        return;
+      }
 
       let extra = "";
       if (missingGeom.length) {
@@ -1906,7 +1871,6 @@ function setChoroBtnUI(){
 
       const noj = noJurRows.length ? `<br><span style="font-size:13px;opacity:.9;">"ללא שיפוט" צבוע באפור.</span>` : "";
 
-     // ✅ הודעה משתנה לפי המדד
       const metricTitle = (currentMetric === "rate") ? "צביעה לפי ל-10,000" : "צביעה לפי כמות";
       const rangeText = (currentMetric === "rate")
         ? `טווח: <b>${minVal.toLocaleString()}</b> עד <b>${maxVal.toLocaleString()}</b> /10k`
@@ -1977,6 +1941,9 @@ function setChoroBtnUI(){
             "info"
           );
         }
+
+        try { if (typeof govmap.setDefaultTool === "function") govmap.setDefaultTool(); } catch(e){}
+        rebindMapClick();
       });
 
       govmap.createMap("map", {
@@ -1993,7 +1960,7 @@ function setChoroBtnUI(){
           setMode(currentMode);
           setChoroBtnUI();
 
-          try { govmap.onEvent(govmap.events.CLICK).progress(onMapClick); } catch (e) {}
+          rebindMapClick();
 
           initModals();
           initAddressSearchUI();
@@ -2011,6 +1978,7 @@ function setChoroBtnUI(){
       });
     }
 
+    // expose
     window.initGovMap = initGovMap;
     window.switchTab = switchTab;
     window.setMode = setMode;
@@ -2060,9 +2028,7 @@ function setChoroBtnUI(){
         <button id="btnMetricAbs" class="mode-btn active" onclick="setMetric('abs')">🔢 כמות</button>
         <button id="btnMetricRate" class="mode-btn" onclick="setMetric('rate')" title="זמין רק במצב ישובים">👥 ל-10,000</button>
 
-        <button id="btnChoro" class="mode-btn full" onclick="toggleChoropleth()">
-          🎨 צביעה (ירוק→אדום)
-        </button>
+        <button id="btnChoro" class="mode-btn full" onclick="toggleChoropleth()">🎨 צביעה (ירוק→אדום)</button>
       </div>
 
       <div id="controls-row">
@@ -2139,8 +2105,8 @@ function setChoroBtnUI(){
       <div class="modalBody">
         <p>מפת פשיעה אינטראקטיבית המבוססת על נתוני משטרת ישראל.</p>
         <ul>
-            <li><strong>נתוני פשיעה:</strong> מעובדים ממאגרי מידע משטרתיים (2020-2025).</li>
-            <li><strong>אוכלוסייה:</strong> נתוני למ"ס (2019) לחישוב יחס ל-10,000 נפש.</li>
+          <li><strong>נתוני פשיעה:</strong> מעובדים ממאגרי מידע משטרתיים (2020-2025).</li>
+          <li><strong>אוכלוסייה:</strong> נתוני למ"ס (2019) לחישוב יחס ל-10,000 נפש.</li>
         </ul>
         <p>פותח כשירות לציבור להנגשת מידע.</p>
       </div>
