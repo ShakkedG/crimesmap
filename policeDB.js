@@ -1,5 +1,5 @@
 /* Auto-generated */
-const crimeByYear = {
+window.crimeByYearStations = {
   "2020": {
     "מרחב איילון הישן תא": {
       "total": 5,
@@ -9990,3 +9990,4 @@ const crimeByYear = {
     }
   
 };
+
