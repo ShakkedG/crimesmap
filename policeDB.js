@@ -10,10 +10,86 @@
   <script src="crimeByYearMerhav.js"></script>
   <script src="PopulationDB.js"></script>
 
+  <script>
+    // ===== Station data loader (avoids hard 404 when file is placed elsewhere) =====
+    // Recommended: place crimeByYearStations.js next to index.html (same folder).
+    const STATION_DATA_CANDIDATES = [
+      "crimeByYearStations.js",
+      "../crimeByYearStations.js",
+      "crimeByYearStations%20(1).js",
+      "../crimeByYearStations%20(1).js"
+    ];
+
+    function loadScript(url) {
+      return new Promise((resolve, reject) => {
+        const s = document.createElement("script");
+        s.src = url;
+        s.async = true;
+        s.onload = () => resolve(url);
+        s.onerror = () => reject(new Error("Failed loading: " + url));
+        document.head.appendChild(s);
+      });
+    }
+
+    async function ensureStationsLoaded() {
+      // already present?
+      if (window.crimeByYearStations && typeof window.crimeByYearStations === "object") return true;
+
+      // if the file defines a global const, map it
+      try {
+        // eslint-disable-next-line no-undef
+        if (typeof crimeByYearStations !== "undefined" && crimeByYearStations) {
+          window.crimeByYearStations = crimeByYearStations;
+          return true;
+        }
+      } catch (_) {}
+
+      try {
+        // eslint-disable-next-line no-undef
+        if (typeof CRIMEBYYEARSTATIONS !== "undefined" && CRIMEBYYEARSTATIONS) {
+          window.crimeByYearStations = CRIMEBYYEARSTATIONS;
+          return true;
+        }
+      } catch (_) {}
+
+      // try loading from candidates
+      for (const url of STATION_DATA_CANDIDATES) {
+        try {
+          await loadScript(url);
+
+          // after load, map possible globals
+          if (window.crimeByYearStations && typeof window.crimeByYearStations === "object") return true;
+
+          try {
+            // eslint-disable-next-line no-undef
+            if (typeof crimeByYearStations !== "undefined" && crimeByYearStations) {
+              window.crimeByYearStations = crimeByYearStations;
+              return true;
+            }
+          } catch (_) {}
+
+          try {
+            // eslint-disable-next-line no-undef
+            if (typeof CRIMEBYYEARSTATIONS !== "undefined" && CRIMEBYYEARSTATIONS) {
+              window.crimeByYearStations = CRIMEBYYEARSTATIONS;
+              return true;
+            }
+          } catch (_) {}
+        } catch (e) {
+          // keep trying next candidate
+        }
+      }
+      return false;
+    }
+
+    // expose promise for initGovMap
+    window.__stationsReady = ensureStationsLoaded();
+  </script>
+
+
   <!-- ✅ תחנות משטרה: ודא שהקובץ הזה קיים בפרויקט
        ושבתוכו מוגדר: window.crimeByYearStations = { ... } -->
-  <script src="crimeByYearStations.js"></script>
-  <!-- Boundaries: נטענים מקובץ GeoJSON (muni_boundaries_ITM.geojson). אם תרצה fallback ב-JS, הוסף כאן script לקובץ שלך. -->
+    <!-- Boundaries: נטענים מקובץ GeoJSON (muni_boundaries_ITM.geojson). אם תרצה fallback ב-JS, הוסף כאן script לקובץ שלך. -->
   <style>
     * { box-sizing: border-box; }
 
@@ -662,7 +738,7 @@
     // הוא לא יופיע בתוך window.*. לכן אנחנו מנסים כמה שמות אפשריים.
     function getStationsDataset(){
       try{
-        if (window.crimeByYearStations && typeof window.crimeByYearStations === "object") return getStationsDataset();
+        if (window.crimeByYearStations && typeof window.crimeByYearStations === "object") return window.crimeByYearStations;
       }catch(_){}
       try{
         // eslint-disable-next-line no-undef
@@ -864,6 +940,17 @@
 
     // -------------------- Mode / Metric --------------------
     function setMode(mode) {
+      // Block Stations mode if station dataset isn't loaded/available
+      if (mode === "station") {
+        const ds = getStationsDataset();
+        if (!ds || !ds[currentYear]) {
+          showInfo("תחנות", "אין נתוני תחנות לשנה הזו או שהקובץ crimeByYearStations.js לא נטען.", "warn");
+          const bs = document.getElementById("btnModeStation");
+          if (bs) { bs.classList.add("disabled"); bs.disabled = true; }
+          return;
+        }
+      }
+
       currentMode = mode;
 
       const bm = document.getElementById("btnModeMuni");
@@ -2040,7 +2127,7 @@
     }
 
     // -------------------- GovMap init --------------------
-    function initGovMap() {
+    async function initGovMap() {
       if (!window.crimeByYear || typeof window.crimeByYear !== "object") {
         showInfo("שגיאה", "לא ניתן לטעון את קובץ הנתונים crimeByYear_2020_2025.js", "error");
         const l = document.getElementById("loading");
@@ -2081,6 +2168,37 @@
 
       buildMuniIndexForYear(currentYear);
       buildMerhavIndexForYear(currentYear);
+
+        // Stations refresh (if available)
+        let stationsOk = false;
+        try { stationsOk = await (window.__stationsReady || Promise.resolve(false)); } catch (_) { stationsOk = false; }
+        const bs = document.getElementById("btnModeStation");
+        if (bs) {
+          bs.classList.toggle("disabled", !stationsOk);
+          bs.disabled = !stationsOk;
+        }
+        if (stationsOk) buildStationIndexForYear(currentYear);
+
+
+      // ---- Stations (Layer 24) ----
+      let stationsOk = false;
+      try {
+        stationsOk = await (window.__stationsReady || Promise.resolve(false));
+      } catch (_) { stationsOk = false; }
+
+      // Enable/disable Stations button based on availability
+      const bs = document.getElementById("btnModeStation");
+      if (bs) {
+        bs.classList.toggle("disabled", !stationsOk);
+        bs.disabled = !stationsOk;
+        bs.title = stationsOk
+          ? "נתונים לפי תחנת משטרה (שכבה 24)"
+          : "קובץ crimeByYearStations.js לא נטען / לא נמצא (ודא שהוא באותה תיקייה באתר)";
+        if (!stationsOk && currentMode === "station") currentMode = "muni";
+      }
+
+      if (stationsOk) buildStationIndexForYear(currentYear);
+
       if (getStationsDataset()) buildStationIndexForYear(currentYear);
 
       yearlyStats[`muni_${currentYear}`] = calculateStats(currentYear, "muni");
@@ -2089,7 +2207,7 @@
       yearlyStats[`${currentMode}_${currentYear}`] = calculateStats(currentYear, currentMode);
       updateQuickStats();
 
-      sel.addEventListener("change", e => {
+      sel.addEventListener("change", async e => {
         currentYear = e.target.value;
 
         buildMuniIndexForYear(currentYear);
@@ -2197,9 +2315,9 @@
         <button id="btnModeMuni" class="mode-btn active" onclick="setMode('muni')">🏘️ ישובים</button>
         <button id="btnModeMerhav" class="mode-btn" onclick="setMode('merhav')">🚔 מרחבים</button>
 
-                <button id="btnModeStation" class="mode-btn" onclick="setMode(\'station\')">🚓 תחנות</button>
-<!-- ✅ תחנות משטרה -->
-        <button id="btnModeStation" class="mode-btn full" onclick="setMode('station')">🚓 תחנות משטרה</button>
+        <button id="btnModeStation" class="mode-btn full" onclick="setMode('station')" title="נתונים לפי תחנת משטרה (שכבה 24)">
+          🚓 תחנות
+        </button>
 
         <button id="btnMetricAbs" class="mode-btn active" onclick="setMetric('abs')">🔢 כמות</button>
         <button id="btnMetricRate" class="mode-btn" onclick="setMetric('rate')" title="זמין רק במצב ישובים">👥 ל-10,000</button>
