@@ -13,10 +13,7 @@
   <!-- ✅ תחנות משטרה: ודא שהקובץ הזה קיים בפרויקט
        ושבתוכו מוגדר: window.crimeByYearStations = { ... } -->
   <script src="crimeByYearStations.js"></script>
-
-  <!-- Boundaries for choropleth (optional local JS fallback) -->
-  <script src="muni_boundaries.js"></script>
-
+  <!-- Boundaries: נטענים מקובץ GeoJSON (muni_boundaries_ITM.geojson). אם תרצה fallback ב-JS, הוסף כאן script לקובץ שלך. -->
   <style>
     * { box-sizing: border-box; }
 
@@ -659,11 +656,33 @@
       }
     }
 
+
+    // -------------------- Station dataset resolver --------------------
+    // חשוב: אם בקובץ תחנות הגדרת const crimeByYearStations / CRIMEBYYEARSTATIONS (const גלובלי),
+    // הוא לא יופיע בתוך window.*. לכן אנחנו מנסים כמה שמות אפשריים.
+    function getStationsDataset(){
+      try{
+        if (window.crimeByYearStations && typeof window.crimeByYearStations === "object") return getStationsDataset();
+      }catch(_){}
+      try{
+        // eslint-disable-next-line no-undef
+        if (typeof crimeByYearStations !== "undefined" && crimeByYearStations) return crimeByYearStations;
+      }catch(_){}
+      try{
+        // eslint-disable-next-line no-undef
+        if (typeof CRIMEBYYEARSTATIONS !== "undefined" && CRIMEBYYEARSTATIONS) return CRIMEBYYEARSTATIONS;
+      }catch(_){}
+      try{
+        if (window.CRIMEBYYEARSTATIONS && typeof window.CRIMEBYYEARSTATIONS === "object") return window.CRIMEBYYEARSTATIONS;
+      }catch(_){}
+      return null;
+    }
+
     // -------------------- Stats --------------------
     function getDatasetByMode(mode){
       if (mode === "muni") return window.crimeByYear;
       if (mode === "merhav") return window.crimeByYearMerhav;
-      return window.crimeByYearStations;
+      return getStationsDataset();
     }
 
     function calculateStats(year, mode = currentMode) {
@@ -725,7 +744,7 @@
 
     function buildStationIndexForYear(year) {
       for (const k in stationIndex) delete stationIndex[k];
-      const yearData = window.crimeByYearStations?.[year];
+      const yearData = getStationsDataset()?.[year];
       if (!yearData) {
         console.warn(`⚠️ No station data for year ${year} (crimeByYearStations)`);
         return;
@@ -2029,10 +2048,21 @@
         return;
       }
       if (!window.crimeByYearMerhav) console.warn("⚠️ crimeByYearMerhav.js לא נטען");
-      if (!window.crimeByYearStations) console.warn("⚠️ crimeByYearStations.js לא נטען או לא מגדיר window.crimeByYearStations");
+      const stationsDS = getStationsDataset();
+      if (!stationsDS) console.warn("⚠️ crimeByYearStations.js לא נטען / או שהמשתנה לא נקרא נכון (מצפה ל-window.crimeByYearStations או crimeByYearStations).");
 
       buildPopulationIndex();
       updateMetricButtonsUI();
+
+      // כפתור תחנות — ננעל אם אין דאטה
+      const btnStation = document.getElementById('btnModeStation');
+      if (btnStation) {
+        const hasStations = !!getStationsDataset();
+        btnStation.classList.toggle('disabled', !hasStations);
+        btnStation.disabled = !hasStations;
+        if (!hasStations && currentMode === 'station') currentMode = 'muni';
+      }
+
 
       const years = Object.keys(window.crimeByYear).sort();
       const sel = document.getElementById("yearSelect");
@@ -2051,7 +2081,7 @@
 
       buildMuniIndexForYear(currentYear);
       buildMerhavIndexForYear(currentYear);
-      buildStationIndexForYear(currentYear);
+      if (getStationsDataset()) buildStationIndexForYear(currentYear);
 
       yearlyStats[`muni_${currentYear}`] = calculateStats(currentYear, "muni");
       yearlyStats[`merhav_${currentYear}`] = calculateStats(currentYear, "merhav");
@@ -2064,7 +2094,7 @@
 
         buildMuniIndexForYear(currentYear);
         buildMerhavIndexForYear(currentYear);
-        buildStationIndexForYear(currentYear);
+        if (getStationsDataset()) buildStationIndexForYear(currentYear);
 
         yearlyStats[`${currentMode}_${currentYear}`] = calculateStats(currentYear, currentMode);
         updateQuickStats();
@@ -2167,7 +2197,8 @@
         <button id="btnModeMuni" class="mode-btn active" onclick="setMode('muni')">🏘️ ישובים</button>
         <button id="btnModeMerhav" class="mode-btn" onclick="setMode('merhav')">🚔 מרחבים</button>
 
-        <!-- ✅ תחנות משטרה -->
+                <button id="btnModeStation" class="mode-btn" onclick="setMode(\'station\')">🚓 תחנות</button>
+<!-- ✅ תחנות משטרה -->
         <button id="btnModeStation" class="mode-btn full" onclick="setMode('station')">🚓 תחנות משטרה</button>
 
         <button id="btnMetricAbs" class="mode-btn active" onclick="setMetric('abs')">🔢 כמות</button>
