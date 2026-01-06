@@ -630,6 +630,57 @@
       direction:ltr;
     }
 
+  /* Trends (History) UI */
+.trend-cols-4 .trend-row{ grid-template-columns: 68px 1fr 1fr 1fr; }
+.trend-cols-2 .trend-row{ grid-template-columns: 68px 1fr; }
+@media (max-width: 520px){
+  .trend-cols-4 .trend-row{ grid-template-columns: 56px 1fr 1fr 1fr; }
+  .trend-cols-2 .trend-row{ grid-template-columns: 56px 1fr; }
+}
+
+.trend-table{
+  border: 1px solid #e6e6e6;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.trend-row{
+  display: grid;
+  gap: 8px;
+  align-items: center;
+  padding: 10px 12px;
+  border-bottom: 1px solid #efefef;
+  font-weight: 900;
+  color: #333;
+  font-size: 13px;
+}
+.trend-row:last-child{ border-bottom: none; }
+.trend-row > div{ overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.trend-head{
+  background: #fafafa;
+  color: #555;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+.trend-row:not(.trend-head):nth-child(even){ background: #fcfcfc; }
+.trend-year{ font-weight: 1000; color: #0066cc; }
+.trend-num{ text-align: center; font-variant-numeric: tabular-nums; }
+.trend-dash{ text-align: center; color:#999; }
+.trend-pill{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid #dbe9ff;
+  background: #eef6ff;
+  color:#004080;
+  font-weight: 1000;
+  font-size: 12px;
+}
+
   </style>
 
   <script>
@@ -665,10 +716,12 @@
     let choroplethEnabled = false;
     let choroRenderTimer = null;
     let choroRenderToken = 0;
+    let choroRunningToken = 0;
     const CHORO_NAME = "crime_rate_choropleth";
     let activeChoroplethNames = [];
 
     let muniBoundariesIndex = {}; // normalizedKey -> WKT
+    let muniWktCache = {}; // normalized crime name -> WKT (cache)
     let muniBoundariesMeta = [];  // [{ name, wkt }]
 
     // -------------------- Normalize & Variants --------------------
@@ -1171,8 +1224,6 @@
         html += `<div class="message message-info">במצב ${getModeLabel(currentMode)} ההשוואה היא לפי כמות בלבד (אין אוכלוסייה).</div>`;
       } else if (metricType === "rate") {
         html += `<div class="message message-info">השוואה לפי <strong>ל-10,000 תושבים</strong> (אוכלוסייה 2019; חסר = 0).</div>`;
-      } else if (false) {
-        html += `<div class="message message-info">השוואה לפי <strong>אוכלוסייה כוללת</strong> (2019).</div>`;
       } else {
         html += `<div class="message message-info">טיפ: מעבר ל־<strong>ל-10,000</strong> משווה יחסית לגודל אוכלוסייה (2019).</div>`;
       }
@@ -1241,105 +1292,119 @@
     }
 
     // -------------------- Trends --------------------
-    function showTrends(entityName, mode = currentMode) {
-      const container = document.getElementById("trends-content");
-      if (!container) return;
+    
+function showTrends(entityName, mode = currentMode) {
+  const container = document.getElementById("trends-content");
+  if (!container) return;
 
-      if (!entityName) {
-        container.innerHTML = `<div class="message message-info">בחר ${getEntityLabel(mode)} במפה כדי לראות נתונים היסטוריים</div>`;
-        return;
-      }
+  if (!entityName) {
+    container.innerHTML = `<div class="message message-info">בחר ${getEntityLabel(mode)} במפה כדי לראות נתונים היסטוריים</div>`;
+    return;
+  }
 
-      const dataset = (mode === "muni") ? window.crimeByYear : (mode === "merhav") ? window.crimeByYearMerhav : getStationsDataset();
+  const dataset =
+    (mode === "muni") ? window.crimeByYear :
+    (mode === "merhav") ? window.crimeByYearMerhav :
+    getStationsDataset();
 
-      if (!dataset || typeof dataset !== "object") {
-        container.innerHTML = `<div class="message message-error">אין נתוני היסטוריה זמינים עבור ${getModeLabel(mode)}.</div>`;
-        return;
-      }
+  if (!dataset || typeof dataset !== "object") {
+    container.innerHTML = `<div class="message message-error">אין נתוני היסטוריה זמינים עבור ${getModeLabel(mode)}.</div>`;
+    return;
+  }
 
-      const years = Object.keys(dataset).sort();
-      const targetVariants =
-        (mode === "muni") ? Array.from(new Set(nameVariants(entityName).map(v => normalizeKey(v)).filter(Boolean))) :
-        (mode === "station") ? stationNameVariants(entityName) :
-        [normalizeKey(entityName)];
+  const years = Object.keys(dataset).sort();
 
-      const findEntryInYear = (yearData) => {
-        if (!yearData) return null;
+  const targetVariants =
+    (mode === "muni") ? Array.from(new Set(nameVariants(entityName).map(v => normalizeKey(v)).filter(Boolean))) :
+    (mode === "station") ? stationNameVariants(entityName) :
+    [normalizeKey(entityName)];
 
-        // 1) התאמה ישירה לפי מפתח
-        for (const v of targetVariants) {
-          if (!v) continue;
-          // yearData keys הם שמות מקוריים; ננסה למצוא התאמה ע"י מעבר עליהם רק אם אין התאמה ישירה
-          // לכן פה רק נבדוק אם יש מפתח בדיוק (למשל במקרה של station שמפתח הוא שם התחנה)
-          if (yearData[v]) return { name: v, data: yearData[v] };
-        }
+  const findEntryInYear = (yearData) => {
+    if (!yearData) return null;
 
-        // 2) התאמה ישירה לפי שם גולמי
-        if (yearData[entityName]) return { name: entityName, data: yearData[entityName] };
+    // 1) התאמה ישירה לפי שם גולמי
+    if (yearData[entityName]) return { name: entityName, data: yearData[entityName] };
 
-        // 3) סריקה לפי normalizeKey (מאט אבל מספיק קטן)
-        for (const [k, d] of Object.entries(yearData)) {
-          const kk = normalizeKey(k);
-          if (targetVariants.includes(kk)) return { name: k, data: d };
-        }
-        return null;
-      };
+    // 2) סריקה לפי normalizeKey (עמיד לפערי שמות)
+    for (const [k, d] of Object.entries(yearData)) {
+      const kk = normalizeKey(k);
+      if (targetVariants.includes(kk)) return { name: k, data: d };
+    }
+    return null;
+  };
 
-      const metricType =
-        (mode === "muni" && currentMetric === "rate") ? "rate" :
-        "total";
+  const metricType = (mode === "muni" && currentMetric === "rate") ? "rate" : "total";
+  const metricLabel = (metricType === "rate") ? "ל-10,000" : "כמות";
 
-      const yearly = years.map(y => {
-        const found = findEntryInYear(dataset[y]);
-        const total = Number(found?.data?.total || 0);
-        const popRaw = (mode === "muni") ? getPopulationForAuthority(found?.name || entityName) : null;
-        const pop = (popRaw == null ? 0 : Number(popRaw));
-        const rate = (mode === "muni") ? calcRatePer10k(total, pop) : null;
+  const yearly = years.map(y => {
+    const found = findEntryInYear(dataset[y]);
+    const total = Number(found?.data?.total || 0);
+    const popRaw = (mode === "muni") ? getPopulationForAuthority(found?.name || entityName) : null;
+    const pop = (popRaw == null ? 0 : Number(popRaw));
+    const rate = (mode === "muni") ? calcRatePer10k(total, pop) : null;
 
-        const value =
-          metricType === "rate" ? rate :
-          false ? pop :
-          total;
+    return { year: y, total, pop, rate, has: !!found };
+  });
 
-        return { year: y, total, pop, rate, value, has: !!found };
-      });
+  const top = `
+    <div class="message message-info" style="margin-bottom:10px;">
+      <strong>${escapeHtml(entityName)}</strong>
+      <span class="trend-pill">מצב: ${getModeLabel(mode)}</span>
+      <span class="trend-pill">מציג לפי: ${metricLabel}</span>
+    </div>
+  `;
 
-      const metricLabel =
-        metricType === "rate" ? "ל-10,000" :
-        false ? "אוכלוסייה" :
-        "כמות";
+  const isMuni = (mode === "muni");
+  let html = top;
 
-      let html = `
-        <div class="message message-info" style="margin-bottom:10px;">
-          <strong>${escapeHtml(entityName)}</strong> • מצב: <strong>${getModeLabel(mode)}</strong><br>
-          מציג לפי: <strong>${metricLabel}</strong>
+  if (isMuni) {
+    html += `<div class="trend-table trend-cols-4">`;
+    html += `
+      <div class="trend-row trend-head">
+        <div>שנה</div>
+        <div class="trend-num">כמות</div>
+        <div class="trend-num">אוכלוסייה</div>
+        <div class="trend-num">ל-10,000</div>
+      </div>
+    `;
+
+    yearly.forEach(r => {
+      html += `
+        <div class="trend-row">
+          <div class="trend-year">${escapeHtml(r.year)}</div>
+          <div class="trend-num">${Number(r.total || 0).toLocaleString()}</div>
+          <div class="trend-num">${fmtMaybe(r.pop)}</div>
+          <div class="trend-num">${(r.rate == null ? "—" : Number(r.rate || 0).toLocaleString())}</div>
         </div>
       `;
+    });
 
-      html += `<div class="trend-table">`;
-      html += `<div class="trend-row trend-head">
-          <div>שנה</div>
-          <div>כמות</div>
-          <div>אוכלוסייה</div>
-          <div>ל-10,000</div>
-        </div>`;
+    html += `</div>`;
+  } else {
+    html += `<div class="trend-table trend-cols-2">`;
+    html += `
+      <div class="trend-row trend-head">
+        <div>שנה</div>
+        <div class="trend-num">כמות</div>
+      </div>
+    `;
 
-      yearly.forEach(r => {
-        html += `
-          <div class="trend-row">
-            <div>${escapeHtml(r.year)}</div>
-            <div>${Number(r.total || 0).toLocaleString()}</div>
-            <div>${mode === "muni" ? fmtMaybe(r.pop) : "—"}</div>
-            <div>${mode === "muni" ? (r.rate == null ? "—" : Number(r.rate || 0).toLocaleString()) : "—"}</div>
-          </div>
-        `;
-      });
+    yearly.forEach(r => {
+      html += `
+        <div class="trend-row">
+          <div class="trend-year">${escapeHtml(r.year)}</div>
+          <div class="trend-num">${Number(r.total || 0).toLocaleString()}</div>
+        </div>
+      `;
+    });
 
-      html += `</div>`;
-      container.innerHTML = html;
-    }
+    html += `</div>`;
+  }
 
-    // -------------------- Map click helpers --------------------
+  container.innerHTML = html;
+}
+
+// -------------------- Map click helpers --------------------
     function fieldsToObject(fields) {
       if (!Array.isArray(fields)) return fields;
       const obj = {};
@@ -1575,10 +1640,6 @@
           const pop = (popRaw == null ? 0 : Number(popRaw));
           const rate = calcRatePer10k(total, pop);
           rows.push({ name, value: rate, extra: { pop, total }, hasPop: popRaw != null });
-        } else if (currentMode === "muni" && false) {
-          const popRaw = getPopulationForAuthority(name);
-          const pop = (popRaw == null ? 0 : Number(popRaw));
-          rows.push({ name, value: pop, extra: { pop, total }, hasPop: popRaw != null });
         } else {
           rows.push({ name, value: total, extra: { total }, hasPop: true });
         }
@@ -1587,10 +1648,7 @@
       rows.sort((a,b)=> (b.value || 0) - (a.value || 0));
       const top = rows.slice(0, topN);
 
-      const metricLabel =
-        metricType === "rate" ? "ל-10,000" :
-        false ? "אוכלוסייה" :
-        "כמות (אבסולוטי)";
+      const metricLabel = metricType === "rate" ? "ל-10,000" : "כמות (אבסולוטי)";
 
       const header = `
         <div class="message message-info" style="margin-bottom:10px;">
@@ -1605,7 +1663,7 @@
       }
 
       let note = "";
-      if (currentMode === "muni" && (metricType === "rate" || false)) {
+      if (currentMode === "muni" && metricType === "rate") {
         note = `<div class="message message-warn">אוכלוסייה מבוססת על נתון 2019; חסר = 0.</div>`;
       }
 
@@ -1613,16 +1671,11 @@
       html += `<div class="rank-list">`;
 
       top.forEach((r, idx) => {
-        const valueText = (metricType === "rate") ? Number(r.value || 0).toLocaleString() :
-                          (false) ? Number(r.value || 0).toLocaleString() :
-                          Number(r.value || 0).toLocaleString();
+        const valueText = Number(r.value || 0).toLocaleString();
 
-        const extra =
-          (currentMode === "muni" && metricType === "rate")
+        const extra = (currentMode === "muni" && metricType === "rate")
             ? `<div class="rank-extra">כמות: ${Number(r.extra?.total || 0).toLocaleString()} • אוכלוסייה: ${fmtMaybe(r.extra?.pop)}</div>`
-            : (currentMode === "muni" && false)
-              ? `<div class="rank-extra">כמות עבירות: ${Number(r.extra?.total || 0).toLocaleString()}</div>`
-              : ``;
+            : ``;
 
         html += `
           <div class="rank-row" data-top="${(idx+1)<=3 ? (idx+1) : ''}" onclick="openEntityFromList('${escapeJsString(r.name)}')">
@@ -1950,15 +2003,24 @@
       }
     }
 
-    function findWktForCrimeName(crimeName){
-      const vars = [crimeName, ...(Array.isArray(nameVariants(crimeName)) ? nameVariants(crimeName) : [])];
-      for(const v of vars){
-        const wkt = muniBoundariesIndex?.[normalizeKey(v)];
-        if(wkt) return wkt;
-      }
-      const wkt2 = muniBoundariesIndex?.[normalizeKey(crimeName)];
-      return wkt2 || null;
+    
+function findWktForCrimeName(crimeName){
+  const baseKey = normalizeKey(crimeName);
+  if (baseKey && muniWktCache && muniWktCache[baseKey]) return muniWktCache[baseKey];
+
+  const vars = [crimeName, ...(Array.isArray(nameVariants(crimeName)) ? nameVariants(crimeName) : [])];
+  for(const v of vars){
+    const k = normalizeKey(v);
+    const wkt = muniBoundariesIndex?.[k];
+    if(wkt){
+      if (baseKey) muniWktCache[baseKey] = wkt;
+      return wkt;
     }
+  }
+  const wkt2 = muniBoundariesIndex?.[baseKey];
+  if (wkt2 && baseKey) muniWktCache[baseKey] = wkt2;
+  return wkt2 || null;
+}
 
     // -------------------- Choropleth helpers --------------------
     function lerp(a,b,t){ return a + (b-a)*t; }
@@ -2099,153 +2161,155 @@
       await renderChoropleth();
     }
 
-    async function renderChoropleth(){
-      if(!mapInitialized || !choroplethEnabled) return;
-      if(currentMode !== "muni") return;
+    
+async function renderChoropleth(){
+  if(!mapInitialized || !choroplethEnabled) return;
+  if(currentMode !== "muni") return;
 
-      if(!muniBoundariesLoaded){
-        const ok = await loadMuniBoundariesGeojson();
-        if(!ok) return;
-      }
+  const myToken = ++choroRunningToken;
 
-      const yearData = window.crimeByYear?.[currentYear];
-      if(!yearData){
-        showInfo("שגיאה","אין נתונים לשנה שנבחרה.","error");
-        return;
-      }
+  if(!muniBoundariesLoaded){
+    const ok = await loadMuniBoundariesGeojson();
+    if(!ok) return;
+  }
 
-            clearChoropleth();
+  const yearData = window.crimeByYear?.[currentYear];
+  if(!yearData){
+    showInfo("שגיאה","אין נתונים לשנה שנבחרה.","error");
+    return;
+  }
 
-      const normalRows = [];
-      const missingGeom = [];
+  clearChoropleth();
 
-      const NO_JUR_PREFIX = "ללא שיפוט";
+  const normalRows = [];
+  const missingGeom = [];
+  const NO_JUR_PREFIX = "ללא שיפוט";
 
-      // Collect all boundaries whose NAME starts with "ללא שיפוט" (from the boundaries GeoJSON),
-      // even if they do not appear in the crime dataset for this year.
-      const noJurRows = (Array.isArray(muniBoundariesMeta) ? muniBoundariesMeta : [])
-        .filter(b => String(b?.name || "").trim().startsWith(NO_JUR_PREFIX) && b?.wkt)
-        .map(b => ({
-          name: String(b.name).trim(),
-          wkt: b.wkt,
-          total: 0,
-          pop: 0,
-          rate: 0
-        }));
+  // Collect all boundaries whose NAME starts with "ללא שיפוט" (from the boundaries GeoJSON),
+  // even if they do not appear in the crime dataset for this year.
+  const noJurRows = (Array.isArray(muniBoundariesMeta) ? muniBoundariesMeta : [])
+    .filter(b => String(b?.name || "").trim().startsWith(NO_JUR_PREFIX) && b?.wkt)
+    .map(b => ({
+      name: String(b.name).trim(),
+      wkt: b.wkt,
+      total: 0,
+      pop: 0,
+      rate: 0,
+      value: 0
+    }));
 
-      for(const name in yearData){
-        // Always render "ללא שיפוט" as gray based on the map/boundaries names
-        if (String(name || "").trim().startsWith(NO_JUR_PREFIX)) continue;
+  for(const name in yearData){
+    if (String(name || "").trim().startsWith(NO_JUR_PREFIX)) continue;
 
-        const d = yearData[name];
-        const total = Number(d?.total || 0);
+    const d = yearData[name];
+    const total = Number(d?.total || 0);
 
-        const popRaw = getPopulationForAuthority(name);
-        const pop = (popRaw == null ? 0 : Number(popRaw));
-        const rate = calcRatePer10k(total, pop);
+    const popRaw = getPopulationForAuthority(name);
+    const pop = (popRaw == null ? 0 : Number(popRaw));
+    const rate = calcRatePer10k(total, pop);
 
-        const wkt = findWktForCrimeName(name);
-        if(!wkt){ 
-          missingGeom.push(name); 
-          continue; 
-        }
-
-        const value = (currentMetric === "rate") ? rate : total;
-        normalRows.push({ name, wkt, total, pop, rate, value });
-      }
-
-      const allRows = [...normalRows, ...noJurRows];
-
-      if(!allRows.length){
-        showInfo("אין מספיק נתונים","לא נמצאו רשויות עם גבול כדי לצבוע.","warn");
-        return;
-      }
-
-      // טווח לצביעה ירוק→אדום: רק הרשויות שאינן "ללא שיפוט"
-      const refVals = normalRows.length ? normalRows.map(r => r.value) : allRows.map(r => r.value);
-      const minV  = Math.min(...refVals);
-      const sortedDesc = [...refVals].sort((a,b)=>b-a);
-      const maxV = (sortedDesc.length >= 2) ? sortedDesc[1] : sortedDesc[0];
-
-      const wkts = [], names = [], symbols = [], tooltips = [];
-
-      // צביעה רגילה (ירוק→אדום)
-      for(let i = 0; i < normalRows.length; i++){
-        const r = normalRows[i];
-        const [rr, gg, bb] = rateToColor(r.value, minV, maxV);
-
-        wkts.push(r.wkt);
-        const uniqueName = `${CHORO_NAME}_${i}`;
-        names.push(uniqueName);
-
-        symbols.push({
-          fillColor: [rr, gg, bb, 0.55],
-          outlineColor: [25, 25, 25, 0.85],
-          outlineWidth: 1
-        });
-
-        const tip =  (currentMetric === "rate") ? `${r.name} • ל-10,000: ${fmtMaybe(r.rate)} • כמות: ${Number(r.total || 0).toLocaleString()}` : `${r.name} • כמות: ${Number(r.total || 0).toLocaleString()}`;
-        tooltips.push(tip);
-      }
-
-      // "ללא שיפוט" → אפור
-      const base = normalRows.length;
-      for(let i = 0; i < noJurRows.length; i++){
-        const r = noJurRows[i];
-
-        wkts.push(r.wkt);
-        names.push(`${CHORO_NAME}_nojur_${i}`);
-
-        symbols.push({
-          fillColor: [140, 140, 140, 0.65],
-          outlineColor: [25, 25, 25, 0.85],
-          outlineWidth: 1
-        });
-
-        tooltips.push(`${r.name} (ללא שיפוט)`);
-      }
-
-   try {
-        const payload = {
-          wkts,
-          names,
-          geometryType: (govmap.geometryType?.POLYGON ?? govmap.geometryType?.Polygon ?? 3),
-          clearExisting: true,
-          showBubble: false,
-          symbols,
-          // data: { tooltips },  // הוסר כדי לזרז טעינה
-          
-          allowIdentify: false  // ✅ השורה החדשה
-        };
-
-        const ret = govmap.displayGeometries(payload);
-        if (ret && typeof ret.then === "function") await ret;
-
-        activeChoroplethNames = names;
-        setMunicipalLayerOpacity(30);  // ✅ שונה מ-0 ל-30
-      } catch (e) {
-        console.error("displayGeometries failed:", e);
-        setMunicipalLayerOpacity(100);
-        showInfo("שגיאה", `נכשלתי לצייר גיאומטריות: ${escapeHtml(e?.message || e)}`, "error");
-        return;
-      }
-
-      let extra = "";
-      if (missingGeom.length) {
-        extra = `<br><span style="font-size:13px;opacity:.9;">לא נמצאה גיאומטריה ל-${missingGeom.length} רשויות (פערי שמות בין הנתונים לגבולות).</span>`;
-        console.log("Missing geometry for:", missingGeom);
-      }
-
-      const noj = noJurRows.length ? `<br><span style="font-size:13px;opacity:.9;">"ללא שיפוט" צבוע באפור.</span>` : "";
-
-      showInfo(
-        (currentMetric === "rate") ? "צביעה לפי ל-10,000" : "צביעה לפי כמות",
-        `ירוק = נמוך • כתום = בינוני • אדום = גבוה (מוגבל למקום 2)<br>טווח: <b>${minV.toLocaleString()}</b> עד <b>${maxV.toLocaleString()}</b>${noj}${extra}`,
-        "info"
-      );
+    const wkt = findWktForCrimeName(name);
+    if(!wkt){
+      missingGeom.push(name);
+      continue;
     }
 
-    // -------------------- GovMap init --------------------
+    const value = (currentMetric === "rate") ? rate : total;
+    normalRows.push({ name, wkt, total, pop, rate, value });
+  }
+
+  const allRows = [...normalRows, ...noJurRows];
+  if(!allRows.length){
+    showInfo("אין מספיק נתונים","לא נמצאו רשויות עם גבול כדי לצבוע.","warn");
+    return;
+  }
+
+  // טווח לצביעה ירוק→אדום: לפי הרשויות שאינן "ללא שיפוט"
+  const refVals = normalRows.length ? normalRows.map(r => r.value) : allRows.map(r => r.value);
+  const minV  = Math.min(...refVals);
+  const sortedDesc = [...refVals].sort((a,b)=>b-a);
+  const maxV = (sortedDesc.length >= 2) ? sortedDesc[1] : sortedDesc[0];
+
+  const wkts = [];
+  const names = [];
+  const symbols = [];
+
+  // Build payload arrays
+  for(let i = 0; i < normalRows.length; i++){
+    const r = normalRows[i];
+    const [rr, gg, bb] = rateToColor(r.value, minV, maxV);
+
+    wkts.push(r.wkt);
+    names.push(`${CHORO_NAME}_${i}`);
+    symbols.push({
+      fillColor: [rr, gg, bb, 0.55],
+      outlineColor: [25, 25, 25, 0.80],
+      outlineWidth: 1
+    });
+  }
+
+  for(let i = 0; i < noJurRows.length; i++){
+    const r = noJurRows[i];
+    wkts.push(r.wkt);
+    names.push(`${CHORO_NAME}_nojur_${i}`);
+    symbols.push({
+      fillColor: [140, 140, 140, 0.65],
+      outlineColor: [25, 25, 25, 0.80],
+      outlineWidth: 1
+    });
+  }
+
+  // 🔥 יעול: ציור במקטעים (כדי להוריד עומס/לא להקפיא UI)
+  const geomType = (govmap.geometryType?.POLYGON ?? govmap.geometryType?.Polygon ?? 3);
+  const CHUNK = 170; // מאוזן: פחות payload = פחות תקיעות
+  try{
+    for(let start = 0; start < wkts.length; start += CHUNK){
+      if (myToken !== choroRunningToken) return; // בוטל ע"י ציור חדש
+
+      const end = Math.min(start + CHUNK, wkts.length);
+
+      const payload = {
+        wkts: wkts.slice(start, end),
+        names: names.slice(start, end),
+        geometryType: geomType,
+        clearExisting: (start === 0),
+        showBubble: false,
+        symbols: symbols.slice(start, end),
+        allowIdentify: false
+      };
+
+      const ret = govmap.displayGeometries(payload);
+      if (ret && typeof ret.then === "function") await ret;
+
+      // תן לדפדפן לנשום (תורם מאוד לתחושת "מהיר")
+      await new Promise(r => setTimeout(r, 0));
+    }
+
+    activeChoroplethNames = names;
+    setMunicipalLayerOpacity(30);
+  }catch(e){
+    console.error("displayGeometries failed:", e);
+    setMunicipalLayerOpacity(100);
+    showInfo("שגיאה", `נכשלתי לצייר גיאומטריות: ${escapeHtml(e?.message || e)}`, "error");
+    return;
+  }
+
+  let extra = "";
+  if (missingGeom.length) {
+    extra = `<br><span style="font-size:13px;opacity:.9;">לא נמצאה גיאומטריה ל-${missingGeom.length} רשויות (פערי שמות בין הנתונים לגבולות).</span>`;
+    console.log("Missing geometry for:", missingGeom);
+  }
+
+  const noj = noJurRows.length ? `<br><span style="font-size:13px;opacity:.9;">"ללא שיפוט" צבוע באפור.</span>` : "";
+
+  showInfo(
+    (currentMetric === "rate") ? "צביעה לפי ל-10,000" : "צביעה לפי כמות",
+    `ירוק = נמוך • כתום = בינוני • אדום = גבוה (מוגבל למקום 2)<br>טווח: <b>${minV.toLocaleString()}</b> עד <b>${maxV.toLocaleString()}</b>${noj}${extra}`,
+    "info"
+  );
+}
+
+// -------------------- GovMap init --------------------
     function initGovMap() {
       if (!window.crimeByYear || typeof window.crimeByYear !== "object") {
         showInfo("שגיאה", "לא ניתן לטעון את קובץ הנתונים crimeByYear_2020_2025.js", "error");
