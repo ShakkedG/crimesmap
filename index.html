@@ -1702,17 +1702,13 @@ function setChoroBtnUI(){
         if(!ok) return;
       }
 
-    const yearData = window.crimeByYear?.[currentYear];
+      const yearData = window.crimeByYear?.[currentYear];
       if(!yearData){
         showInfo("שגיאה","אין נתונים לשנה שנבחרה.","error");
         return;
       }
 
-      // ✅ ניקוי מפורש לפני ציור חדש
-      clearChoropleth();
-      
-      // ✅ המתן קצת כדי לתת ל-GovMap לסיים את הניקוי
-      await new Promise(resolve => setTimeout(resolve, 100));
+            clearChoropleth();
 
       const normalRows = [];
       const missingGeom = [];
