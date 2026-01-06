@@ -600,23 +600,62 @@
     function getYearDataByMode(mode, year){
       if(mode === "muni") return window.crimeByYear?.[year] || null;
       if(mode === "merhav") return window.crimeByYearMerhav?.[year] || null;
-      if(mode === "station") return window.crimeByYearStations?.[year] || null;
+      if(mode === "station") return getStationsDataset()?.[year] || null;
       return null;
     }
 
     function stationNameVariants(name){
       // מחזיר וריאציות שמקלות על התאמה בין שכבת GovMap לשמות בקובץ
-      const raw = String(name || "").trim();
-      if(!raw) return [];
+      const raw0 = String(name || "").trim();
+      if(!raw0) return [];
       const v = new Set();
       const add = (s)=>{ const k=normalizeKey(s); if(k) v.add(k); };
+
+      // ניקוי בסיסי
+      const raw = raw0.replace(/\s+/g," ").trim();
       add(raw);
-      const noPrefix = raw.replace(/^תחנת\s+/,"").trim();
-      add(noPrefix);
-      add("תחנת " + noPrefix);
-      add(raw.replace(/\s+/g," ").trim());
+
+      // אם מגיע משהו כמו "אזורי תחנת משטרה ..."
+      const noAreas = raw
+        .replace(/^אזורי\s+תחנת\s+משטרה\s*/,"")
+        .replace(/^אזורי\s+/,"")
+        .trim();
+      if (noAreas && noAreas !== raw) add(noAreas);
+
+      // הורדת "תחנת ..." / "תחנת משטרה ..."
+      const noPoliceWord = noAreas.replace(/^תחנת\s+משטרה\s*/,"").trim();
+      if (noPoliceWord && noPoliceWord !== noAreas) add(noPoliceWord);
+
+      const noPrefix = noPoliceWord.replace(/^תחנת\s+/,"").trim();
+      if(noPrefix && noPrefix !== noPoliceWord) add(noPrefix);
+
+      // החזרה עם/בלי תחנת
+      if (noPrefix) add("תחנת " + noPrefix);
+
       return Array.from(v);
     }
+
+    // -------------------- Stations dataset resolver --------------------
+    // חשוב: אם בקובץ תחנות מוגדר const CRIMEBYYEARSTATIONS או const crimeByYearStations,
+    // זה לא תמיד יופיע בתוך window.*. לכן אנחנו מנסים כמה שמות אפשריים.
+    function getStationsDataset(){
+      try{
+        if (getStationsDataset() && typeof getStationsDataset() === "object") return getStationsDataset();
+      }catch(_){}
+      try{
+        // eslint-disable-next-line no-undef
+        if (typeof crimeByYearStations !== "undefined" && crimeByYearStations && typeof crimeByYearStations === "object") return crimeByYearStations;
+      }catch(_){}
+      try{
+        // eslint-disable-next-line no-undef
+        if (typeof CRIMEBYYEARSTATIONS !== "undefined" && CRIMEBYYEARSTATIONS && typeof CRIMEBYYEARSTATIONS === "object") return CRIMEBYYEARSTATIONS;
+      }catch(_){}
+      try{
+        if (window.CRIMEBYYEARSTATIONS && typeof window.CRIMEBYYEARSTATIONS === "object") return window.CRIMEBYYEARSTATIONS;
+      }catch(_){}
+      return null;
+    }
+
 
     // -------------------- Population --------------------
     function buildPopulationIndex() {
@@ -750,7 +789,7 @@
       // מנקה אינדקס קיים
       Object.keys(stationIndex).forEach(k => delete stationIndex[k]);
 
-      const yearData = window.crimeByYearStations?.[year] || null;
+      const yearData = getStationsDataset()?.[year] || null;
       if (!yearData) return;
 
       for (const [stationName, payload] of Object.entries(yearData)) {
@@ -1085,10 +1124,7 @@
         return;
       }
 
-      const dataset =
-        (mode === "muni") ? window.crimeByYear :
-        (mode === "merhav") ? window.crimeByYearMerhav :
-        window.crimeByYearStations;
+      const dataset = (mode === "muni") ? window.crimeByYear : (mode === "merhav") ? window.crimeByYearMerhav : getStationsDataset();
 
       if (!dataset || typeof dataset !== "object") {
         container.innerHTML = `<div class="message message-error">אין נתוני היסטוריה זמינים עבור ${getModeLabel(mode)}.</div>`;
@@ -1201,11 +1237,25 @@
 
     function detectStationName(attrsRaw) {
       const attrs = fieldsToObject(attrsRaw) || attrsRaw;
-      const candidates = [
-        "שם תחנה", "שם תחנת משטרה", "תחנה", "STATION", "TAHANA",
-        "SHEM_TAHANA", "SHEM_TAHANA_MISHTARA", "NAME", "Name"
+      if (!attrs) return null;
+
+      // עדיפות לשדה הרשמי בשכבה: "שם תחנה"
+      const preferred = [
+        "שם תחנה",
+        "SHEM_TAHANA",
+        "TAHANA",
+        "STATION",
+        "Name",
+        "NAME",
+        "שם תחנת משטרה",
+        "תחנה",
+        "SHEM_TAHANA_MISHTARA"
       ];
-      for (const c of candidates) if (attrs && attrs[c]) return attrs[c];
+
+      for (const c of preferred) {
+        const val = attrs[c];
+        if (val != null && String(val).trim()) return String(val).trim();
+      }
       return null;
     }
 
