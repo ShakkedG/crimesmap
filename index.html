@@ -296,48 +296,132 @@
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
     /* Compare UI */
-
-    /* Trends (History) UI */
-    .trend-table{
-      border: 1px solid #e6e6e6;
-      border-radius: 14px;
-      overflow: hidden;
-      background: #fff;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
-    }
-    .trend-row{
-      display: grid;
-      grid-template-columns: 80px 1fr 1fr 1fr;
-      gap: 10px;
+    .compare-city-tag {
+      background: #e7f3ff;
+      color: #0066cc;
+      padding: 8px 12px;
+      border-radius: 10px;
+      border: 1px solid #b3d9ff;
+      display: inline-flex;
       align-items: center;
-      padding: 10px 12px;
-      border-bottom: 1px solid #f0f0f0;
-      font-weight: 900;
-      color: #222;
-    }
-    .trend-row:last-child{ border-bottom: none; }
-    .trend-row > div{
-      min-width: 0;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-    .trend-row.trend-head{
-      background: linear-gradient(135deg, #e7f3ff 0%, #f7fbff 100%);
-      color: #004080;
+      gap: 8px;
+      font-size: 13px;
       font-weight: 1000;
     }
-    .trend-row:not(.trend-head):nth-child(even){
+    .compare-city-tag button {
+      border: none; background: none; color: #0066cc;
+      cursor: pointer; font-size: 18px; line-height: 1;
+      padding: 0; width: 20px; height: 20px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 50%;
+    }
+    .compare-city-tag button:hover { background: #0066cc; color: white; }
+
+    .add-compare-btn {
+      width: 100%;
+      padding: 12px;
+      background: #0066cc;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 1000;
+      cursor: pointer;
+      margin-bottom: 12px;
+    }
+
+    .compare-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 10px; }
+    .compare-card {
+      border: 1px solid #e0e0e0;
+      border-radius: 14px;
+      padding: 12px;
+      background: #fff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+    .compare-card-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .compare-name {
+      font-weight: 1000;
+      color: #222;
+      font-size: 14px;
+      max-width: 280px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .compare-badges { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+    .badge {
+      font-size: 12px;
+      font-weight: 1000;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid #e0e0e0;
       background: #fafafa;
+      color: #333;
     }
-
-    /* Mobile: allow horizontal scroll rather than cramped columns */
-    @media (max-width: 768px){
-      .trend-table{ overflow-x: auto; -webkit-overflow-scrolling: touch; }
-      .trend-row{ min-width: 520px; }
+    .badge-warn {
+      border-color: #ffcc80;
+      background: #fff7e6;
+      color: #7a4a00;
     }
+    .compare-kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 10px; }
+    .kpi {
+      border: 1px solid #eee;
+      background: #fafafa;
+      border-radius: 12px;
+      padding: 10px;
+      text-align: center;
+    }
+    .kpi .kpi-value { font-weight: 1000; color: #0066cc; font-size: 14px; margin-bottom: 4px; }
+    .kpi .kpi-label { font-size: 11px; font-weight: 1000; color: #666; letter-spacing: .2px; }
 
-
+    .compare-bars-title { margin-top: 12px; font-weight: 1000; font-size: 14px; color: #222; }
+    .compare-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 10px 0;
+      padding: 10px;
+      background: #fafafa;
+      border-radius: 12px;
+      border: 1px solid #e0e0e0;
+    }
+    .compare-bar-name {
+      width: 120px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-size: 12.5px;
+      font-weight: 1000;
+      color: #333;
+    }
+    .compare-bar-container {
+      flex: 1;
+      height: 28px;
+      background: #f0f0f0;
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+    .compare-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #0066cc 0%, #0080ff 100%);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 0 10px;
+      font-size: 13px;
+      font-weight: 1000;
+      transition: width 0.35s ease;
+      white-space: nowrap;
+      min-width: 48px;
+    }
 
     /* MODALS */
     .modal { display:none; position:fixed; inset:0; z-index:20000; }
@@ -422,54 +506,7 @@
       #tabs { overflow-x:auto; }
       #tabs .tab{ min-width: 95px; }
     }
-  
-
-    /* -------------------- History / Trends (CSS) -------------------- */
-    #historyPanel {
-      margin-top: 12px;
-    }
-
-    .trend-table{
-      width: 100%;
-      border: 1px solid rgba(0,0,0,0.08);
-      border-radius: 14px;
-      overflow: hidden;
-      background: #fff;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.06);
-    }
-
-    .trend-row{
-      display: grid;
-      grid-template-columns: 70px 1fr 1fr 1fr;
-      gap: 10px;
-      padding: 10px 12px;
-      align-items: center;
-      border-top: 1px solid rgba(0,0,0,0.06);
-      font-variant-numeric: tabular-nums;
-    }
-
-    .trend-row:first-child{
-      border-top: none;
-    }
-
-    .trend-row.trend-head{
-      background: rgba(0,0,0,0.04);
-      font-weight: 700;
-    }
-
-    .trend-row > div{
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    @media (max-width: 520px){
-      .trend-row{
-        grid-template-columns: 60px 1fr 1fr 1fr;
-        padding: 8px 10px;
-      }
-    }
-</style>
+  </style>
 
   <script>
     const MUNICIPAL_LAYER = "125";
@@ -523,7 +560,84 @@
     }
     function normalizeKey(name) { return normalizeKeyBase(name); }
 
-    function nameVariants(name) {
+    
+// -------------------- Stations dataset resolver --------------------
+// Supports different globals: getStationsDataset(), crimeByYearStations, CRIMEBYYEARSTATIONS
+function getStationsDataset(){
+  try{
+    if (getStationsDataset() && typeof getStationsDataset() === "object") return getStationsDataset();
+  }catch(_){}
+  try{
+    // eslint-disable-next-line no-undef
+    if (typeof crimeByYearStations !== "undefined" && crimeByYearStations) return crimeByYearStations;
+  }catch(_){}
+  try{
+    // eslint-disable-next-line no-undef
+    if (typeof CRIMEBYYEARSTATIONS !== "undefined" && CRIMEBYYEARSTATIONS) return CRIMEBYYEARSTATIONS;
+  }catch(_){}
+  try{
+    if (window.CRIMEBYYEARSTATIONS && typeof window.CRIMEBYYEARSTATIONS === "object") return window.CRIMEBYYEARSTATIONS;
+  }catch(_){}
+  return null;
+}
+
+// -------------------- Robust field extraction (for GovMap layer attrs) --------------------
+
+function normalizeFieldName(n){
+  return String(n ?? "")
+    .trim()
+    .replace(/\s+/g, " ")
+    // remove quotes and common punctuation (including Hebrew maqaf and dashes)
+    .replace(/[׳״"'`]/g, "")
+    .replace(/[:;.,()\[\]{}<>!@#$%^&*+=?~\\|\/\-\u05be\u2010-\u2015]/g, "")
+    .toLowerCase();
+}
+
+function getFieldFromAttrs(attrsRaw, candidates){
+  const wanted = (candidates || []).map(normalizeFieldName);
+
+  // If GovMap returns an array of fields: [{FieldName, Value}, ...]
+  if (Array.isArray(attrsRaw)) {
+    for (const f of attrsRaw) {
+      const fn = normalizeFieldName(f?.FieldName ?? f?.fieldName ?? f?.name);
+      if (!fn) continue;
+
+      // exact match
+      if (wanted.includes(fn)) return f?.Value ?? f?.value;
+
+      // fuzzy: candidate inside field name
+      for (const w of wanted) {
+        if (fn.includes(w)) return f?.Value ?? f?.value;
+      }
+    }
+  }
+
+  // Object form
+  const attrsObj = fieldsToObject(attrsRaw) || attrsRaw;
+  if (!attrsObj || typeof attrsObj !== "object") return null;
+
+  // direct
+  for (const c of (candidates || [])) {
+    if (attrsObj[c] != null && String(attrsObj[c]).trim() !== "") return attrsObj[c];
+  }
+
+  // normalized map
+  const normMap = {};
+  for (const k in attrsObj) normMap[normalizeFieldName(k)] = attrsObj[k];
+
+  for (const w of wanted) {
+    if (normMap[w] != null && String(normMap[w]).trim() !== "") return normMap[w];
+  }
+
+  // last resort: any field containing "תחנה"
+  for (const k in attrsObj) {
+    const nk = normalizeFieldName(k);
+    if (nk.includes("תחנה") && attrsObj[k] != null && String(attrsObj[k]).trim() !== "") return attrsObj[k];
+  }
+
+  return null;
+}
+function nameVariants(name) {
       if (!name) return [];
       if (variantsCache.has(name)) return variantsCache.get(name);
 
@@ -580,113 +694,6 @@
       add(raw.replace(/\s+/g," ").trim());
       return Array.from(v);
     }
-
-
-// -------------------- Stations dataset + matching --------------------
-// תומך גם ב-CRIMEBYYEARSTATIONS (const גלובלי) וגם ב-getStationsDataset()
-function getStationsDataset(){
-  try{
-    if (window.crimeByYearStations && typeof window.crimeByYearStations === "object") return window.crimeByYearStations;
-}catch(_){}
-  try{
-    // eslint-disable-next-line no-undef
-    if (typeof crimeByYearStations !== "undefined" && crimeByYearStations) return crimeByYearStations;
-  }catch(_){}
-  try{
-    // eslint-disable-next-line no-undef
-    if (typeof CRIMEBYYEARSTATIONS !== "undefined" && CRIMEBYYEARSTATIONS) return CRIMEBYYEARSTATIONS;
-  }catch(_){}
-  try{
-    if (window.CRIMEBYYEARSTATIONS && typeof window.CRIMEBYYEARSTATIONS === "object") return window.CRIMEBYYEARSTATIONS;
-  }catch(_){}
-  return null;
-}
-
-function levenshtein(a, b){
-  a = String(a || "");
-  b = String(b || "");
-  const n = a.length, m = b.length;
-  if (!n) return m;
-  if (!m) return n;
-
-  const dp = new Array(m + 1);
-  for (let j = 0; j <= m; j++) dp[j] = j;
-
-  for (let i = 1; i <= n; i++){
-    let prev = dp[0];
-    dp[0] = i;
-    for (let j = 1; j <= m; j++){
-      const tmp = dp[j];
-      const cost = (a[i-1] === b[j-1]) ? 0 : 1;
-      dp[j] = Math.min(
-        dp[j] + 1,     // deletion
-        dp[j-1] + 1,   // insertion
-        prev + cost    // substitution
-      );
-      prev = tmp;
-    }
-  }
-  return dp[m];
-}
-
-function stationSimilarity(a, b){
-  const A = normalizeKey(a);
-  const B = normalizeKey(b);
-  const maxLen = Math.max(A.length, B.length, 1);
-  return 1 - (levenshtein(A, B) / maxLen);
-}
-
-function getTopStationSuggestions(layerStationName, limit = 5){
-  const raw = String(layerStationName || "").trim();
-  if (!raw) return [];
-  const scored = [];
-  const seen = new Set(); // על שם התחנה בדאטה
-  for (const k in stationIndex){
-    const e = stationIndex[k];
-    if (!e || !e.name) continue;
-    if (seen.has(e.name)) continue;
-    seen.add(e.name);
-    const score = stationSimilarity(raw, e.name);
-    scored.push({ name: e.name, score });
-  }
-  scored.sort((a,b)=>b.score-a.score);
-  return scored.slice(0, limit);
-}
-
-function resolveStationEntryByLayerName(layerStationName){
-  const raw = String(layerStationName || "").trim();
-  if (!raw) return { entry: null, method: "no-name" };
-
-  // 1) וריאציות קשיחות (תחנת X / X / ניקוי סוגריים וכו')
-  const vars = stationNameVariants(raw);
-  for (const k of vars){
-    if (stationIndex[k]) return { entry: stationIndex[k], method: "variant" };
-  }
-
-  // 2) Fuzzy: אם השמות לא בדיוק תואמים (תוספות/קיצורים)
-  let best = null;
-  let bestScore = 0;
-  const seen = new Set();
-  for (const k in stationIndex){
-    const e = stationIndex[k];
-    if (!e || !e.name) continue;
-    if (seen.has(e.name)) continue;
-    seen.add(e.name);
-
-    const sc = stationSimilarity(raw, e.name);
-    if (sc > bestScore){
-      bestScore = sc;
-      best = e;
-    }
-  }
-
-  if (best && bestScore >= 0.78){
-    return { entry: best, method: `fuzzy:${bestScore.toFixed(2)}` };
-  }
-
-  return { entry: null, method: best ? `fuzzy_fail:${bestScore.toFixed(2)}` : "no-match" };
-}
-
 
     // -------------------- Population --------------------
     function buildPopulationIndex() {
@@ -1269,76 +1276,21 @@ function resolveStationEntryByLayerName(layerStationName){
       return null;
     }
 
-    function getLayerStationName(attrsRaw) {
-      const attrs = fieldsToObject(attrsRaw) || attrsRaw;
-
-      // ✅ בדיוק לפי השכבה: "שם תחנה"
-      const v = attrs && attrs["שם תחנה"];
-      if (v != null && String(v).trim()) return String(v).trim();
-
-      // fallback עדין (לפעמים מופיע בשם אחר) - אפשר להסיר אם תרצה "רק" שם תחנה
-      const v2 = attrs && attrs["שם תחנת משטרה"];
-      if (v2 != null && String(v2).trim()) return String(v2).trim();
-
-      return null;
-    }
-
-    // נרמול "תחנה" להשוואה מול JSON (מוריד תחיליות וסימנים)
-    function normalizeStationForMatch(name) {
-      if (name == null) return "";
-      let s = String(name).trim();
-
-      s = s
-        .replace(/[׳״"']/g, "")
-        .replace(/[(){}\[\],.:]/g, "")
-        .replace(/־/g, "-")
-        .replace(/\s+/g, " ")
-        .trim();
-
-      // הסרת תחיליות נפוצות
-      s = s.replace(/^תחנת\s+משטרה\s+/g, "");
-      s = s.replace(/^תחנת\s+/g, "");
-      s = s.replace(/^משטרת\s+ישראל\s+/g, "");
-
-      s = s.replace(/[\s\-]/g, "");
-      return s.toLowerCase();
-    }
-
     
-
-
-    function findStationInJsonByLayerName(layerStationName, yearData) {
-      if (!layerStationName || !yearData) return null;
-
-      const target = normalizeStationForMatch(layerStationName);
-      if (!target) return null;
-
-      // מפת נרמול -> שם מקורי ב-JSON
-      const normMap = {};
-      for (const k of Object.keys(yearData)) {
-        const nk = normalizeStationForMatch(k);
-        if (nk && !normMap[nk]) normMap[nk] = k;
-      }
-
-      const exactName = normMap[target];
-      if (exactName) return { matchedName: exactName, data: yearData[exactName], matchType: "exact" };
-
-      // fuzzy: למצוא הכי קרוב
-      let best = null, bestScore = 0;
-      for (const k of Object.keys(yearData)) {
-        const score = stationSimilarity(layerStationName, k);
-        if (score > bestScore) { bestScore = score; best = k; }
-      }
-
-      if (best && bestScore >= 0.60) {
-        return { matchedName: best, data: yearData[best], matchType: "fuzzy", score: bestScore };
-      }
-
-      return null;
-    }
-
-    
-
+function detectStationName(attrsRaw) {
+  // Prefer EXACT field name from the layer: "שם תחנה"
+  const candidates = [
+    "שם תחנה",
+    "שם תחנת משטרה",
+    "SHEM_TAHANA",
+    "TAHANA",
+    "STATION",
+    "NAME",
+    "Name"
+  ];
+  const v = getFieldFromAttrs(attrsRaw, candidates);
+  return (v == null) ? null : String(v).trim();
+}
 
 
 
@@ -1389,63 +1341,55 @@ function resolveStationEntryByLayerName(layerStationName){
         }
 
         if (currentMode === "station") {
-        // ✅ השוואה ישירה: שדה "שם תחנה" בשכבה מול שם התחנה ב-JSON
-        const layerStationName = getLayerStationName(attrs);
+          
+const attrsObj = (fieldsToObject(attrs) || attrs || {});
+const stationName = detectStationName(attrsObj);
 
-        if (!layerStationName) {
-          console.log("[STATION] No 'שם תחנה' field on clicked entity. attrs=", attrs);
-          showInfoPanelError("לא הצלחתי לקרוא את השדה "שם תחנה" מהשכבה (בתחנות).");
+// Debug (see DevTools console when clicking a station)
+console.log("[STATION] attrs keys:", Object.keys(attrsObj || {}));
+console.log("[STATION] stationName from layer:", stationName);
+
+if (!stationName) {
+  const keysList = Object.keys(attrsObj || {});
+  console.warn("[STATION] Could not detect station name. Available keys:", keysList);
+  showInfo(
+    "שגיאה",
+    `לא הצלחתי לזהות את <strong>שם התחנה</strong> מהשכבה.<br/>` +
+    `שמות שדות שהתקבלו: <span style="direction:ltr;unicode-bidi:bidi-override">${escapeHtml(keysList.join(" | "))}</span>`,
+    "error"
+  );
+  return;
+}
+
+          const keys = stationNameVariants(stationName);
+          let entry = null;
+          let pickedKey = null;
+          for (const k of keys) {
+            if (stationIndex[k]) { entry = stationIndex[k]; pickedKey = k; break; }
+          }
+          if (!entry) {
+            // נסה חיפוש גמיש
+            const nk = normalizeKey(stationName);
+            entry = stationIndex[nk] || null;
+            pickedKey = nk;
+          }
+
+          if (!entry) {
+            showInfo("לא נמצאו נתונים", `אין נתוני פשיעה עבור <strong>${escapeHtml(stationName)}</strong> בשנת ${currentYear}`, "error");
+            return;
+          }
+
+          selectedCity = entry.name;
+          selectedCityKey = pickedKey || stationNameVariants(entry.name)[0] || normalizeKey(entry.name);
+
+          if (currentTab === "compare") { updateCompareView(); return; }
+          if (currentTab === "single") { showEntry(entry); return; }
+          if (currentTab === "trends") { showTrends(selectedCity, "station"); return; }
+          if (currentTab === "rankings") { renderRankings(); return; }
+
+          showEntry(entry);
           return;
         }
-
-        const stationsDS = getStationsDataset();
-        const yearData = stationsDS && stationsDS[currentYear];
-
-        if (!yearData) {
-          console.log("[STATION] No stations data for year", currentYear, "stationsDS keys:", stationsDS ? Object.keys(stationsDS) : null);
-          showInfoPanelError("אין נתוני תחנות לשנה שנבחרה.");
-          return;
-        }
-
-        const match = findStationInJsonByLayerName(layerStationName, yearData);
-
-        console.log("[STATION] Click:", {
-          year: currentYear,
-          layerStationName,
-          layerStationName_norm: normalizeStationForMatch(layerStationName),
-          match: match ? { matchedName: match.matchedName, matchType: match.matchType, score: match.score } : null
-        });
-
-        if (!match) {
-          const sugg = getTopStationSuggestions(layerStationName, yearData, 6)
-            .filter(x => x.score >= 0.35)
-            .map(x => `${x.name} (${Math.round(x.score * 100)}%)`);
-
-          const msg = sugg.length
-            ? `לא נמצאה התאמה לתחנה: <b>${escapeHTML(layerStationName)}</b><br><br>אולי התכוונת ל:<br>${sugg.map(s=>`• ${escapeHTML(s)}`).join("<br>")}`
-            : `לא נמצאה התאמה לתחנה: <b>${escapeHTML(layerStationName)}</b>`;
-
-          showInfoPanelError(msg);
-          return;
-        }
-
-        const entry = { name: match.matchedName, data: match.data };
-
-        selectedCity = entry.name;
-        selectedCityKey = stationNameVariants(entry.name)[0];
-
-        // עדכון UI
-        updateSelectedEntityTitle(entry.name);
-        updateCountsFromEntry(entry);
-
-        // פאנל תוצאות מפורט
-        renderBreakdown(entry);
-
-        // היסטוריה (שנים) לתחנה הזו
-        renderHistoryForSelected();
-
-        return;
-      }
 
 
         const merhavName = detectMerhavName(attrs);
