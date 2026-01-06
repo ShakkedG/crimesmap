@@ -150,6 +150,11 @@
       pointer-events: none;
     }
     .mode-btn.full { grid-column: 1 / -1; }
+    .mode-btn.primary {
+      font-size: 14px;
+      padding: 13px 10px;
+      border-width: 3px;
+    }
 
     #controls-row {
       display: flex;
@@ -653,8 +658,6 @@
     // -------------------- UI: metric buttons --------------------
     function updateMetricButtonsUI() {
       const btnRate = document.getElementById("btnMetricRate");
-      const btnPop = document.getElementById("btnMetricPop");
-
       const muniOnly = (currentMode === "muni");
 
       if (btnRate) {
@@ -664,27 +667,19 @@
         btnRate.title = muniOnly ? "מציג עבירות ל-10,000 תושבים (דורש אוכלוסייה)" : "זמין רק במצב ישובים/רשויות";
       }
 
-      if (btnPop) {
-        btnPop.classList.toggle("disabled", !muniOnly);
-        btnPop.disabled = !muniOnly;
-        btnPop.onclick = muniOnly ? () => setMetric("pop") : null;
-        btnPop.title = muniOnly ? "מציג אוכלוסייה כוללת (2019)" : "זמין רק במצב ישובים/רשויות";
-      }
-
       const headerP = document.querySelector("#panel-header p");
       if (headerP) {
-        const extra = muniOnly ? "ל-10,000 ואוכלוסייה זמינים כאן" : "ל-10,000 ואוכלוסייה לא זמינים במצב זה";
+        const extra = muniOnly ? "ל-10,000 זמין כאן" : "ל-10,000 לא זמין במצב זה";
         headerP.innerHTML = `מצב נוכחי: <strong>${escapeHtml(getModeLabel(currentMode))}</strong><br>${extra}`;
       }
 
-      if (!muniOnly && (currentMetric === "rate" || currentMetric === "pop")) {
+      // אם יצאנו ממצב ישובים, לא משאירים מדד ל-10,000 פעיל
+      if (!muniOnly && currentMetric === "rate") {
         currentMetric = "abs";
         const bAbs = document.getElementById("btnMetricAbs");
         const bRate2 = document.getElementById("btnMetricRate");
-        const bPop2 = document.getElementById("btnMetricPop");
         if (bAbs) bAbs.classList.add("active");
         if (bRate2) bRate2.classList.remove("active");
-        if (bPop2) bPop2.classList.remove("active");
       }
     }
 
@@ -917,7 +912,7 @@
     }
 
     function setMetric(metric) {
-      if ((metric === "rate" || metric === "pop") && currentMode !== "muni") {
+      if (metric === "rate" && currentMode !== "muni") {
         alert("זמין רק במצב ישובים/רשויות");
         return;
       }
@@ -926,14 +921,13 @@
 
       const bAbs = document.getElementById("btnMetricAbs");
       const bRate = document.getElementById("btnMetricRate");
-      const bPop = document.getElementById("btnMetricPop");
 
       if (bAbs) bAbs.classList.toggle("active", metric === "abs");
       if (bRate) bRate.classList.toggle("active", metric === "rate");
-      if (bPop) bPop.classList.toggle("active", metric === "pop");
 
       if (choroplethEnabled && currentMode === "muni") renderChoropleth();
 
+      // רענון אוטומטי של היישות שנבחרה (כדי שהשנה/המדד יתעדכנו בלי לבחור מחדש)
       if (currentTab === "single" && selectedCityKey) {
         const index = getIndexByMode(currentMode);
         const entry = index[selectedCityKey];
@@ -944,8 +938,7 @@
       if (currentTab === "rankings") renderRankings();
     }
 
-
-    // -------------------- Compare --------------------
+// -------------------- Compare --------------------
     function addToCompare() {
       if (!selectedCity) { 
         alert(`אנא בחר ${getEntityLabel(currentMode)} במפה תחילה`); 
@@ -998,7 +991,6 @@
 
       const metricType =
         (currentMode === "muni" && currentMetric === "rate") ? "rate" :
-        (currentMode === "muni" && currentMetric === "pop") ? "pop" :
         "total";
 
       const rows = filteredList.map(item => {
@@ -1014,7 +1006,7 @@
         html += `<div class="message message-info">במצב ${getModeLabel(currentMode)} ההשוואה היא לפי כמות בלבד (אין אוכלוסייה).</div>`;
       } else if (metricType === "rate") {
         html += `<div class="message message-info">השוואה לפי <strong>ל-10,000 תושבים</strong> (אוכלוסייה 2019; חסר = 0).</div>`;
-      } else if (metricType === "pop") {
+      } else if (false) {
         html += `<div class="message message-info">השוואה לפי <strong>אוכלוסייה כוללת</strong> (2019).</div>`;
       } else {
         html += `<div class="message message-info">טיפ: מעבר ל־<strong>ל-10,000</strong> משווה יחסית לגודל אוכלוסייה (2019).</div>`;
@@ -1022,7 +1014,6 @@
 
       const metricBadge =
         metricType === "rate" ? "מדד: ל-10,000" :
-        metricType === "pop" ? "מדד: אוכלוסייה" :
         "מדד: כמות";
 
       html += `<div class="compare-grid">`;
@@ -1059,18 +1050,17 @@
 
       const title =
         metricType === "rate" ? `השוואה לפי ל-10,000 (${currentYear})` :
-        metricType === "pop" ? `השוואה לפי אוכלוסייה (${currentYear})` :
         `השוואה לפי כמות (${currentYear})`;
       html += `<div class="compare-bars-title">${title}</div>`;
 
       const values = rows
-        .map(r => metricType === "rate" ? r.rate : (metricType === "pop" ? r.pop : r.total))
+        .map(r => metricType === "rate" ? r.rate : r.total)
         .filter(v => v != null && Number.isFinite(v));
       const max = values.length ? Math.max(...values) : 0;
 
       html += `<div class="compare-bars">`;
       rows.forEach(r => {
-        const v = metricType === "rate" ? (r.rate ?? 0) : (metricType === "pop" ? r.pop : r.total);
+        const v = metricType === "rate" ? (r.rate ?? 0) : r.total;
         const pct = max > 0 ? Math.round((v / max) * 100) : 0;
         html += `
           <div class="bar-row">
@@ -1135,7 +1125,6 @@
 
       const metricType =
         (mode === "muni" && currentMetric === "rate") ? "rate" :
-        (mode === "muni" && currentMetric === "pop") ? "pop" :
         "total";
 
       const yearly = years.map(y => {
@@ -1147,7 +1136,7 @@
 
         const value =
           metricType === "rate" ? rate :
-          metricType === "pop" ? pop :
+          false ? pop :
           total;
 
         return { year: y, total, pop, rate, value, has: !!found };
@@ -1155,7 +1144,7 @@
 
       const metricLabel =
         metricType === "rate" ? "ל-10,000" :
-        metricType === "pop" ? "אוכלוסייה" :
+        false ? "אוכלוסייה" :
         "כמות";
 
       let html = `
@@ -1398,7 +1387,6 @@
 
       const metricType =
         (currentMode === "muni" && currentMetric === "rate") ? "rate" :
-        (currentMode === "muni" && currentMetric === "pop") ? "pop" :
         "total";
 
       const rows = [];
@@ -1411,7 +1399,7 @@
           const pop = (popRaw == null ? 0 : Number(popRaw));
           const rate = calcRatePer10k(total, pop);
           rows.push({ name, value: rate, extra: { pop, total }, hasPop: popRaw != null });
-        } else if (currentMode === "muni" && metricType === "pop") {
+        } else if (currentMode === "muni" && false) {
           const popRaw = getPopulationForAuthority(name);
           const pop = (popRaw == null ? 0 : Number(popRaw));
           rows.push({ name, value: pop, extra: { pop, total }, hasPop: popRaw != null });
@@ -1425,7 +1413,7 @@
 
       const metricLabel =
         metricType === "rate" ? "ל-10,000" :
-        metricType === "pop" ? "אוכלוסייה" :
+        false ? "אוכלוסייה" :
         "כמות (אבסולוטי)";
 
       const header = `
@@ -1441,7 +1429,7 @@
       }
 
       let note = "";
-      if (currentMode === "muni" && (metricType === "rate" || metricType === "pop")) {
+      if (currentMode === "muni" && (metricType === "rate" || false)) {
         note = `<div class="message message-warn">אוכלוסייה מבוססת על נתון 2019; חסר = 0.</div>`;
       }
 
@@ -1450,13 +1438,13 @@
 
       top.forEach((r, idx) => {
         const valueText = (metricType === "rate") ? Number(r.value || 0).toLocaleString() :
-                          (metricType === "pop") ? Number(r.value || 0).toLocaleString() :
+                          (false) ? Number(r.value || 0).toLocaleString() :
                           Number(r.value || 0).toLocaleString();
 
         const extra =
           (currentMode === "muni" && metricType === "rate")
             ? `<div class="rank-extra">כמות: ${Number(r.extra?.total || 0).toLocaleString()} • אוכלוסייה: ${fmtMaybe(r.extra?.pop)}</div>`
-            : (currentMode === "muni" && metricType === "pop")
+            : (currentMode === "muni" && false)
               ? `<div class="rank-extra">כמות עבירות: ${Number(r.extra?.total || 0).toLocaleString()}</div>`
               : ``;
 
@@ -1806,7 +1794,7 @@
       if(!btn) return;
 
       const muniOnly = (currentMode === "muni");
-      const metricLabel = (currentMetric === "rate") ? "ל-10,000" : (currentMetric === "pop" ? "אוכלוסייה" : "כמות");
+      const metricLabel = (currentMetric === "rate") ? "ל-10,000" : "כמות";
 
       if(!muniOnly){
         btn.classList.remove("active");
@@ -1909,7 +1897,7 @@
           continue; 
         }
 
-        const value = (currentMetric === "rate") ? rate : (currentMetric === "pop" ? pop : total);
+        const value = (currentMetric === "rate") ? rate : total;
         normalRows.push({ name, wkt, total, pop, rate, value });
       }
 
@@ -1923,7 +1911,8 @@
       // טווח לצביעה ירוק→אדום: רק הרשויות שאינן "ללא שיפוט"
       const refVals = normalRows.length ? normalRows.map(r => r.value) : allRows.map(r => r.value);
       const minV  = Math.min(...refVals);
-      const maxV  = Math.max(...refVals);
+      const sortedDesc = [...refVals].sort((a,b)=>b-a);
+      const maxV = (sortedDesc.length >= 2) ? sortedDesc[1] : sortedDesc[0];
 
       const wkts = [], names = [], symbols = [], tooltips = [];
 
@@ -1942,11 +1931,7 @@
           outlineWidth: 2
         });
 
-        const tip = (currentMetric === "rate")
-          ? `${r.name} • ${r.rate.toLocaleString()} /10k`
-          : (currentMetric === "pop")
-            ? `${r.name} • אוכלוסייה: ${fmtMaybe(r.pop)}`
-            : `${r.name} • כמות: ${Number(r.total || 0).toLocaleString()}`;
+        const tip =  (currentMetric === "rate") ? `${r.name} • ל-10,000: ${fmtMaybe(r.rate)} • כמות: ${Number(r.total || 0).toLocaleString()}` : `${r.name} • כמות: ${Number(r.total || 0).toLocaleString()}`;
         tooltips.push(tip);
       }
 
@@ -2000,8 +1985,8 @@
       const noj = noJurRows.length ? `<br><span style="font-size:13px;opacity:.9;">"ללא שיפוט" צבוע באפור.</span>` : "";
 
       showInfo(
-        (currentMetric === "rate") ? "צביעה לפי ל-10,000" : (currentMetric === "pop" ? "צביעה לפי אוכלוסייה" : "צביעה לפי כמות"),
-        `ירוק = נמוך • כתום = בינוני • אדום = גבוה<br>טווח: <b>${minV.toLocaleString()}</b> עד <b>${maxV.toLocaleString()}</b>${noj}${extra}`,
+        (currentMetric === "rate") ? "צביעה לפי ל-10,000" : "צביעה לפי כמות",
+        `ירוק = נמוך • כתום = בינוני • אדום = גבוה (מוגבל למקום 2)<br>טווח: <b>${minV.toLocaleString()}</b> עד <b>${maxV.toLocaleString()}</b>${noj}${extra}`,
         "info"
       );
     }
@@ -2150,14 +2135,12 @@ updateQuickStats();
 
     <div id="controls">
       <div class="mode-grid">
-        <button id="btnModeMuni" class="mode-btn active" onclick="setMode('muni')">🏘️ ישובים</button>
+        <button id="btnModeMuni" class="mode-btn full primary active" onclick="setMode('muni')">🏘️ ישובים</button>
         <button id="btnModeMerhav" class="mode-btn" onclick="setMode('merhav')">🚔 מרחבים</button>
-        <button id="btnModeStation" class="mode-btn full" onclick="setMode('station')">🏢 תחנות משטרה</button>
+        <button id="btnModeStation" class="mode-btn" onclick="setMode('station')">🏢 תחנות משטרה</button>
 
         <button id="btnMetricAbs" class="mode-btn active" onclick="setMetric('abs')">🔢 כמות</button>
         <button id="btnMetricRate" class="mode-btn" onclick="setMetric('rate')" title="זמין רק במצב ישובים">👥 ל-10,000</button>
-        <button id="btnMetricPop" class="mode-btn" onclick="setMetric('pop')" title="זמין רק במצב ישובים">👤 אוכלוסייה</button>
-
         <button id="btnChoro" class="mode-btn full" onclick="toggleChoropleth()">
           🎨 צביעה ל-10,000 (ירוק→אדום)
         </button>
