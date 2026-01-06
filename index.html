@@ -564,24 +564,30 @@
 // -------------------- Stations dataset resolver --------------------
 // Supports different globals: getStationsDataset(), crimeByYearStations, CRIMEBYYEARSTATIONS
 function getStationsDataset(){
+  // ✅ No recursion. Just resolve the dataset from the possible global names.
   try{
-    if (getStationsDataset() && typeof getStationsDataset() === "object") return getStationsDataset();
+    if (window.crimeByYearStations && typeof window.crimeByYearStations === "object") return window.crimeByYearStations;
   }catch(_){}
-  try{
-    // eslint-disable-next-line no-undef
-    if (typeof crimeByYearStations !== "undefined" && crimeByYearStations) return crimeByYearStations;
-  }catch(_){}
+
   try{
     // eslint-disable-next-line no-undef
-    if (typeof CRIMEBYYEARSTATIONS !== "undefined" && CRIMEBYYEARSTATIONS) return CRIMEBYYEARSTATIONS;
+    if (typeof crimeByYearStations !== "undefined" && crimeByYearStations && typeof crimeByYearStations === "object") return crimeByYearStations;
   }catch(_){}
+
+  try{
+    // eslint-disable-next-line no-undef
+    if (typeof CRIMEBYYEARSTATIONS !== "undefined" && CRIMEBYYEARSTATIONS && typeof CRIMEBYYEARSTATIONS === "object") return CRIMEBYYEARSTATIONS;
+  }catch(_){}
+
   try{
     if (window.CRIMEBYYEARSTATIONS && typeof window.CRIMEBYYEARSTATIONS === "object") return window.CRIMEBYYEARSTATIONS;
   }catch(_){}
+
   return null;
 }
 
-// -------------------- Robust field extraction (for GovMap layer attrs) --------------------
+
+// -------------------- Robust field extraction (for GovMap layer attrs) (for GovMap layer attrs) --------------------
 
 function normalizeFieldName(n){
   return String(n ?? "")
