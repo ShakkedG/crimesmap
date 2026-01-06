@@ -8,6 +8,7 @@
   <script src="crimeByYear_2020_2025.js"></script>
   <script src="crimeByYearMerhav.js"></script>
   <script src="PopulationDB.js"></script>
+  <script src="crimeByYearStations.js"></script>
 
   <script src="muni_boundaries.js"></script> 
 
@@ -505,6 +506,7 @@
   <script>
     const MUNICIPAL_LAYER = "125";
     const POLICE_MERHAV_LAYER = "200550";
+    const POLICE_STATION_LAYER = "24";
     const TOKEN = "ede9a5fd-7c23-432f-8ffb-d85feffa3f3c";
 
     const MUNI_BOUNDARIES_GEOJSON_URL = "muni_boundaries_ITM.geojson";
@@ -522,6 +524,7 @@
 
     const muniIndex = {};
     const merhavIndex = {};
+    const stationIndex = {};
     const populationIndex = {};
     const variantsCache = new Map();
 
@@ -571,6 +574,45 @@
       return variants;
     }
 
+    function getModeLabel(mode){
+      if(mode === "muni") return "ישובים/רשויות";
+      if(mode === "merhav") return "מרחבים";
+      if(mode === "station") return "תחנות משטרה";
+      return "ישויות";
+    }
+    function getEntityLabel(mode){
+      if(mode === "muni") return "רשות";
+      if(mode === "merhav") return "מרחב";
+      if(mode === "station") return "תחנה";
+      return "ישות";
+    }
+    function getIndexByMode(mode){
+      if(mode === "muni") return muniIndex;
+      if(mode === "merhav") return merhavIndex;
+      if(mode === "station") return stationIndex;
+      return muniIndex;
+    }
+    function getYearDataByMode(mode, year){
+      if(mode === "muni") return window.crimeByYear?.[year] || null;
+      if(mode === "merhav") return window.crimeByYearMerhav?.[year] || null;
+      if(mode === "station") return window.crimeByYearStations?.[year] || null;
+      return null;
+    }
+
+    function stationNameVariants(name){
+      // מחזיר וריאציות שמקלות על התאמה בין שכבת GovMap לשמות בקובץ
+      const raw = String(name || "").trim();
+      if(!raw) return [];
+      const v = new Set();
+      const add = (s)=>{ const k=normalizeKey(s); if(k) v.add(k); };
+      add(raw);
+      const noPrefix = raw.replace(/^תחנת\s+/,"").trim();
+      add(noPrefix);
+      add("תחנת " + noPrefix);
+      add(raw.replace(/\s+/g," ").trim());
+      return Array.from(v);
+    }
+
     // -------------------- Population --------------------
     function buildPopulationIndex() {
       for (const k in populationIndex) delete populationIndex[k];
@@ -611,39 +653,46 @@
     // -------------------- UI: metric buttons --------------------
     function updateMetricButtonsUI() {
       const btnRate = document.getElementById("btnMetricRate");
-      if (!btnRate) return;
+      const btnPop = document.getElementById("btnMetricPop");
 
-      const rateAvailable = (currentMode === "muni");
-      btnRate.classList.toggle("disabled", !rateAvailable);
-      btnRate.disabled = !rateAvailable;
+      const muniOnly = (currentMode === "muni");
 
-      if (!rateAvailable) btnRate.onclick = null;
-      else btnRate.onclick = () => setMetric("rate");
+      if (btnRate) {
+        btnRate.classList.toggle("disabled", !muniOnly);
+        btnRate.disabled = !muniOnly;
+        btnRate.onclick = muniOnly ? () => setMetric("rate") : null;
+        btnRate.title = muniOnly ? "מציג עבירות ל-10,000 תושבים (דורש אוכלוסייה)" : "זמין רק במצב ישובים/רשויות";
+      }
 
-      btnRate.title = rateAvailable
-        ? "מציג עבירות ל-10,000 תושבים (דורש אוכלוסייה)"
-        : "זמין רק במצב ישובים/רשויות";
+      if (btnPop) {
+        btnPop.classList.toggle("disabled", !muniOnly);
+        btnPop.disabled = !muniOnly;
+        btnPop.onclick = muniOnly ? () => setMetric("pop") : null;
+        btnPop.title = muniOnly ? "מציג אוכלוסייה כוללת (2019)" : "זמין רק במצב ישובים/רשויות";
+      }
 
       const headerP = document.querySelector("#panel-header p");
       if (headerP) {
-        headerP.innerHTML = rateAvailable
-          ? `מצב נוכחי: <strong>ישובים/רשויות</strong><br>ל-10,000 זמין רק כאן`
-          : `מצב נוכחי: <strong>מרחבים</strong><br>ל-10,000 לא זמין במרחבים`;
+        const extra = muniOnly ? "ל-10,000 ואוכלוסייה זמינים כאן" : "ל-10,000 ואוכלוסייה לא זמינים במצב זה";
+        headerP.innerHTML = `מצב נוכחי: <strong>${escapeHtml(getModeLabel(currentMode))}</strong><br>${extra}`;
       }
 
-      if (!rateAvailable && currentMetric === "rate") {
+      if (!muniOnly && (currentMetric === "rate" || currentMetric === "pop")) {
         currentMetric = "abs";
         const bAbs = document.getElementById("btnMetricAbs");
-        const bRate = document.getElementById("btnMetricRate");
+        const bRate2 = document.getElementById("btnMetricRate");
+        const bPop2 = document.getElementById("btnMetricPop");
         if (bAbs) bAbs.classList.add("active");
-        if (bRate) bRate.classList.remove("active");
+        if (bRate2) bRate2.classList.remove("active");
+        if (bPop2) bPop2.classList.remove("active");
       }
     }
 
     // -------------------- Stats --------------------
-    function calculateStats(year) {
-      const yearData = window.crimeByYear?.[year];
-      if (!yearData) return { municipalities: 0, total: 0, avg: 0 };
+    function calculateStats(year, mode) {
+      const m = mode || currentMode || "muni";
+      const yearData = getYearDataByMode(m, year);
+      if (!yearData) return { entities: 0, total: 0, avg: 0 };
 
       let total = 0, count = 0;
       for (const name in yearData) {
@@ -653,17 +702,23 @@
           count++;
         }
       }
-      return { municipalities: count, total, avg: count > 0 ? Math.round(total / count) : 0 };
+      return { entities: count, total, avg: count > 0 ? Math.round(total / count) : 0 };
     }
 
     function updateQuickStats() {
-      const stats = yearlyStats[currentYear] || { municipalities: 0, total: 0, avg: 0 };
+      const key = `${currentYear}__${currentMode}`;
+      if (!yearlyStats[key]) yearlyStats[key] = calculateStats(currentYear, currentMode);
+      const stats = yearlyStats[key] || { entities: 0, total: 0, avg: 0 };
+
       const a = document.getElementById("stat-municipalities");
       const b = document.getElementById("stat-total");
       const c = document.getElementById("stat-avg");
-      if (a) a.textContent = stats.municipalities.toLocaleString();
-      if (b) b.textContent = stats.total.toLocaleString();
-      if (c) c.textContent = stats.avg.toLocaleString();
+      const l = document.getElementById("stat-entities-label");
+
+      if (a) a.textContent = Number(stats.entities || 0).toLocaleString();
+      if (b) b.textContent = Number(stats.total || 0).toLocaleString();
+      if (c) c.textContent = Number(stats.avg || 0).toLocaleString();
+      if (l) l.textContent = (currentMode === "muni" ? "רשויות" : (currentMode === "merhav" ? "מרחבים" : "תחנות"));
     }
 
     // -------------------- Index building --------------------
@@ -695,6 +750,21 @@
       }
       console.log(`✅ Year ${year}: ${Object.keys(merhavIndex).length} merhav keys indexed`);
     }
+
+    function buildStationIndexForYear(year) {
+      // מנקה אינדקס קיים
+      Object.keys(stationIndex).forEach(k => delete stationIndex[k]);
+
+      const yearData = window.crimeByYearStations?.[year] || null;
+      if (!yearData) return;
+
+      for (const [stationName, payload] of Object.entries(yearData)) {
+        const entry = { name: String(stationName).trim(), data: payload || { total: 0, breakdown: {} } };
+        const keys = stationNameVariants(stationName);
+        keys.forEach(k => { if (k) stationIndex[k] = entry; });
+      }
+    }
+
 
     // -------------------- UI helpers --------------------
     function showInfo(title, body, type = "info") {
@@ -767,8 +837,8 @@
 
       if (tabName === "single") {
         showInfo(
-          "מפה לפי " + (currentMode === "muni" ? "ישובים/רשויות" : "מרחבים"),
-          `שנה נבחרת: ${currentYear}<br>לחץ על ${currentMode === "muni" ? "רשות" : "מרחב"} במפה כדי לראות נתונים`,
+          "מפה לפי " + getModeLabel(currentMode),
+          `שנה נבחרת: ${currentYear}<br>לחץ על ${getEntityLabel(currentMode)} במפה כדי לראות נתונים`,
           "info"
         );
       } else if (tabName === "compare") {
@@ -776,7 +846,7 @@
       } else if (tabName === "trends") {
         const tc = document.getElementById("trends-content");
         if (!selectedCity) {
-          if (tc) tc.innerHTML = `<div class="message message-info">בחר ${currentMode === "muni" ? "רשות" : "מרחב"} במפה כדי לראות נתונים היסטוריים</div>`;
+          if (tc) tc.innerHTML = `<div class="message message-info">בחר ${getEntityLabel(currentMode)} במפה כדי לראות נתונים היסטוריים</div>`;
           return;
         }
         showTrends(selectedCity, currentMode);
@@ -791,18 +861,28 @@
 
       const bm = document.getElementById("btnModeMuni");
       const br = document.getElementById("btnModeMerhav");
+      const bs = document.getElementById("btnModeStation");
       if (bm) bm.classList.toggle("active", mode === "muni");
       if (br) br.classList.toggle("active", mode === "merhav");
+      if (bs) bs.classList.toggle("active", mode === "station");
 
       updateMetricButtonsUI();
+      updateQuickStats();
 
-      const layerToShow = (mode === "muni") ? MUNICIPAL_LAYER : POLICE_MERHAV_LAYER;
-      const layerToHide = (mode === "muni") ? POLICE_MERHAV_LAYER : MUNICIPAL_LAYER;
+      const layerToShow =
+        (mode === "muni") ? MUNICIPAL_LAYER :
+        (mode === "merhav") ? POLICE_MERHAV_LAYER :
+        POLICE_STATION_LAYER;
+
+      const layersToHide =
+        (mode === "muni") ? [POLICE_MERHAV_LAYER, POLICE_STATION_LAYER] :
+        (mode === "merhav") ? [MUNICIPAL_LAYER, POLICE_STATION_LAYER] :
+        [MUNICIPAL_LAYER, POLICE_MERHAV_LAYER];
 
       if (mapInitialized) {
         try {
           if (typeof govmap.setVisibleLayers === "function") {
-            govmap.setVisibleLayers([layerToShow], [layerToHide]);
+            govmap.setVisibleLayers([layerToShow], layersToHide);
           }
         } catch (err) {
           console.warn("⚠️ setVisibleLayers failed:", err);
@@ -826,31 +906,37 @@
       else if (currentTab === "rankings") renderRankings();
       else if (currentTab === "trends") {
         const tc = document.getElementById("trends-content");
-        if (tc) tc.innerHTML = `<div class="message message-info">בחר ${mode === "muni" ? "רשות" : "מרחב"} במפה כדי לראות נתונים היסטוריים</div>`;
+        if (tc) tc.innerHTML = `<div class="message message-info">בחר ${getEntityLabel(mode)} במפה כדי לראות נתונים היסטוריים</div>`;
       } else {
         showInfo(
-          "מפה לפי " + (mode === "muni" ? "ישובים/רשויות" : "מרחבים"),
-          `שנה נבחרת: ${currentYear}<br>לחץ על ${mode === "muni" ? "רשות" : "מרחב"} במפה כדי לראות נתונים`,
+          "מפה לפי " + getModeLabel(mode),
+          `שנה נבחרת: ${currentYear}<br>לחץ על ${getEntityLabel(mode)} במפה כדי לראות נתונים`,
           "info"
         );
       }
     }
 
     function setMetric(metric) {
-      if (metric === "rate" && currentMode !== "muni") {
-        alert("לא זמין במרחבים"); return;
+      if ((metric === "rate" || metric === "pop") && currentMode !== "muni") {
+        alert("זמין רק במצב ישובים/רשויות");
+        return;
       }
+
       currentMetric = metric;
 
       const bAbs = document.getElementById("btnMetricAbs");
       const bRate = document.getElementById("btnMetricRate");
+      const bPop = document.getElementById("btnMetricPop");
+
       if (bAbs) bAbs.classList.toggle("active", metric === "abs");
       if (bRate) bRate.classList.toggle("active", metric === "rate");
+      if (bPop) bPop.classList.toggle("active", metric === "pop");
 
       if (choroplethEnabled && currentMode === "muni") renderChoropleth();
 
       if (currentTab === "single" && selectedCityKey) {
-        const entry = muniIndex[selectedCityKey] || muniIndex[nameVariants(selectedCityKey)[0]];
+        const index = getIndexByMode(currentMode);
+        const entry = index[selectedCityKey];
         if (entry) showEntry(entry);
       }
       if (currentTab === "compare") updateCompareView();
@@ -858,10 +944,11 @@
       if (currentTab === "rankings") renderRankings();
     }
 
+
     // -------------------- Compare --------------------
     function addToCompare() {
       if (!selectedCity) { 
-        alert(`אנא בחר ${currentMode === "muni" ? "רשות" : "מרחב"} במפה תחילה`); 
+        alert(`אנא בחר ${getEntityLabel(currentMode)} במפה תחילה`); 
         return; 
       }
       if (!compareList.some(c => c.key === selectedCityKey && c.mode === currentMode)) {
@@ -879,7 +966,7 @@
       const container = document.getElementById("compare-content");
       if (!container) return;
 
-      const entityType = currentMode === "muni" ? "רשות" : "מרחב";
+      const entityType = getEntityLabel(currentMode);
 
       const selectedHint = selectedCity
         ? `<div class="message message-info">נבחר כעת: <strong>${escapeHtml(selectedCity)}</strong> (לחץ על ➕ כדי להוסיף להשוואה)</div>`
@@ -895,7 +982,8 @@
       if (filteredList.length > 0) {
         html += '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;">';
         filteredList.forEach(item => {
-          html += `<div class="compare-city-tag">${escapeHtml(item.name)}<button onclick="removeFromCompare('${escapeHtml(item.key)}')" title="הסר">×</button></div>`;
+          html += `<div class="compare-city-tag">${escapeHtml(item.name)}
+            <button class="remove-tag-btn" onclick="removeFromCompare('${escapeHtml(item.key)}')" title="הסר">×</button></div>`;
         });
         html += "</div>";
       }
@@ -906,11 +994,16 @@
         return;
       }
 
-      const index = currentMode === "muni" ? muniIndex : merhavIndex;
-      const metricIsRate = (currentMode === "muni" && currentMetric === "rate");
+      const index = getIndexByMode(currentMode);
+
+      const metricType =
+        (currentMode === "muni" && currentMetric === "rate") ? "rate" :
+        (currentMode === "muni" && currentMetric === "pop") ? "pop" :
+        "total";
 
       const rows = filteredList.map(item => {
-        const total = index[item.key]?.data?.total ?? 0;
+        const entry = index[item.key];
+        const total = entry?.data?.total ?? 0;
         const popRaw = (currentMode === "muni") ? getPopulationForAuthority(item.name) : null;
         const pop = (popRaw == null ? 0 : Number(popRaw));
         const rate = (currentMode === "muni") ? calcRatePer10k(total, pop) : null;
@@ -918,17 +1011,24 @@
       });
 
       if (currentMode !== "muni") {
-        html += `<div class="message message-info">במצב מרחבים ההשוואה היא לפי כמות בלבד (אין אוכלוסייה).</div>`;
-      } else if (metricIsRate) {
+        html += `<div class="message message-info">במצב ${getModeLabel(currentMode)} ההשוואה היא לפי כמות בלבד (אין אוכלוסייה).</div>`;
+      } else if (metricType === "rate") {
         html += `<div class="message message-info">השוואה לפי <strong>ל-10,000 תושבים</strong> (אוכלוסייה 2019; חסר = 0).</div>`;
+      } else if (metricType === "pop") {
+        html += `<div class="message message-info">השוואה לפי <strong>אוכלוסייה כוללת</strong> (2019).</div>`;
       } else {
         html += `<div class="message message-info">טיפ: מעבר ל־<strong>ל-10,000</strong> משווה יחסית לגודל אוכלוסייה (2019).</div>`;
       }
 
+      const metricBadge =
+        metricType === "rate" ? "מדד: ל-10,000" :
+        metricType === "pop" ? "מדד: אוכלוסייה" :
+        "מדד: כמות";
+
       html += `<div class="compare-grid">`;
       rows.forEach(r => {
         const badges = [];
-        badges.push(metricIsRate ? `<span class="badge">מדד: ל-10,000</span>` : `<span class="badge">מדד: כמות</span>`);
+        badges.push(`<span class="badge">${metricBadge}</span>`);
         if (currentMode === "muni" && !r.hasPop) badges.push(`<span class="badge badge-warn">אוכלוסייה הונחה 0</span>`);
 
         html += `
@@ -957,39 +1057,30 @@
       });
       html += `</div>`;
 
-      const title = metricIsRate ? `השוואה לפי ל-10,000 (${currentYear})` : `השוואה לפי כמות (${currentYear})`;
+      const title =
+        metricType === "rate" ? `השוואה לפי ל-10,000 (${currentYear})` :
+        metricType === "pop" ? `השוואה לפי אוכלוסייה (${currentYear})` :
+        `השוואה לפי כמות (${currentYear})`;
       html += `<div class="compare-bars-title">${title}</div>`;
 
       const values = rows
-        .map(r => metricIsRate ? r.rate : r.total)
+        .map(r => metricType === "rate" ? r.rate : (metricType === "pop" ? r.pop : r.total))
         .filter(v => v != null && Number.isFinite(v));
-      const maxVal = Math.max(...values, 1);
+      const max = values.length ? Math.max(...values) : 0;
 
-      const sorted = [...rows].sort((a, b) => {
-        const va = metricIsRate ? (a.rate == null ? -1 : a.rate) : a.total;
-        const vb = metricIsRate ? (b.rate == null ? -1 : b.rate) : b.total;
-        return vb - va;
-      });
-
-      sorted.forEach(r => {
-        const value = metricIsRate ? r.rate : r.total;
-
-        let pct, label;
-        if (metricIsRate) {
-          pct = (Number(value) / maxVal) * 100;
-          label = `${Number(value).toLocaleString()} /10k`;
-        } else {
-          pct = (Number(value) / maxVal) * 100;
-          label = Number(value).toLocaleString();
-        }
-
-        html += `<div class="compare-bar">
-          <div class="compare-bar-name">${escapeHtml(r.name)}</div>
-          <div class="compare-bar-container">
-            <div class="compare-bar-fill" style="width:${pct}%">${label}</div>
+      html += `<div class="compare-bars">`;
+      rows.forEach(r => {
+        const v = metricType === "rate" ? (r.rate ?? 0) : (metricType === "pop" ? r.pop : r.total);
+        const pct = max > 0 ? Math.round((v / max) * 100) : 0;
+        html += `
+          <div class="bar-row">
+            <div class="bar-name">${escapeHtml(r.name)}</div>
+            <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
+            <div class="bar-value">${Number(v || 0).toLocaleString()}</div>
           </div>
-        </div>`;
+        `;
       });
+      html += `</div>`;
 
       container.innerHTML = html;
     }
@@ -1000,94 +1091,100 @@
       if (!container) return;
 
       if (!entityName) {
-        container.innerHTML = `<div class="message message-info">בחר ${mode === "muni" ? "רשות" : "מרחב"} במפה כדי לראות נתונים היסטוריים</div>`;
+        container.innerHTML = `<div class="message message-info">בחר ${getEntityLabel(mode)} במפה כדי לראות נתונים היסטוריים</div>`;
         return;
       }
 
-      const dataset = (mode === "muni") ? window.crimeByYear : window.crimeByYearMerhav;
+      const dataset =
+        (mode === "muni") ? window.crimeByYear :
+        (mode === "merhav") ? window.crimeByYearMerhav :
+        window.crimeByYearStations;
+
       if (!dataset || typeof dataset !== "object") {
-        container.innerHTML = `<div class="message message-error">אין נתוני ${mode === "muni" ? "ישובים/רשויות" : "מרחבים"} זמינים.</div>`;
+        container.innerHTML = `<div class="message message-error">אין נתוני היסטוריה זמינים עבור ${getModeLabel(mode)}.</div>`;
         return;
       }
 
       const years = Object.keys(dataset).sort();
-      const yearlyData = [];
-      const targetKey = normalizeKey(entityName);
+      const targetVariants =
+        (mode === "muni") ? Array.from(new Set(nameVariants(entityName).map(v => normalizeKey(v)).filter(Boolean))) :
+        (mode === "station") ? stationNameVariants(entityName) :
+        [normalizeKey(entityName)];
 
-      const tryMatchInYear = (yearData) => {
+      const findEntryInYear = (yearData) => {
         if (!yearData) return null;
-        if (yearData[entityName]) return { matchedName: entityName, data: yearData[entityName] };
 
-        const keys = Object.keys(yearData);
-        for (const k of keys) {
-          if (normalizeKey(k) === targetKey) return { matchedName: k, data: yearData[k] };
+        // 1) התאמה ישירה לפי מפתח
+        for (const v of targetVariants) {
+          if (!v) continue;
+          // yearData keys הם שמות מקוריים; ננסה למצוא התאמה ע"י מעבר עליהם רק אם אין התאמה ישירה
+          // לכן פה רק נבדוק אם יש מפתח בדיוק (למשל במקרה של station שמפתח הוא שם התחנה)
+          if (yearData[v]) return { name: v, data: yearData[v] };
         }
 
-        if (mode === "muni") {
-          const variants = nameVariants(entityName);
-          for (const k of keys) {
-            const nk = normalizeKey(k);
-            if (variants.includes(nk)) return { matchedName: k, data: yearData[k] };
-          }
-        }
+        // 2) התאמה ישירה לפי שם גולמי
+        if (yearData[entityName]) return { name: entityName, data: yearData[entityName] };
 
+        // 3) סריקה לפי normalizeKey (מאט אבל מספיק קטן)
+        for (const [k, d] of Object.entries(yearData)) {
+          const kk = normalizeKey(k);
+          if (targetVariants.includes(kk)) return { name: k, data: d };
+        }
         return null;
       };
 
-      years.forEach(year => {
-        const yearData = dataset?.[year];
-        const match = tryMatchInYear(yearData);
-        if (match?.data) {
-          yearlyData.push({ year, total: Number(match.data.total || 0), matchedName: match.matchedName });
-        }
+      const metricType =
+        (mode === "muni" && currentMetric === "rate") ? "rate" :
+        (mode === "muni" && currentMetric === "pop") ? "pop" :
+        "total";
+
+      const yearly = years.map(y => {
+        const found = findEntryInYear(dataset[y]);
+        const total = Number(found?.data?.total || 0);
+        const popRaw = (mode === "muni") ? getPopulationForAuthority(found?.name || entityName) : null;
+        const pop = (popRaw == null ? 0 : Number(popRaw));
+        const rate = (mode === "muni") ? calcRatePer10k(total, pop) : null;
+
+        const value =
+          metricType === "rate" ? rate :
+          metricType === "pop" ? pop :
+          total;
+
+        return { year: y, total, pop, rate, value, has: !!found };
       });
 
-      if (!yearlyData.length) {
-        container.innerHTML = `<div class="message message-info">אין נתונים זמינים עבור ${escapeHtml(entityName)}</div>`;
-        return;
-      }
+      const metricLabel =
+        metricType === "rate" ? "ל-10,000" :
+        metricType === "pop" ? "אוכלוסייה" :
+        "כמות";
 
-      let series = yearlyData.map(d => ({ year: d.year, value: d.total, label: d.total.toLocaleString() }));
+      let html = `
+        <div class="message message-info" style="margin-bottom:10px;">
+          <strong>${escapeHtml(entityName)}</strong> • מצב: <strong>${getModeLabel(mode)}</strong><br>
+          מציג לפי: <strong>${metricLabel}</strong>
+        </div>
+      `;
 
-      if (mode === "muni" && currentMetric === "rate") {
-        const popRaw = getPopulationForAuthority(entityName);
-        const pop = (popRaw == null ? 0 : Number(popRaw));
-        series = yearlyData.map(d => {
-          const rate = calcRatePer10k(d.total, pop);
-          return {
-            year: d.year,
-            value: rate,
-            label: `${rate.toLocaleString()} /10k`
-          };
-        });
-      }
-
-      const maxVal = Math.max(...series.map(d => d.value), 1);
-
-      let html = `<h3 style="margin:0 0 12px 0;font-size:16px;color:#222;font-weight:1000;">${escapeHtml(entityName)}</h3>`;
-
-      const foundYears = new Set(yearlyData.map(d => d.year));
-      const missingYears = years.filter(y => !foundYears.has(y));
-      if (missingYears.length) {
-        html += `<div class="message message-warn">אין נתונים עבור ${mode === "muni" ? "הרשות" : "המרחב"} בשנים: <strong>${missingYears.join(", ")}</strong></div>`;
-      }
-
-      if (mode === "muni" && currentMetric === "rate") {
-        const popRaw = getPopulationForAuthority(entityName);
-        const pop = (popRaw == null ? 0 : Number(popRaw));
-        html += `<div class="message message-info">אוכלוסייה (2019): ${Number(pop).toLocaleString()} (חסר = 0)</div>`;
-      }
-
-      series.forEach(d => {
-        const pct = (d.value / maxVal) * 100;
-        html += `<div class="compare-bar">
-          <div class="compare-bar-name">${d.year}</div>
-          <div class="compare-bar-container">
-            <div class="compare-bar-fill" style="width:${pct}%">${d.label}</div>
-          </div>
+      html += `<div class="trend-table">`;
+      html += `<div class="trend-row trend-head">
+          <div>שנה</div>
+          <div>כמות</div>
+          <div>אוכלוסייה</div>
+          <div>ל-10,000</div>
         </div>`;
+
+      yearly.forEach(r => {
+        html += `
+          <div class="trend-row">
+            <div>${escapeHtml(r.year)}</div>
+            <div>${Number(r.total || 0).toLocaleString()}</div>
+            <div>${mode === "muni" ? fmtMaybe(r.pop) : "—"}</div>
+            <div>${mode === "muni" ? (r.rate == null ? "—" : Number(r.rate || 0).toLocaleString()) : "—"}</div>
+          </div>
+        `;
       });
 
+      html += `</div>`;
       container.innerHTML = html;
     }
 
@@ -1113,11 +1210,22 @@
       return null;
     }
 
+    function detectStationName(attrsRaw) {
+      const attrs = fieldsToObject(attrsRaw) || attrsRaw;
+      const candidates = [
+        "שם תחנה", "שם תחנת משטרה", "תחנה", "STATION", "TAHANA",
+        "SHEM_TAHANA", "SHEM_TAHANA_MISHTARA", "NAME", "Name"
+      ];
+      for (const c of candidates) if (attrs && attrs[c]) return attrs[c];
+      return null;
+    }
+
+
     async function onMapClick(e) {
       if (!mapInitialized) return;
 
       try {
-        const layerName = (currentMode === "muni") ? MUNICIPAL_LAYER : POLICE_MERHAV_LAYER;
+        const layerName = (currentMode === "muni") ? MUNICIPAL_LAYER : (currentMode === "merhav" ? POLICE_MERHAV_LAYER : POLICE_STATION_LAYER);
         const resp = await govmap.getLayerData({
           LayerName: layerName,
           Point: e.mapPoint,
@@ -1158,6 +1266,44 @@
           showEntry(entry);
           return;
         }
+
+        if (currentMode === "station") {
+          const stationName = detectStationName(attrs);
+          if (!stationName) {
+            showInfo("שגיאה", "לא ניתן לזהות את שם תחנת המשטרה", "error");
+            return;
+          }
+
+          const keys = stationNameVariants(stationName);
+          let entry = null;
+          let pickedKey = null;
+          for (const k of keys) {
+            if (stationIndex[k]) { entry = stationIndex[k]; pickedKey = k; break; }
+          }
+          if (!entry) {
+            // נסה חיפוש גמיש
+            const nk = normalizeKey(stationName);
+            entry = stationIndex[nk] || null;
+            pickedKey = nk;
+          }
+
+          if (!entry) {
+            showInfo("לא נמצאו נתונים", `אין נתוני פשיעה עבור <strong>${escapeHtml(stationName)}</strong> בשנת ${currentYear}`, "error");
+            return;
+          }
+
+          selectedCity = entry.name;
+          selectedCityKey = pickedKey || stationNameVariants(entry.name)[0] || normalizeKey(entry.name);
+
+          if (currentTab === "compare") { updateCompareView(); return; }
+          if (currentTab === "single") { showEntry(entry); return; }
+          if (currentTab === "trends") { showTrends(selectedCity, "station"); return; }
+          if (currentTab === "rankings") { renderRankings(); return; }
+
+          showEntry(entry);
+          return;
+        }
+
 
         const merhavName = detectMerhavName(attrs);
         if (!merhavName) { 
@@ -1244,41 +1390,48 @@
 
       const topN = 20;
 
-      const isMerhav = (currentMode === "merhav");
-      const metricIsRate = (!isMerhav && currentMetric === "rate");
-
-      const yearData = isMerhav
-        ? window.crimeByYearMerhav?.[currentYear]
-        : window.crimeByYear?.[currentYear];
-
+      const yearData = getYearDataByMode(currentMode, currentYear);
       if (!yearData) {
         container.innerHTML = `<div class="message message-error">אין נתונים לשנה הזו.</div>`;
         return;
       }
+
+      const metricType =
+        (currentMode === "muni" && currentMetric === "rate") ? "rate" :
+        (currentMode === "muni" && currentMetric === "pop") ? "pop" :
+        "total";
 
       const rows = [];
       for (const name in yearData) {
         const d = yearData[name];
         const total = Number(d?.total || 0);
 
-        if (metricIsRate) {
+        if (currentMode === "muni" && metricType === "rate") {
           const popRaw = getPopulationForAuthority(name);
           const pop = (popRaw == null ? 0 : Number(popRaw));
           const rate = calcRatePer10k(total, pop);
           rows.push({ name, value: rate, extra: { pop, total }, hasPop: popRaw != null });
+        } else if (currentMode === "muni" && metricType === "pop") {
+          const popRaw = getPopulationForAuthority(name);
+          const pop = (popRaw == null ? 0 : Number(popRaw));
+          rows.push({ name, value: pop, extra: { pop, total }, hasPop: popRaw != null });
         } else {
-          rows.push({ name, value: total, extra: null });
+          rows.push({ name, value: total, extra: { total }, hasPop: true });
         }
       }
 
       rows.sort((a,b)=> (b.value || 0) - (a.value || 0));
-
       const top = rows.slice(0, topN);
+
+      const metricLabel =
+        metricType === "rate" ? "ל-10,000" :
+        metricType === "pop" ? "אוכלוסייה" :
+        "כמות (אבסולוטי)";
 
       const header = `
         <div class="message message-info" style="margin-bottom:10px;">
-          שנה: <strong>${currentYear}</strong> • מצב: <strong>${isMerhav ? "מרחבים" : "ישובים/רשויות"}</strong><br>
-          דירוג אוטומטי לפי: <strong>${metricIsRate ? "ל-10,000" : "כמות (אבסולוטי)"}</strong> • Top ${topN}
+          שנה: <strong>${currentYear}</strong> • מצב: <strong>${getModeLabel(currentMode)}</strong><br>
+          דירוג אוטומטי לפי: <strong>${metricLabel}</strong> • Top ${topN}
         </div>
       `;
 
@@ -1288,43 +1441,32 @@
       }
 
       let note = "";
-      if (metricIsRate) {
-        note = `<div class="message message-warn">דירוג ל-10,000 משתמש באוכלוסייה (2019); חסר אוכלוסייה הונח כ-0.</div>`;
-      } else if (isMerhav) {
-        note = `<div class="message message-info">במצב מרחבים הדירוג תמיד לפי כמות (אין אוכלוסייה).</div>`;
+      if (currentMode === "muni" && (metricType === "rate" || metricType === "pop")) {
+        note = `<div class="message message-warn">אוכלוסייה מבוססת על נתון 2019; חסר = 0.</div>`;
       }
 
       let html = header + note;
-      html += `<div style="display:grid; gap:10px;">`;
+      html += `<div class="rank-list">`;
 
       top.forEach((r, idx) => {
-        const sub = (metricIsRate && r.extra)
-          ? `<div style="font-size:12.5px;color:#666;margin-top:6px;font-weight:800;">
-              אוכלוסייה (2019): ${Number(r.extra.pop).toLocaleString()} • סה״כ אירועים: ${Number(r.extra.total).toLocaleString()}
-            </div>`
-          : ``;
+        const valueText = (metricType === "rate") ? Number(r.value || 0).toLocaleString() :
+                          (metricType === "pop") ? Number(r.value || 0).toLocaleString() :
+                          Number(r.value || 0).toLocaleString();
 
-        const valueText = metricIsRate
-          ? `${Number(r.value || 0).toLocaleString()} /10k`
-          : `${Number(r.value || 0).toLocaleString()}`;
+        const extra =
+          (currentMode === "muni" && metricType === "rate")
+            ? `<div class="rank-extra">כמות: ${Number(r.extra?.total || 0).toLocaleString()} • אוכלוסייה: ${fmtMaybe(r.extra?.pop)}</div>`
+            : (currentMode === "muni" && metricType === "pop")
+              ? `<div class="rank-extra">כמות עבירות: ${Number(r.extra?.total || 0).toLocaleString()}</div>`
+              : ``;
 
         html += `
-          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;border:1px solid #e6e6e6;background:#fafafa;border-radius:14px;">
-            <div style="display:flex;align-items:center;gap:10px;min-width:0;">
-              <div style="width:34px;height:34px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:#e7f3ff;color:#0066cc;font-weight:1000;flex:0 0 auto;">
-                ${idx + 1}
-              </div>
-              <div style="min-width:0;">
-                <div style="font-weight:1000;color:#222;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:260px;" title="${escapeHtml(r.name)}">
-                  ${escapeHtml(r.name)}
-                </div>
-                ${sub}
-              </div>
-            </div>
-            <div style="font-weight:1000;color:#0066cc;white-space:nowrap;">
-              ${valueText}
-            </div>
+          <div class="rank-row">
+            <div class="rank-num">${idx + 1}</div>
+            <div class="rank-name">${escapeHtml(r.name)}</div>
+            <div class="rank-value">${valueText}</div>
           </div>
+          ${extra}
         `;
       });
 
@@ -1663,22 +1805,34 @@
       const btn = document.getElementById("btnChoro");
       if(!btn) return;
 
+      const muniOnly = (currentMode === "muni");
+      const metricLabel = (currentMetric === "rate") ? "ל-10,000" : (currentMetric === "pop" ? "אוכלוסייה" : "כמות");
+
+      if(!muniOnly){
+        btn.classList.remove("active");
+        btn.classList.add("disabled");
+        btn.disabled = true;
+        btn.textContent = "🎨 צביעה (זמין בישובים)";
+        btn.title = "צביעה זמינה רק במצב ישובים/רשויות";
+        return;
+      }
+
       btn.classList.toggle("active", !!choroplethEnabled);
       btn.classList.remove("disabled");
       btn.disabled = false;
 
       if(!muniBoundariesLoaded){
-        btn.textContent = "🎨 צביעה ל-10,000";
+        btn.textContent = `🎨 צביעה (${metricLabel})`;
         btn.title = muniBoundariesLoadError
           ? "נכשל לטעון GeoJSON. ודא שהקובץ קיים ושאתה בשרת (GitHub Pages/localhost)."
           : "טוען GeoJSON של גבולות הרשויות...";
       }else{
-        btn.textContent = choroplethEnabled ? "🎨 צביעה ל-10,000: פעיל" : "🎨 צביעה ל-10,000 (ירוק→אדום)";
-        btn.title = "צביעה לפי ל-10,000";
+        btn.textContent = choroplethEnabled ? `🎨 צביעה (${metricLabel}): פעיל` : `🎨 צביעה (${metricLabel})`;
+        btn.title = `צביעה לפי ${metricLabel}`;
       }
     }
 
-    async function toggleChoropleth(force){
+    async function toggleChoropleth(){
       if(currentMode !== "muni") setMode("muni");
 
       choroplethEnabled = !choroplethEnabled;
@@ -1697,22 +1851,11 @@
       if(!ok){
         choroplethEnabled = false;
         setChoroBtnUI();
-        showInfo(
-          "לא הצלחתי לצבוע",
-          `לא ניתן לטעון את קובץ הגבולות.<br>ודא שהוא ליד <code>index.html</code> ושאתה פותח דרך שרת (לא file://).`,
-          "error"
-        );
         return;
       }
 
-      currentMetric = "rate";
-      const absBtn = document.getElementById("btnMetricAbs");
-      const rateBtn = document.getElementById("btnMetricRate");
-      if(absBtn) absBtn.classList.remove("active");
-      if(rateBtn) rateBtn.classList.add("active");
-
+      setMunicipalLayerOpacity(0);
       await renderChoropleth();
-      if (currentTab === "rankings") renderRankings();
     }
 
     async function renderChoropleth(){
@@ -1766,7 +1909,8 @@
           continue; 
         }
 
-        normalRows.push({ name, wkt, total, pop, rate });
+        const value = (currentMetric === "rate") ? rate : (currentMetric === "pop" ? pop : total);
+        normalRows.push({ name, wkt, total, pop, rate, value });
       }
 
       const allRows = [...normalRows, ...noJurRows];
@@ -1777,16 +1921,16 @@
       }
 
       // טווח לצביעה ירוק→אדום: רק הרשויות שאינן "ללא שיפוט"
-      const refRates = normalRows.length ? normalRows.map(r => r.rate) : allRows.map(r => r.rate);
-      const minR  = Math.min(...refRates);
-      const maxR  = Math.max(...refRates);
+      const refVals = normalRows.length ? normalRows.map(r => r.value) : allRows.map(r => r.value);
+      const minV  = Math.min(...refVals);
+      const maxV  = Math.max(...refVals);
 
       const wkts = [], names = [], symbols = [], tooltips = [];
 
       // צביעה רגילה (ירוק→אדום)
       for(let i = 0; i < normalRows.length; i++){
         const r = normalRows[i];
-        const [rr, gg, bb] = rateToColor(r.rate, minR, maxR);
+        const [rr, gg, bb] = rateToColor(r.value, minV, maxV);
 
         wkts.push(r.wkt);
         const uniqueName = `${CHORO_NAME}_${i}`;
@@ -1798,7 +1942,12 @@
           outlineWidth: 2
         });
 
-        tooltips.push(`${r.name} • ${r.rate.toLocaleString()} /10k`);
+        const tip = (currentMetric === "rate")
+          ? `${r.name} • ${r.rate.toLocaleString()} /10k`
+          : (currentMetric === "pop")
+            ? `${r.name} • אוכלוסייה: ${fmtMaybe(r.pop)}`
+            : `${r.name} • כמות: ${Number(r.total || 0).toLocaleString()}`;
+        tooltips.push(tip);
       }
 
       // "ללא שיפוט" → אפור
@@ -1851,8 +2000,8 @@
       const noj = noJurRows.length ? `<br><span style="font-size:13px;opacity:.9;">"ללא שיפוט" צבוע באפור.</span>` : "";
 
       showInfo(
-        "צביעה לפי ל-10,000",
-        `ירוק = נמוך • כתום = בינוני • אדום = גבוה<br>טווח: <b>${minR.toLocaleString()}</b> עד <b>${maxR.toLocaleString()}</b>${noj}${extra}`,
+        (currentMetric === "rate") ? "צביעה לפי ל-10,000" : (currentMetric === "pop" ? "צביעה לפי אוכלוסייה" : "צביעה לפי כמות"),
+        `ירוק = נמוך • כתום = בינוני • אדום = גבוה<br>טווח: <b>${minV.toLocaleString()}</b> עד <b>${maxV.toLocaleString()}</b>${noj}${extra}`,
         "info"
       );
     }
@@ -1887,31 +2036,40 @@
 
       buildMuniIndexForYear(currentYear);
       buildMerhavIndexForYear(currentYear);
-      yearlyStats[currentYear] = calculateStats(currentYear);
-      updateQuickStats();
+      buildStationIndexForYear(currentYear);
+updateQuickStats();
 
       sel.addEventListener("change", e => {
         currentYear = e.target.value;
 
         buildMuniIndexForYear(currentYear);
         buildMerhavIndexForYear(currentYear);
-        yearlyStats[currentYear] = calculateStats(currentYear);
+        buildStationIndexForYear(currentYear);
         updateQuickStats();
-
-        selectedCity = null;
-        selectedCityKey = null;
 
         if (choroplethEnabled && currentMode === "muni") renderChoropleth();
 
+        // אם כבר נבחרה ישות – רענון אוטומטי לשנה החדשה
+        if (selectedCityKey) {
+          const index = getIndexByMode(currentMode);
+          const entry = index[selectedCityKey];
+          if (entry) {
+            selectedCity = entry.name;
+
+            if (currentTab === "single") { showEntry(entry); return; }
+            if (currentTab === "trends") { showTrends(selectedCity, currentMode); return; }
+          }
+        }
+
         if (currentTab === "compare") updateCompareView();
+        else if (currentTab === "rankings") renderRankings();
         else if (currentTab === "trends") {
           const tc = document.getElementById("trends-content");
-          if (tc) tc.innerHTML = `<div class="message message-info">בחר ${currentMode === "muni" ? "רשות" : "מרחב"} במפה כדי לראות נתונים היסטוריים</div>`;
-        } else if (currentTab === "rankings") renderRankings();
-        else {
+          if (tc) tc.innerHTML = `<div class="message message-info">בחר ${getEntityLabel(currentMode)} במפה כדי לראות נתונים היסטוריים</div>`;
+        } else {
           showInfo(
-            "מפה לפי " + (currentMode === "muni" ? "ישובים/רשויות" : "מרחבים"),
-            `שנה נבחרת: ${currentYear}<br>לחץ על ${currentMode === "muni" ? "רשות" : "מרחב"} במפה כדי לראות נתונים`,
+            "מפה לפי " + getModeLabel(currentMode),
+            `שנה נבחרת: ${currentYear}<br>לחץ על ${getEntityLabel(currentMode)} במפה כדי לראות נתונים`,
             "info"
           );
         }
@@ -1919,7 +2077,7 @@
 
       govmap.createMap("map", {
         token: TOKEN,
-        layers: [MUNICIPAL_LAYER, POLICE_MERHAV_LAYER],
+        layers: [MUNICIPAL_LAYER, POLICE_MERHAV_LAYER, POLICE_STATION_LAYER],
         layersMode: 4,
         background: 3,
         zoomButtons: true,
@@ -1994,9 +2152,11 @@
       <div class="mode-grid">
         <button id="btnModeMuni" class="mode-btn active" onclick="setMode('muni')">🏘️ ישובים</button>
         <button id="btnModeMerhav" class="mode-btn" onclick="setMode('merhav')">🚔 מרחבים</button>
+        <button id="btnModeStation" class="mode-btn full" onclick="setMode('station')">🏢 תחנות משטרה</button>
 
         <button id="btnMetricAbs" class="mode-btn active" onclick="setMetric('abs')">🔢 כמות</button>
         <button id="btnMetricRate" class="mode-btn" onclick="setMetric('rate')" title="זמין רק במצב ישובים">👥 ל-10,000</button>
+        <button id="btnMetricPop" class="mode-btn" onclick="setMetric('pop')" title="זמין רק במצב ישובים">👤 אוכלוסייה</button>
 
         <button id="btnChoro" class="mode-btn full" onclick="toggleChoropleth()">
           🎨 צביעה ל-10,000 (ירוק→אדום)
@@ -2011,7 +2171,7 @@
       <div id="quick-stats">
         <div class="stat-card">
           <div class="stat-value" id="stat-municipalities">-</div>
-          <div class="stat-label">רשויות</div>
+          <div class="stat-label" id="stat-entities-label">רשויות</div>
         </div>
         <div class="stat-card">
           <div class="stat-value" id="stat-total">-</div>
