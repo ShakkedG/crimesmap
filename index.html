@@ -296,132 +296,48 @@
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
     /* Compare UI */
-    .compare-city-tag {
-      background: #e7f3ff;
-      color: #0066cc;
-      padding: 8px 12px;
-      border-radius: 10px;
-      border: 1px solid #b3d9ff;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 13px;
-      font-weight: 1000;
-    }
-    .compare-city-tag button {
-      border: none; background: none; color: #0066cc;
-      cursor: pointer; font-size: 18px; line-height: 1;
-      padding: 0; width: 20px; height: 20px;
-      display: flex; align-items: center; justify-content: center;
-      border-radius: 50%;
-    }
-    .compare-city-tag button:hover { background: #0066cc; color: white; }
 
-    .add-compare-btn {
-      width: 100%;
-      padding: 12px;
-      background: #0066cc;
-      color: white;
-      border: none;
-      border-radius: 12px;
-      font-size: 14px;
-      font-weight: 1000;
-      cursor: pointer;
-      margin-bottom: 12px;
-    }
-
-    .compare-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 10px; }
-    .compare-card {
-      border: 1px solid #e0e0e0;
+    /* Trends (History) UI */
+    .trend-table{
+      border: 1px solid #e6e6e6;
       border-radius: 14px;
-      padding: 12px;
+      overflow: hidden;
       background: #fff;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
     }
-    .compare-card-title {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+    .trend-row{
+      display: grid;
+      grid-template-columns: 80px 1fr 1fr 1fr;
       gap: 10px;
-      margin-bottom: 10px;
-    }
-    .compare-name {
-      font-weight: 1000;
+      align-items: center;
+      padding: 10px 12px;
+      border-bottom: 1px solid #f0f0f0;
+      font-weight: 900;
       color: #222;
-      font-size: 14px;
-      max-width: 280px;
-      white-space: nowrap;
+    }
+    .trend-row:last-child{ border-bottom: none; }
+    .trend-row > div{
+      min-width: 0;
       overflow: hidden;
       text-overflow: ellipsis;
+      white-space: nowrap;
     }
-    .compare-badges { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
-    .badge {
-      font-size: 12px;
+    .trend-row.trend-head{
+      background: linear-gradient(135deg, #e7f3ff 0%, #f7fbff 100%);
+      color: #004080;
       font-weight: 1000;
-      padding: 6px 10px;
-      border-radius: 999px;
-      border: 1px solid #e0e0e0;
+    }
+    .trend-row:not(.trend-head):nth-child(even){
       background: #fafafa;
-      color: #333;
     }
-    .badge-warn {
-      border-color: #ffcc80;
-      background: #fff7e6;
-      color: #7a4a00;
-    }
-    .compare-kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 10px; }
-    .kpi {
-      border: 1px solid #eee;
-      background: #fafafa;
-      border-radius: 12px;
-      padding: 10px;
-      text-align: center;
-    }
-    .kpi .kpi-value { font-weight: 1000; color: #0066cc; font-size: 14px; margin-bottom: 4px; }
-    .kpi .kpi-label { font-size: 11px; font-weight: 1000; color: #666; letter-spacing: .2px; }
 
-    .compare-bars-title { margin-top: 12px; font-weight: 1000; font-size: 14px; color: #222; }
-    .compare-bar {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin: 10px 0;
-      padding: 10px;
-      background: #fafafa;
-      border-radius: 12px;
-      border: 1px solid #e0e0e0;
+    /* Mobile: allow horizontal scroll rather than cramped columns */
+    @media (max-width: 768px){
+      .trend-table{ overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      .trend-row{ min-width: 520px; }
     }
-    .compare-bar-name {
-      width: 120px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      font-size: 12.5px;
-      font-weight: 1000;
-      color: #333;
-    }
-    .compare-bar-container {
-      flex: 1;
-      height: 28px;
-      background: #f0f0f0;
-      border-radius: 10px;
-      overflow: hidden;
-      position: relative;
-    }
-    .compare-bar-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #0066cc 0%, #0080ff 100%);
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      padding: 0 10px;
-      font-size: 13px;
-      font-weight: 1000;
-      transition: width 0.35s ease;
-      white-space: nowrap;
-      min-width: 48px;
-    }
+
+
 
     /* MODALS */
     .modal { display:none; position:fixed; inset:0; z-index:20000; }
@@ -623,8 +539,8 @@
 // תומך גם ב-CRIMEBYYEARSTATIONS (const גלובלי) וגם ב-getStationsDataset()
 function getStationsDataset(){
   try{
-    if (getStationsDataset() && typeof getStationsDataset() === "object") return getStationsDataset();
-  }catch(_){}
+    if (window.crimeByYearStations && typeof window.crimeByYearStations === "object") return window.crimeByYearStations;
+}catch(_){}
   try{
     // eslint-disable-next-line no-undef
     if (typeof crimeByYearStations !== "undefined" && crimeByYearStations) return crimeByYearStations;
