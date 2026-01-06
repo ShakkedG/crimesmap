@@ -538,6 +538,7 @@
     let choroplethEnabled = false;
     const CHORO_NAME = "crime_rate_choropleth";
     let activeChoroplethNames = [];
+    let activeChoroplethIds = [];
 
     let muniBoundariesIndex = {}; // normalizedKey -> WKT
     let muniBoundariesMeta = [];  // [{ name, wkt }]
@@ -1217,30 +1218,6 @@
 
     async function onMapClick(e) {
       if (!mapInitialized) return;
-      async function onMapClick(e) {
-  if (!mapInitialized) return;
-
-  const layerName =
-    (currentMode === "muni") ? MUNICIPAL_LAYER :
-    (currentMode === "merhav") ? POLICE_MERHAV_LAYER :
-    POLICE_STATION_LAYER;
-
-  // ✅ זה מה שרצית: ידפיס את LayerName שלחצת עליו (כלומר השכבה שבה אנחנו עושים getLayerData)
-  console.log("🖱️ Click identify layerName =", layerName, "mode =", currentMode);
-
-  try {
-    const resp = await govmap.getLayerData({
-      LayerName: layerName,
-      Point: e.mapPoint,
-      Radius: 300
-    });
-
-    // ... המשך הקוד שלך
-  } catch (error) {
-    console.error("❌ Error in onMapClick:", error);
-  }
-}
-
 
       try {
         const layerName =
@@ -1779,8 +1756,19 @@
     }
 
     function clearChoropleth() {
+      const idsToClear = Array.isArray(activeChoroplethIds) ? [...activeChoroplethIds] : [];
       const namesToClear = Array.isArray(activeChoroplethNames) ? [...activeChoroplethNames] : [];
 
+      // 1) Preferred: clear by IDs returned from displayGeometries()
+      try {
+        if (idsToClear.length && typeof govmap.clearGeometriesById === "function") {
+          try { govmap.clearGeometriesById(idsToClear); } catch (_) {}
+        }
+      } catch (e) {
+        console.warn("clearGeometriesById failed", e);
+      }
+
+      // 2) Fallback: clear by names (in case IDs are not available)
       try {
         if (namesToClear.length && typeof govmap.clearGeometriesByName === "function") {
           try {
@@ -1793,13 +1781,15 @@
           }
         }
       } catch (e) {
-        console.warn("Clear failed", e);
+        console.warn("clearGeometriesByName failed", e);
       }
 
+      // Reset tracking
       activeChoroplethNames = [];
+      activeChoroplethIds = [];
     }
 
-    function setMunicipalLayerOpacity(opacity){
+    function setMunicipalLayerOpacity(opacity){(opacity){
       if(typeof govmap.setLayerOpacity === "function"){
         try{ govmap.setLayerOpacity({ layerName: MUNICIPAL_LAYER, opacity }); }catch(e){}
       }
@@ -1982,17 +1972,24 @@
           data: { tooltips },
         };
 
-        const ret = govmap.displayGeometries(payload);
+        const req = govmap.displayGeometries(payload);
 
+        // ✅ קליק על גיאומטריות צביעה (Deferred.progress)
         try {
-          if (ret && typeof ret.progress === "function") {
-            ret.progress((ev) => handleChoroplethClick(ev, nameToMuniMap));
+          if (req && typeof req.progress === "function") {
+            req.progress((ev) => handleChoroplethClick(ev, nameToMuniMap));
           }
         } catch (_) {}
 
-        if (ret && typeof ret.then === "function") await ret;
+        // Store returned geometry IDs (preferred for clearing later)
+        let resp = null;
+        if (req && typeof req.then === "function") resp = await req;
+        else resp = req;
 
+        const idsRaw = resp?.data ?? resp?.Data ?? resp;
+        activeChoroplethIds = Array.isArray(idsRaw) ? idsRaw : (Array.isArray(idsRaw?.data) ? idsRaw.data : []);
         activeChoroplethNames = names;
+
         setMunicipalLayerOpacity(30);
       } catch (e) {
         console.error("displayGeometries failed:", e);
