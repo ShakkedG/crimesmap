@@ -422,7 +422,54 @@
       #tabs { overflow-x:auto; }
       #tabs .tab{ min-width: 95px; }
     }
-  </style>
+  
+
+    /* -------------------- History / Trends (CSS) -------------------- */
+    #historyPanel {
+      margin-top: 12px;
+    }
+
+    .trend-table{
+      width: 100%;
+      border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 14px;
+      overflow: hidden;
+      background: #fff;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+    }
+
+    .trend-row{
+      display: grid;
+      grid-template-columns: 70px 1fr 1fr 1fr;
+      gap: 10px;
+      padding: 10px 12px;
+      align-items: center;
+      border-top: 1px solid rgba(0,0,0,0.06);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .trend-row:first-child{
+      border-top: none;
+    }
+
+    .trend-row.trend-head{
+      background: rgba(0,0,0,0.04);
+      font-weight: 700;
+    }
+
+    .trend-row > div{
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    @media (max-width: 520px){
+      .trend-row{
+        grid-template-columns: 60px 1fr 1fr 1fr;
+        padding: 8px 10px;
+      }
+    }
+</style>
 
   <script>
     const MUNICIPAL_LAYER = "125";
@@ -1222,25 +1269,77 @@ function resolveStationEntryByLayerName(layerStationName){
       return null;
     }
 
-    function detectStationName(attrsRaw) {
-  const attrs = fieldsToObject(attrsRaw) || attrsRaw || {};
-  // סדר עדיפויות: "שם תחנה" הוא השדה הנכון אצלך בשכבה
-  const candidates = [
-    "שם תחנה",
-    "שם תחנת משטרה",
-    "TAHANA",
-    "SHEM_TAHANA",
-    "STATION",
-    "שם",
-    "NAME",
-    "Name",
-    "name"
-  ];
-  for (const c of candidates) {
-    if (attrs && attrs[c] != null && String(attrs[c]).trim() !== "") return String(attrs[c]).trim();
-  }
-  return null;
-}
+    function getLayerStationName(attrsRaw) {
+      const attrs = fieldsToObject(attrsRaw) || attrsRaw;
+
+      // ✅ בדיוק לפי השכבה: "שם תחנה"
+      const v = attrs && attrs["שם תחנה"];
+      if (v != null && String(v).trim()) return String(v).trim();
+
+      // fallback עדין (לפעמים מופיע בשם אחר) - אפשר להסיר אם תרצה "רק" שם תחנה
+      const v2 = attrs && attrs["שם תחנת משטרה"];
+      if (v2 != null && String(v2).trim()) return String(v2).trim();
+
+      return null;
+    }
+
+    // נרמול "תחנה" להשוואה מול JSON (מוריד תחיליות וסימנים)
+    function normalizeStationForMatch(name) {
+      if (name == null) return "";
+      let s = String(name).trim();
+
+      s = s
+        .replace(/[׳״"']/g, "")
+        .replace(/[(){}\[\],.:]/g, "")
+        .replace(/־/g, "-")
+        .replace(/\s+/g, " ")
+        .trim();
+
+      // הסרת תחיליות נפוצות
+      s = s.replace(/^תחנת\s+משטרה\s+/g, "");
+      s = s.replace(/^תחנת\s+/g, "");
+      s = s.replace(/^משטרת\s+ישראל\s+/g, "");
+
+      s = s.replace(/[\s\-]/g, "");
+      return s.toLowerCase();
+    }
+
+    
+
+
+    function findStationInJsonByLayerName(layerStationName, yearData) {
+      if (!layerStationName || !yearData) return null;
+
+      const target = normalizeStationForMatch(layerStationName);
+      if (!target) return null;
+
+      // מפת נרמול -> שם מקורי ב-JSON
+      const normMap = {};
+      for (const k of Object.keys(yearData)) {
+        const nk = normalizeStationForMatch(k);
+        if (nk && !normMap[nk]) normMap[nk] = k;
+      }
+
+      const exactName = normMap[target];
+      if (exactName) return { matchedName: exactName, data: yearData[exactName], matchType: "exact" };
+
+      // fuzzy: למצוא הכי קרוב
+      let best = null, bestScore = 0;
+      for (const k of Object.keys(yearData)) {
+        const score = stationSimilarity(layerStationName, k);
+        if (score > bestScore) { bestScore = score; best = k; }
+      }
+
+      if (best && bestScore >= 0.60) {
+        return { matchedName: best, data: yearData[best], matchType: "fuzzy", score: bestScore };
+      }
+
+      return null;
+    }
+
+    
+
+
 
 
     async function onMapClick(e) {
@@ -1290,50 +1389,63 @@ function resolveStationEntryByLayerName(layerStationName){
         }
 
         if (currentMode === "station") {
-  const stationNameFromLayer = detectStationName(attrs);
+        // ✅ השוואה ישירה: שדה "שם תחנה" בשכבה מול שם התחנה ב-JSON
+        const layerStationName = getLayerStationName(attrs);
 
-  if (!stationNameFromLayer) {
-    let keys = "";
-    try {
-      const obj = fieldsToObject(attrs) || attrs || {};
-      keys = Object.keys(obj).slice(0, 40).join(", ");
-    } catch (_) {}
+        if (!layerStationName) {
+          console.log("[STATION] No 'שם תחנה' field on clicked entity. attrs=", attrs);
+          showInfoPanelError("לא הצלחתי לקרוא את השדה "שם תחנה" מהשכבה (בתחנות).");
+          return;
+        }
 
-    showInfo(
-      "שגיאה",
-      `לא הצלחתי לקרוא <strong>שם תחנה</strong> מהשכבה.<br>שדות שקיבלתי: <code>${escapeHtml(keys || "—")}</code>`,
-      "error"
-    );
-    return;
-  }
+        const stationsDS = getStationsDataset();
+        const yearData = stationsDS && stationsDS[currentYear];
 
-  const resolved = resolveStationEntryByLayerName(stationNameFromLayer);
-  const entry = resolved.entry;
+        if (!yearData) {
+          console.log("[STATION] No stations data for year", currentYear, "stationsDS keys:", stationsDS ? Object.keys(stationsDS) : null);
+          showInfoPanelError("אין נתוני תחנות לשנה שנבחרה.");
+          return;
+        }
 
-  if (!entry) {
-    const sugg = getTopStationSuggestions(stationNameFromLayer, 5);
-    const suggHtml = sugg.length
-      ? `<br><br><strong>ניחושים קרובים בדאטה:</strong><br>${sugg.map(s => `${escapeHtml(s.name)} (${Math.round(s.score * 100)}%)`).join("<br>")}`
-      : "";
+        const match = findStationInJsonByLayerName(layerStationName, yearData);
 
-    showInfo(
-      "לא נמצאו נתונים",
-      `שם תחנה מהשכבה: <strong>${escapeHtml(stationNameFromLayer)}</strong><br>לא נמצאה התאמה בדאטה (${escapeHtml(resolved.method)}).${suggHtml}`,
-      "error"
-    );
-    return;
-  }
+        console.log("[STATION] Click:", {
+          year: currentYear,
+          layerStationName,
+          layerStationName_norm: normalizeStationForMatch(layerStationName),
+          match: match ? { matchedName: match.matchedName, matchType: match.matchType, score: match.score } : null
+        });
 
-  selectedCity = entry.name;
-  selectedCityKey = stationNameVariants(entry.name)[0];
+        if (!match) {
+          const sugg = getTopStationSuggestions(layerStationName, yearData, 6)
+            .filter(x => x.score >= 0.35)
+            .map(x => `${x.name} (${Math.round(x.score * 100)}%)`);
 
-  if (currentTab === "compare") { updateCompareView(); return; }
-  if (currentTab === "rankings") { renderRankings(); return; }
-  if (currentTab === "trends") { showTrends(selectedCity, "station"); return; }
+          const msg = sugg.length
+            ? `לא נמצאה התאמה לתחנה: <b>${escapeHTML(layerStationName)}</b><br><br>אולי התכוונת ל:<br>${sugg.map(s=>`• ${escapeHTML(s)}`).join("<br>")}`
+            : `לא נמצאה התאמה לתחנה: <b>${escapeHTML(layerStationName)}</b>`;
 
-  showEntry(entry);
-  return;
-}
+          showInfoPanelError(msg);
+          return;
+        }
+
+        const entry = { name: match.matchedName, data: match.data };
+
+        selectedCity = entry.name;
+        selectedCityKey = stationNameVariants(entry.name)[0];
+
+        // עדכון UI
+        updateSelectedEntityTitle(entry.name);
+        updateCountsFromEntry(entry);
+
+        // פאנל תוצאות מפורט
+        renderBreakdown(entry);
+
+        // היסטוריה (שנים) לתחנה הזו
+        renderHistoryForSelected();
+
+        return;
+      }
 
 
         const merhavName = detectMerhavName(attrs);
