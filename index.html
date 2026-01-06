@@ -639,25 +639,25 @@
     // חשוב: אם בקובץ תחנות מוגדר const CRIMEBYYEARSTATIONS או const crimeByYearStations,
     // זה לא תמיד יופיע בתוך window.*. לכן אנחנו מנסים כמה שמות אפשריים.
     function getStationsDataset(){
-      try{
-        if (getStationsDataset() && typeof getStationsDataset() === "object") return getStationsDataset();
-      }catch(_){}
+      // crimeByYearStations.js defines: window.crimeByYearStations = { [year]: { [stationName]: {total, breakdown} } }
+      if (window.crimeByYearStations && typeof window.crimeByYearStations === "object") return window.crimeByYearStations;
+
+      // fallback: some builds may export without window prefix
       try{
         // eslint-disable-next-line no-undef
         if (typeof crimeByYearStations !== "undefined" && crimeByYearStations && typeof crimeByYearStations === "object") return crimeByYearStations;
       }catch(_){}
+
+      // fallback legacy / older naming
+      if (window.CRIMEBYYEARSTATIONS && typeof window.CRIMEBYYEARSTATIONS === "object") return window.CRIMEBYYEARSTATIONS;
       try{
         // eslint-disable-next-line no-undef
         if (typeof CRIMEBYYEARSTATIONS !== "undefined" && CRIMEBYYEARSTATIONS && typeof CRIMEBYYEARSTATIONS === "object") return CRIMEBYYEARSTATIONS;
       }catch(_){}
-      try{
-        if (window.CRIMEBYYEARSTATIONS && typeof window.CRIMEBYYEARSTATIONS === "object") return window.CRIMEBYYEARSTATIONS;
-      }catch(_){}
+
       return null;
     }
-
-
-    // -------------------- Population --------------------
+// -------------------- Population --------------------
     function buildPopulationIndex() {
       for (const k in populationIndex) delete populationIndex[k];
       const raw = window.PopulationDB;
