@@ -10,10 +10,10 @@
   <script src="crimeByYearMerhav.js"></script>
   <script src="PopulationDB.js"></script>
 
-  <!-- ✅ תחנות משטרה: ודא שהקובץ הזה קיים בפרויקט
+  <!-- תחנות משטרה: ודא שהקובץ הזה קיים בפרויקט
        ושבתוכו מוגדר: window.crimeByYearStations = { ... } -->
   <script src="crimeByYearStations.js"></script>
-  <!-- Boundaries: נטענים מקובץ GeoJSON (muni_boundaries_ITM.geojson). אם תרצה fallback ב-JS, הוסף כאן script לקובץ שלך. -->
+
   <style>
     * { box-sizing: border-box; }
 
@@ -656,25 +656,29 @@
       }
     }
 
-
     // -------------------- Station dataset resolver --------------------
-    // חשוב: אם בקובץ תחנות הגדרת const crimeByYearStations / CRIMEBYYEARSTATIONS (const גלובלי),
-    // הוא לא יופיע בתוך window.*. לכן אנחנו מנסים כמה שמות אפשריים.
+    // מחפש את אובייקט התחנות במספר שמות אפשריים (window.* וגם משתנים גלובליים)
     function getStationsDataset(){
       try{
-        if (window.crimeByYearStations && typeof window.crimeByYearStations === "object") return getStationsDataset();
+        if (window.crimeByYearStations && typeof window.crimeByYearStations === "object") {
+          return window.crimeByYearStations;
+        }
       }catch(_){}
+
       try{
         // eslint-disable-next-line no-undef
         if (typeof crimeByYearStations !== "undefined" && crimeByYearStations) return crimeByYearStations;
       }catch(_){}
+
       try{
         // eslint-disable-next-line no-undef
         if (typeof CRIMEBYYEARSTATIONS !== "undefined" && CRIMEBYYEARSTATIONS) return CRIMEBYYEARSTATIONS;
       }catch(_){}
+
       try{
         if (window.CRIMEBYYEARSTATIONS && typeof window.CRIMEBYYEARSTATIONS === "object") return window.CRIMEBYYEARSTATIONS;
       }catch(_){}
+
       return null;
     }
 
@@ -903,7 +907,6 @@
       selectedCityKey = null;
       compareList = compareList.filter(c => c.mode === mode);
 
-      // סטטיסטיקות מהדאטה של אותו מצב/שנה
       yearlyStats[`${currentMode}_${currentYear}`] = calculateStats(currentYear, currentMode);
       updateQuickStats();
 
@@ -1087,10 +1090,7 @@
         return;
       }
 
-      const dataset =
-        (mode === "muni") ? window.crimeByYear :
-        (mode === "merhav") ? window.crimeByYearMerhav :
-        window.crimeByYearStations;
+      const dataset = getDatasetByMode(mode);
 
       if (!dataset || typeof dataset !== "object") {
         container.innerHTML = `<div class="message message-error">אין נתונים זמינים עבור מצב זה.</div>`;
@@ -1377,13 +1377,12 @@
       if (!container) return;
 
       const topN = 20;
-
       const metricIsRate = (currentMode === "muni" && currentMetric === "rate");
 
       const yearData =
         (currentMode === "muni") ? window.crimeByYear?.[currentYear] :
         (currentMode === "merhav") ? window.crimeByYearMerhav?.[currentYear] :
-        window.crimeByYearStations?.[currentYear];
+        getStationsDataset()?.[currentYear];
 
       if (!yearData) {
         container.innerHTML = `<div class="message message-error">אין נתונים לשנה הזו.</div>`;
@@ -1406,7 +1405,6 @@
       }
 
       rows.sort((a,b)=> (b.value || 0) - (a.value || 0));
-
       const top = rows.slice(0, topN);
 
       const header = `
@@ -1756,7 +1754,6 @@
       }
     }
 
-    // ✅ ניקוי יציב: מנקה רק גיאומטריות, לא נוגע באירועי CLICK
     function clearChoropleth() {
       const namesToClear = Array.isArray(activeChoroplethNames) ? [...activeChoroplethNames] : [];
 
@@ -1790,7 +1787,6 @@
 
       btn.classList.toggle("active", !!choroplethEnabled);
 
-      // כפתור צביעה פעיל רק במצב רשויות
       const allow = (currentMode === "muni");
       btn.classList.toggle("disabled", !allow);
       btn.disabled = !allow;
@@ -1814,7 +1810,6 @@
     }
 
     async function toggleChoropleth(){
-      // צביעה רק במצב רשויות
       if(currentMode !== "muni") setMode("muni");
 
       choroplethEnabled = !choroplethEnabled;
@@ -1911,9 +1906,8 @@
       const maxVal = sortedValues.length >= 2 ? sortedValues[sortedValues.length - 2] : (sortedValues[sortedValues.length - 1] || 0);
 
       const wkts = [], names = [], symbols = [], tooltips = [];
-      const nameToMuniMap = {}; // ✅ תיקון: מיפוי גיאומטריה->שם רשות
+      const nameToMuniMap = {};
 
-      // רגיל (ירוק→אדום)
       for(let i = 0; i < normalRows.length; i++){
         const r = normalRows[i];
         const cappedValue = Math.min(r.value, maxVal);
@@ -1937,7 +1931,6 @@
         tooltips.push(tooltipText);
       }
 
-      // "ללא שיפוט" אפור
       for(let i = 0; i < noJurRows.length; i++){
         const r = noJurRows[i];
         wkts.push(r.wkt);
@@ -1967,7 +1960,6 @@
 
         const ret = govmap.displayGeometries(payload);
 
-        // ✅ קליק על גיאומטריות צביעה (Deferred.progress)
         try {
           if (ret && typeof ret.progress === "function") {
             ret.progress((ev) => handleChoroplethClick(ev, nameToMuniMap));
@@ -2005,7 +1997,6 @@
       );
     }
 
-    // ✅ קליק על צביעה: GovMap מחזיר אירוע דרך progress עם data.name (שם הגיאומטריה)
     function handleChoroplethClick(ev, nameToMuniMap) {
       try {
         const geomName =
@@ -2062,7 +2053,6 @@
         btnStation.disabled = !hasStations;
         if (!hasStations && currentMode === 'station') currentMode = 'muni';
       }
-
 
       const years = Object.keys(window.crimeByYear).sort();
       const sel = document.getElementById("yearSelect");
@@ -2132,7 +2122,7 @@
           setMode(currentMode);
           setChoroBtnUI();
 
-          // ✅ מאזין יחיד ללחיצות — נשאר תמיד, גם בזמן צביעה
+          // מאזין יחיד ללחיצות — נשאר תמיד, גם בזמן צביעה
           try { govmap.onEvent(govmap.events.CLICK).progress(onMapClick); } catch (e) {}
 
           initModals();
@@ -2197,9 +2187,8 @@
         <button id="btnModeMuni" class="mode-btn active" onclick="setMode('muni')">🏘️ ישובים</button>
         <button id="btnModeMerhav" class="mode-btn" onclick="setMode('merhav')">🚔 מרחבים</button>
 
-                <button id="btnModeStation" class="mode-btn" onclick="setMode(\'station\')">🚓 תחנות</button>
-<!-- ✅ תחנות משטרה -->
-        <button id="btnModeStation" class="mode-btn full" onclick="setMode('station')">🚓 תחנות משטרה</button>
+        <!-- ✅ תחנות (כפתור אחד בלבד, ID אחד בלבד) -->
+        <button id="btnModeStation" class="mode-btn full" onclick="setMode('station')">🚓 תחנות</button>
 
         <button id="btnMetricAbs" class="mode-btn active" onclick="setMetric('abs')">🔢 כמות</button>
         <button id="btnMetricRate" class="mode-btn" onclick="setMetric('rate')" title="זמין רק במצב ישובים">👥 ל-10,000</button>
