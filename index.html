@@ -1217,6 +1217,30 @@
 
     async function onMapClick(e) {
       if (!mapInitialized) return;
+      async function onMapClick(e) {
+  if (!mapInitialized) return;
+
+  const layerName =
+    (currentMode === "muni") ? MUNICIPAL_LAYER :
+    (currentMode === "merhav") ? POLICE_MERHAV_LAYER :
+    POLICE_STATION_LAYER;
+
+  // ✅ זה מה שרצית: ידפיס את LayerName שלחצת עליו (כלומר השכבה שבה אנחנו עושים getLayerData)
+  console.log("🖱️ Click identify layerName =", layerName, "mode =", currentMode);
+
+  try {
+    const resp = await govmap.getLayerData({
+      LayerName: layerName,
+      Point: e.mapPoint,
+      Radius: 300
+    });
+
+    // ... המשך הקוד שלך
+  } catch (error) {
+    console.error("❌ Error in onMapClick:", error);
+  }
+}
+
 
       try {
         const layerName =
