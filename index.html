@@ -1789,7 +1789,7 @@
       activeChoroplethIds = [];
     }
 
-    function setMunicipalLayerOpacity(opacity){(opacity){
+    function setMunicipalLayerOpacity(opacity){
       if(typeof govmap.setLayerOpacity === "function"){
         try{ govmap.setLayerOpacity({ layerName: MUNICIPAL_LAYER, opacity }); }catch(e){}
       }
