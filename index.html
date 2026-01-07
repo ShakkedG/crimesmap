@@ -1168,7 +1168,7 @@
       html += `<div class="compare-grid">`;
       rows.forEach(r => {
         const badges = [];
-        badges.push(`<span class="badge">${metricBadge}</span>`);
+        
         if (currentMode === "muni" && !r.hasPop) badges.push(`<span class="badge badge-warn">אוכלוסייה הונחה 0</span>`);
 
         html += `
@@ -1181,7 +1181,7 @@
             <div class="compare-kpis">
               <div class="kpi">
                 <div class="kpi-value">${Number(r.total).toLocaleString()}</div>
-                <div class="kpi-label">כמות</div>
+                <div class="kpi-label">כמות פשעים</div>
               </div>
               <div class="kpi">
                 <div class="kpi-value">${currentMode === "muni" ? fmtMaybe(r.pop) : "—"}</div>
