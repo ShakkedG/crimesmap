@@ -2447,16 +2447,26 @@ function filterChoroPayload(payload){
         return;
       }
 
-      try {
-        const ret = govmap.displayGeometries(built.payload);
+           try {
+        const safePayload = filterChoroPayload(built.payload); // ✅ מסנן WKTs לא תקינים
+
+        if (!safePayload.wkts.length) {
+          setMunicipalLayerOpacity(100);
+          showInfo("שגיאה", "כל הגיאומטריות נפסלו בגלל קואורדינטות לא תקינות ב-GeoJSON.", "error");
+          return;
+        }
+
+        const ret = govmap.displayGeometries(safePayload);
         if (ret && typeof ret.then === "function") await ret;
-        activeChoroplethNames = built.payload.names;
+
+        activeChoroplethNames = safePayload.names; // ✅ חשוב! שמות אחרי סינון
       } catch (e) {
         console.error("displayGeometries failed:", e);
         setMunicipalLayerOpacity(100);
         showInfo("שגיאה", `נכשלתי לצייר גיאומטריות: ${escapeHtml(e?.message || e)}`, "error");
         return;
       }
+
 
       const { minV, maxV, missingGeomCount, noJurCount, missingGeom } = built.meta;
 
