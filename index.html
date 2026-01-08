@@ -2296,6 +2296,20 @@ function geojsonGeomToWkt(geom){
     function buildChoroplethPayloadForYear(year, metric){
       const cacheKey = getChoroCacheKey(year, metric);
       if (choroplethCache.has(cacheKey)) return choroplethCache.get(cacheKey);
+const payload = {
+  wkts,
+  names,
+  clearExisting: false,
+  showBubble: false,
+  symbols,
+  data: { tooltips },
+  allowIdentify: false
+};
+
+const polyType = govmap?.geometryType?.POLYGON ?? govmap?.geometryType?.Polygon;
+if (polyType != null) payload.geometryType = polyType;
+
+const built = { payload, meta: { ... } };
 
       const yearData = window.crimeByYear?.[year];
       if(!yearData) return null;
@@ -2442,21 +2456,29 @@ function filterChoroPayload(payload){
       clearChoropleth();
 
       const built = buildChoroplethPayloadForYear(currentYear, metric);
-      if(!built){
-        showInfo("אין מספיק נתונים","לא נמצאו רשויות מתאימות לצביעה לפי המדד הנוכחי.","warn");
-        return;
-      }
+if(!built){
+  showInfo("אין מספיק נתונים","לא נמצאו רשויות מתאימות לצביעה לפי המדד הנוכחי.","warn");
+  return;
+}
 
-      try {
-        const ret = govmap.displayGeometries(built.payload);
-        if (ret && typeof ret.then === "function") await ret;
-        activeChoroplethNames = built.payload.names;
-      } catch (e) {
-        console.error("displayGeometries failed:", e);
-        setMunicipalLayerOpacity(100);
-        showInfo("שגיאה", `נכשלתי לצייר גיאומטריות: ${escapeHtml(e?.message || e)}`, "error");
-        return;
-      }
+// ✅ סינון WKT לא תקין לפני ציור
+const payload = filterChoroPayload(built.payload);
+if(!payload.wkts.length){
+  showInfo("אין מספיק נתונים","כל הגבולות נפסלו בגלל WKT לא תקין.","error");
+  return;
+}
+
+try {
+  const ret = govmap.displayGeometries(payload);
+  if (ret && typeof ret.then === "function") await ret;
+  activeChoroplethNames = payload.names; // ✅ חשוב!
+} catch (e) {
+  console.error("displayGeometries failed:", e);
+  setMunicipalLayerOpacity(100);
+  showInfo("שגיאה", `נכשלתי לצייר גיאומטריות: ${escapeHtml(e?.message || e)}`, "error");
+  return;
+}
+
 
       const { minV, maxV, missingGeomCount, noJurCount, missingGeom } = built.meta;
 
