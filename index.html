@@ -2185,6 +2185,11 @@ function geojsonGeomToWkt(geom){
           wktByCrimeNameCache.set(nk, wkt);
           return wkt;
         }
+                  if(!name || !wkt || !isWktSafe(wkt)){
+            console.warn("❌ Skipping bad boundary feature:", name, wkt);
+            continue;
+          }
+
       }
 
       wktByCrimeNameCache.set(nk, null);
