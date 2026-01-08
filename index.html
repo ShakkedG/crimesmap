@@ -2503,24 +2503,22 @@ function installChoroplethClickFallback(){
   const mapEl = document.getElementById("map");
   if(!mapEl) return;
 
-  // DOM click fallback (works even if graphics intercept GovMap click)
   mapEl.addEventListener("click", (evt) => {
-    // only when choropleth is enabled in muni mode
     if (!choroplethEnabled || currentMode !== "muni") return;
-
-    // ignore clicks on UI panels/modals
     if (evt.target.closest("#info-panel") || evt.target.closest(".modal")) return;
-
-    // prevent double handling when GovMap click DID fire
     if (Date.now() - lastGovmapClickAt < 200) return;
 
- const pt = normalizeMapPoint(lastHoverMapPoint);
-if (pt) {
-  onMapClick({ mapPoint: pt, __fallback: true });
-}
+    const pt = normalizeMapPoint(lastHoverMapPoint);
 
+    if (!pt) {
+      showInfo("רגע", "אין לי נקודת מפה זמינה לקליק בצביעה. נסה ללחוץ פעם אחת על המפה בלי צביעה, ואז להדליק צביעה וללחוץ.", "warn");
+      return;
+    }
+
+    onMapClick({ mapPoint: pt, __fallback: true });
   }, true);
 }
+
 
     // ===================== GOVMAP INIT =====================
     function initGovMap() {
@@ -2615,17 +2613,7 @@ try {
 
 } catch (e) {}
           // MOUSE MOVE -> keep lastHoverMapPoint updated (so click on choropleth still works)
-try{
-  // GovMap event names can differ; try common ones safely
-  const ok =
-    subscribeGovmapProgressEvent(govmap?.events?.MOUSE_MOVE, (e)=>{ const pt = normalizeMapPoint(e); if(pt) lastHoverMapPoint = pt; }) ||
-    subscribeGovmapProgressEvent(govmap?.events?.MOUSEMOVE,   (e)=>{ const pt = normalizeMapPoint(e); if(pt) lastHoverMapPoint = pt; }) ||
-    subscribeGovmapProgressEvent(govmap?.events?.POINTER_MOVE,(e)=>{ const pt = normalizeMapPoint(e); if(pt) lastHoverMapPoint = pt; });
 
-  if(!ok){
-    console.warn("⚠️ Could not subscribe to mouse-move event; fallback will rely on last click point only.");
-  }
-}catch(_){}
 
 installChoroplethClickFallback();
 
