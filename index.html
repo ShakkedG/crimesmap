@@ -12,7 +12,7 @@
   <script src="crimeByYearStations.js"></script>
 
   <!-- Boundaries -->
-  <script src="muni_boundaries.js"></script>
+ 
 
   <style>
     * { box-sizing: border-box; }
@@ -2387,6 +2387,44 @@ function geojsonGeomToWkt(geom){
       choroplethCache.set(cacheKey, built);
       return built;
     }
+function isWktSafe(wkt){
+  if (typeof wkt !== "string") return false;
+  if (/NaN|Infinity|undefined|null/i.test(wkt)) return false;
+
+  const nums = wkt.match(/-?\d+(?:\.\d+)?/g);
+  if (!nums || nums.length < 6) return false;
+
+  for (const s of nums){
+    const n = Number(s);
+    if (!Number.isFinite(n)) return false;
+  }
+  return true;
+}
+
+function filterChoroPayload(payload){
+  const keep = [];
+  for (let i = 0; i < payload.wkts.length; i++){
+    if (isWktSafe(payload.wkts[i])) keep.push(i);
+    else console.warn("❌ Bad WKT dropped:", payload.names[i], payload.wkts[i]);
+  }
+
+  const out = {
+    ...payload,
+    wkts: [],
+    names: [],
+    symbols: [],
+    data: { ...(payload.data || {}), tooltips: [] }
+  };
+
+  for (const i of keep){
+    out.wkts.push(payload.wkts[i]);
+    out.names.push(payload.names[i]);
+    out.symbols.push(payload.symbols[i]);
+    out.data.tooltips.push(payload.data.tooltips[i]);
+  }
+
+  return out;
+}
 
     async function renderChoropleth(){
       if(!mapInitialized || !choroplethEnabled) return;
