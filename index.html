@@ -1719,11 +1719,12 @@ let lastGovmapClickAt = 0;
       (currentMode === "merhav") ? POLICE_MERHAV_LAYER :
       POLICE_STATION_LAYER;
 
-    const resp = await govmap.getLayerData({
-      LayerName: layerName,
-      Point: pt,          // ✅ תמיד {x,y} מספריים וסופיים
-      Radius: 300
-    });
+   const resp = await govmap.getLayerData({
+  LayerName: layerName,
+  Point: { x: pt.x, y: pt.y, X: pt.x, Y: pt.y },
+  Radius: 300
+});
+
 
     const items = resp?.data || resp?.Data || [];
     if (!items.length) {
@@ -2060,37 +2061,71 @@ function initModals(){
     }
 
     // ===================== GEOJSON -> WKT =====================
-    function ensureClosedRing(coords){
-      if(!Array.isArray(coords) || coords.length<3) return coords;
-      const first = coords[0];
-      const last  = coords[coords.length-1];
-      if(first && last && first[0]===last[0] && first[1]===last[1]) return coords;
-      return coords.concat([[first[0], first[1]]]);
-    }
-    function ringToWkt(ring){
-      const r = ensureClosedRing(ring);
-      return r.map(p => `${Number(p[0]).toFixed(3)} ${Number(p[1]).toFixed(3)}`).join(", ");
-    }
-    function geojsonGeomToWkt(geom){
-      if(!geom || !geom.type) return null;
+   function toFiniteNum(v){
+  if (v == null) return null;
+  if (typeof v === "string") {
+    // תומך גם ב-"34,781" וגם ב-"203,123.45" (ניקוי בסיסי)
+    v = v.trim().replace(/\s+/g, "");
+    // אם זה "34,781" כעשרוני ישראלי/אירופי -> 34.781
+    // ואם זה מפריד אלפים "203,123.45" זה עדיין בעייתי — אז נטפל בזה בזהירות:
+    // אם יש גם ',' וגם '.' נניח ש',' אלפים ונמחק פסיקים
+    if (v.includes(",") && v.includes(".")) v = v.replace(/,/g, "");
+    else v = v.replace(/,/g, ".");
+  }
+  const n = Number(v);
+  return Number.isFinite(n) ? n : null;
+}
 
-      if(geom.type === "Polygon"){
-        const rings = (geom.coordinates||[]).map(ringToWkt);
-        if(!rings.length) return null;
-        return `POLYGON((${rings[0]})${rings.slice(1).map(h=>`,(${h})`).join("")})`;
-      }
-      if(geom.type === "MultiPolygon"){
-        const polys = geom.coordinates || [];
-        const parts = polys.map(poly=>{
-          const rings = (poly||[]).map(ringToWkt);
-          if(!rings.length) return null;
-          return `((${rings[0]})${rings.slice(1).map(h=>`,(${h})`).join("")})`;
-        }).filter(Boolean);
-        if(!parts.length) return null;
-        return `MULTIPOLYGON(${parts.join(",")})`;
-      }
-      return null;
-    }
+function ensureClosedRing(coords){
+  if(!Array.isArray(coords) || coords.length < 3) return coords;
+  const first = coords[0];
+  const last  = coords[coords.length - 1];
+  if(first && last && first[0] === last[0] && first[1] === last[1]) return coords;
+  return coords.concat([[first[0], first[1]]]);
+}
+
+function ringToWkt(ring){
+  if (!Array.isArray(ring) || ring.length < 3) return null;
+
+  const r = ensureClosedRing(ring);
+  const out = [];
+
+  for (const p of r) {
+    if (!Array.isArray(p) || p.length < 2) return null;
+
+    const x = toFiniteNum(p[0]);
+    const y = toFiniteNum(p[1]);
+    if (x == null || y == null) return null;
+
+    out.push(`${x.toFixed(3)} ${y.toFixed(3)}`);
+  }
+
+  return out.join(", ");
+}
+
+function geojsonGeomToWkt(geom){
+  if(!geom || !geom.type) return null;
+
+  if(geom.type === "Polygon"){
+    const rings = (geom.coordinates || []).map(ringToWkt);
+    if(!rings.length || rings.some(r => !r)) return null;
+    return `POLYGON((${rings[0]})${rings.slice(1).map(h => `,(${h})`).join("")})`;
+  }
+
+  if(geom.type === "MultiPolygon"){
+    const polys = geom.coordinates || [];
+    const parts = polys.map(poly => {
+      const rings = (poly || []).map(ringToWkt);
+      if(!rings.length || rings.some(r => !r)) return null;
+      return `((${rings[0]})${rings.slice(1).map(h => `,(${h})`).join("")})`;
+    }).filter(Boolean);
+
+    if(!parts.length) return null;
+    return `MULTIPOLYGON(${parts.join(",")})`;
+  }
+
+  return null;
+}
 
     async function loadMuniBoundariesGeojson(){
       if(muniBoundariesLoaded) return true;
@@ -2116,7 +2151,11 @@ function initModals(){
         for(const f of feats){
           const name = f?.properties?.name;
           const wkt  = geojsonGeomToWkt(f?.geometry);
-          if(!name || !wkt) continue;
+          if(!name || !wkt){
+  console.warn("❌ Skipping bad boundary feature:", name, f?.geometry);
+  continue;
+}
+        
           muniBoundariesIndex[normalizeKey(name)] = wkt;
           muniBoundariesMeta.push({ name: String(name), wkt });
         }
