@@ -1841,15 +1841,15 @@ function closeModal(id){
       const aboutBtn = document.getElementById("aboutBtn");
       const aboutClose = document.getElementById("aboutCloseBtn");
       const aboutOverlay = document.getElementById("aboutOverlay");
-      if (aboutBtn) aboutBtn.addEventListener("click", ()=>openModal("aboutModal"));
+     if (aboutBtn) aboutBtn.addEventListener("click", ()=> openModal("aboutModal", "aboutCloseBtn"));
       if (aboutClose) aboutClose.addEventListener("click", ()=>closeModal("aboutModal"));
       if (aboutOverlay) aboutOverlay.addEventListener("click", ()=>closeModal("aboutModal"));
 
       const searchBtn = document.getElementById("searchBtn");
       const searchClose = document.getElementById("searchCloseBtn");
       const searchOverlay = document.getElementById("searchOverlay");
-      if (searchBtn) searchBtn.addEventListener("click", ()=>{
-        openModal("searchModal");
+      if (searchBtn) searchBtn.addEventListener("click", ()=> openModal("searchModal", "addrInput"));
+
         const inp = document.getElementById("addrInput");
         if (inp) setTimeout(()=>inp.focus(), 50);
       });
