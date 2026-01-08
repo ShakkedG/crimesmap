@@ -12,7 +12,7 @@
   <script src="crimeByYearStations.js"></script>
 
   <!-- Boundaries -->
-  <script src="muni_boundaries.js"></script>
+ 
 
   <style>
     * { box-sizing: border-box; }
@@ -1683,129 +1683,126 @@ let lastGovmapClickAt = 0;
       const v = getFieldFromAttrs(attrsRaw, candidates);
       return (v == null) ? null : String(v).trim();
     }
+    function normalizeMapPoint(input){
+  const mp = input?.mapPoint ?? input?.Point ?? input ?? null;
+  if (!mp) return null;
+
+  const x = mp.x ?? mp.X ?? mp.lon ?? mp.Lon ?? mp.centerX ?? mp.CenterX;
+  const y = mp.y ?? mp.Y ?? mp.lat ?? mp.Lat ?? mp.centerY ?? mp.CenterY;
+
+  const nx = Number(x);
+  const ny = Number(y);
+
+  if (!Number.isFinite(nx) || !Number.isFinite(ny)) return null;
+  return { x: nx, y: ny };
+}
+
 
     async function onMapClick(e) {
-      if (!mapInitialized) return;
+  if (!mapInitialized) return;
 
-      if (!e || !e.mapPoint) {
-    if (lastHoverMapPoint) e = { mapPoint: lastHoverMapPoint };
-    else return;
+  // 1) נסה להוציא נקודה תקינה מהאירוע
+  let pt = normalizeMapPoint(e);
+
+  // 2) אם אין נקודה תקינה, נסה מה-hover האחרון (חשוב בעיקר בצביעה)
+  if (!pt && lastHoverMapPoint) pt = normalizeMapPoint(lastHoverMapPoint);
+
+  // 3) אם עדיין אין נקודה – לא ממשיכים
+  if (!pt) {
+    showInfo("רגע", "לא התקבלה נקודת מפה תקינה (X/Y). הזז עכבר על הרשות ואז לחץ.", "warn");
+    return;
   }
 
   try {
-        const layerName =
-          (currentMode === "muni") ? MUNICIPAL_LAYER :
-          (currentMode === "merhav") ? POLICE_MERHAV_LAYER :
-          POLICE_STATION_LAYER;
+    const layerName =
+      (currentMode === "muni") ? MUNICIPAL_LAYER :
+      (currentMode === "merhav") ? POLICE_MERHAV_LAYER :
+      POLICE_STATION_LAYER;
 
-        const resp = await govmap.getLayerData({
-          LayerName: layerName,
-          Point: e.mapPoint,
-          Radius: 300
-        });
+   const resp = await govmap.getLayerData({
+  LayerName: layerName,
+  Point: { x: pt.x, y: pt.y, X: pt.x, Y: pt.y },
+  Radius: 300
+});
 
-        const items = resp?.data || resp?.Data || [];
-        if (!items.length) {
-          showInfo("לא נמצא", "אין אובייקט באזור זה", "info");
-          return;
-        }
 
-        const first = items[0];
-        const attrs = first.Fields || first.Attributes || first;
-        const attrsObj = fieldsToObject(attrs) || attrs || {};
-
-        const index = getIndexByMode(currentMode);
-
-        if (currentMode === "muni") {
-          const nameFromMap = detectMunicipalityName(attrsObj);
-          if (!nameFromMap) {
-            showInfo("שגיאה", "לא ניתן לזהות את שם הרשות", "error");
-            return;
-          }
-          const k = normalizeKey(nameFromMap);
-          const entry = index[k] || index[nameVariants(nameFromMap)[0]] || null;
-
-          if (!entry) {
-            showInfo("לא נמצאו נתונים", `אין נתוני פשיעה עבור <strong>${escapeHtml(nameFromMap)}</strong> בשנת ${currentYear}`, "error");
-            return;
-          }
-
-          selectedEntityName = entry.name;
-          selectedEntityKey = entry.key;
-
-          if (currentTab === "compare") updateCompareView();
-          else if (currentTab === "trends") showTrends(selectedEntityName, "muni");
-          else if (currentTab === "rankings") renderRankings();
-          else showEntry(entry);
-
-          return;
-        }
-
-        if (currentMode === "station") {
-          const stationName = detectStationName(attrsObj);
-          if (!stationName) {
-            const keysList = Object.keys(attrsObj || {});
-            showInfo(
-              "שגיאה",
-              `לא הצלחתי לזהות את <strong>שם התחנה</strong> מהשכבה.<br/>
-               שמות שדות שהתקבלו: <span style="direction:ltr;unicode-bidi:bidi-override">${escapeHtml(keysList.join(" | "))}</span>`,
-              "error"
-            );
-            return;
-          }
-
-          const k = normalizeKey(stationName);
-          let entry = index[k] || null;
-          if (!entry) {
-            for (const v of stationNameVariants(stationName)) {
-              if (index[v]) { entry = index[v]; break; }
-            }
-          }
-
-          if (!entry) {
-            showInfo("לא נמצאו נתונים", `אין נתוני פשיעה עבור <strong>${escapeHtml(stationName)}</strong> בשנת ${currentYear}`, "error");
-            return;
-          }
-
-          selectedEntityName = entry.name;
-          selectedEntityKey = entry.key;
-
-          if (currentTab === "compare") updateCompareView();
-          else if (currentTab === "trends") showTrends(selectedEntityName, "station");
-          else if (currentTab === "rankings") renderRankings();
-          else showEntry(entry);
-
-          return;
-        }
-
-        // Merhav
-        const merhavName = detectMerhavName(attrsObj);
-        if (!merhavName) {
-          showInfo("שגיאה", "לא ניתן לזהות את שם מרחב המשטרה", "error");
-          return;
-        }
-
-        const k = normalizeKey(merhavName);
-        const entry = index[k] || null;
-
-        if (!entry) {
-          showInfo("לא נמצאו נתונים", `אין נתוני פשיעה עבור <strong>${escapeHtml(merhavName)}</strong> בשנת ${currentYear}`, "error");
-          return;
-        }
-
-        selectedEntityName = entry.name;
-        selectedEntityKey = entry.key;
-
-        if (currentTab === "compare") updateCompareView();
-        else if (currentTab === "trends") showTrends(selectedEntityName, "merhav");
-        else if (currentTab === "rankings") renderRankings();
-        else showEntry(entry);
-
-      } catch (error) {
-        console.error("❌ Error in onMapClick:", error);
-        showInfo("שגיאה", `אירעה שגיאה: ${escapeHtml(error?.message || 'שגיאה לא מוגדרת')}`, "error");
-      }
+    const items = resp?.data || resp?.Data || [];
+    if (!items.length) {
+      showInfo("לא נמצא", "אין אובייקט באזור זה", "info");
+      return;
     }
+
+    const first = items[0];
+    const attrs = first.Fields || first.Attributes || first;
+    const attrsObj = fieldsToObject(attrs) || attrs || {};
+    const index = getIndexByMode(currentMode);
+
+    if (currentMode === "muni") {
+      const nameFromMap = detectMunicipalityName(attrsObj);
+      if (!nameFromMap) { showInfo("שגיאה", "לא ניתן לזהות את שם הרשות", "error"); return; }
+
+      const k = normalizeKey(nameFromMap);
+      const entry = index[k] || index[nameVariants(nameFromMap)[0]] || null;
+      if (!entry) { showInfo("לא נמצאו נתונים", `אין נתוני פשיעה עבור <strong>${escapeHtml(nameFromMap)}</strong> בשנת ${currentYear}`, "error"); return; }
+
+      selectedEntityName = entry.name;
+      selectedEntityKey = entry.key;
+
+      if (currentTab === "compare") updateCompareView();
+      else if (currentTab === "trends") showTrends(selectedEntityName, "muni");
+      else if (currentTab === "rankings") renderRankings();
+      else showEntry(entry);
+      return;
+    }
+
+    if (currentMode === "station") {
+      const stationName = detectStationName(attrsObj);
+      if (!stationName) {
+        const keysList = Object.keys(attrsObj || {});
+        showInfo("שגיאה",
+          `לא הצלחתי לזהות <strong>שם תחנה</strong>.<br/>שדות: <span style="direction:ltr;unicode-bidi:bidi-override">${escapeHtml(keysList.join(" | "))}</span>`,
+          "error");
+        return;
+      }
+
+      let entry = index[normalizeKey(stationName)] || null;
+      if (!entry) {
+        for (const v of stationNameVariants(stationName)) { if (index[v]) { entry = index[v]; break; } }
+      }
+      if (!entry) { showInfo("לא נמצאו נתונים", `אין נתוני פשיעה עבור <strong>${escapeHtml(stationName)}</strong> בשנת ${currentYear}`, "error"); return; }
+
+      selectedEntityName = entry.name;
+      selectedEntityKey = entry.key;
+
+      if (currentTab === "compare") updateCompareView();
+      else if (currentTab === "trends") showTrends(selectedEntityName, "station");
+      else if (currentTab === "rankings") renderRankings();
+      else showEntry(entry);
+      return;
+    }
+
+    // merhav
+    const merhavName = detectMerhavName(attrsObj);
+    if (!merhavName) { showInfo("שגיאה", "לא ניתן לזהות את שם מרחב המשטרה", "error"); return; }
+
+    const entry = index[normalizeKey(merhavName)] || null;
+    if (!entry) { showInfo("לא נמצאו נתונים", `אין נתוני פשיעה עבור <strong>${escapeHtml(merhavName)}</strong> בשנת ${currentYear}`, "error"); return; }
+
+    selectedEntityName = entry.name;
+    selectedEntityKey = entry.key;
+
+    if (currentTab === "compare") updateCompareView();
+    else if (currentTab === "trends") showTrends(selectedEntityName, "merhav");
+    else if (currentTab === "rankings") renderRankings();
+    else showEntry(entry);
+
+  } catch (error) {
+    console.error("❌ Error in onMapClick:", error);
+    showInfo("שגיאה", `אירעה שגיאה: ${escapeHtml(error?.message || "שגיאה לא מוגדרת")}`, "error");
+  }
+}
+
+    
 
     // ===================== MODALS & PANEL =====================
    let lastFocusedElement = null;
@@ -1845,33 +1842,38 @@ function closeModal(id){
   document.documentElement.style.overflow = "";
   document.body.style.overflow = "";
 }
+function initModals(){
+  const aboutBtn = document.getElementById("aboutBtn");
+  const aboutClose = document.getElementById("aboutCloseBtn");
+  const aboutOverlay = document.getElementById("aboutOverlay");
+  if (aboutBtn) aboutBtn.addEventListener("click", () => openModal("aboutModal", "aboutCloseBtn"));
+  if (aboutClose) aboutClose.addEventListener("click", () => closeModal("aboutModal"));
+  if (aboutOverlay) aboutOverlay.addEventListener("click", () => closeModal("aboutModal"));
 
-    function initModals(){
-      const aboutBtn = document.getElementById("aboutBtn");
-      const aboutClose = document.getElementById("aboutCloseBtn");
-      const aboutOverlay = document.getElementById("aboutOverlay");
-     if (aboutBtn) aboutBtn.addEventListener("click", ()=> openModal("aboutModal", "aboutCloseBtn"));
-      if (aboutClose) aboutClose.addEventListener("click", ()=>closeModal("aboutModal"));
-      if (aboutOverlay) aboutOverlay.addEventListener("click", ()=>closeModal("aboutModal"));
+  const searchBtn = document.getElementById("searchBtn");
+  const searchClose = document.getElementById("searchCloseBtn");
+  const searchOverlay = document.getElementById("searchOverlay");
 
-      const searchBtn = document.getElementById("searchBtn");
-      const searchClose = document.getElementById("searchCloseBtn");
-      const searchOverlay = document.getElementById("searchOverlay");
-      if (searchBtn) searchBtn.addEventListener("click", ()=> openModal("searchModal", "addrInput"));
+  if (searchBtn) {
+    searchBtn.addEventListener("click", () => {
+      openModal("searchModal", "addrInput");
+      const inp = document.getElementById("addrInput");
+      if (inp) setTimeout(() => inp.focus(), 50);
+    });
+  }
 
-        const inp = document.getElementById("addrInput");
-        if (inp) setTimeout(()=>inp.focus(), 50);
-      });
-      if (searchClose) searchClose.addEventListener("click", ()=>closeModal("searchModal"));
-      if (searchOverlay) searchOverlay.addEventListener("click", ()=>closeModal("searchModal"));
+  if (searchClose) searchClose.addEventListener("click", () => closeModal("searchModal"));
+  if (searchOverlay) searchOverlay.addEventListener("click", () => closeModal("searchModal"));
 
-      document.addEventListener("keydown", (e)=>{
-        if(e.key==="Escape"){
-          closeModal("aboutModal");
-          closeModal("searchModal");
-        }
-      });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      closeModal("aboutModal");
+      closeModal("searchModal");
     }
+  });
+}
+
+   
 
     function togglePanel(){
       const panel = document.getElementById("info-panel");
@@ -2059,37 +2061,71 @@ function closeModal(id){
     }
 
     // ===================== GEOJSON -> WKT =====================
-    function ensureClosedRing(coords){
-      if(!Array.isArray(coords) || coords.length<3) return coords;
-      const first = coords[0];
-      const last  = coords[coords.length-1];
-      if(first && last && first[0]===last[0] && first[1]===last[1]) return coords;
-      return coords.concat([[first[0], first[1]]]);
-    }
-    function ringToWkt(ring){
-      const r = ensureClosedRing(ring);
-      return r.map(p => `${Number(p[0]).toFixed(3)} ${Number(p[1]).toFixed(3)}`).join(", ");
-    }
-    function geojsonGeomToWkt(geom){
-      if(!geom || !geom.type) return null;
+   function toFiniteNum(v){
+  if (v == null) return null;
+  if (typeof v === "string") {
+    // תומך גם ב-"34,781" וגם ב-"203,123.45" (ניקוי בסיסי)
+    v = v.trim().replace(/\s+/g, "");
+    // אם זה "34,781" כעשרוני ישראלי/אירופי -> 34.781
+    // ואם זה מפריד אלפים "203,123.45" זה עדיין בעייתי — אז נטפל בזה בזהירות:
+    // אם יש גם ',' וגם '.' נניח ש',' אלפים ונמחק פסיקים
+    if (v.includes(",") && v.includes(".")) v = v.replace(/,/g, "");
+    else v = v.replace(/,/g, ".");
+  }
+  const n = Number(v);
+  return Number.isFinite(n) ? n : null;
+}
 
-      if(geom.type === "Polygon"){
-        const rings = (geom.coordinates||[]).map(ringToWkt);
-        if(!rings.length) return null;
-        return `POLYGON((${rings[0]})${rings.slice(1).map(h=>`,(${h})`).join("")})`;
-      }
-      if(geom.type === "MultiPolygon"){
-        const polys = geom.coordinates || [];
-        const parts = polys.map(poly=>{
-          const rings = (poly||[]).map(ringToWkt);
-          if(!rings.length) return null;
-          return `((${rings[0]})${rings.slice(1).map(h=>`,(${h})`).join("")})`;
-        }).filter(Boolean);
-        if(!parts.length) return null;
-        return `MULTIPOLYGON(${parts.join(",")})`;
-      }
-      return null;
-    }
+function ensureClosedRing(coords){
+  if(!Array.isArray(coords) || coords.length < 3) return coords;
+  const first = coords[0];
+  const last  = coords[coords.length - 1];
+  if(first && last && first[0] === last[0] && first[1] === last[1]) return coords;
+  return coords.concat([[first[0], first[1]]]);
+}
+
+function ringToWkt(ring){
+  if (!Array.isArray(ring) || ring.length < 3) return null;
+
+  const r = ensureClosedRing(ring);
+  const out = [];
+
+  for (const p of r) {
+    if (!Array.isArray(p) || p.length < 2) return null;
+
+    const x = toFiniteNum(p[0]);
+    const y = toFiniteNum(p[1]);
+    if (x == null || y == null) return null;
+
+    out.push(`${x.toFixed(3)} ${y.toFixed(3)}`);
+  }
+
+  return out.join(", ");
+}
+
+function geojsonGeomToWkt(geom){
+  if(!geom || !geom.type) return null;
+
+  if(geom.type === "Polygon"){
+    const rings = (geom.coordinates || []).map(ringToWkt);
+    if(!rings.length || rings.some(r => !r)) return null;
+    return `POLYGON((${rings[0]})${rings.slice(1).map(h => `,(${h})`).join("")})`;
+  }
+
+  if(geom.type === "MultiPolygon"){
+    const polys = geom.coordinates || [];
+    const parts = polys.map(poly => {
+      const rings = (poly || []).map(ringToWkt);
+      if(!rings.length || rings.some(r => !r)) return null;
+      return `((${rings[0]})${rings.slice(1).map(h => `,(${h})`).join("")})`;
+    }).filter(Boolean);
+
+    if(!parts.length) return null;
+    return `MULTIPOLYGON(${parts.join(",")})`;
+  }
+
+  return null;
+}
 
     async function loadMuniBoundariesGeojson(){
       if(muniBoundariesLoaded) return true;
@@ -2115,7 +2151,11 @@ function closeModal(id){
         for(const f of feats){
           const name = f?.properties?.name;
           const wkt  = geojsonGeomToWkt(f?.geometry);
-          if(!name || !wkt) continue;
+          if(!name || !wkt){
+  console.warn("❌ Skipping bad boundary feature:", name, f?.geometry);
+  continue;
+}
+        
           muniBoundariesIndex[normalizeKey(name)] = wkt;
           muniBoundariesMeta.push({ name: String(name), wkt });
         }
@@ -2347,6 +2387,44 @@ function closeModal(id){
       choroplethCache.set(cacheKey, built);
       return built;
     }
+function isWktSafe(wkt){
+  if (typeof wkt !== "string") return false;
+  if (/NaN|Infinity|undefined|null/i.test(wkt)) return false;
+
+  const nums = wkt.match(/-?\d+(?:\.\d+)?/g);
+  if (!nums || nums.length < 6) return false;
+
+  for (const s of nums){
+    const n = Number(s);
+    if (!Number.isFinite(n)) return false;
+  }
+  return true;
+}
+
+function filterChoroPayload(payload){
+  const keep = [];
+  for (let i = 0; i < payload.wkts.length; i++){
+    if (isWktSafe(payload.wkts[i])) keep.push(i);
+    else console.warn("❌ Bad WKT dropped:", payload.names[i], payload.wkts[i]);
+  }
+
+  const out = {
+    ...payload,
+    wkts: [],
+    names: [],
+    symbols: [],
+    data: { ...(payload.data || {}), tooltips: [] }
+  };
+
+  for (const i of keep){
+    out.wkts.push(payload.wkts[i]);
+    out.names.push(payload.names[i]);
+    out.symbols.push(payload.symbols[i]);
+    out.data.tooltips.push(payload.data.tooltips[i]);
+  }
+
+  return out;
+}
 
     async function renderChoropleth(){
       if(!mapInitialized || !choroplethEnabled) return;
@@ -2421,9 +2499,11 @@ function installChoroplethClickFallback(){
     // prevent double handling when GovMap click DID fire
     if (Date.now() - lastGovmapClickAt < 200) return;
 
-    if (lastHoverMapPoint) {
-      onMapClick({ mapPoint: lastHoverMapPoint, __fallback: true });
-    }
+ const pt = normalizeMapPoint(lastHoverMapPoint);
+if (pt) {
+  onMapClick({ mapPoint: pt, __fallback: true });
+}
+
   }, true);
 }
 
@@ -2508,19 +2588,24 @@ function installChoroplethClickFallback(){
 
         // CLICK (normal)
 try {
-  govmap.onEvent(govmap.events.CLICK).progress((e) => {
-    lastGovmapClickAt = Date.now();
-    if (e?.mapPoint) lastHoverMapPoint = e.mapPoint; // keep updated
-    onMapClick(e);
-  });
+ govmap.onEvent(govmap.events.CLICK).progress((e) => {
+  lastGovmapClickAt = Date.now();
+  const pt = normalizeMapPoint(e);
+  if (pt) lastHoverMapPoint = pt;
+
+  // ✅ קורא עם נקודה תקינה בלבד
+  onMapClick(pt ? { mapPoint: pt, __fromGovmap: true } : e);
+});
+
+
 } catch (e) {}
           // MOUSE MOVE -> keep lastHoverMapPoint updated (so click on choropleth still works)
 try{
   // GovMap event names can differ; try common ones safely
   const ok =
-    subscribeGovmapProgressEvent(govmap?.events?.MOUSE_MOVE, (e)=>{ if(e?.mapPoint) lastHoverMapPoint = e.mapPoint; }) ||
-    subscribeGovmapProgressEvent(govmap?.events?.MOUSEMOVE,   (e)=>{ if(e?.mapPoint) lastHoverMapPoint = e.mapPoint; }) ||
-    subscribeGovmapProgressEvent(govmap?.events?.POINTER_MOVE,(e)=>{ if(e?.mapPoint) lastHoverMapPoint = e.mapPoint; });
+    subscribeGovmapProgressEvent(govmap?.events?.MOUSE_MOVE, (e)=>{ const pt = normalizeMapPoint(e); if(pt) lastHoverMapPoint = pt; }) ||
+    subscribeGovmapProgressEvent(govmap?.events?.MOUSEMOVE,   (e)=>{ const pt = normalizeMapPoint(e); if(pt) lastHoverMapPoint = pt; }) ||
+    subscribeGovmapProgressEvent(govmap?.events?.POINTER_MOVE,(e)=>{ const pt = normalizeMapPoint(e); if(pt) lastHoverMapPoint = pt; });
 
   if(!ok){
     console.warn("⚠️ Could not subscribe to mouse-move event; fallback will rely on last click point only.");
