@@ -11,11 +11,8 @@
   <script src="PopulationDB.js"></script>
   <script src="crimeByYearStations.js"></script>
 
-  <!-- Optional local boundaries (ITM / EPSG:2039 GeoJSON next to this file):
-       - muni_boundaries_ITM.geojson   (properties.name = שם רשות)
-       - merhav_boundaries_ITM.geojson (properties.name = שם מרחב)
-       - station_boundaries_ITM.geojson (properties.name = שם תחנה)
-  -->
+  <!-- Boundaries -->
+  <script src="muni_boundaries.js"></script>
 
   <style>
     * { box-sizing: border-box; }
@@ -306,7 +303,7 @@
     }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-    /* Compare */
+    /* Compare cards */
     .compare-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 12px; }
     .compare-card {
       border: 1px solid #e8e8e8;
@@ -438,32 +435,133 @@
       direction: ltr;
     }
 
-    /* Trends */
-    .trend-table{
+    /* Trends (Redesign) */
+    .trend-shell{
       border: 1px solid #eee;
-      border-radius: 16px;
-      overflow: hidden;
+      border-radius: 18px;
       background: #fff;
       box-shadow: 0 10px 22px rgba(0,0,0,0.05);
+      overflow: hidden;
     }
-    .trend-row{
+    .trend-top{
+      padding: 12px 12px 10px 12px;
+      background: linear-gradient(135deg, #e7f3ff 0%, #f3f8ff 100%);
+      border-bottom: 1px solid #e6e6e6;
+    }
+    .trend-title{
+      font-weight: 1000;
+      color: #063a73;
+      font-size: 14px;
+      margin-bottom: 6px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:8px;
+    }
+    .trend-sub{
+      font-weight: 900;
+      color: #222;
+      font-size: 12.8px;
+      opacity: 0.95;
+      line-height: 1.45;
+    }
+    .trend-kpis{
       display:grid;
-      grid-template-columns: 1fr 1fr 1fr 1fr;
+      grid-template-columns: repeat(3, 1fr);
       gap: 8px;
-      padding: 10px 12px;
-      border-bottom: 1px solid #f0f0f0;
+      margin-top: 10px;
+    }
+    .trend-kpi{
+      background: rgba(255,255,255,.9);
+      border: 1px solid #e0e0e0;
+      border-radius: 14px;
+      padding: 10px;
+      text-align:center;
+    }
+    .trend-kpi .v{ font-weight: 1000; color:#0b63ce; font-size: 14px; margin-bottom: 4px; }
+    .trend-kpi .l{ font-weight: 1000; color:#666; font-size: 11px; letter-spacing: .2px; }
+
+    .trend-list{
+      padding: 10px 12px 12px 12px;
+      background:#fff;
+    }
+    .trow{
+      display:grid;
+      grid-template-columns: 56px 1fr auto;
+      gap: 10px;
+      align-items:center;
+      padding: 10px;
+      border: 1px solid #eee;
+      border-radius: 14px;
+      background:#fafafa;
+      margin-bottom: 8px;
+    }
+    .trow .y{ font-weight:1000; color:#111; direction:ltr; text-align:left; }
+    .tbar{
+      height: 22px;
+      background:#f0f0f0;
+      border-radius: 12px;
+      overflow:hidden;
+      border: 1px solid #e5e5e5;
+    }
+    .tfill{
+      height:100%;
+      background: linear-gradient(90deg, #0b63ce 0%, #1f86ff 100%);
+      border-radius: 10px;
+      transition: width .35s ease;
+    }
+    .tval{
+      font-weight:1000;
+      color:#0b63ce;
+      min-width: 90px;
+      direction:ltr;
+      text-align:left;
+      font-size: 13px;
+    }
+    .tval small{
+      display:block;
+      font-weight:900;
+      color:#666;
+      font-size: 11px;
+      direction:ltr;
+      text-align:left;
+      margin-top: 2px;
+    }
+
+    /* Rankings controls */
+    .rank-controls{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+      margin-bottom: 10px;
+    }
+    .rank-ctl-btn{
+      padding: 9px 10px;
+      border-radius: 12px;
+      border: 2px solid #e3e3e3;
+      background:#fff;
+      cursor:pointer;
+      font-weight:1000;
+      font-size: 13px;
+      color:#333;
+    }
+    .rank-ctl-btn.active{
+      background:#0b63ce;
+      border-color:#0b63ce;
+      color:#fff;
+      box-shadow: 0 8px 20px rgba(11,99,206,0.18);
+    }
+    .rank-filter{
+      flex: 1;
+      min-width: 170px;
+      padding: 9px 10px;
+      border-radius: 12px;
+      border: 1px solid #cfcfcf;
       font-weight: 900;
       font-size: 13px;
-      color: #333;
+      outline: none;
     }
-    .trend-row:nth-child(even){ background: #fafafa; }
-    .trend-head{
-      background: linear-gradient(135deg, #e7f3ff 0%, #f3f8ff 100%);
-      color: #063a73;
-      font-weight: 1000;
-      border-bottom: 1px solid #e0e0e0;
-    }
-    .trend-row > div { overflow:hidden; text-overflow: ellipsis; white-space: nowrap; }
 
     /* Rankings */
     .rank-list{
@@ -586,17 +684,15 @@
     .addr-item:hover { background: #f5f9ff; }
     .addr-sub { font-size: 12.5px; color: #666; margin-top: 3px; font-weight: 800; }
 
-    /* Collapse behavior */
-    #info-panel.collapsed { max-height: 82px; height: 82px; }
-#info-panel.collapsed #panel-header { padding: 10px 12px; }
-#info-panel.collapsed #panel-header p { display:none; }
-#info-panel.collapsed #panel-header h1 { font-size: 15px; }
-#info-panel.collapsed #header-actions { margin-top: 0; }
-#info-panel.collapsed #header-actions button:not(#panelToggleBtn) { display:none; }
-
+    /* Collapse behavior (more compact) */
+    #info-panel.collapsed { max-height: 74px; height: 74px; }
     #info-panel.collapsed #tabs,
     #info-panel.collapsed #controls,
     #info-panel.collapsed #info-content { display:none; }
+    #info-panel.collapsed #panel-header { padding: 10px 12px; }
+    #info-panel.collapsed #panel-header p { display: none; }
+    #info-panel.collapsed #header-actions { display: none; }
+    #info-panel.collapsed #panel-header h1 { font-size: 15px; }
 
     /* Mobile bottom sheet */
     @media (max-width: 768px) {
@@ -607,47 +703,14 @@
         height: 62vh;
         border-radius: 20px 20px 0 0;
       }
-      #info-panel.collapsed{ height: 120px; }
+      #info-panel.collapsed{ height: 74px; }
       #info-content{ padding: 12px; }
       .crime-grid { grid-template-columns: 1fr; }
       .compare-kpis { grid-template-columns: 1fr; }
       .bar-row { grid-template-columns: 1fr 1.6fr auto; }
-      .trend-row{ grid-template-columns: 1fr 1fr; gap: 6px; }
-      .trend-head{ display:none; }
+      .trend-kpis { grid-template-columns: 1fr; }
+      .trow{ grid-template-columns: 52px 1fr auto; }
     }
-  
-    /* Compare KPI variants (hide pop/rate when missing) */
-    .compare-kpis.one { grid-template-columns: 1fr; }
-
-    /* Rankings controls */
-    .rank-controls{
-      display:flex; gap:10px; align-items:center; flex-wrap:wrap;
-      padding: 10px 12px;
-      border: 1px solid #eee;
-      border-radius: 16px;
-      background: #fafafa;
-      margin: 10px 0 12px;
-      box-shadow: 0 10px 22px rgba(0,0,0,0.04);
-    }
-    .rank-controls label{ font-weight:1000; font-size:12.5px; color:#333; }
-    .rank-controls select, .rank-controls input{
-      padding: 10px 12px;
-      border-radius: 12px;
-      border: 1px solid #cfcfcf;
-      font-weight: 1000;
-      background:#fff;
-      font-size: 13px;
-    }
-    .rank-controls input{ flex:1; min-width: 170px; }
-
-    /* Trends */
-    .trend-subline{
-      font-size: 12px;
-      color: #666;
-      font-weight: 900;
-      margin-top: 4px;
-    }
-
   </style>
 
   <script>
@@ -657,12 +720,8 @@
     const POLICE_STATION_LAYER = "24";
     const TOKEN = "ede9a5fd-7c23-432f-8ffb-d85feffa3f3c";
 
-    // Local ITM GeoJSON boundaries (optional for each mode)
-    const BOUNDARY_FILES = {
-      muni:    { url: "muni_boundaries_ITM.geojson",    windowVar: "MUNI_DATA",    label: "רשויות/ישובים" },
-      merhav:  { url: "merhav_boundaries_ITM.geojson",  windowVar: "MERHAV_DATA",  label: "מרחבים" },
-      station: { url: "station_boundaries_ITM.geojson", windowVar: "STATION_DATA", label: "תחנות" }
-    };
+    // If muni_boundaries_ITM.geojson exists alongside index.html, it will be fetched.
+    const MUNI_BOUNDARIES_GEOJSON_URL = "muni_boundaries_ITM.geojson";
 
     // ===================== STATE =====================
     let mapInitialized = false;
@@ -675,10 +734,6 @@
     let selectedEntityKey = null; // canonical key for the currentMode
     let compareList = []; // items: { mode, key, name }
 
-    // Rankings UI state
-    let rankingsOrder = "desc"; // desc | asc
-    let rankingsFilter = "";
-
     const muniIndex = Object.create(null);
     const merhavIndex = Object.create(null);
     const stationIndex = Object.create(null);
@@ -686,13 +741,16 @@
     const populationIndex = Object.create(null);
     const variantsCache = new Map();
 
-    // Choropleth overlay
-    const choroplethCache = new Map(); // `${mode}__${year}__${metric}` -> built payload
-    let choroplethEnabled = false;
+    // Rankings UI state
+    let rankingsOrder = "desc"; // desc | asc
+    let rankingsFilter = "";
+
+    // For efficiency:
+    const wktByCrimeNameCache = new Map(); // normalizeKey(name)->wkt
+    const choroplethCache = new Map(); // `${year}__${metric}` -> {payload, meta}
     let activeChoroplethNames = [];
-    let activeHitLayerNames = []; // invisible click layer names (above paint)
-    const CHORO_PREFIX = "crime_choro";
-    const HIT_PREFIX   = "crime_hit";
+    let choroplethEnabled = false;
+    const CHORO_PREFIX = "crime_rate_choropleth";
 
     // Address search state
     let lastGeocodeReqId = 0;
@@ -700,12 +758,11 @@
     let lastGeocodeQuery = "";
     let searchTimeout = null;
 
-    // Boundaries state (per mode)
-    const boundaries = {
-      muni:    { loaded:false, loadError:null, byNorm:Object.create(null), list:[] },
-      merhav:  { loaded:false, loadError:null, byNorm:Object.create(null), list:[] },
-      station: { loaded:false, loadError:null, byNorm:Object.create(null), list:[] }
-    };
+    // Boundaries
+    let muniBoundariesLoaded = false;
+    let muniBoundariesLoadError = null;
+    let muniBoundariesIndex = Object.create(null); // normalizedKey -> WKT
+    let muniBoundariesMeta = [];  // [{ name, wkt }]
 
     // ===================== NORMALIZATION =====================
     function normalizeKeyBase(name) {
@@ -763,14 +820,15 @@
     }
 
     function fmtMaybe(num) {
-      if (num == null) return "0";
+      if (num == null) return "—";
       const n = Number(num);
-      if (!Number.isFinite(n)) return "0";
+      if (!Number.isFinite(n)) return "—";
       return n.toLocaleString();
     }
 
     // ===================== DATA RESOLVERS =====================
     function getStationsDataset(){
+      // Resolve dataset from possible globals without recursion.
       try{
         if (window.crimeByYearStations && typeof window.crimeByYearStations === "object") return window.crimeByYearStations;
       }catch(_){}
@@ -814,6 +872,7 @@
     }
 
     // ===================== POPULATION =====================
+    // Population is static and does not change per crime-year.
     function buildPopulationIndex() {
       for (const k in populationIndex) delete populationIndex[k];
 
@@ -827,6 +886,7 @@
         if (!Number.isFinite(pop)) continue;
         for (const v of nameVariants(displayName)) populationIndex[v] = pop;
       }
+      console.log("✅ Population index ready:", Object.keys(populationIndex).length);
       return true;
     }
 
@@ -839,9 +899,9 @@
     }
 
     function calcRatePer10k(total, pop) {
-      if (!Number.isFinite(Number(total))) return 0;
+      if (!Number.isFinite(Number(total))) return null;
       const p = Number(pop);
-      if (!Number.isFinite(p) || p <= 0) return 0;
+      if (!Number.isFinite(p) || p <= 0) return null;
       return Math.round((Number(total) / p) * 10000 * 10) / 10;
     }
 
@@ -859,9 +919,8 @@
       if (!headerP) return;
 
       const muniOnly = (currentMode === "muni");
-      const extra = muniOnly ? "מדד ל-10,000 זמין כאן (אוכלוסייה סטטית)" : "מדד ל-10,000 לא זמין במצב זה";
-      const ch = choroplethEnabled ? " • צביעה פעילה" : "";
-      headerP.innerHTML = `מצב נוכחי: <strong>${escapeHtml(getModeLabel(currentMode))}</strong>${ch}<br>${extra}`;
+      const extra = muniOnly ? "מדד ל-10,000 זמין כאן (רק אם יש נתון אוכלוסייה)" : "מדד ל-10,000 לא זמין במצב זה";
+      headerP.innerHTML = `מצב נוכחי: <strong>${escapeHtml(getModeLabel(currentMode))}</strong><br>${extra}`;
     }
 
     function updateMetricButtonsUI() {
@@ -872,7 +931,7 @@
         btnRate.classList.toggle("disabled", !muniOnly);
         btnRate.disabled = !muniOnly;
         btnRate.onclick = muniOnly ? () => setMetric("rate") : null;
-        btnRate.title = muniOnly ? "מציג עבירות ל-10,000 תושבים (אוכלוסייה סטטית)" : "זמין רק במצב ישובים/רשויות";
+        btnRate.title = muniOnly ? "מציג עבירות ל-10,000 תושבים (רק אם יש אוכלוסייה)" : "זמין רק במצב ישובים/רשויות";
       }
 
       if (!muniOnly && currentMetric === "rate") {
@@ -906,6 +965,7 @@
 
     function updateQuickStats() {
       const stats = calculateStats(currentYear, currentMode);
+
       const a = document.getElementById("stat-municipalities");
       const b = document.getElementById("stat-total");
       const c = document.getElementById("stat-avg");
@@ -917,7 +977,7 @@
       if (l) l.textContent = (currentMode === "muni" ? "רשויות" : (currentMode === "merhav" ? "מרחבים" : "תחנות"));
     }
 
-    // ===================== INDEX BUILDING =====================
+    // ===================== INDEX BUILDING (MUNI / MERHAV / STATION) =====================
     function clearIndex(obj){
       Object.keys(obj).forEach(k => delete obj[k]);
     }
@@ -930,20 +990,26 @@
       for (const name in yearData) {
         const canonicalKey = normalizeKey(name);
         const entry = { key: canonicalKey, name, data: yearData[name] };
+
         muniIndex[canonicalKey] = entry;
         for (const v of nameVariants(name)) muniIndex[v] = entry;
       }
+      console.log(`✅ Year ${year}: muni index keys = ${Object.keys(muniIndex).length}`);
     }
 
     function buildMerhavIndexForYear(year) {
       clearIndex(merhavIndex);
       const yearData = window.crimeByYearMerhav?.[year];
-      if (!yearData) return;
+      if (!yearData) { 
+        console.warn(`⚠️ No merhav data for year ${year}`); 
+        return; 
+      }
 
       for (const name in yearData) {
         const k = normalizeKey(name);
         merhavIndex[k] = { key: k, name, data: yearData[name] };
       }
+      console.log(`✅ Year ${year}: merhav index keys = ${Object.keys(merhavIndex).length}`);
     }
 
     function buildStationIndexForYear(year) {
@@ -954,9 +1020,11 @@
       for (const stationName in yearData) {
         const canonicalKey = normalizeKey(stationName);
         const entry = { key: canonicalKey, name: String(stationName).trim(), data: yearData[stationName] || { total: 0, breakdown: {} } };
+
         stationIndex[canonicalKey] = entry;
         for (const v of stationNameVariants(stationName)) stationIndex[v] = entry;
       }
+      console.log(`✅ Year ${year}: station index keys = ${Object.keys(stationIndex).length}`);
     }
 
     function buildAllIndexesForYear(year){
@@ -972,24 +1040,27 @@
 
       const total = (typeof d.total === "number") ? d.total : null;
 
-      const popRaw = (currentMode === "muni") ? getPopulationForAuthority(entry.name) : null;
-      const hasPop = (popRaw != null && Number.isFinite(Number(popRaw)) && Number(popRaw) > 0);
-      const pop = hasPop ? Number(popRaw) : null;
+      let popRaw = null;
+      let rate = null;
+      if (currentMode === "muni") {
+        popRaw = getPopulationForAuthority(entry.name);
+        if (popRaw != null) rate = calcRatePer10k(total, popRaw);
+      }
 
       if (total != null) {
+        // If user asked for "rate" but there's no population, show total and a clear hint.
         if (currentMetric === "rate" && currentMode === "muni") {
-          if (hasPop) {
-            const rate = calcRatePer10k(total, pop);
-            html += `<div class="total-summary">${rate.toLocaleString()} ל-10,000</div>`;
-            html += `<div class="sub-summary">אוכלוסייה (סטטית): ${pop.toLocaleString()} • סה"כ אירועים: ${Number(total).toLocaleString()}</div>`;
-          } else {
+          if (popRaw == null || rate == null) {
             html += `<div class="total-summary">${Number(total).toLocaleString()} אירועים</div>`;
-            html += `<div class="message message-warn" style="margin:10px 0 0 0;">אין נתון אוכלוסייה לרשות הזו — לא ניתן לחשב ל-10,000.</div>`;
+            html += `<div class="message message-warn">אין נתון אוכלוסייה עבור הרשות הזו, לכן לא מוצג חישוב ל‑10,000.</div>`;
+          } else {
+            html += `<div class="total-summary">${Number(rate).toLocaleString()} ל-10,000</div>`;
+            html += `<div class="sub-summary">אוכלוסייה (סטטית): ${Number(popRaw).toLocaleString()} • סה"כ אירועים: ${Number(total).toLocaleString()}</div>`;
           }
         } else {
           html += `<div class="total-summary">${Number(total).toLocaleString()} אירועים</div>`;
-          if (currentMode === "muni" && hasPop) {
-            html += `<div class="sub-summary">אוכלוסייה (סטטית): ${pop.toLocaleString()}</div>`;
+          if (currentMode === "muni" && popRaw != null) {
+            html += `<div class="sub-summary">אוכלוסייה (סטטית): ${Number(popRaw).toLocaleString()}</div>`;
           }
         }
       }
@@ -1075,8 +1146,18 @@
           if (typeof govmap.setVisibleLayers === "function") {
             govmap.setVisibleLayers([layerToShow], layersToHide);
           }
-        } catch (err) {}
+        } catch (err) {
+          console.warn("⚠️ setVisibleLayers failed:", err);
+        }
       }
+
+      // Choropleth only for muni
+      if (mode !== "muni") {
+        choroplethEnabled = false;
+        clearChoropleth();
+        setMunicipalLayerOpacity(100);
+      }
+      setChoroBtnUI();
 
       // Selection handling
       selectedEntityName = null;
@@ -1084,13 +1165,6 @@
 
       // Keep compare entries only for this mode
       compareList = compareList.filter(c => c.mode === mode);
-
-      // If choropleth active -> rerender for the new mode (requires boundaries file)
-      if (choroplethEnabled) {
-        clearChoropleth();
-        clearHitLayer();
-        renderChoropleth().catch(()=>{});
-      }
 
       if (currentTab === "compare") updateCompareView();
       else if (currentTab === "rankings") renderRankings();
@@ -1104,9 +1178,6 @@
           "info"
         );
       }
-
-      setChoroBtnUI();
-      updateHeaderModeLine();
     }
 
     function setMetric(metric) {
@@ -1119,11 +1190,14 @@
 
       const bAbs = document.getElementById("btnMetricAbs");
       const bRate = document.getElementById("btnMetricRate");
+
       if (bAbs) bAbs.classList.toggle("active", metric === "abs");
       if (bRate) bRate.classList.toggle("active", metric === "rate");
 
-      if (choroplethEnabled) renderChoropleth().catch(()=>{});
+      // Choropleth depends on metric => render (cached)
+      if (choroplethEnabled && currentMode === "muni") renderChoropleth();
 
+      // Refresh current selection without re-click
       if (currentTab === "single" && selectedEntityKey) {
         const index = getIndexByMode(currentMode);
         const entry = index[selectedEntityKey];
@@ -1134,7 +1208,6 @@
       if (currentTab === "rankings") renderRankings();
 
       setChoroBtnUI();
-      updateHeaderModeLine();
     }
 
     // ===================== COMPARE =====================
@@ -1174,7 +1247,7 @@
         html += '<div class="compare-tags">';
         filteredList.forEach(item => {
           html += `<div class="compare-city-tag">${escapeHtml(item.name)}
-            <button onclick="removeFromCompare('${escapeHtml(item.key)}')" title="הסר">×</button></div>`;
+            <button onclick="removeFromCompare('${item.key}')" title="הסר">×</button></div>`;
         });
         html += "</div>";
       }
@@ -1188,32 +1261,33 @@
       const index = getIndexByMode(currentMode);
 
       const metricType = (currentMode === "muni" && currentMetric === "rate") ? "rate" : "total";
-      const metricBadge = (metricType === "rate") ? "מדד: ל-10,000" : "מדד: כמות";
 
       const rows = filteredList.map(item => {
         const entry = index[item.key];
         const total = entry?.data?.total ?? 0;
-        const popRaw = (currentMode === "muni") ? getPopulationForAuthority(entry?.name || item.name) : null;
-        const hasPop = (popRaw != null && Number.isFinite(Number(popRaw)) && Number(popRaw) > 0);
-        const pop = hasPop ? Number(popRaw) : null;
-        const rate = (currentMode === "muni" && hasPop) ? calcRatePer10k(total, pop) : null;
-        return { name: entry?.name || item.name, total, pop, rate, hasPop };
+
+        if (currentMode !== "muni") {
+          return { name: entry?.name || item.name, total, pop: null, rate: null, hasPop: false };
+        }
+
+        const popRaw = getPopulationForAuthority(entry?.name || item.name);
+        const pop = (popRaw == null ? null : Number(popRaw));
+        const rate = (popRaw == null ? null : calcRatePer10k(total, popRaw));
+        return { name: entry?.name || item.name, total, pop, rate, hasPop: popRaw != null };
       });
 
       if (currentMode !== "muni") {
         html += `<div class="message message-info">במצב ${getModeLabel(currentMode)} ההשוואה היא לפי כמות בלבד.</div>`;
       } else if (metricType === "rate") {
-        html += `<div class="message message-info">השוואה לפי <strong>ל-10,000 תושבים</strong> (אוכלוסייה סטטית; חסר = 0).</div>`;
+        html += `<div class="message message-info">השוואה לפי <strong>ל-10,000 תושבים</strong> (רק אם יש נתון אוכלוסייה).</div>`;
       } else {
-        html += `<div class="message message-info">טיפ: מעבר ל־<strong>ל-10,000</strong> משווה יחסית לגודל אוכלוסייה (סטטית).</div>`;
+        html += `<div class="message message-info">טיפ: מעבר ל־<strong>ל-10,000</strong> משווה יחסית לגודל אוכלוסייה (אם קיים נתון).</div>`;
       }
 
       html += `<div class="compare-grid">`;
       rows.forEach(r => {
         const badges = [];
         if (currentMode === "muni" && !r.hasPop) badges.push(`<span class="badge badge-warn">אין נתון אוכלוסייה</span>`);
-
-        const kpiClass = (currentMode === "muni" && !r.hasPop) ? "compare-kpis one" : "compare-kpis";
 
         html += `
           <div class="compare-card">
@@ -1222,26 +1296,19 @@
               <div class="compare-badges">${badges.join("")}</div>
             </div>
 
-            <div class="${kpiClass}">
+            <div class="compare-kpis">
               <div class="kpi">
                 <div class="kpi-value">${Number(r.total).toLocaleString()}</div>
                 <div class="kpi-label">כמות פשעים</div>
               </div>
-
-              ${
-                (currentMode === "muni" && r.hasPop)
-                  ? `
-                    <div class="kpi">
-                      <div class="kpi-value">${fmtMaybe(r.pop)}</div>
-                      <div class="kpi-label">אוכלוסייה</div>
-                    </div>
-                    <div class="kpi">
-                      <div class="kpi-value">${(r.rate == null ? "—" : Number(r.rate).toLocaleString())}</div>
-                      <div class="kpi-label">ל-10,000</div>
-                    </div>
-                  `
-                  : ``
-              }
+              <div class="kpi">
+                <div class="kpi-value">${currentMode === "muni" ? fmtMaybe(r.pop) : "—"}</div>
+                <div class="kpi-label">אוכלוסייה</div>
+              </div>
+              <div class="kpi">
+                <div class="kpi-value">${currentMode === "muni" ? fmtMaybe(r.rate) : "—"}</div>
+                <div class="kpi-label">ל-10,000</div>
+              </div>
             </div>
           </div>
         `;
@@ -1255,20 +1322,23 @@
       html += `<div class="compare-bars-title">${title}</div>`;
 
       const values = rows
-        .map(r => (metricType === "rate" ? r.rate : r.total))
-        .filter(v => Number.isFinite(v));
+        .map(r => metricType === "rate" ? r.rate : r.total)
+        .filter(v => Number.isFinite(Number(v)));
+
       const max = values.length ? Math.max(...values) : 0;
 
       rows.forEach(r => {
-        const vNum = (metricType === "rate" ? r.rate : r.total);
-        const v = Number.isFinite(vNum) ? vNum : 0;
-        const pct = (max > 0 && Number.isFinite(vNum)) ? Math.round((v / max) * 100) : 0;
-        const valueText = (metricType === "rate" && !Number.isFinite(vNum)) ? "—" : Number(v || 0).toLocaleString();
+        const v = (metricType === "rate") ? r.rate : r.total;
+        const vv = Number(v);
+        const hasV = Number.isFinite(vv);
+        const pct = (hasV && max > 0) ? Math.round((vv / max) * 100) : 0;
+        const showText = hasV ? vv.toLocaleString() : "—";
+
         html += `
           <div class="bar-row" title="${escapeHtml(r.name)}">
             <div class="bar-name">${escapeHtml(r.name)}</div>
             <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
-            <div class="bar-value">${valueText}</div>
+            <div class="bar-value">${showText}</div>
           </div>
         `;
       });
@@ -1276,7 +1346,7 @@
       container.innerHTML = html;
     }
 
-    // ===================== TRENDS =====================
+    // ===================== TRENDS (Redesign) =====================
     function showTrends(entityName, mode = currentMode) {
       const container = document.getElementById("trends-content");
       if (!container) return;
@@ -1314,78 +1384,112 @@
         return null;
       };
 
-      // Population once (muni only)
-      let popRaw = null, pop = null, hasPop = false;
+      // Find population (once) if muni
+      let popOnce = null;
       if (mode === "muni") {
-        popRaw = getPopulationForAuthority(entityName);
-        hasPop = (popRaw != null && Number.isFinite(Number(popRaw)) && Number(popRaw) > 0);
-        pop = hasPop ? Number(popRaw) : null;
+        // Try from any matching year-name for better odds
+        for (const y of years) {
+          const found = findEntryInYear(dataset[y]);
+          const p = getPopulationForAuthority(found?.name || entityName);
+          if (p != null) { popOnce = Number(p); break; }
+        }
       }
 
-      const wantsRate = (mode === "muni" && currentMetric === "rate");
-      const metricType = (wantsRate && hasPop) ? "rate" : "total";
+      const metricType = (mode === "muni" && currentMetric === "rate" && popOnce != null) ? "rate" : "total";
       const metricLabel = (metricType === "rate") ? "ל-10,000" : "כמות";
 
       const yearly = years.map(y => {
         const found = findEntryInYear(dataset[y]);
         const total = Number(found?.data?.total || 0);
-        const rate = (mode === "muni" && hasPop) ? calcRatePer10k(total, pop) : null;
+        const rate = (mode === "muni" && metricType === "rate") ? calcRatePer10k(total, popOnce) : null;
         return { year: y, total, rate };
       });
 
-      const values = yearly
-        .map(r => metricType === "rate" ? r.rate : r.total)
-        .filter(v => Number.isFinite(v));
+      const values = yearly.map(r => (metricType === "rate" ? r.rate : r.total)).filter(v => Number.isFinite(Number(v)));
       const max = values.length ? Math.max(...values) : 0;
+      const min = values.length ? Math.min(...values) : 0;
 
-      let header = `
-        <div class="message message-info" style="margin-bottom:10px;">
-          <strong>${escapeHtml(entityName)}</strong> • מצב: <strong>${getModeLabel(mode)}</strong><br>
-          מציג לפי: <strong>${metricLabel}</strong>
-          ${mode === "muni" && hasPop ? ` • אוכלוסייה (סטטית): <strong>${pop.toLocaleString()}</strong>` : ``}
-        </div>
+      // KPI: latest, change, min/max
+      const latest = yearly[yearly.length - 1];
+      const first = yearly[0];
+
+      const latestV = (metricType === "rate") ? latest?.rate : latest?.total;
+      const firstV  = (metricType === "rate") ? first?.rate : first?.total;
+      const delta = (Number.isFinite(Number(latestV)) && Number.isFinite(Number(firstV))) ? (Number(latestV) - Number(firstV)) : null;
+
+      const popLine = (mode === "muni" && popOnce != null) ? ` • אוכלוסייה (סטטית): <strong>${Number(popOnce).toLocaleString()}</strong>` : "";
+      const popWarn = (mode === "muni" && popOnce == null) ? `<br><span style="opacity:.95;">אין נתון אוכלוסייה — לא מוצג חישוב ל‑10,000.</span>` : "";
+
+      let html = `
+        <div class="trend-shell">
+          <div class="trend-top">
+            <div class="trend-title">
+              <span>${escapeHtml(entityName)}</span>
+              <span style="font-weight:1000;opacity:.95;">${escapeHtml(getModeLabel(mode))}</span>
+            </div>
+            <div class="trend-sub">
+              מציג לפי: <strong>${escapeHtml(metricLabel)}</strong>${popLine}${popWarn}
+            </div>
+            <div class="trend-kpis">
+              <div class="trend-kpi">
+                <div class="v">${fmtMaybe(latestV)}</div>
+                <div class="l">שנה אחרונה (${escapeHtml(latest?.year)})</div>
+              </div>
+              <div class="trend-kpi">
+                <div class="v">${delta == null ? "—" : (delta > 0 ? "+" : "") + Number(delta).toLocaleString()}</div>
+                <div class="l">שינוי מול ${escapeHtml(first?.year)}</div>
+              </div>
+              <div class="trend-kpi">
+                <div class="v">${fmtMaybe(min)} – ${fmtMaybe(max)}</div>
+                <div class="l">טווח שנים</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="trend-list">
       `;
 
-      if (wantsRate && mode === "muni" && !hasPop) {
-        header += `<div class="message message-warn" style="margin-bottom:10px;">אין נתון אוכלוסייה לרשות הזו — מציג כמות במקום ל-10,000.</div>`;
-      }
-
-      let html = header;
-      html += `<div class="compare-bars-title">מגמה לאורך השנים</div>`;
-
       yearly.forEach(r => {
-        const vNum = (metricType === "rate") ? r.rate : r.total;
-        const v = Number.isFinite(vNum) ? vNum : 0;
-        const pct = (max > 0 && Number.isFinite(vNum)) ? Math.round((v / max) * 100) : 0;
+        const v = (metricType === "rate") ? r.rate : r.total;
+        const vv = Number(v);
+        const hasV = Number.isFinite(vv);
+        const pct = (hasV && max > 0) ? Math.round((vv / max) * 100) : 0;
 
-        const valueText =
-          (metricType === "rate")
-            ? (Number.isFinite(r.rate) ? Number(r.rate).toLocaleString() : "—")
-            : Number(r.total || 0).toLocaleString();
-
-        const sub =
-          (mode === "muni" && hasPop)
-            ? (metricType === "rate"
-                ? `כמות: ${Number(r.total || 0).toLocaleString()}`
-                : (currentMetric === "rate" ? `` : `ל-10,000: ${Number(r.rate || 0).toLocaleString()}`))
-            : ``;
+        const mainText = hasV ? vv.toLocaleString() : "—";
+        const subText = (metricType === "rate") ? `כמות: ${Number(r.total || 0).toLocaleString()}` : "";
 
         html += `
-          <div class="bar-row" title="${escapeHtml(entityName)} • ${escapeHtml(r.year)}">
-            <div class="bar-name">${escapeHtml(r.year)}</div>
-            <div>
-              <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
-              ${sub ? `<div class="trend-subline">${escapeHtml(sub)}</div>` : ``}
-            </div>
-            <div class="bar-value">${valueText}</div>
+          <div class="trow">
+            <div class="y">${escapeHtml(r.year)}</div>
+            <div class="tbar"><div class="tfill" style="width:${pct}%"></div></div>
+            <div class="tval">${mainText}${subText ? `<small>${escapeHtml(subText)}</small>` : ""}</div>
           </div>
         `;
       });
+
+      html += `
+          </div>
+        </div>
+      `;
 
       container.innerHTML = html;
     }
 
     // ===================== RANKINGS =====================
+    function setRankingsOrder(order){
+      rankingsOrder = (order === "asc") ? "asc" : "desc";
+      const bDesc = document.getElementById("rankSortDesc");
+      const bAsc  = document.getElementById("rankSortAsc");
+      if (bDesc) bDesc.classList.toggle("active", rankingsOrder === "desc");
+      if (bAsc)  bAsc.classList.toggle("active", rankingsOrder === "asc");
+      renderRankings();
+    }
+
+    function setRankingsFilter(val){
+      rankingsFilter = String(val || "").trim();
+      renderRankings();
+    }
+
     function renderRankings() {
       const container = document.getElementById("rankings-content");
       if (!container) return;
@@ -1397,73 +1501,64 @@
         return;
       }
 
-      const wantsRate = (currentMode === "muni" && currentMetric === "rate");
-      const metricType = wantsRate ? "rate" : "total";
-      const metricLabel = (metricType === "rate") ? "ל-10,000" : "כמות";
-
+      const wantRate = (currentMode === "muni" && currentMetric === "rate");
       const rows = [];
+
+      let skippedNoPop = 0;
+
       for (const name in yearData) {
         const d = yearData[name];
         const total = Number(d?.total || 0);
 
-        if (metricType === "rate") {
+        if (wantRate) {
           const popRaw = getPopulationForAuthority(name);
-          const hasPop = (popRaw != null && Number.isFinite(Number(popRaw)) && Number(popRaw) > 0);
-          const pop = hasPop ? Number(popRaw) : null;
-          const rate = hasPop ? calcRatePer10k(total, pop) : null;
-          rows.push({ name, value: rate, total, pop, hasPop });
+          if (popRaw == null) { skippedNoPop++; continue; }
+          const rate = calcRatePer10k(total, popRaw);
+          if (rate == null) { skippedNoPop++; continue; }
+          rows.push({ name, value: rate, extra: { pop: Number(popRaw), total } });
         } else {
-          rows.push({ name, value: total, total, pop: null, hasPop: false });
+          rows.push({ name, value: total, extra: { total } });
         }
       }
 
-      const q = String(rankingsFilter || "").trim().toLowerCase();
-      const filtered = !q ? rows : rows.filter(r => String(r.name).toLowerCase().includes(q));
+      // Filter by name
+      const f = normalizeKey(rankingsFilter);
+      const filtered = !f ? rows : rows.filter(r => normalizeKey(r.name).includes(f));
 
-      const numeric = filtered.filter(r => Number.isFinite(r.value));
-      const nonNumeric = filtered.filter(r => !Number.isFinite(r.value));
-
-      numeric.sort((a,b) => {
-        return rankingsOrder === "asc" ? (a.value - b.value) : (b.value - a.value);
+      // Sort
+      filtered.sort((a,b)=>{
+        const av = Number(a.value || 0);
+        const bv = Number(b.value || 0);
+        return (rankingsOrder === "asc") ? (av - bv) : (bv - av);
       });
 
-      const sorted = [...numeric, ...nonNumeric];
-
-      const orderText = (rankingsOrder === "asc") ? "מהכי מעט להכי הרבה" : "מהכי הרבה להכי מעט";
+      const metricLabel = wantRate ? "ל-10,000" : "כמות (אבסולוטי)";
+      const orderLabel = (rankingsOrder === "asc") ? "מהכי מעט להכי הרבה" : "מהכי הרבה להכי מעט";
 
       let html = `
-        <div class="message message-info" style="margin-bottom:10px;">
-          שנה: <strong>${currentYear}</strong> • מצב: <strong>${getModeLabel(currentMode)}</strong><br>
-          דירוג לפי: <strong>${metricLabel}</strong> • סדר: <strong>${orderText}</strong>
+        <div class="rank-controls">
+          <button id="rankSortDesc" class="rank-ctl-btn ${rankingsOrder === "desc" ? "active" : ""}" onclick="setRankingsOrder('desc')">⬇️ הכי הרבה → הכי מעט</button>
+          <button id="rankSortAsc" class="rank-ctl-btn ${rankingsOrder === "asc" ? "active" : ""}" onclick="setRankingsOrder('asc')">⬆️ הכי מעט → הכי הרבה</button>
+          <input class="rank-filter" placeholder="סינון לפי שם…" value="${escapeHtml(rankingsFilter)}" oninput="setRankingsFilter(this.value)" />
         </div>
 
-        <div class="rank-controls">
-          <label for="rankOrder">סדר:</label>
-          <select id="rankOrder">
-            <option value="desc">מהכי הרבה → להכי מעט</option>
-            <option value="asc">מהכי מעט → להכי הרבה</option>
-          </select>
-
-          <label for="rankFilter">חיפוש:</label>
-          <input id="rankFilter" type="text" placeholder="חפש שם..." value="${escapeHtml(rankingsFilter)}">
-          <span style="font-weight:1000;color:#666;font-size:12.5px;">מציג ${sorted.length.toLocaleString()} מתוך ${rows.length.toLocaleString()}</span>
+        <div class="message message-info" style="margin-bottom:10px;">
+          שנה: <strong>${escapeHtml(currentYear)}</strong> • מצב: <strong>${escapeHtml(getModeLabel(currentMode))}</strong><br>
+          דירוג לפי: <strong>${escapeHtml(metricLabel)}</strong> • סדר: <strong>${escapeHtml(orderLabel)}</strong> • מוצגים: <strong>${filtered.length}</strong>
         </div>
       `;
 
-      if (metricType === "rate") {
-        html += `<div class="message message-warn" style="margin-bottom:10px;">רשויות בלי נתון אוכלוסייה מוצגות עם "—" ולא נכנסות לסדר המספרי.</div>`;
+      if (wantRate && skippedNoPop) {
+        html += `<div class="message message-warn">לא הוצגו ${skippedNoPop.toLocaleString()} רשויות ללא נתון אוכלוסייה (כדי למנוע חישוב שגוי ל‑10,000).</div>`;
       }
 
       html += `<div class="rank-list">`;
 
-      sorted.forEach((r, idx) => {
-        const valueText = Number.isFinite(r.value) ? Number(r.value).toLocaleString() : "—";
-
+      filtered.forEach((r, idx) => {
+        const valueText = Number(r.value || 0).toLocaleString();
         const extra =
-          (metricType === "rate")
-            ? (r.hasPop
-                ? `<div class="rank-extra">כמות: ${Number(r.total || 0).toLocaleString()} • אוכלוסייה: ${Number(r.pop || 0).toLocaleString()}</div>`
-                : `<div class="rank-extra">אין נתון אוכלוסייה</div>`)
+          wantRate
+            ? `<div class="rank-extra">כמות: ${Number(r.extra?.total || 0).toLocaleString()} • אוכלוסייה: ${Number(r.extra?.pop || 0).toLocaleString()}</div>`
             : ``;
 
         html += `
@@ -1478,25 +1573,6 @@
 
       html += `</div>`;
       container.innerHTML = html;
-
-      const sel = container.querySelector("#rankOrder");
-      const inp = container.querySelector("#rankFilter");
-
-      if (sel) {
-        sel.value = rankingsOrder;
-        sel.addEventListener("change", () => {
-          rankingsOrder = sel.value === "asc" ? "asc" : "desc";
-          renderRankings();
-        });
-      }
-
-      if (inp) {
-        inp.addEventListener("input", () => {
-          rankingsFilter = inp.value || "";
-          // debounce not necessary here (local render)
-          renderRankings();
-        });
-      }
     }
 
     function selectFromRank(name){
@@ -1524,6 +1600,7 @@
 
       selectedEntityName = entry.name;
       selectedEntityKey = entry.key;
+
       showEntry(entry);
     }
 
@@ -1593,51 +1670,127 @@
       return (v == null) ? null : String(v).trim();
     }
 
-    // ===================== MODALS & PANEL =====================
-    let lastFocusedBeforeModal = null;
+    async function onMapClick(e) {
+      if (!mapInitialized) return;
 
-    function openModal(id){
-      const m = document.getElementById(id);
-      if(!m) return;
+      try {
+        const layerName =
+          (currentMode === "muni") ? MUNICIPAL_LAYER :
+          (currentMode === "merhav") ? POLICE_MERHAV_LAYER :
+          POLICE_STATION_LAYER;
 
-      lastFocusedBeforeModal = document.activeElement;
+        const resp = await govmap.getLayerData({
+          LayerName: layerName,
+          Point: e.mapPoint,
+          Radius: 300
+        });
 
-      // Make it visible first, then update aria, then focus
-      m.style.display = "block";
-      m.setAttribute("aria-hidden", "false");
-      try { m.removeAttribute("inert"); } catch(_){}
+        const items = resp?.data || resp?.Data || [];
+        if (!items.length) {
+          showInfo("לא נמצא", "אין אובייקט באזור זה", "info");
+          return;
+        }
 
-      const card = m.querySelector(".modalCard");
-      if(card) card.setAttribute("tabindex", "-1");
+        const first = items[0];
+        const attrs = first.Fields || first.Attributes || first;
+        const attrsObj = fieldsToObject(attrs) || attrs || {};
 
-      // Focus the first focusable element inside the modal (prevents aria-hidden warnings)
-      setTimeout(()=>{
-        const focusable = m.querySelector("input, button, [href], select, textarea, [tabindex]:not([tabindex='-1'])");
-        const target = focusable || card || m;
-        try { target && target.focus && target.focus(); } catch(_){}
-      }, 0);
-    }
+        const index = getIndexByMode(currentMode);
 
-    function closeModal(id){
-      const m = document.getElementById(id);
-      if(!m) return;
+        if (currentMode === "muni") {
+          const nameFromMap = detectMunicipalityName(attrsObj);
+          if (!nameFromMap) {
+            showInfo("שגיאה", "לא ניתן לזהות את שם הרשות", "error");
+            return;
+          }
+          const k = normalizeKey(nameFromMap);
+          const entry = index[k] || index[nameVariants(nameFromMap)[0]] || null;
 
-      // If focus is inside modal, blur before hiding
-      try{
-        const active = document.activeElement;
-        if(active && m.contains(active)) active.blur();
-      }catch(_){}
+          if (!entry) {
+            showInfo("לא נמצאו נתונים", `אין נתוני פשיעה עבור <strong>${escapeHtml(nameFromMap)}</strong> בשנת ${currentYear}`, "error");
+            return;
+          }
 
-      m.setAttribute("aria-hidden", "true");
-      try { m.setAttribute("inert", ""); } catch(_){}
-      m.style.display = "none";
+          selectedEntityName = entry.name;
+          selectedEntityKey = entry.key;
 
-      // Restore focus to where the user was
-      if(lastFocusedBeforeModal && typeof lastFocusedBeforeModal.focus === "function"){
-        try { lastFocusedBeforeModal.focus(); } catch(_){}
+          if (currentTab === "compare") updateCompareView();
+          else if (currentTab === "trends") showTrends(selectedEntityName, "muni");
+          else if (currentTab === "rankings") renderRankings();
+          else showEntry(entry);
+
+          return;
+        }
+
+        if (currentMode === "station") {
+          const stationName = detectStationName(attrsObj);
+          if (!stationName) {
+            const keysList = Object.keys(attrsObj || {});
+            showInfo(
+              "שגיאה",
+              `לא הצלחתי לזהות את <strong>שם התחנה</strong> מהשכבה.<br/>
+               שמות שדות שהתקבלו: <span style="direction:ltr;unicode-bidi:bidi-override">${escapeHtml(keysList.join(" | "))}</span>`,
+              "error"
+            );
+            return;
+          }
+
+          const k = normalizeKey(stationName);
+          let entry = index[k] || null;
+          if (!entry) {
+            for (const v of stationNameVariants(stationName)) {
+              if (index[v]) { entry = index[v]; break; }
+            }
+          }
+
+          if (!entry) {
+            showInfo("לא נמצאו נתונים", `אין נתוני פשיעה עבור <strong>${escapeHtml(stationName)}</strong> בשנת ${currentYear}`, "error");
+            return;
+          }
+
+          selectedEntityName = entry.name;
+          selectedEntityKey = entry.key;
+
+          if (currentTab === "compare") updateCompareView();
+          else if (currentTab === "trends") showTrends(selectedEntityName, "station");
+          else if (currentTab === "rankings") renderRankings();
+          else showEntry(entry);
+
+          return;
+        }
+
+        // Merhav
+        const merhavName = detectMerhavName(attrsObj);
+        if (!merhavName) {
+          showInfo("שגיאה", "לא ניתן לזהות את שם מרחב המשטרה", "error");
+          return;
+        }
+
+        const k = normalizeKey(merhavName);
+        const entry = index[k] || null;
+
+        if (!entry) {
+          showInfo("לא נמצאו נתונים", `אין נתוני פשיעה עבור <strong>${escapeHtml(merhavName)}</strong> בשנת ${currentYear}`, "error");
+          return;
+        }
+
+        selectedEntityName = entry.name;
+        selectedEntityKey = entry.key;
+
+        if (currentTab === "compare") updateCompareView();
+        else if (currentTab === "trends") showTrends(selectedEntityName, "merhav");
+        else if (currentTab === "rankings") renderRankings();
+        else showEntry(entry);
+
+      } catch (error) {
+        console.error("❌ Error in onMapClick:", error);
+        showInfo("שגיאה", `אירעה שגיאה: ${escapeHtml(error?.message || 'שגיאה לא מוגדרת')}`, "error");
       }
-      lastFocusedBeforeModal = null;
     }
+
+    // ===================== MODALS & PANEL =====================
+    function openModal(id){ const m=document.getElementById(id); if(m) m.style.display="block"; }
+    function closeModal(id){ const m=document.getElementById(id); if(m) m.style.display="none"; }
 
     function initModals(){
       const aboutBtn = document.getElementById("aboutBtn");
@@ -1851,7 +2004,7 @@
       });
     }
 
-    // ===================== GEOJSON -> WKT + HIT TEST =====================
+    // ===================== GEOJSON -> WKT =====================
     function ensureClosedRing(coords){
       if(!Array.isArray(coords) || coords.length<3) return coords;
       const first = coords[0];
@@ -1884,204 +2037,109 @@
       return null;
     }
 
-    function bboxOfCoords(coords){
-      let minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;
-      const walk = (arr)=>{
-        if (!Array.isArray(arr)) return;
-        if (arr.length && typeof arr[0] === "number" && typeof arr[1] === "number") {
-          const x = Number(arr[0]), y = Number(arr[1]);
-          if (Number.isFinite(x) && Number.isFinite(y)) {
-            if (x<minX) minX=x; if (y<minY) minY=y;
-            if (x>maxX) maxX=x; if (y>maxY) maxY=y;
-          }
-          return;
-        }
-        for (const a of arr) walk(a);
-      };
-      walk(coords);
-      if(!Number.isFinite(minX)) return null;
-      return {minX,minY,maxX,maxY};
-    }
+    async function loadMuniBoundariesGeojson(){
+      if(muniBoundariesLoaded) return true;
 
-    // Ray casting point-in-ring
-    function pointInRing(x, y, ring){
-      const r = ensureClosedRing(ring || []);
-      let inside = false;
-      for (let i=0, j=r.length-1; i<r.length; j=i++){
-        const xi = Number(r[i][0]), yi = Number(r[i][1]);
-        const xj = Number(r[j][0]), yj = Number(r[j][1]);
-        const intersect = ((yi > y) !== (yj > y)) && (x < (xj - xi) * (y - yi) / ((yj - yi) || 1e-12) + xi);
-        if (intersect) inside = !inside;
-      }
-      return inside;
-    }
-
-    function pointInPolygonGeom(x, y, geom){
-      if(!geom || !geom.type) return false;
-      if(geom.type === "Polygon"){
-        const rings = geom.coordinates || [];
-        if(!rings.length) return false;
-        if (!pointInRing(x,y,rings[0])) return false;
-        // holes
-        for (let i=1;i<rings.length;i++){
-          if (pointInRing(x,y,rings[i])) return false;
-        }
-        return true;
-      }
-      if(geom.type === "MultiPolygon"){
-        const polys = geom.coordinates || [];
-        for (const poly of polys){
-          if(!poly || !poly.length) continue;
-          if (!pointInRing(x,y,poly[0])) continue;
-          let inHole = false;
-          for (let i=1;i<poly.length;i++){
-            if (pointInRing(x,y,poly[i])) { inHole=true; break; }
-          }
-          if(!inHole) return true;
-        }
-        return false;
-      }
-      return false;
-    }
-
-    async function loadBoundariesForMode(mode){
-      const st = boundaries[mode];
-      if(!st) return false;
-      if(st.loaded) return true;
-
-      st.loadError = null;
-      st.byNorm = Object.create(null);
-      st.list = [];
-
+      muniBoundariesLoadError = null;
       try{
-        const cfg = BOUNDARY_FILES[mode];
-        if(!cfg) throw new Error("Missing cfg for mode " + mode);
+        let feats = [];
 
-        // 1) Try window var (if you embed it as JS)
-        const varObj = window[cfg.windowVar];
-        let feats = Array.isArray(varObj?.features) ? varObj.features : null;
-
-        // 2) Try fetch local file
-        if(!feats){
-          const res = await fetch(cfg.url, { cache: "no-store" });
-          if(!res.ok) throw new Error(`fetch failed (${res.status}) for ${cfg.url}`);
+        // 1) Try loading from variable (local file bypass)
+        if (window.MUNI_DATA && window.MUNI_DATA.features) {
+          feats = window.MUNI_DATA.features;
+        } else {
+          // 2) Try loading via fetch
+          const res = await fetch(MUNI_BOUNDARIES_GEOJSON_URL, { cache: "no-store" });
+          if(!res.ok) throw new Error(`fetch failed (${res.status})`);
           const gj = await res.json();
           feats = Array.isArray(gj?.features) ? gj.features : [];
         }
 
-        for(const f of (feats || [])){
+        muniBoundariesIndex = Object.create(null);
+        muniBoundariesMeta = [];
+
+        for(const f of feats){
           const name = f?.properties?.name;
-          const geom = f?.geometry;
-          if(!name || !geom) continue;
-
-          const wkt  = geojsonGeomToWkt(geom);
-          if(!wkt) continue;
-
-          const bbox = bboxOfCoords(geom.coordinates);
-          const item = { name: String(name).trim(), norm: normalizeKey(name), wkt, geom, bbox };
-          st.byNorm[item.norm] = item;
-          st.list.push(item);
+          const wkt  = geojsonGeomToWkt(f?.geometry);
+          if(!name || !wkt) continue;
+          muniBoundariesIndex[normalizeKey(name)] = wkt;
+          muniBoundariesMeta.push({ name: String(name), wkt });
         }
 
-        st.loaded = true;
+        muniBoundariesLoaded = true;
+        console.log("✅ Boundaries loaded:", Object.keys(muniBoundariesIndex).length);
         return true;
 
       }catch(e){
-        st.loadError = e;
-        st.loaded = false;
-        console.warn("❌ boundaries load failed:", mode, e);
+        muniBoundariesLoadError = e;
+        console.error("❌ Failed loading muni boundaries:", e);
         return false;
+
       }finally{
         setChoroBtnUI();
       }
     }
 
-    function boundaryLookup(mode, name){
-      const st = boundaries[mode];
-      if(!st || !st.loaded) return null;
-      const nk = normalizeKey(name);
+    function findWktForCrimeName(crimeName){
+      const nk = normalizeKey(crimeName);
+      if (wktByCrimeNameCache.has(nk)) return wktByCrimeNameCache.get(nk);
 
-      // muni has name variations
-      if(mode === "muni"){
-        for (const v of [name, ...nameVariants(name)]) {
-          const it = st.byNorm[normalizeKey(v)];
-          if(it) return it;
+      const vars = [crimeName, ...(Array.isArray(nameVariants(crimeName)) ? nameVariants(crimeName) : [])];
+      for(const v of vars){
+        const wkt = muniBoundariesIndex?.[normalizeKey(v)];
+        if(wkt){
+          wktByCrimeNameCache.set(nk, wkt);
+          return wkt;
         }
-        return st.byNorm[nk] || null;
       }
 
-      // station has station variants
-      if(mode === "station"){
-        const vars = stationNameVariants(name);
-        for (const v of vars) {
-          const it = st.byNorm[normalizeKey(v)];
-          if(it) return it;
-        }
-        return st.byNorm[nk] || null;
-      }
-
-      return st.byNorm[nk] || null;
-    }
-
-    function hitTestBoundaries(mode, x, y){
-      const st = boundaries[mode];
-      if(!st || !st.loaded || !st.list.length) return null;
-
-      // Quick pass by bbox
-      for (const it of st.list){
-        const b = it.bbox;
-        if(b && (x < b.minX || x > b.maxX || y < b.minY || y > b.maxY)) continue;
-        if(pointInPolygonGeom(x, y, it.geom)) return it;
-      }
+      wktByCrimeNameCache.set(nk, null);
       return null;
     }
 
-    // ===================== CHOROPLETH HELPERS =====================
-    // This section is the one you can search for in your editor:
-    // "CHOROPLETH HELPERS"
+    // ===================== CHOROPLETH (unchanged logic) =====================
     function lerp(a,b,t){ return a + (b-a)*t; }
     function clamp01(x){ return Math.max(0, Math.min(1, x)); }
 
     function valueToColor(value, minV, maxV){
       const t = (maxV > minV) ? clamp01((value - minV) / (maxV - minV)) : 0.5;
+
       const low  = [  0, 210,  60];
       const mid  = [255, 160,   0];
       const high = [240,  20,  20];
+
       if (t < 0.5) {
         const tt = t / 0.5;
-        return [Math.round(lerp(low[0], mid[0], tt)), Math.round(lerp(low[1], mid[1], tt)), Math.round(lerp(low[2], mid[2], tt))];
+        return [
+          Math.round(lerp(low[0], mid[0], tt)),
+          Math.round(lerp(low[1], mid[1], tt)),
+          Math.round(lerp(low[2], mid[2], tt)),
+        ];
       } else {
         const tt = (t - 0.5) / 0.5;
-        return [Math.round(lerp(mid[0], high[0], tt)), Math.round(lerp(mid[1], high[1], tt)), Math.round(lerp(mid[2], high[2], tt))];
+        return [
+          Math.round(lerp(mid[0], high[0], tt)),
+          Math.round(lerp(mid[1], high[1], tt)),
+          Math.round(lerp(mid[2], high[2], tt)),
+        ];
       }
     }
 
     function clearChoropleth() {
       const namesToClear = Array.isArray(activeChoroplethNames) ? [...activeChoroplethNames] : [];
-      if (!namesToClear.length) return;
       try {
-        if (typeof govmap.clearGeometriesByName === "function") {
+        if (namesToClear.length && typeof govmap.clearGeometriesByName === "function") {
           try { govmap.clearGeometriesByName(namesToClear); } catch (_) {}
         }
-      } catch (e) {}
+      } catch (e) {
+        console.warn("clearGeometriesByName failed:", e);
+      }
       activeChoroplethNames = [];
     }
 
-    function clearHitLayer(){
-      const namesToClear = Array.isArray(activeHitLayerNames) ? [...activeHitLayerNames] : [];
-      if (!namesToClear.length) return;
-      try {
-        if (typeof govmap.clearGeometriesByName === "function") {
-          try { govmap.clearGeometriesByName(namesToClear); } catch (_) {}
-        }
-      } catch (e) {}
-      activeHitLayerNames = [];
-    }
-
-    function setLayerOpacityForMode(mode, opacity){
-      const layerName = (mode === "muni") ? MUNICIPAL_LAYER : (mode === "merhav") ? POLICE_MERHAV_LAYER : POLICE_STATION_LAYER;
+    function setMunicipalLayerOpacity(opacity){
       if(typeof govmap.setLayerOpacity === "function"){
-        try{ govmap.setLayerOpacity({ layerName, opacity }); }catch(e){}
+        try{ govmap.setLayerOpacity({ layerName: MUNICIPAL_LAYER, opacity }); }catch(e){}
       }
     }
 
@@ -2089,100 +2147,133 @@
       const btn = document.getElementById("btnChoro");
       if(!btn) return;
 
-      const metricLabel = (currentMode === "muni" && currentMetric === "rate") ? "ל-10,000" : "כמות";
+      const muniOnly = (currentMode === "muni");
+      const metricLabel = (currentMetric === "rate") ? "ל-10,000" : "כמות";
+
+      if(!muniOnly){
+        btn.classList.remove("active");
+        btn.classList.add("disabled");
+        btn.disabled = true;
+        btn.textContent = "🎨 צביעה (זמין בישובים)";
+        btn.title = "צביעה זמינה רק במצב ישובים/רשויות";
+        return;
+      }
+
       btn.classList.toggle("active", !!choroplethEnabled);
       btn.classList.remove("disabled");
       btn.disabled = false;
-      btn.textContent = choroplethEnabled ? `🎨 צביעה (${metricLabel}): פעיל` : `🎨 צביעה (${metricLabel})`;
 
-      const st = boundaries[currentMode];
-      if (!st || !st.loaded) {
-        const cfg = BOUNDARY_FILES[currentMode];
-        btn.title = st?.loadError
-          ? `נכשל לטעון גבולות (${cfg?.url}). ודא שהקובץ קיים ליד index.html ושאתה בשרת (GitHub Pages/localhost).`
-          : `לצביעה במצב "${getModeLabel(currentMode)}" צריך גבולות: ${cfg?.url}`;
-      } else {
-        btn.title = `צביעה לפי ${metricLabel} (לחיצות מזוהות גם כשצביעה פעילה)`;
-      }
+      btn.textContent = choroplethEnabled ? `🎨 צביעה (${metricLabel}): פעיל` : `🎨 צביעה (${metricLabel})`;
+      btn.title = muniBoundariesLoaded
+        ? `צביעה לפי ${metricLabel}`
+        : (muniBoundariesLoadError ? "נכשל לטעון GeoJSON. ודא שהקובץ קיים ושאתה בשרת (GitHub Pages/localhost)." : "טוען GeoJSON של גבולות הרשויות...");
     }
 
     async function toggleChoropleth(){
+      if(currentMode !== "muni") setMode("muni");
+
       choroplethEnabled = !choroplethEnabled;
       setChoroBtnUI();
-      updateHeaderModeLine();
 
       if(!mapInitialized) return;
 
       if(!choroplethEnabled){
         clearChoropleth();
-        clearHitLayer();
-        setLayerOpacityForMode(currentMode, 100);
+        setMunicipalLayerOpacity(100);
         showInfo("צביעה כובתה","חזרתי לתצוגה רגילה.","info");
         return;
       }
 
+      const ok = await loadMuniBoundariesGeojson();
+      if(!ok){
+        choroplethEnabled = false;
+        setChoroBtnUI();
+        return;
+      }
+
+      setMunicipalLayerOpacity(30);
       await renderChoropleth();
     }
 
-    function getChoroCacheKey(mode, year, metric){
-      return `${mode}__${year}__${metric}`;
+    function getChoroCacheKey(year, metric){
+      return `${year}__${metric}`;
     }
 
-    function buildChoroplethPayload(mode, year, metric){
-      const cacheKey = getChoroCacheKey(mode, year, metric);
+    function buildChoroplethPayloadForYear(year, metric){
+      const cacheKey = getChoroCacheKey(year, metric);
       if (choroplethCache.has(cacheKey)) return choroplethCache.get(cacheKey);
 
-      const yearData = getYearDataByMode(mode, year);
+      const yearData = window.crimeByYear?.[year];
       if(!yearData) return null;
 
-      const st = boundaries[mode];
-      if(!st || !st.loaded) return null;
+      const NO_JUR_PREFIX = "ללא שיפוט";
 
       const normalRows = [];
       const missingGeom = [];
 
+      // Precollect "ללא שיפוט" boundaries (always gray)
+      const noJurRows = (Array.isArray(muniBoundariesMeta) ? muniBoundariesMeta : [])
+        .filter(b => String(b?.name || "").trim().startsWith(NO_JUR_PREFIX) && b?.wkt)
+        .map(b => ({ name: String(b.name).trim(), wkt: b.wkt, total: 0, value: 0 }));
+
       for(const name in yearData){
+        if (String(name || "").trim().startsWith(NO_JUR_PREFIX)) continue;
+
         const d = yearData[name];
         const total = Number(d?.total || 0);
 
-        const popRaw = (mode === "muni") ? getPopulationForAuthority(name) : null;
-        const pop = (popRaw == null ? 0 : Number(popRaw));
-        const rate = (mode === "muni") ? calcRatePer10k(total, pop) : null;
+        // Rate only if population exists
+        const popRaw = getPopulationForAuthority(name);
+        const rate = (popRaw == null) ? null : calcRatePer10k(total, popRaw);
 
-        const b = boundaryLookup(mode, name);
-        if(!b || !b.wkt){ missingGeom.push(name); continue; }
+        const wkt = findWktForCrimeName(name);
+        if(!wkt){ missingGeom.push(name); continue; }
 
-        const value = (mode === "muni" && metric === "rate") ? (rate ?? 0) : total;
-        normalRows.push({ name, wkt: b.wkt, value, total, rate, pop, hasPop: popRaw != null });
+        const value = (metric === "rate") ? (rate ?? null) : total;
+        if (metric === "rate" && value == null) continue; // don't paint rate when there's no population
+
+        normalRows.push({ name, wkt, total, value });
       }
 
-      if(!normalRows.length) return null;
+      const allRows = [...normalRows, ...noJurRows];
+      if(!allRows.length) return null;
 
-      // Color range: cap to 2nd highest for stability (like you asked previously)
-      const refVals = normalRows.map(r => r.value);
-      const minV  = Math.min(...refVals);
+      const refVals = normalRows.length ? normalRows.map(r => r.value).filter(v=>Number.isFinite(Number(v))) : allRows.map(r => r.value).filter(v=>Number.isFinite(Number(v)));
+      const minV  = refVals.length ? Math.min(...refVals) : 0;
       const sortedDesc = [...refVals].sort((a,b)=>b-a);
-      const maxV = (sortedDesc.length >= 2) ? sortedDesc[1] : sortedDesc[0];
+      const maxV = (sortedDesc.length >= 2) ? sortedDesc[1] : (sortedDesc[0] ?? 0);
 
       const wkts = [], names = [], symbols = [], tooltips = [];
-      const prefix = `${CHORO_PREFIX}_${mode}_${year}_${metric}`;
+      const prefix = `${CHORO_PREFIX}_${year}_${metric}`;
 
       for(let i = 0; i < normalRows.length; i++){
         const r = normalRows[i];
-        const [rr, gg, bb] = valueToColor(r.value, minV, maxV);
+        const [rr, gg, bb] = valueToColor(Number(r.value), minV, maxV);
 
         wkts.push(r.wkt);
         names.push(`${prefix}_${i}`);
         symbols.push({
-          fillColor: [rr, gg, bb, 0.58],
+          fillColor: [rr, gg, bb, 0.55],
           outlineColor: [25, 25, 25, 0.85],
           outlineWidth: 2
         });
 
-        const tip = (mode === "muni" && metric === "rate")
-          ? `${r.name} • ל-10,000: ${fmtMaybe(r.rate)} • כמות: ${Number(r.total || 0).toLocaleString()}`
+        const tip = (metric === "rate")
+          ? `${r.name} • ל-10,000: ${Number(r.value).toLocaleString()} • כמות: ${Number(r.total || 0).toLocaleString()}`
           : `${r.name} • כמות: ${Number(r.total || 0).toLocaleString()}`;
         tooltips.push(tip);
+      }
+
+      for(let i = 0; i < noJurRows.length; i++){
+        const r = noJurRows[i];
+        wkts.push(r.wkt);
+        names.push(`${prefix}_nojur_${i}`);
+        symbols.push({
+          fillColor: [140, 140, 140, 0.65],
+          outlineColor: [25, 25, 25, 0.85],
+          outlineWidth: 2
+        });
+        tooltips.push(`${r.name} (ללא שיפוט)`);
       }
 
       const built = {
@@ -2196,83 +2287,31 @@
           data: { tooltips },
           allowIdentify: false
         },
-        meta: { minV, maxV, missingGeomCount: missingGeom.length, missingGeom }
+        meta: { minV, maxV, missingGeomCount: missingGeom.length, noJurCount: noJurRows.length, missingGeom }
       };
 
       choroplethCache.set(cacheKey, built);
       return built;
     }
 
-    function buildInvisibleHitLayerPayload(mode, year, metric){
-      // This draws an invisible polygon set ABOVE the colored polygons.
-      // We use it mainly so the overlay stack is consistent; actual identification is done in JS hit-test.
-      const yearData = getYearDataByMode(mode, year);
-      const st = boundaries[mode];
-      if(!yearData || !st || !st.loaded) return null;
-
-      const wkts = [], names = [], symbols = [];
-      const prefix = `${HIT_PREFIX}_${mode}_${year}_${metric}`;
-
-      let i = 0;
-      for(const name in yearData){
-        const b = boundaryLookup(mode, name);
-        if(!b || !b.wkt) continue;
-
-        wkts.push(b.wkt);
-        names.push(`${prefix}_${i++}`);
-
-        // Fully transparent fill + outline
-        symbols.push({
-          fillColor: [0, 0, 0, 0.0],
-          outlineColor: [0, 0, 0, 0.0],
-          outlineWidth: 1
-        });
-      }
-
-      if(!wkts.length) return null;
-
-      return {
-        wkts,
-        names,
-        geometryType: (govmap.geometryType?.POLYGON ?? govmap.geometryType?.Polygon ?? 3),
-        clearExisting: false,
-        showBubble: false,
-        symbols,
-        data: {},
-        allowIdentify: false
-      };
-    }
-
     async function renderChoropleth(){
       if(!mapInitialized || !choroplethEnabled) return;
+      if(currentMode !== "muni") return;
 
-      // Load boundaries for this mode
-      const ok = await loadBoundariesForMode(currentMode);
-      if(!ok){
-        const cfg = BOUNDARY_FILES[currentMode];
-        choroplethEnabled = false;
-        setChoroBtnUI();
-        updateHeaderModeLine();
-        showInfo(
-          "אין גבולות לצביעה",
-          `כדי לצבוע במצב <strong>${escapeHtml(getModeLabel(currentMode))}</strong> אתה חייב קובץ גבולות מקומי:<br><b style="direction:ltr">${escapeHtml(cfg?.url || "")}</b><br>שמור אותו ליד index.html והעלה ל-GitHub Pages / הרץ ב-localhost.`,
-          "warn"
-        );
-        return;
+      if(!muniBoundariesLoaded){
+        const ok = await loadMuniBoundariesGeojson();
+        if(!ok) return;
       }
 
-      const metric = (currentMode === "muni" && currentMetric === "rate") ? "rate" : "abs";
+      const metric = (currentMetric === "rate") ? "rate" : "abs";
 
-      // Hide base layer (we will still identify by geometry hit-test)
-      setLayerOpacityForMode(currentMode, 0);
+      setMunicipalLayerOpacity(30);
 
-      // Clear overlays
       clearChoropleth();
-      clearHitLayer();
 
-      const built = buildChoroplethPayload(currentMode, currentYear, metric);
+      const built = buildChoroplethPayloadForYear(currentYear, metric);
       if(!built){
-        showInfo("אין מספיק נתונים","לא נמצאו ישויות עם גבול כדי לצבוע.","warn");
+        showInfo("אין מספיק נתונים","לא נמצאו רשויות מתאימות לצביעה לפי המדד הנוכחי.","warn");
         return;
       }
 
@@ -2281,134 +2320,28 @@
         if (ret && typeof ret.then === "function") await ret;
         activeChoroplethNames = built.payload.names;
       } catch (e) {
-        setLayerOpacityForMode(currentMode, 100);
+        console.error("displayGeometries failed:", e);
+        setMunicipalLayerOpacity(100);
         showInfo("שגיאה", `נכשלתי לצייר גיאומטריות: ${escapeHtml(e?.message || e)}`, "error");
         return;
       }
 
-      // Invisible hit layer above
-      try{
-        const hitPayload = buildInvisibleHitLayerPayload(currentMode, currentYear, metric);
-        if(hitPayload){
-          const ret2 = govmap.displayGeometries(hitPayload);
-          if (ret2 && typeof ret2.then === "function") await ret2;
-          activeHitLayerNames = hitPayload.names;
-        }
-      }catch(_){}
+      const { minV, maxV, missingGeomCount, noJurCount, missingGeom } = built.meta;
 
-      const { minV, maxV, missingGeomCount } = built.meta;
+      let extra = "";
+      if (missingGeomCount) {
+        extra = `<br><span style="font-size:13px;opacity:.92;">לא נמצאה גיאומטריה ל-${missingGeomCount} רשויות (פערי שמות בין הנתונים לגבולות).</span>`;
+        console.log("Missing geometry for:", missingGeom);
+      }
+      const noj = noJurCount ? `<br><span style="font-size:13px;opacity:.92;">"ללא שיפוט" צבוע באפור.</span>` : "";
 
-      const extra = missingGeomCount
-        ? `<br><span style="font-size:13px;opacity:.92;">לא נמצאה גיאומטריה ל-${missingGeomCount} ישויות (פערי שמות בין הנתונים לגבולות).</span>`
-        : "";
-
-      const label = (currentMode === "muni" && metric === "rate") ? "צביעה לפי ל-10,000" : "צביעה לפי כמות";
       showInfo(
-        label,
-        `ירוק = נמוך • כתום = בינוני • אדום = גבוה (מוגבל למקום 2)<br>טווח: <b>${Number(minV).toLocaleString()}</b> עד <b>${Number(maxV).toLocaleString()}</b><br><span style="font-size:13px;opacity:.92;">לחיצות מזוהות ע״י שכבת זיהוי בלתי-נראית מעל הצביעה.</span>${extra}`,
+        (metric === "rate") ? "צביעה לפי ל-10,000" : "צביעה לפי כמות",
+        `ירוק = נמוך • כתום = בינוני • אדום = גבוה (מוגבל למקום 2)<br>טווח: <b>${Number(minV).toLocaleString()}</b> עד <b>${Number(maxV).toLocaleString()}</b>${noj}${extra}`,
         "info"
       );
 
       setChoroBtnUI();
-      updateHeaderModeLine();
-    }
-
-    // ===================== CLICK: ALWAYS WORKS (Even under coloring) =====================
-    function resolveEntryByName(mode, name){
-      const index = getIndexByMode(mode);
-
-      if(mode === "muni"){
-        const k = normalizeKey(name);
-        return index[k] || index[nameVariants(name)[0]] || null;
-      }
-      if(mode === "station"){
-        const k = normalizeKey(name);
-        let entry = index[k] || null;
-        if(entry) return entry;
-        const vars = stationNameVariants(name);
-        for(const v of vars){ if(index[v]) return index[v]; }
-        return null;
-      }
-      return index[normalizeKey(name)] || null;
-    }
-
-    async function onMapClick(e) {
-      if (!mapInitialized) return;
-
-      // 1) If choropleth enabled AND boundaries exist -> hit-test by geometry (no dependence on layers)
-      if (choroplethEnabled) {
-        const x = Number(e?.mapPoint?.x);
-        const y = Number(e?.mapPoint?.y);
-        if (Number.isFinite(x) && Number.isFinite(y) && boundaries[currentMode]?.loaded) {
-          const hit = hitTestBoundaries(currentMode, x, y);
-          if (hit && hit.name) {
-            const entry = resolveEntryByName(currentMode, hit.name);
-            if (entry) {
-              selectedEntityName = entry.name;
-              selectedEntityKey = entry.key;
-
-              if (currentTab === "compare") updateCompareView();
-              else if (currentTab === "trends") showTrends(selectedEntityName, currentMode);
-              else if (currentTab === "rankings") renderRankings();
-              else showEntry(entry);
-
-              return;
-            }
-          }
-        }
-        // fallthrough to map-layer click if hit-test failed
-      }
-
-      // 2) Fallback: ask GovMap layer at click point
-      try {
-        const layerName =
-          (currentMode === "muni") ? MUNICIPAL_LAYER :
-          (currentMode === "merhav") ? POLICE_MERHAV_LAYER :
-          POLICE_STATION_LAYER;
-
-        const resp = await govmap.getLayerData({
-          LayerName: layerName,
-          Point: e.mapPoint,
-          Radius: 300
-        });
-
-        const items = resp?.data || resp?.Data || [];
-        if (!items.length) {
-          showInfo("לא נמצא", "אין אובייקט באזור זה", "info");
-          return;
-        }
-
-        const first = items[0];
-        const attrs = first.Fields || first.Attributes || first;
-        const attrsObj = fieldsToObject(attrs) || attrs || {};
-
-        let nameFromMap = null;
-        if (currentMode === "muni") nameFromMap = detectMunicipalityName(attrsObj);
-        else if (currentMode === "station") nameFromMap = detectStationName(attrsObj);
-        else nameFromMap = detectMerhavName(attrsObj);
-
-        if (!nameFromMap) {
-          showInfo("שגיאה", "לא ניתן לזהות שם מתוך השכבה", "error");
-          return;
-        }
-
-        const entry = resolveEntryByName(currentMode, String(nameFromMap).trim());
-        if (!entry) {
-          showInfo("לא נמצאו נתונים", `אין נתוני פשיעה עבור <strong>${escapeHtml(nameFromMap)}</strong> בשנת ${currentYear}`, "error");
-          return;
-        }
-
-        selectedEntityName = entry.name;
-        selectedEntityKey = entry.key;
-
-        if (currentTab === "compare") updateCompareView();
-        else if (currentTab === "trends") showTrends(selectedEntityName, currentMode);
-        else if (currentTab === "rankings") renderRankings();
-        else showEntry(entry);
-
-      } catch (error) {
-        showInfo("שגיאה", `אירעה שגיאה: ${escapeHtml(error?.message || 'שגיאה לא מוגדרת')}`, "error");
-      }
     }
 
     // ===================== GOVMAP INIT =====================
@@ -2443,18 +2376,20 @@
 
       sel.addEventListener("change", e => {
         currentYear = e.target.value;
-        choroplethCache.clear(); // year-dependent
+
+        choroplethCache.clear();
+
         buildAllIndexesForYear(currentYear);
         updateQuickStats();
 
-        if (choroplethEnabled) renderChoropleth().catch(()=>{});
+        if (choroplethEnabled && currentMode === "muni") renderChoropleth();
 
-        // Refresh selection if possible
         if (selectedEntityKey) {
           const index = getIndexByMode(currentMode);
           const entry = index[selectedEntityKey];
           if (entry) {
             selectedEntityName = entry.name;
+
             if (currentTab === "single") { showEntry(entry); return; }
             if (currentTab === "trends") { showTrends(selectedEntityName, currentMode); return; }
           }
@@ -2501,6 +2436,8 @@
           if (l) l.style.display = "none";
 
           showInfo("מפה לפי ישובים/רשויות", `שנה נבחרת: ${currentYear}<br>לחץ על רשות במפה כדי לראות נתונים`, "info");
+
+          console.log("✅ Map initialized successfully");
         }
       });
     }
@@ -2516,6 +2453,8 @@
     window.renderRankings = renderRankings;
     window.toggleChoropleth = toggleChoropleth;
     window.selectFromRank = selectFromRank;
+    window.setRankingsOrder = setRankingsOrder;
+    window.setRankingsFilter = setRankingsFilter;
   </script>
 
   <!-- GOVMAP API -->
@@ -2533,7 +2472,7 @@
   <div id="info-panel">
     <div id="panel-header">
       <h1>🗺️ מפת פשיעה בישראל</h1>
-      <p>מצב נוכחי: <strong>ישובים/רשויות</strong><br>מדד ל-10,000 זמין כאן (אוכלוסייה סטטית)</p>
+      <p>מצב נוכחי: <strong>ישובים/רשויות</strong><br>מדד ל-10,000 זמין כאן (רק אם יש נתון אוכלוסייה)</p>
 
       <div id="header-actions">
         <button id="searchBtn" class="hbtn">🔎 חיפוש כתובת</button>
@@ -2610,7 +2549,7 @@
   <!-- Search Modal -->
   <div id="searchModal" class="modal" aria-hidden="true">
     <div id="searchOverlay" class="modalOverlay"></div>
-    <div class="modalCard" role="dialog" aria-modal="true" tabindex="-1">
+    <div class="modalCard" role="dialog">
       <div class="modalHeader">
         <div class="modalHeaderTitle">🔎 חיפוש כתובת</div>
         <button id="searchCloseBtn" class="modalClose">×</button>
@@ -2628,7 +2567,7 @@
   <!-- About Modal -->
   <div id="aboutModal" class="modal" aria-hidden="true">
     <div id="aboutOverlay" class="modalOverlay"></div>
-    <div class="modalCard" role="dialog" aria-modal="true" tabindex="-1">
+    <div class="modalCard" role="dialog">
       <div class="modalHeader">
         <div class="modalHeaderTitle">ℹ️ אודות + מקורות</div>
         <button id="aboutCloseBtn" class="modalClose">×</button>
@@ -2637,9 +2576,8 @@
         <p style="margin-top:0; font-weight:900;">מפת פשיעה אינטראקטיבית המבוססת על נתוני משטרת ישראל (2020–2025).</p>
         <ul style="margin:0; padding-right: 18px; font-weight:900; color:#333; line-height:1.6;">
           <li><strong>נתוני פשיעה:</strong> קבצים מעובדים לפי שנה.</li>
-          <li><strong>אוכלוסייה:</strong> נתון סטטי (שנה אחת) לחישוב יחס ל‑10,000 ב״ישובים״ בלבד.</li>
-          <li><strong>צביעה:</strong> GeoJSON מקומי (ITM/EPSG:2039). כדי לצבוע גם מרחבים/תחנות, שים קבצי גבולות מתאימים ליד index.html.</li>
-          <li><strong>לחיצות:</strong> כשצביעה פעילה, הזיהוי נעשה מהגבולות (לא תלוי בלחיצה “דרך” שכבה צבועה).</li>
+          <li><strong>אוכלוסייה:</strong> נתון סטטי (שנה אחת) לחישוב יחס ל‑10,000 ב״ישובים״ בלבד, ורק אם קיים נתון.</li>
+          <li><strong>צביעה:</strong> GeoJSON מקומי (ITM/EPSG:2039) – מומלץ להגיש ב‑GitHub Pages או localhost.</li>
         </ul>
       </div>
     </div>
