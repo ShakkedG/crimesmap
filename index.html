@@ -2062,17 +2062,22 @@ function initModals(){
     }
 
     // ===================== GEOJSON -> WKT =====================
-   function toFiniteNum(v){
+  function toFiniteNum(v){
   if (v == null) return null;
+
   if (typeof v === "string") {
-    // תומך גם ב-"34,781" וגם ב-"203,123.45" (ניקוי בסיסי)
     v = v.trim().replace(/\s+/g, "");
-    // אם זה "34,781" כעשרוני ישראלי/אירופי -> 34.781
-    // ואם זה מפריד אלפים "203,123.45" זה עדיין בעייתי — אז נטפל בזה בזהירות:
-    // אם יש גם ',' וגם '.' נניח ש',' אלפים ונמחק פסיקים
-    if (v.includes(",") && v.includes(".")) v = v.replace(/,/g, "");
-    else v = v.replace(/,/g, ".");
+
+    // אם יש גם נקודה וגם פסיק -> הפסיק כנראה מפריד אלפים
+    if (v.includes(",") && v.includes(".")) {
+      v = v.replace(/,/g, "");
+    } else if (v.includes(",")) {
+      // אם הפסיק נראה כמו מפריד אלפים (3 ספרות אחריו) -> להסיר
+      if (/,(\d{3})$/.test(v)) v = v.replace(/,/g, "");
+      else v = v.replace(/,/g, "."); // אחרת נניח פסיק עשרוני
+    }
   }
+
   const n = Number(v);
   return Number.isFinite(n) ? n : null;
 }
@@ -2177,7 +2182,14 @@ function geojsonGeomToWkt(geom){
 
  
               
-function extraHebrewNameVariants(n){
+
+
+
+
+
+
+
+      function extraHebrewNameVariants(n){
   const s = String(n || "").trim();
   if (!s) return [];
   const out = new Set([s]);
@@ -2214,12 +2226,6 @@ function findWktForCrimeName(crimeName){
   return null;
 }
 
-
-
-
-
-
-      }
 
       wktByCrimeNameCache.set(nk, null);
       return null;
