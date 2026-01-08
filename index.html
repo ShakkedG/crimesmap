@@ -734,10 +734,6 @@
     const MUNI_BOUNDARIES_GEOJSON_URL = "muni_boundaries_ITM.geojson";
 
     // ===================== STATE =====================
-    // Mouse tracking for choropleth-click fallback
-let lastHoverMapPoint = null;
-let lastGovmapClickAt = 0;
-
     let mapInitialized = false;
     let currentYear = "2025";
     let currentTab = "single";
@@ -1687,12 +1683,7 @@ let lastGovmapClickAt = 0;
     async function onMapClick(e) {
       if (!mapInitialized) return;
 
-      if (!e || !e.mapPoint) {
-    if (lastHoverMapPoint) e = { mapPoint: lastHoverMapPoint };
-    else return;
-  }
-
-  try {
+      try {
         const layerName =
           (currentMode === "muni") ? MUNICIPAL_LAYER :
           (currentMode === "merhav") ? POLICE_MERHAV_LAYER :
@@ -1845,38 +1836,33 @@ function closeModal(id){
   document.documentElement.style.overflow = "";
   document.body.style.overflow = "";
 }
-function initModals(){
-  const aboutBtn = document.getElementById("aboutBtn");
-  const aboutClose = document.getElementById("aboutCloseBtn");
-  const aboutOverlay = document.getElementById("aboutOverlay");
-  if (aboutBtn) aboutBtn.addEventListener("click", () => openModal("aboutModal", "aboutCloseBtn"));
-  if (aboutClose) aboutClose.addEventListener("click", () => closeModal("aboutModal"));
-  if (aboutOverlay) aboutOverlay.addEventListener("click", () => closeModal("aboutModal"));
 
-  const searchBtn = document.getElementById("searchBtn");
-  const searchClose = document.getElementById("searchCloseBtn");
-  const searchOverlay = document.getElementById("searchOverlay");
+    function initModals(){
+      const aboutBtn = document.getElementById("aboutBtn");
+      const aboutClose = document.getElementById("aboutCloseBtn");
+      const aboutOverlay = document.getElementById("aboutOverlay");
+     if (aboutBtn) aboutBtn.addEventListener("click", ()=> openModal("aboutModal", "aboutCloseBtn"));
+      if (aboutClose) aboutClose.addEventListener("click", ()=>closeModal("aboutModal"));
+      if (aboutOverlay) aboutOverlay.addEventListener("click", ()=>closeModal("aboutModal"));
 
-  if (searchBtn) {
-    searchBtn.addEventListener("click", () => {
-      openModal("searchModal", "addrInput");
-      const inp = document.getElementById("addrInput");
-      if (inp) setTimeout(() => inp.focus(), 50);
-    });
-  }
+      const searchBtn = document.getElementById("searchBtn");
+      const searchClose = document.getElementById("searchCloseBtn");
+      const searchOverlay = document.getElementById("searchOverlay");
+      if (searchBtn) searchBtn.addEventListener("click", ()=> openModal("searchModal", "addrInput"));
 
-  if (searchClose) searchClose.addEventListener("click", () => closeModal("searchModal"));
-  if (searchOverlay) searchOverlay.addEventListener("click", () => closeModal("searchModal"));
+        const inp = document.getElementById("addrInput");
+        if (inp) setTimeout(()=>inp.focus(), 50);
+      });
+      if (searchClose) searchClose.addEventListener("click", ()=>closeModal("searchModal"));
+      if (searchOverlay) searchOverlay.addEventListener("click", ()=>closeModal("searchModal"));
 
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") {
-      closeModal("aboutModal");
-      closeModal("searchModal");
+      document.addEventListener("keydown", (e)=>{
+        if(e.key==="Escape"){
+          closeModal("aboutModal");
+          closeModal("searchModal");
+        }
+      });
     }
-  });
-}
-
-   
 
     function togglePanel(){
       const panel = document.getElementById("info-panel");
@@ -2402,35 +2388,6 @@ function initModals(){
 
       setChoroBtnUI();
     }
-   function subscribeGovmapProgressEvent(ev, handler){
-  try{
-    if (!ev || typeof govmap?.onEvent !== "function") return false;
-    const h = govmap.onEvent(ev);
-    if (h && typeof h.progress === "function") { h.progress(handler); return true; }
-  }catch(_){}
-  return false;
-}
-
-function installChoroplethClickFallback(){
-  const mapEl = document.getElementById("map");
-  if(!mapEl) return;
-
-  // DOM click fallback (works even if graphics intercept GovMap click)
-  mapEl.addEventListener("click", (evt) => {
-    // only when choropleth is enabled in muni mode
-    if (!choroplethEnabled || currentMode !== "muni") return;
-
-    // ignore clicks on UI panels/modals
-    if (evt.target.closest("#info-panel") || evt.target.closest(".modal")) return;
-
-    // prevent double handling when GovMap click DID fire
-    if (Date.now() - lastGovmapClickAt < 200) return;
-
-    if (lastHoverMapPoint) {
-      onMapClick({ mapPoint: lastHoverMapPoint, __fallback: true });
-    }
-  }, true);
-}
 
     // ===================== GOVMAP INIT =====================
     function initGovMap() {
@@ -2511,29 +2468,7 @@ function installChoroplethClickFallback(){
           setMode(currentMode);
           setChoroBtnUI();
 
-        // CLICK (normal)
-try {
-  govmap.onEvent(govmap.events.CLICK).progress((e) => {
-    lastGovmapClickAt = Date.now();
-    if (e?.mapPoint) lastHoverMapPoint = e.mapPoint; // keep updated
-    onMapClick(e);
-  });
-} catch (e) {}
-          // MOUSE MOVE -> keep lastHoverMapPoint updated (so click on choropleth still works)
-try{
-  // GovMap event names can differ; try common ones safely
-  const ok =
-    subscribeGovmapProgressEvent(govmap?.events?.MOUSE_MOVE, (e)=>{ if(e?.mapPoint) lastHoverMapPoint = e.mapPoint; }) ||
-    subscribeGovmapProgressEvent(govmap?.events?.MOUSEMOVE,   (e)=>{ if(e?.mapPoint) lastHoverMapPoint = e.mapPoint; }) ||
-    subscribeGovmapProgressEvent(govmap?.events?.POINTER_MOVE,(e)=>{ if(e?.mapPoint) lastHoverMapPoint = e.mapPoint; });
-
-  if(!ok){
-    console.warn("⚠️ Could not subscribe to mouse-move event; fallback will rely on last click point only.");
-  }
-}catch(_){}
-
-installChoroplethClickFallback();
-
+          try { govmap.onEvent(govmap.events.CLICK).progress(onMapClick); } catch (e) {}
 
           initModals();
           initAddressSearchUI();
