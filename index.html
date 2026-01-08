@@ -1683,6 +1683,20 @@ let lastGovmapClickAt = 0;
       const v = getFieldFromAttrs(attrsRaw, candidates);
       return (v == null) ? null : String(v).trim();
     }
+    function normalizeMapPoint(input){
+  const mp = input?.mapPoint ?? input?.Point ?? input ?? null;
+  if (!mp) return null;
+
+  const x = mp.x ?? mp.X ?? mp.lon ?? mp.Lon ?? mp.centerX ?? mp.CenterX;
+  const y = mp.y ?? mp.Y ?? mp.lat ?? mp.Lat ?? mp.centerY ?? mp.CenterY;
+
+  const nx = Number(x);
+  const ny = Number(y);
+
+  if (!Number.isFinite(nx) || !Number.isFinite(ny)) return null;
+  return { x: nx, y: ny };
+}
+
 
     async function onMapClick(e) {
       if (!mapInitialized) return;
