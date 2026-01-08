@@ -2295,16 +2295,16 @@
         }
       }
 
-      const allRows = [...normalRows, ...noJurRows];
-      if(!      const allRows = [...normalRows, ...noPopRows, ...noJurRows];
+    // מאחד הכל: רגילים + בלי אוכלוסייה (ב-rate) + ללא שיפוט
+const allRows = [...normalRows, ...noPopRows, ...noJurRows];
 
-      // קובע טווח צבעים רק על ערכים מספריים (למקרה של value=null)
-      const numericVals = allRows
-        .map(r => Number(r.value))
-        .filter(v => Number.isFinite(v));
+// קובע טווח צבעים רק על ערכים מספריים (למקרה של value=null)
+const numericVals = allRows
+  .map(r => Number(r.value))
+  .filter(v => Number.isFinite(v));
 
-      const minV = numericVals.length ? Math.min(...numericVals) : 0;
-      const maxV = numericVals.length ? Math.max(...numericVals) : 1;
+const minV = numericVals.length ? Math.min(...numericVals) : 0;
+const maxV = numericVals.length ? Math.max(...numericVals) : 1;
 
       // בונה אובייקטים לציור (עם שם ייחודי שנוכל למחוק)
       const geoms = allRows.map((r, i) => {
