@@ -2451,7 +2451,8 @@ function isWktSafe(wkt){
   if (typeof wkt !== "string") return false;
   if (/NaN|Infinity|undefined|null/i.test(wkt)) return false;
 
-  const nums = wkt.match(/-?\d+(?:\.\d+)?/g);
+  // כולל גם 1.23e+05
+  const nums = wkt.match(/-?\d+(?:\.\d+)?(?:e[+\-]?\d+)?/gi);
   if (!nums || nums.length < 6) return false;
 
   for (const s of nums){
@@ -2460,6 +2461,7 @@ function isWktSafe(wkt){
   }
   return true;
 }
+
 
 function filterChoroPayload(payload){
   const keep = [];
@@ -2484,6 +2486,51 @@ function filterChoroPayload(payload){
   }
 
   return out;
+}
+async function displayGeometriesRobust(payload){
+  const wkts = payload.wkts || [];
+  const names = payload.names || [];
+  const symbols = payload.symbols || [];
+  const tooltips = payload?.data?.tooltips || [];
+
+  const okNames = [];
+
+  async function tryDrawRange(from, to){
+    const sub = {
+      ...payload,
+      wkts: wkts.slice(from, to),
+      names: names.slice(from, to),
+      symbols: symbols.slice(from, to),
+      data: { ...(payload.data || {}), tooltips: tooltips.slice(from, to) },
+      clearExisting: false
+    };
+
+    try {
+      const r = govmap.displayGeometries(sub);
+      if (r && typeof r.then === "function") await r;
+      okNames.push(...sub.names);
+      return true;
+    } catch (e) {
+      // אם זה פוליגון אחד בלבד – מדלגים עליו
+      if (to - from <= 1) {
+        console.warn("❌ Dropping bad geometry:", sub.names[0], sub.wkts[0], e);
+        return false;
+      }
+      // אחרת מחלקים לשניים ומנסים שוב
+      const mid = Math.floor((from + to) / 2);
+      await tryDrawRange(from, mid);
+      await tryDrawRange(mid, to);
+      return true;
+    }
+  }
+
+  // קודם מציירים בבאטצ'ים כדי שלא קריאה אחת ענקית תיפול
+  const BATCH = 40;
+  for (let i = 0; i < wkts.length; i += BATCH) {
+    await tryDrawRange(i, Math.min(i + BATCH, wkts.length));
+  }
+
+  return okNames;
 }
 
    async function renderChoropleth(){
@@ -2515,10 +2562,9 @@ function filterChoroPayload(payload){
       return;
     }
 
-    const ret = govmap.displayGeometries(safePayload);
-    if (ret && typeof ret.then === "function") await ret;
+   const drawnNames = await displayGeometriesRobust(safePayload);
+activeChoroplethNames = drawnNames;
 
-    activeChoroplethNames = safePayload.names;
   } catch (e) {
     console.error("displayGeometries failed:", e);
     setMunicipalLayerOpacity(100);
