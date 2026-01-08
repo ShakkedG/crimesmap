@@ -686,13 +686,23 @@
 
     /* Collapse behavior (more compact) */
     #info-panel.collapsed { max-height: 74px; height: 74px; }
-    #info-panel.collapsed #tabs,
-    #info-panel.collapsed #controls,
-    #info-panel.collapsed #info-content { display:none; }
-    #info-panel.collapsed #panel-header { padding: 10px 12px; }
-    #info-panel.collapsed #panel-header p { display: none; }
-    #info-panel.collapsed #header-actions { display: none; }
-    #info-panel.collapsed #panel-header h1 { font-size: 15px; }
+#info-panel.collapsed #tabs,
+#info-panel.collapsed #controls,
+#info-panel.collapsed #info-content { display:none; }
+
+#info-panel.collapsed #panel-header { padding: 10px 12px; }
+#info-panel.collapsed #panel-header p { display: none; }
+#info-panel.collapsed #panel-header h1 { font-size: 15px; }
+
+/* אל תסתיר את כל ה-header-actions כי שם נמצא כפתור ההגדלה */
+#info-panel.collapsed #header-actions { margin-top: 0; justify-content: flex-end; }
+
+/* תסתיר רק את הכפתורים שלא צריכים במצב מוקטן */
+#info-panel.collapsed #searchBtn,
+#info-panel.collapsed #aboutBtn { display: none; }
+
+/* כפתור ההקטנה/הגדלה נשאר תמיד */
+#info-panel.collapsed #panelToggleBtn { display: inline-flex; }
 
     /* Mobile bottom sheet */
     @media (max-width: 768px) {
@@ -1789,8 +1799,43 @@
     }
 
     // ===================== MODALS & PANEL =====================
-    function openModal(id){ const m=document.getElementById(id); if(m) m.style.display="block"; }
-    function closeModal(id){ const m=document.getElementById(id); if(m) m.style.display="none"; }
+   let lastFocusedElement = null;
+
+function openModal(id, focusElId = null){
+  const m = document.getElementById(id);
+  if(!m) return;
+
+  lastFocusedElement = document.activeElement;
+
+  m.style.display = "block";
+  m.setAttribute("aria-hidden", "false");
+
+  // למנוע גלילה ברקע (אופציונלי אבל נוח)
+  document.documentElement.style.overflow = "hidden";
+  document.body.style.overflow = "hidden";
+
+  const focusEl =
+    (focusElId && document.getElementById(focusElId)) ||
+    m.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+
+  if (focusEl) setTimeout(() => focusEl.focus(), 0);
+}
+
+function closeModal(id){
+  const m = document.getElementById(id);
+  if(!m) return;
+
+  // אם הפוקוס בתוך המודאל — תחזיר אותו לכפתור שפתח
+  if (m.contains(document.activeElement) && lastFocusedElement && typeof lastFocusedElement.focus === "function") {
+    lastFocusedElement.focus();
+  }
+
+  m.setAttribute("aria-hidden", "true");
+  m.style.display = "none";
+
+  document.documentElement.style.overflow = "";
+  document.body.style.overflow = "";
+}
 
     function initModals(){
       const aboutBtn = document.getElementById("aboutBtn");
