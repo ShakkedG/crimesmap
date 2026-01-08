@@ -2185,13 +2185,7 @@ function geojsonGeomToWkt(geom){
           wktByCrimeNameCache.set(nk, wkt);
           return wkt;
         }
-              function pickProp(props, keys){
-  for (const k of keys){
-    const v = props?.[k];
-    if (v != null && String(v).trim() !== "") return String(v).trim();
-  }
-  return null;
-}
+              
 
 function extraHebrewNameVariants(n){
   const s = String(n || "").trim();
@@ -2208,74 +2202,7 @@ function extraHebrewNameVariants(n){
   return Array.from(out);
 }
 
-async function loadMuniBoundariesGeojson(){
-  if(muniBoundariesLoaded) return true;
 
-  muniBoundariesLoadError = null;
-  try{
-    let feats = [];
-
-    if (window.MUNI_DATA && window.MUNI_DATA.features) {
-      feats = window.MUNI_DATA.features;
-    } else {
-      const res = await fetch(MUNI_BOUNDARIES_GEOJSON_URL, { cache: "no-store" });
-      if(!res.ok) throw new Error(`fetch failed (${res.status})`);
-      const gj = await res.json();
-      feats = Array.isArray(gj?.features) ? gj.features : [];
-    }
-
-    muniBoundariesIndex = Object.create(null);
-    muniBoundariesMeta = [];
-
-    for(const f of feats){
-      const props = f?.properties || {};
-
-      // נסה הרבה שמות שדות נפוצים
-      const name =
-        pickProp(props, [
-          "name","NAME","Name",
-          "SHEM_YISHUV","shem_yishuv",
-          "SHEM_RESHUT","shem_reshut",
-          "MUN_HEB","mun_heb",
-          "SETL_NAME","setl_name",
-          "שם רשות","שם_רשות","שם ישוב","שם_ישוב","יישוב","ישוב"
-        ]);
-
-      const wkt = geojsonGeomToWkt(f?.geometry);
-
-      if(!name || !wkt || !isWktSafe(wkt)){
-        console.warn("❌ Skipping bad boundary feature:", name, f?.geometry);
-        continue;
-      }
-
-      // שמור מטא
-      muniBoundariesMeta.push({ name: String(name), wkt });
-
-      // אינדוקס חזק: גם השם עצמו וגם וריאנטים (כמו שאתה עושה בקריים)
-      const allNames = new Set([
-        String(name),
-        ...extraHebrewNameVariants(name),
-      ]);
-
-      for (const nm of allNames){
-        muniBoundariesIndex[normalizeKey(nm)] = wkt;
-        // חשוב: להכניס גם nameVariants כדי להתגבר על "מועצה אזורית/מקומית/עיריית"
-        for (const v of nameVariants(nm)) muniBoundariesIndex[v] = wkt;
-      }
-    }
-
-    muniBoundariesLoaded = true;
-    console.log("✅ Boundaries loaded:", Object.keys(muniBoundariesIndex).length);
-    return true;
-
-  }catch(e){
-    muniBoundariesLoadError = e;
-    console.error("❌ Failed loading muni boundaries:", e);
-    return false;
-  }finally{
-    setChoroBtnUI();
-  }
-}
 
 
       }
