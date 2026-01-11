@@ -830,6 +830,47 @@ let lastGovmapClickAt = 0;
   }
 }
 
+function installGovmapClickCapture(){
+  try{
+    if (!window.govmap || typeof govmap.onEvent !== "function") return;
+
+    const ev = govmap.events || {};
+
+    // Try common names first
+    let eventId =
+      ev.MAP_CLICK ??
+      ev.MAPCLICK ??
+      ev.CLICK ??
+      ev.MOUSE_CLICK ??
+      ev.POINTER_CLICK ??
+      null;
+
+    // Fallback: search any event key that contains CLICK
+    if (!eventId) {
+      const keys = Object.keys(ev);
+      const key =
+        keys.find(k => /CLICK/i.test(k) && /(MAP|MOUSE|POINTER)/i.test(k)) ||
+        keys.find(k => /CLICK/i.test(k));
+      if (key) eventId = ev[key];
+    }
+
+    if (!eventId) {
+      console.warn("No supported govmap click event found in govmap.events");
+      return;
+    }
+
+    govmap.onEvent(eventId).progress((e) => {
+      lastGovmapClickAt = Date.now(); // anti-double with fallback
+      onMapClick(e);
+    });
+
+  }catch(err){
+    console.warn("Map click hook failed:", err);
+  }
+}
+
+
+
     function normalizeKey(name) { return normalizeKeyBase(name); }
 
     function nameVariants(name) {
@@ -1759,31 +1800,36 @@ function installChoroplethClickFallback(){
   if (mapEl.__mapClickCaptureInstalled) return;
   mapEl.__mapClickCaptureInstalled = true;
 
-  // Capture phase: catch click even if overlay is on top
+  // Capture phase: catch click even if an overlay is on top
   mapEl.addEventListener("click", (evt) => {
     if (!mapInitialized) return;
+
+    // IMPORTANT: only needed when choropleth is ON (otherwise it breaks normal clicks)
+    if (!choroplethEnabled || currentMode !== "muni") return;
 
     // ignore UI clicks
     if (evt.target && (evt.target.closest("#info-panel") || evt.target.closest(".modal"))) return;
 
     const now = Date.now();
 
-    // prevent double-firing
-    if (now - lastGovmapClickAt < 180) return;
-    lastGovmapClickAt = now;
+    // prevent double-firing (if govmap click hook fired)
+    if (now - lastGovmapClickAt < 200) return;
 
     // We must have a fresh hover point (ITM) to know what was under the cursor
     if (!lastHoverMapPoint || !Number.isFinite(lastHoverMapPoint.x) || !Number.isFinite(lastHoverMapPoint.y) || (now - lastMoveAt > 700)) {
       showInfo(
         "רגע",
-        "תזיז את העכבר מעל הישות ואז תלחץ (הבחירה נעשית לפי נקודת הריחוף ברגע הלחיצה).",
+        "תזיז את העכבר מעל הרשות ואז תלחץ (הבחירה נעשית לפי נקודת הריחוף ברגע הלחיצה).",
         "warn"
       );
       return;
     }
 
+    lastGovmapClickAt = now; // anti-double in the other direction
+
     // Call your existing map click logic with the hover mapPoint
     onMapClick({ mapPoint: { x: lastHoverMapPoint.x, y: lastHoverMapPoint.y }, __fallback: true });
+
   }, true);
 }
 
@@ -2788,12 +2834,10 @@ function filterChoroPayload(payload){
           setMode(currentMode);
           setChoroBtnUI();
           installMouseMovePointCapture();
+          installGovmapClickCapture();
 
-
-        // CLICK (normal)
-
-
-installChoroplethClickFallback();
+          // CLICK fallback for choropleth overlay
+          installChoroplethClickFallback();
 
 
           initModals();
