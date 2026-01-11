@@ -2558,6 +2558,9 @@ function filterChoroPayload(payload, predicate){
     }
 
     const ret = govmap.displayGeometries(safePayload);
+
+      // Re-bind click and remove hover after drawing geometries
+      installChoroplethClickFallback();
     if (ret && typeof ret.then === "function") await ret;
 
     activeChoroplethNames = safePayload.names;
@@ -2599,24 +2602,22 @@ function filterChoroPayload(payload, predicate){
   return false;
 }
 
-function installChoroplethClickFallback(){
-  const mapEl = document.getElementById("map");
-  if(!mapEl) return;
+function installChoroplethClickFallback() {
+  if (!window.govmap || !govmap.onEvent) return;
 
-  mapEl.addEventListener("click", (evt) => {
-    if (!choroplethEnabled || currentMode !== "muni") return;
-    if (evt.target.closest("#info-panel") || evt.target.closest(".modal")) return;
-    if (Date.now() - lastGovmapClickAt < 200) return;
+  // GovMap tends to keep only one active listener at a time.
+  // When choropleth geometries are drawn, GovMap may bind its own hover/click handlers.
+  // We force a single CLICK listener and explicitly remove hover.
+  try { govmap.unbindEvent && govmap.unbindEvent(govmap.events.MOUSE_MOVE); } catch (e) {}
+  try { govmap.unbindEvent && govmap.unbindEvent(govmap.events.CLICK); } catch (e) {}
 
-    const pt = normalizeMapPoint(lastHoverMapPoint);
-
-    if (!pt) {
-      showInfo("רגע", "אין לי נקודת מפה זמינה לקליק בצביעה. נסה ללחוץ פעם אחת על המפה בלי צביעה, ואז להדליק צביעה וללחוץ.", "warn");
-      return;
-    }
-
-    onMapClick({ mapPoint: pt, __fallback: true });
-  }, true);
+  subscribeGovmapProgressEvent(govmap.events.CLICK, function(e) {
+    const pt = normalizeMapPoint(e);
+    if (!pt) return;
+    lastHoverMapPoint = pt; // keep for compatibility, even though we don’t rely on hover
+    // Call the same click pipeline used everywhere else
+    onMapClick({ mapPoint: pt, __fromGovmap: true }, e);
+  });
 }
 
 
