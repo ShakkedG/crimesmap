@@ -2321,77 +2321,9 @@ function findWktForCrimeName(crimeName){
 
     // ===================== CHOROPLETH (unchanged logic) =====================
     // --- Guard: only transform finite [x,y] ---
-function isFiniteXY(x, y) {
-  return Number.isFinite(x) && Number.isFinite(y);
-}
-
-function safeToNumber(v) {
-  // Handles strings, null, undefined
-  const n = (typeof v === "string") ? Number(v.trim()) : Number(v);
-  return Number.isFinite(n) ? n : NaN;
-}
-
-// Recursively map coordinates (supports Point/LineString/Polygon/MultiPolygon)
-function mapCoordsDeep(coords, pointFn) {
-  if (!Array.isArray(coords)) return null;
-
-  // Point: [x,y] or [x,y,z]
-  if (typeof coords[0] === "number" || typeof coords[0] === "string") {
-    const x = safeToNumber(coords[0]);
-    const y = safeToNumber(coords[1]);
-    if (!isFiniteXY(x, y)) return null;
-    const out = pointFn([x, y]);
-    if (!out || !isFiniteXY(out[0], out[1])) return null;
-    return out;
-  }
-
-  // Nested: array of arrays
-  const out = [];
-  for (const c of coords) {
-    const mapped = mapCoordsDeep(c, pointFn);
-    if (mapped != null) out.push(mapped);
-  }
-  return out.length ? out : null;
-}
-
-function closeRingIfNeeded(ring) {
-  if (!Array.isArray(ring) || ring.length < 3) return null;
-  const first = ring[0], last = ring[ring.length - 1];
-  if (!first || !last) return null;
-  if (first[0] !== last[0] || first[1] !== last[1]) ring.push([first[0], first[1]]);
-  return ring.length >= 4 ? ring : null;
-}
 
 // Sanitize GeoJSON feature geometry (drops broken parts)
-function sanitizeFeatureGeometry(feature, pointFn) {
-  if (!feature || !feature.geometry) return null;
-  const g = feature.geometry;
 
-  const mapped = mapCoordsDeep(g.coordinates, pointFn);
-  if (!mapped) return null;
-
-  // Fix polygon rings (common source of crashes: empty/invalid rings)
-  if (g.type === "Polygon") {
-    const rings = mapped
-      .map(r => closeRingIfNeeded(r))
-      .filter(Boolean);
-    if (!rings.length) return null;
-    return { ...feature, geometry: { ...g, coordinates: rings } };
-  }
-
-  if (g.type === "MultiPolygon") {
-    const polys = mapped
-      .map(poly => (poly || [])
-        .map(r => closeRingIfNeeded(r))
-        .filter(Boolean)
-      )
-      .filter(poly => poly.length);
-    if (!polys.length) return null;
-    return { ...feature, geometry: { ...g, coordinates: polys } };
-  }
-
-  return { ...feature, geometry: { ...g, coordinates: mapped } };
-}
 
     function lerp(a,b,t){ return a + (b-a)*t; }
     function clamp01(x){ return Math.max(0, Math.min(1, x)); }
@@ -2711,14 +2643,7 @@ function filterChoroPayload(payload){
   setChoroBtnUI();
 }
 
-   function subscribeGovmapProgressEvent(ev, handler){
-  try{
-    if (!ev || typeof govmap?.onEvent !== "function") return false;
-    const h = govmap.onEvent(ev);
-    if (h && typeof h.progress === "function") { h.progress(handler); return true; }
-  }catch(_){}
-  return false;
-}
+
 
 function installChoroplethClickFallback(){
   const mapEl = document.getElementById("map");
@@ -2821,29 +2746,6 @@ function installChoroplethClickFallback(){
           setChoroBtnUI();
 
         // CLICK (normal)
-try {
- govmap.onEvent(govmap.events.CLICK).progress((e) => {
-  lastGovmapClickAt = Date.now();
-  const pt = normalizeMapPoint(e);
-  if (pt) lastHoverMapPoint = pt;
-
-  // ✅ קורא עם נקודה תקינה בלבד
-  onMapClick(pt ? { mapPoint: pt, __fromGovmap: true } : e);
-});
-  // נסה לעדכן lastHoverMapPoint גם בתזוזת עכבר (אם GovMap תומך באירוע הזה)
-try {
-  if (govmap?.events?.MOUSE_MOVE) {
-    govmap.onEvent(govmap.events.MOUSE_MOVE).progress((e) => {
-      const pt = normalizeMapPoint(e);
-      if (pt) lastHoverMapPoint = pt;
-    });
-  }
-} catch (_) {}
-
-
-
-} catch (e) {}
-          // MOUSE MOVE -> keep lastHoverMapPoint updated (so click on choropleth still works)
 
 
 installChoroplethClickFallback();
