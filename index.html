@@ -1723,10 +1723,16 @@ let lastGovmapClickAt = 0;
   if (!mapInitialized) return;
 
   // 1) נסה להוציא נקודה תקינה מהאירוע
-  let pt = normalizeMapPoint(e);
+ const now = Date.now();
 
-  // 2) אם אין נקודה תקינה, נסה מה-hover האחרון (חשוב בעיקר בצביעה)
-  if (!pt && lastHoverMapPoint) pt = normalizeMapPoint(lastHoverMapPoint);
+// אם יש ריחוף "טרי" (כלומר העכבר זז ממש לאחרונה) – זה המקור הכי אמין
+const hoverFresh = lastHoverMapPoint && (now - lastMoveAt < 250);
+
+let pt = hoverFresh ? normalizeMapPoint(lastHoverMapPoint) : normalizeMapPoint(e);
+
+// גיבוי אחרון
+if (!pt && lastHoverMapPoint) pt = normalizeMapPoint(lastHoverMapPoint);
+
 
   // 3) אם עדיין אין נקודה – לא ממשיכים
   if (!pt) {
@@ -2418,7 +2424,7 @@ function findWktForCrimeName(crimeName){
         return;
       }
 
-      setMunicipalLayerOpacity(30);
+      
       await renderChoropleth();
     }
 
@@ -2591,7 +2597,7 @@ function filterChoroPayload(payload){
   }
 
   const metric = (currentMetric === "rate") ? "rate" : "abs";
-  setMunicipalLayerOpacity(30);
+  
 
   clearChoropleth();
 
@@ -2654,7 +2660,12 @@ function installChoroplethClickFallback(){
     if (evt.target.closest("#info-panel") || evt.target.closest(".modal")) return;
     if (Date.now() - lastGovmapClickAt < 200) return;
 
-    const pt = normalizeMapPoint(lastHoverMapPoint);
+  if (!lastHoverMapPoint || (Date.now() - lastMoveAt > 500)) {
+  showInfo("רגע", "תזיז את העכבר מעל רשות ואז תלחץ (הקליק בצביעה משתמש בנקודת הריחוף האחרונה).", "warn");
+  return;
+}
+const pt = normalizeMapPoint(lastHoverMapPoint);
+
 
     if (!pt) {
       showInfo("רגע", "אין לי נקודת מפה זמינה לקליק בצביעה. נסה ללחוץ פעם אחת על המפה בלי צביעה, ואז להדליק צביעה וללחוץ.", "warn");
@@ -2744,8 +2755,18 @@ function installChoroplethClickFallback(){
 
           setMode(currentMode);
           setChoroBtnUI();
+          installMouseMovePointCapture();
+
 
         // CLICK (normal)
+try {
+  govmap.onEvent(govmap.events.MAP_CLICK).progress((e) => {
+    lastGovmapClickAt = Date.now();
+    onMapClick(e);
+  });
+} catch (err) {
+  console.warn("MAP_CLICK hook failed:", err);
+}
 
 
 installChoroplethClickFallback();
