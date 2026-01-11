@@ -725,8 +725,7 @@
 
   <script>
     // ===================== CONFIG =====================
-  // Define coordinate systems
-
+  
     const MUNICIPAL_LAYER      = "125";
     const POLICE_MERHAV_LAYER  = "200550";
     const POLICE_STATION_LAYER = "24";
@@ -741,7 +740,6 @@ let lastHoverMapPoint = null;
 let lastGovmapClickAt = 0;
 
     let mapInitialized = false;
-    let lastMoveAt = 0;
     let currentYear = "2025";
     let currentTab = "single";
     let currentMode = "muni";  // muni | merhav | station
@@ -794,83 +792,6 @@ let lastGovmapClickAt = 0;
       s = s.replace(/[\s\-]/g, "");
       return s.toLowerCase();
     }
-    function installMouseMovePointCapture(){
-  try{
-    if (!window.govmap || !govmap.onEvent || !govmap.events) return;
-
-    // Try to resolve the correct mouse-move event across GovMap API versions
-    let eventId =
-      govmap.events.MOUSE_MOVE ??
-      govmap.events.MOUSEMOVE ??
-      govmap.events.MAP_MOUSE_MOVE ??
-      govmap.events.POINTER_MOVE ??
-      null;
-
-    if (!eventId) {
-      const keys = Object.keys(govmap.events || {});
-      const k = keys.find(x => /MOVE/i.test(x) && /(MOUSE|POINTER|CURSOR)/i.test(x));
-      if (k) eventId = govmap.events[k];
-    }
-
-    if (!eventId) {
-      console.warn("GovMap mouse-move event not found; hover-based click will be limited.");
-      return;
-    }
-
-    govmap.onEvent(eventId).progress((e) => {
-      const now = Date.now();
-      if (now - lastMoveAt < 50) return; // 20fps
-      lastMoveAt = now;
-
-      const pt = normalizeMapPoint(e);
-      if (pt) lastHoverMapPoint = pt;
-    });
-  } catch(err){
-    console.warn("Mouse move hook failed:", err);
-  }
-}
-
-function installGovmapClickCapture(){
-  try{
-    if (!window.govmap || typeof govmap.onEvent !== "function") return;
-
-    const ev = govmap.events || {};
-
-    // Try common names first
-    let eventId =
-      ev.MAP_CLICK ??
-      ev.MAPCLICK ??
-      ev.CLICK ??
-      ev.MOUSE_CLICK ??
-      ev.POINTER_CLICK ??
-      null;
-
-    // Fallback: search any event key that contains CLICK
-    if (!eventId) {
-      const keys = Object.keys(ev);
-      const key =
-        keys.find(k => /CLICK/i.test(k) && /(MAP|MOUSE|POINTER)/i.test(k)) ||
-        keys.find(k => /CLICK/i.test(k));
-      if (key) eventId = ev[key];
-    }
-
-    if (!eventId) {
-      console.warn("No supported govmap click event found in govmap.events");
-      return;
-    }
-
-    govmap.onEvent(eventId).progress((e) => {
-      lastGovmapClickAt = Date.now(); // anti-double with fallback
-      onMapClick(e);
-    });
-
-  }catch(err){
-    console.warn("Map click hook failed:", err);
-  }
-}
-
-
-
     function normalizeKey(name) { return normalizeKeyBase(name); }
 
     function nameVariants(name) {
@@ -1300,11 +1221,6 @@ function installGovmapClickCapture(){
       if (currentTab === "compare") updateCompareView();
       if (currentTab === "trends" && selectedEntityName) showTrends(selectedEntityName, currentMode);
       if (currentTab === "rankings") renderRankings();
-      if (metric === "rate" && currentMode !== "muni") {
-  showInfo("לא זמין", "מדד ל-10,000 זמין רק במצב ישובים/רשויות.", "warn");
-  return;
-}
-
 
       setChoroBtnUI();
     }
@@ -1768,87 +1684,29 @@ function installGovmapClickCapture(){
       const v = getFieldFromAttrs(attrsRaw, candidates);
       return (v == null) ? null : String(v).trim();
     }
-  
-function normalizeMapPoint(input){
+    function normalizeMapPoint(input){
   const mp = input?.mapPoint ?? input?.Point ?? input ?? null;
   if (!mp) return null;
 
   const x = mp.x ?? mp.X ?? mp.lon ?? mp.Lon ?? mp.centerX ?? mp.CenterX;
   const y = mp.y ?? mp.Y ?? mp.lat ?? mp.Lat ?? mp.centerY ?? mp.CenterY;
 
-  const toNum = (v) => {
-    if (v == null) return NaN;
-    if (typeof v === "string") v = v.replace(/,/g, "").trim(); // <-- זה התיקון הקריטי
-    const n = Number(v);
-    return Number.isFinite(n) ? n : NaN;
-  };
-
-  const nx = toNum(x);
-  const ny = toNum(y);
+  const nx = Number(x);
+  const ny = Number(y);
 
   if (!Number.isFinite(nx) || !Number.isFinite(ny)) return null;
   return { x: nx, y: ny };
 }
 
 
-
-function installChoroplethClickFallback(){
-  const mapEl = document.getElementById("map");
-  if(!mapEl) return;
-
-  // install once
-  if (mapEl.__mapClickCaptureInstalled) return;
-  mapEl.__mapClickCaptureInstalled = true;
-
-  // Capture phase: catch click even if an overlay is on top
-  mapEl.addEventListener("click", (evt) => {
-    if (!mapInitialized) return;
-
-    // IMPORTANT: only needed when choropleth is ON (otherwise it breaks normal clicks)
-    if (!choroplethEnabled || currentMode !== "muni") return;
-
-    // ignore UI clicks
-    if (evt.target && (evt.target.closest("#info-panel") || evt.target.closest(".modal"))) return;
-
-    const now = Date.now();
-
-    // prevent double-firing (if govmap click hook fired)
-    if (now - lastGovmapClickAt < 200) return;
-
-    // We must have a fresh hover point (ITM) to know what was under the cursor
-    if (!lastHoverMapPoint || !Number.isFinite(lastHoverMapPoint.x) || !Number.isFinite(lastHoverMapPoint.y) || (now - lastMoveAt > 700)) {
-      showInfo(
-        "רגע",
-        "תזיז את העכבר מעל הרשות ואז תלחץ (הבחירה נעשית לפי נקודת הריחוף ברגע הלחיצה).",
-        "warn"
-      );
-      return;
-    }
-
-    lastGovmapClickAt = now; // anti-double in the other direction
-
-    // Call your existing map click logic with the hover mapPoint
-    onMapClick({ mapPoint: { x: lastHoverMapPoint.x, y: lastHoverMapPoint.y }, __fallback: true });
-
-  }, true);
-}
-
-
-
     async function onMapClick(e) {
   if (!mapInitialized) return;
 
   // 1) נסה להוציא נקודה תקינה מהאירוע
- const now = Date.now();
+  let pt = normalizeMapPoint(e);
 
-// אם יש ריחוף "טרי" (כלומר העכבר זז ממש לאחרונה) – זה המקור הכי אמין
-const hoverFresh = lastHoverMapPoint && (now - lastMoveAt < 250);
-
-let pt = hoverFresh ? normalizeMapPoint(lastHoverMapPoint) : normalizeMapPoint(e);
-
-// גיבוי אחרון
-if (!pt && lastHoverMapPoint) pt = normalizeMapPoint(lastHoverMapPoint);
-
+  // 2) אם אין נקודה תקינה, נסה מה-hover האחרון (חשוב בעיקר בצביעה)
+  if (!pt && lastHoverMapPoint) pt = normalizeMapPoint(lastHoverMapPoint);
 
   // 3) אם עדיין אין נקודה – לא ממשיכים
   if (!pt) {
@@ -2204,17 +2062,19 @@ function initModals(){
     }
 
     // ===================== GEOJSON -> WKT =====================
-// ===================== GEOJSON -> WKT (ITM SAFE) =====================
-
 function toFiniteNum(v){
   if (v == null) return null;
-
+  
   if (typeof v === "string") {
     v = v.trim().replace(/\s+/g, "");
-    if (v.includes(",") && v.includes(".")) v = v.replace(/,/g, "");
-    else if (v.includes(",")) {
+    
+    // אם יש גם נקודה וגם פסיק -> הפסיק כנראה מפריד אלפים
+    if (v.includes(",") && v.includes(".")) {
+      v = v.replace(/,/g, "");
+    } else if (v.includes(",")) {
+      // אם הפסיק נראה כמו מפריד אלפים (3 ספרות אחריו) -> להסיר
       if (/,(\d{3})$/.test(v)) v = v.replace(/,/g, "");
-      else v = v.replace(/,/g, ".");
+      else v = v.replace(/,/g, "."); // אחרת נניח פסיק עשרוני
     }
   }
 
@@ -2230,112 +2090,49 @@ function ensureClosedRing(coords){
   return coords.concat([[first[0], first[1]]]);
 }
 
-function ringToWktITM(ring){
+function ringToWkt(ring){
   if (!Array.isArray(ring) || ring.length < 3) return null;
-
+  
   const r = ensureClosedRing(ring);
   const out = [];
-
+  
   for (const p of r) {
     if (!Array.isArray(p) || p.length < 2) return null;
+    
     const x = toFiniteNum(p[0]);
     const y = toFiniteNum(p[1]);
     if (x == null || y == null) return null;
-
-    // IMPORTANT: keep ITM coordinates (x y)
-    out.push(`${x} ${y}`);
+    
+    out.push(`${x.toFixed(3)} ${y.toFixed(3)}`);
   }
-
+  
   return out.join(", ");
 }
-    function getBoundaryNameFromProps(props){
-  if (!props || typeof props !== "object") return null;
 
-  const candidates = [
-    props.name, props.NAME, props.Name,
-    props.MUNI_HEB, props.muni_heb,
-    props.SHEM_YISHUV, props.shem_yishuv,
-    props.HEB_NAME, props.heb_name,
-    props.MUNICIPALITY, props.municipality,
-  ];
-
-  const v = candidates.find(x => x != null && String(x).trim() !== "");
-  return v ? String(v).trim() : null;
-}
-
-async function loadMuniBoundariesGeojson(){
-  if(muniBoundariesLoaded) return true;
-
-  muniBoundariesLoadError = null;
-  try{
-    let feats = [];
-
-    if (window.MUNI_DATA && window.MUNI_DATA.features) {
-      feats = window.MUNI_DATA.features;
-    } else {
-      const res = await fetch(MUNI_BOUNDARIES_GEOJSON_URL, { cache: "no-store" });
-      if(!res.ok) throw new Error(`fetch failed (${res.status})`);
-      const gj = await res.json();
-      feats = Array.isArray(gj?.features) ? gj.features : [];
-    }
-
-    muniBoundariesIndex = Object.create(null);
-    muniBoundariesMeta = [];
-
-    for(const f of feats){
-      const name = getBoundaryNameFromProps(f?.properties);
-      const wkt  = geojsonGeomToWkt(f?.geometry);
-
-      if(!name || !wkt){
-        console.warn("❌ Skipping boundary feature:", { name, geomType: f?.geometry?.type });
-        continue;
-      }
-
-      muniBoundariesIndex[normalizeKey(name)] = wkt;
-      muniBoundariesMeta.push({ name: String(name), wkt });
-    }
-
-    muniBoundariesLoaded = true;
-    console.log("✅ Boundaries loaded:", Object.keys(muniBoundariesIndex).length);
-    return true;
-
-  }catch(e){
-    muniBoundariesLoadError = e;
-    console.error("❌ Failed loading muni boundaries:", e);
-    return false;
-  }finally{
-    setChoroBtnUI();
-  }
-}
-
-
-
-
-
+// 3. geojsonGeomToWkt מתוקנת
 function geojsonGeomToWkt(geom){
   if(!geom || !geom.type) return null;
 
   if(geom.type === "Polygon"){
-    const rings = (geom.coordinates || []).map(ringToWktITM);
+    const rings = (geom.coordinates || []).map(ringToWkt);
     if(!rings.length || rings.some(r => !r)) return null;
     return `POLYGON((${rings[0]})${rings.slice(1).map(h => `,(${h})`).join("")})`;
   }
-
+  
   if(geom.type === "MultiPolygon"){
     const polys = geom.coordinates || [];
     const parts = polys.map(poly => {
-      const rings = (poly || []).map(ringToWktITM);
+      const rings = (poly || []).map(ringToWkt);
       if(!rings.length || rings.some(r => !r)) return null;
       return `((${rings[0]})${rings.slice(1).map(h => `,(${h})`).join("")})`;
     }).filter(Boolean);
-
+    
     if(!parts.length) return null;
     return `MULTIPOLYGON(${parts.join(",")})`;
   }
-
+  
   return null;
 }
-
 
     async function loadMuniBoundariesGeojson(){
       if(muniBoundariesLoaded) return true;
@@ -2426,9 +2223,77 @@ function findWktForCrimeName(crimeName){
 
     // ===================== CHOROPLETH (unchanged logic) =====================
     // --- Guard: only transform finite [x,y] ---
+function isFiniteXY(x, y) {
+  return Number.isFinite(x) && Number.isFinite(y);
+}
+
+function safeToNumber(v) {
+  // Handles strings, null, undefined
+  const n = (typeof v === "string") ? Number(v.trim()) : Number(v);
+  return Number.isFinite(n) ? n : NaN;
+}
+
+// Recursively map coordinates (supports Point/LineString/Polygon/MultiPolygon)
+function mapCoordsDeep(coords, pointFn) {
+  if (!Array.isArray(coords)) return null;
+
+  // Point: [x,y] or [x,y,z]
+  if (typeof coords[0] === "number" || typeof coords[0] === "string") {
+    const x = safeToNumber(coords[0]);
+    const y = safeToNumber(coords[1]);
+    if (!isFiniteXY(x, y)) return null;
+    const out = pointFn([x, y]);
+    if (!out || !isFiniteXY(out[0], out[1])) return null;
+    return out;
+  }
+
+  // Nested: array of arrays
+  const out = [];
+  for (const c of coords) {
+    const mapped = mapCoordsDeep(c, pointFn);
+    if (mapped != null) out.push(mapped);
+  }
+  return out.length ? out : null;
+}
+
+function closeRingIfNeeded(ring) {
+  if (!Array.isArray(ring) || ring.length < 3) return null;
+  const first = ring[0], last = ring[ring.length - 1];
+  if (!first || !last) return null;
+  if (first[0] !== last[0] || first[1] !== last[1]) ring.push([first[0], first[1]]);
+  return ring.length >= 4 ? ring : null;
+}
 
 // Sanitize GeoJSON feature geometry (drops broken parts)
+function sanitizeFeatureGeometry(feature, pointFn) {
+  if (!feature || !feature.geometry) return null;
+  const g = feature.geometry;
 
+  const mapped = mapCoordsDeep(g.coordinates, pointFn);
+  if (!mapped) return null;
+
+  // Fix polygon rings (common source of crashes: empty/invalid rings)
+  if (g.type === "Polygon") {
+    const rings = mapped
+      .map(r => closeRingIfNeeded(r))
+      .filter(Boolean);
+    if (!rings.length) return null;
+    return { ...feature, geometry: { ...g, coordinates: rings } };
+  }
+
+  if (g.type === "MultiPolygon") {
+    const polys = mapped
+      .map(poly => (poly || [])
+        .map(r => closeRingIfNeeded(r))
+        .filter(Boolean)
+      )
+      .filter(poly => poly.length);
+    if (!polys.length) return null;
+    return { ...feature, geometry: { ...g, coordinates: polys } };
+  }
+
+  return { ...feature, geometry: { ...g, coordinates: mapped } };
+}
 
     function lerp(a,b,t){ return a + (b-a)*t; }
     function clamp01(x){ return Math.max(0, Math.min(1, x)); }
@@ -2523,7 +2388,7 @@ function findWktForCrimeName(crimeName){
         return;
       }
 
-      
+      setMunicipalLayerOpacity(30);
       await renderChoropleth();
     }
 
@@ -2696,7 +2561,7 @@ function filterChoroPayload(payload){
   }
 
   const metric = (currentMetric === "rate") ? "rate" : "abs";
-  
+  setMunicipalLayerOpacity(30);
 
   clearChoropleth();
 
@@ -2748,11 +2613,34 @@ function filterChoroPayload(payload){
   setChoroBtnUI();
 }
 
+   function subscribeGovmapProgressEvent(ev, handler){
+  try{
+    if (!ev || typeof govmap?.onEvent !== "function") return false;
+    const h = govmap.onEvent(ev);
+    if (h && typeof h.progress === "function") { h.progress(handler); return true; }
+  }catch(_){}
+  return false;
+}
 
+function installChoroplethClickFallback(){
+  const mapEl = document.getElementById("map");
+  if(!mapEl) return;
 
+  mapEl.addEventListener("click", (evt) => {
+    if (!choroplethEnabled || currentMode !== "muni") return;
+    if (evt.target.closest("#info-panel") || evt.target.closest(".modal")) return;
+    if (Date.now() - lastGovmapClickAt < 200) return;
 
+    const pt = normalizeMapPoint(lastHoverMapPoint);
 
+    if (!pt) {
+      showInfo("רגע", "אין לי נקודת מפה זמינה לקליק בצביעה. נסה ללחוץ פעם אחת על המפה בלי צביעה, ואז להדליק צביעה וללחוץ.", "warn");
+      return;
+    }
 
+    onMapClick({ mapPoint: pt, __fallback: true });
+  }, true);
+}
 
 
     // ===================== GOVMAP INIT =====================
@@ -2833,11 +2721,21 @@ function filterChoroPayload(payload){
 
           setMode(currentMode);
           setChoroBtnUI();
-          installMouseMovePointCapture();
-          installGovmapClickCapture();
 
-          // CLICK fallback for choropleth overlay
-          installChoroplethClickFallback();
+        // CLICK (normal)
+try {
+ govmap.onEvent(govmap.events.CLICK).progress((e) => {
+  lastGovmapClickAt = Date.now();
+  const pt = normalizeMapPoint(e);
+  if (pt) lastHoverMapPoint = pt;
+
+  // ✅ קורא עם נקודה תקינה בלבד
+  onMapClick(pt ? { mapPoint: pt, __fromGovmap: true } : e);
+});
+} catch (e) {}
+
+
+installChoroplethClickFallback();
 
 
           initModals();
