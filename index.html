@@ -794,7 +794,7 @@ let lastGovmapClickAt = 0;
       s = s.replace(/[\s\-]/g, "");
       return s.toLowerCase();
     }
- function installMouseMovePointCapture(){
+    function installMouseMovePointCapture(){
   try{
     if (!window.govmap || !govmap.onEvent || !govmap.events) return;
 
@@ -1749,6 +1749,56 @@ function normalizeMapPoint(input){
   return { x: nx, y: ny };
 }
 
+function installChoroplethClickFallback() {
+  // Install once (even if called multiple times)
+  if (window.__choroClickFallbackInstalled) return;
+  window.__choroClickFallbackInstalled = true;
+
+  // Capture-phase so we catch clicks even if an overlay swallows them
+  document.addEventListener("click", (evt) => {
+    try {
+      if (!mapInitialized) return;
+
+      // Ignore clicks on UI / modals
+      if (evt.target && (evt.target.closest("#info-panel") || evt.target.closest(".modal"))) return;
+
+      const mapEl = document.getElementById("map");
+      if (!mapEl) return;
+
+      // Only handle clicks that happened over the map area
+      const r = mapEl.getBoundingClientRect();
+      const cx = evt.clientX, cy = evt.clientY;
+      if (cx < r.left || cx > r.right || cy < r.top || cy > r.bottom) return;
+
+      const now = Date.now();
+
+      // We rely on the last hover point (GovMap MOUSE_MOVE) to know what was under the cursor
+      if (!lastHoverMapPoint ||
+          !Number.isFinite(lastHoverMapPoint.x) ||
+          !Number.isFinite(lastHoverMapPoint.y) ||
+          (now - lastMoveAt > 700)) {
+        showInfo(
+          "רגע",
+          "תזיז את העכבר מעל הישות ואז תלחץ (הבחירה נעשית לפי נקודת הריחוף ברגע הלחיצה).",
+          "warn"
+        );
+        return;
+      }
+
+      // Anti-double-fire
+      if (now - lastGovmapClickAt < 200) return;
+      lastGovmapClickAt = now;
+
+      onMapClick({ mapPoint: { x: lastHoverMapPoint.x, y: lastHoverMapPoint.y }, __fallback: true });
+    } catch (err) {
+      console.warn("choropleth click fallback failed:", err);
+    }
+  }, true);
+}
+
+
+
+
 
     async function onMapClick(e) {
   if (!mapInitialized) return;
@@ -2222,52 +2272,8 @@ async function loadMuniBoundariesGeojson(){
     setChoroBtnUI();
   }
 }
-function installChoroplethClickFallback() {
-  // Install once (even if called multiple times)
-  if (window.__choroClickFallbackInstalled) return;
-  window.__choroClickFallbackInstalled = true;
 
-  // Capture-phase so we catch clicks even if an overlay swallows them
-  document.addEventListener("click", (evt) => {
-    try {
-      if (!mapInitialized) return;
 
-      // Ignore clicks on UI / modals
-      if (evt.target && (evt.target.closest("#info-panel") || evt.target.closest(".modal"))) return;
-
-      const mapEl = document.getElementById("map");
-      if (!mapEl) return;
-
-      // Only handle clicks that happened over the map area
-      const r = mapEl.getBoundingClientRect();
-      const cx = evt.clientX, cy = evt.clientY;
-      if (cx < r.left || cx > r.right || cy < r.top || cy > r.bottom) return;
-
-      const now = Date.now();
-
-      // We rely on the last hover point (GovMap MOUSE_MOVE) to know what was under the cursor
-      if (!lastHoverMapPoint ||
-          !Number.isFinite(lastHoverMapPoint.x) ||
-          !Number.isFinite(lastHoverMapPoint.y) ||
-          (now - lastMoveAt > 700)) {
-        showInfo(
-          "רגע",
-          "תזיז את העכבר מעל הישות ואז תלחץ (הבחירה נעשית לפי נקודת הריחוף ברגע הלחיצה).",
-          "warn"
-        );
-        return;
-      }
-
-      // Anti-double-fire
-      if (now - lastGovmapClickAt < 200) return;
-      lastGovmapClickAt = now;
-
-      onMapClick({ mapPoint: { x: lastHoverMapPoint.x, y: lastHoverMapPoint.y }, __fallback: true });
-    } catch (err) {
-      console.warn("choropleth click fallback failed:", err);
-    }
-  }, true);
-}
 
 
 
@@ -2709,30 +2715,9 @@ function filterChoroPayload(payload){
 
 
 
-function installChoroplethClickFallback(){
-  const mapEl = document.getElementById("map");
-  if(!mapEl) return;
-
-  mapEl.addEventListener("click", (evt) => {
-    if (!choroplethEnabled || currentMode !== "muni") return;
-    if (evt.target.closest("#info-panel") || evt.target.closest(".modal")) return;
-    if (Date.now() - lastGovmapClickAt < 200) return;
-
-  if (!lastHoverMapPoint || (Date.now() - lastMoveAt > 500)) {
-  showInfo("רגע", "תזיז את העכבר מעל רשות ואז תלחץ (הקליק בצביעה משתמש בנקודת הריחוף האחרונה).", "warn");
-  return;
-}
-const pt = normalizeMapPoint(lastHoverMapPoint);
 
 
-    if (!pt) {
-      showInfo("רגע", "אין לי נקודת מפה זמינה לקליק בצביעה. נסה ללחוץ פעם אחת על המפה בלי צביעה, ואז להדליק צביעה וללחוץ.", "warn");
-      return;
-    }
 
-    onMapClick({ mapPoint: pt, __fallback: true });
-  }, true);
-}
 
 
     // ===================== GOVMAP INIT =====================
