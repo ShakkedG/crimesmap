@@ -1704,15 +1704,23 @@ let lastGovmapClickAt = 0;
       const v = getFieldFromAttrs(attrsRaw, candidates);
       return (v == null) ? null : String(v).trim();
     }
-    function normalizeMapPoint(input){
+  
+function normalizeMapPoint(input){
   const mp = input?.mapPoint ?? input?.Point ?? input ?? null;
   if (!mp) return null;
 
   const x = mp.x ?? mp.X ?? mp.lon ?? mp.Lon ?? mp.centerX ?? mp.CenterX;
   const y = mp.y ?? mp.Y ?? mp.lat ?? mp.Lat ?? mp.centerY ?? mp.CenterY;
 
-  const nx = Number(x);
-  const ny = Number(y);
+  const toNum = (v) => {
+    if (v == null) return NaN;
+    if (typeof v === "string") v = v.replace(/,/g, "").trim(); // <-- זה התיקון הקריטי
+    const n = Number(v);
+    return Number.isFinite(n) ? n : NaN;
+  };
+
+  const nx = toNum(x);
+  const ny = toNum(y);
 
   if (!Number.isFinite(nx) || !Number.isFinite(ny)) return null;
   return { x: nx, y: ny };
@@ -2191,25 +2199,43 @@ async function loadMuniBoundariesGeojson(){
     setChoroBtnUI();
   }
 }
-function installChoroplethClickFallback(){
+function installChoroplethClickFallback() {
   const mapEl = document.getElementById("map");
-  if(!mapEl) return;
+  if (!mapEl) return;
 
+  // כדי שלא נתקין מאזין פעמיים (אם קוראים לזה שוב)
+  if (mapEl.__choroFallbackInstalled) return;
+  mapEl.__choroFallbackInstalled = true;
+
+  // Capture-phase כדי לתפוס קליק גם אם שכבה "בולעת" אותו
   mapEl.addEventListener("click", (evt) => {
-    if (!choroplethEnabled || currentMode !== "muni") return;
-    if (evt.target.closest("#info-panel") || evt.target.closest(".modal")) return;
+    if (!mapInitialized) return;
 
-    // אם GovMap כבר נתן CLICK לאחרונה - לא להתערב
-    if (Date.now() - lastGovmapClickAt < 250) return;
+    // אם לוחצים על הפאנל/מודאלים – לא לבחור ישות
+    if (evt.target && (evt.target.closest("#info-panel") || evt.target.closest(".modal"))) return;
 
-    const pt = normalizeMapPoint(lastHoverMapPoint);
-    if (!pt) {
-      showInfo("רגע", "אין נקודת מפה זמינה לקליק בצביעה. הזז את העכבר מעל רשות ואז לחץ.", "warn");
+    // אם אין ריחוף טרי, אין לנו נקודת ITM אמינה
+    const now = Date.now();
+    if (!lastHoverMapPoint || (now - lastMoveAt > 600)) {
+      showInfo(
+        "רגע",
+        "תזיז את העכבר מעל הישות ואז תלחץ (הבחירה נעשית לפי נקודת הריחוף ברגע הלחיצה).",
+        "warn"
+      );
       return;
     }
 
-    onMapClick({ mapPoint: pt, __fallback: true });
-  }, { passive: true });
+    // אנטי-דאבל: אם ממש עכשיו הגיע קליק מגובמאפ/מנגנון אחר – לא להפעיל שוב
+    if (now - lastGovmapClickAt < 200) return;
+    lastGovmapClickAt = now;
+
+    // קוראים ל-onMapClick עם נקודת המפה האחרונה מהריחוף (ITM, מספרית)
+    try {
+      onMapClick({ mapPoint: { x: lastHoverMapPoint.x, y: lastHoverMapPoint.y }, __fallback: true });
+    } catch (err) {
+      console.warn("choropleth click fallback failed:", err);
+    }
+  }, true);
 }
 
 
@@ -2759,14 +2785,6 @@ const pt = normalizeMapPoint(lastHoverMapPoint);
 
 
         // CLICK (normal)
-try {
-  govmap.onEvent(govmap.events.MAP_CLICK).progress((e) => {
-    lastGovmapClickAt = Date.now();
-    onMapClick(e);
-  });
-} catch (err) {
-  console.warn("MAP_CLICK hook failed:", err);
-}
 
 
 installChoroplethClickFallback();
