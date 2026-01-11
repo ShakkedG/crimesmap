@@ -2400,47 +2400,55 @@ function buildChoroplethPayloadForYear(year, metric){
 }
 
 function safeDisplayGeometries(geoms){
-      // GovMap docs: displayGeometries expects a single payload with parallel arrays (wkts/names/symbols)
-      const wkts = geoms.map(g => g.wkt);
-      const names = geoms.map(g => g.drawName);
+  // מנסה כמה פורמטים נפוצים כדי להיות עמיד לשינויים ב-API
+  const arr = (geoms || []).map(g => {
+    const fill = g.color || { r: 0, g: 0, b: 0 };
+    const fillObj = { r: fill.r, g: fill.g, b: fill.b, a: 0.65 };
+    const strokeObj = { r: 70, g: 70, b: 70, a: 0.9 };
 
-      const symbols = geoms.map(g => {
-        const c = g.color || { r: 160, g: 160, b: 160 };
-        return {
-          outlineColor: [70, 70, 70, 0.9],
-          outlineWidth: 1,
-          fillColor: [c.r, c.g, c.b, 0.65]
-        };
-      });
+    return {
+      // שמות שונים (ליתר ביטחון)
+      name: g.drawName,
+      Name: g.drawName,
 
-      const payload = {
-        wkts,
-        names,
-        geometryType: (govmap.geometryType && govmap.geometryType.POLYGON) ? govmap.geometryType.POLYGON : "POLYGON",
-        symbols,
-        clearExisting: true,
-        clearExistings: true, // some builds use this typo/alias
-        showBubble: false      // disables hover/tooltip bubble that blocks clicks
-      };
+      // גיאומטריה
+      wkt: g.wkt,
+      WKT: g.wkt,
 
-      try {
-        return govmap.displayGeometries(payload);
-      } catch (e) {
-        console.error("❌ displayGeometries failed:", e);
-        return null;
-      }
+      // צבעים
+      fillColor: fillObj,
+      FillColor: fillObj,
+      strokeColor: strokeObj,
+      StrokeColor: strokeObj,
+
+      // עובי/שקיפות
+      lineWidth: 1,
+      LineWidth: 1,
+      opacity: 0.65,
+      Opacity: 0.65,
+
+      // “לא לתפוס קליקים” אם ה-API מכבד את זה (לא תמיד)
+      clickable: false,
+      Clickable: false
     };
   });
 
-  try { return govmap.displayGeometries(arr); } catch (e1) {
-    try { return govmap.displayGeometries({ geometries: arr }); } catch (e2) {
-      try { return govmap.displayGeometries({ Geometries: arr }); } catch (e3) {
+  try {
+    return govmap.displayGeometries(arr);
+  } catch (e1) {
+    try {
+      return govmap.displayGeometries({ geometries: arr });
+    } catch (e2) {
+      try {
+        return govmap.displayGeometries({ Geometries: arr });
+      } catch (e3) {
         console.error("❌ displayGeometries failed (all formats):", e1, e2, e3);
         return null;
       }
     }
   }
 }
+
 
 async function renderChoropleth(){
   if(!choroplethEnabled || currentMode !== "muni") return;
