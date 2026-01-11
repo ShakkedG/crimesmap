@@ -1749,54 +1749,43 @@ function normalizeMapPoint(input){
   return { x: nx, y: ny };
 }
 
-function installChoroplethClickFallback() {
-  // Install once (even if called multiple times)
-  if (window.__choroClickFallbackInstalled) return;
-  window.__choroClickFallbackInstalled = true;
 
-  // Capture-phase so we catch clicks even if an overlay swallows them
-  document.addEventListener("click", (evt) => {
-    try {
-      if (!mapInitialized) return;
 
-      // Ignore clicks on UI / modals
-      if (evt.target && (evt.target.closest("#info-panel") || evt.target.closest(".modal"))) return;
+function installChoroplethClickFallback(){
+  const mapEl = document.getElementById("map");
+  if(!mapEl) return;
 
-      const mapEl = document.getElementById("map");
-      if (!mapEl) return;
+  // install once
+  if (mapEl.__mapClickCaptureInstalled) return;
+  mapEl.__mapClickCaptureInstalled = true;
 
-      // Only handle clicks that happened over the map area
-      const r = mapEl.getBoundingClientRect();
-      const cx = evt.clientX, cy = evt.clientY;
-      if (cx < r.left || cx > r.right || cy < r.top || cy > r.bottom) return;
+  // Capture phase: catch click even if overlay is on top
+  mapEl.addEventListener("click", (evt) => {
+    if (!mapInitialized) return;
 
-      const now = Date.now();
+    // ignore UI clicks
+    if (evt.target && (evt.target.closest("#info-panel") || evt.target.closest(".modal"))) return;
 
-      // We rely on the last hover point (GovMap MOUSE_MOVE) to know what was under the cursor
-      if (!lastHoverMapPoint ||
-          !Number.isFinite(lastHoverMapPoint.x) ||
-          !Number.isFinite(lastHoverMapPoint.y) ||
-          (now - lastMoveAt > 700)) {
-        showInfo(
-          "רגע",
-          "תזיז את העכבר מעל הישות ואז תלחץ (הבחירה נעשית לפי נקודת הריחוף ברגע הלחיצה).",
-          "warn"
-        );
-        return;
-      }
+    const now = Date.now();
 
-      // Anti-double-fire
-      if (now - lastGovmapClickAt < 200) return;
-      lastGovmapClickAt = now;
+    // prevent double-firing
+    if (now - lastGovmapClickAt < 180) return;
+    lastGovmapClickAt = now;
 
-      onMapClick({ mapPoint: { x: lastHoverMapPoint.x, y: lastHoverMapPoint.y }, __fallback: true });
-    } catch (err) {
-      console.warn("choropleth click fallback failed:", err);
+    // We must have a fresh hover point (ITM) to know what was under the cursor
+    if (!lastHoverMapPoint || !Number.isFinite(lastHoverMapPoint.x) || !Number.isFinite(lastHoverMapPoint.y) || (now - lastMoveAt > 700)) {
+      showInfo(
+        "רגע",
+        "תזיז את העכבר מעל הישות ואז תלחץ (הבחירה נעשית לפי נקודת הריחוף ברגע הלחיצה).",
+        "warn"
+      );
+      return;
     }
+
+    // Call your existing map click logic with the hover mapPoint
+    onMapClick({ mapPoint: { x: lastHoverMapPoint.x, y: lastHoverMapPoint.y }, __fallback: true });
   }, true);
 }
-
-
 
 
 
