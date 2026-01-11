@@ -794,10 +794,30 @@ let lastGovmapClickAt = 0;
       s = s.replace(/[\s\-]/g, "");
       return s.toLowerCase();
     }
-    function installMouseMovePointCapture(){
+ function installMouseMovePointCapture(){
   try{
-    if (!govmap?.events?.MOUSE_MOVE) return;
-    govmap.onEvent(govmap.events.MOUSE_MOVE).progress((e) => {
+    if (!window.govmap || !govmap.onEvent || !govmap.events) return;
+
+    // Try to resolve the correct mouse-move event across GovMap API versions
+    let eventId =
+      govmap.events.MOUSE_MOVE ??
+      govmap.events.MOUSEMOVE ??
+      govmap.events.MAP_MOUSE_MOVE ??
+      govmap.events.POINTER_MOVE ??
+      null;
+
+    if (!eventId) {
+      const keys = Object.keys(govmap.events || {});
+      const k = keys.find(x => /MOVE/i.test(x) && /(MOUSE|POINTER|CURSOR)/i.test(x));
+      if (k) eventId = govmap.events[k];
+    }
+
+    if (!eventId) {
+      console.warn("GovMap mouse-move event not found; hover-based click will be limited.");
+      return;
+    }
+
+    govmap.onEvent(eventId).progress((e) => {
       const now = Date.now();
       if (now - lastMoveAt < 50) return; // 20fps
       lastMoveAt = now;
@@ -805,8 +825,11 @@ let lastGovmapClickAt = 0;
       const pt = normalizeMapPoint(e);
       if (pt) lastHoverMapPoint = pt;
     });
-  } catch(_){}
+  } catch(err){
+    console.warn("Mouse move hook failed:", err);
+  }
 }
+
     function normalizeKey(name) { return normalizeKeyBase(name); }
 
     function nameVariants(name) {
@@ -2200,43 +2223,52 @@ async function loadMuniBoundariesGeojson(){
   }
 }
 function installChoroplethClickFallback() {
-  const mapEl = document.getElementById("map");
-  if (!mapEl) return;
+  // Install once (even if called multiple times)
+  if (window.__choroClickFallbackInstalled) return;
+  window.__choroClickFallbackInstalled = true;
 
-  // כדי שלא נתקין מאזין פעמיים (אם קוראים לזה שוב)
-  if (mapEl.__choroFallbackInstalled) return;
-  mapEl.__choroFallbackInstalled = true;
-
-  // Capture-phase כדי לתפוס קליק גם אם שכבה "בולעת" אותו
-  mapEl.addEventListener("click", (evt) => {
-    if (!mapInitialized) return;
-
-    // אם לוחצים על הפאנל/מודאלים – לא לבחור ישות
-    if (evt.target && (evt.target.closest("#info-panel") || evt.target.closest(".modal"))) return;
-
-    // אם אין ריחוף טרי, אין לנו נקודת ITM אמינה
-    const now = Date.now();
-    if (!lastHoverMapPoint || (now - lastMoveAt > 600)) {
-      showInfo(
-        "רגע",
-        "תזיז את העכבר מעל הישות ואז תלחץ (הבחירה נעשית לפי נקודת הריחוף ברגע הלחיצה).",
-        "warn"
-      );
-      return;
-    }
-
-    // אנטי-דאבל: אם ממש עכשיו הגיע קליק מגובמאפ/מנגנון אחר – לא להפעיל שוב
-    if (now - lastGovmapClickAt < 200) return;
-    lastGovmapClickAt = now;
-
-    // קוראים ל-onMapClick עם נקודת המפה האחרונה מהריחוף (ITM, מספרית)
+  // Capture-phase so we catch clicks even if an overlay swallows them
+  document.addEventListener("click", (evt) => {
     try {
+      if (!mapInitialized) return;
+
+      // Ignore clicks on UI / modals
+      if (evt.target && (evt.target.closest("#info-panel") || evt.target.closest(".modal"))) return;
+
+      const mapEl = document.getElementById("map");
+      if (!mapEl) return;
+
+      // Only handle clicks that happened over the map area
+      const r = mapEl.getBoundingClientRect();
+      const cx = evt.clientX, cy = evt.clientY;
+      if (cx < r.left || cx > r.right || cy < r.top || cy > r.bottom) return;
+
+      const now = Date.now();
+
+      // We rely on the last hover point (GovMap MOUSE_MOVE) to know what was under the cursor
+      if (!lastHoverMapPoint ||
+          !Number.isFinite(lastHoverMapPoint.x) ||
+          !Number.isFinite(lastHoverMapPoint.y) ||
+          (now - lastMoveAt > 700)) {
+        showInfo(
+          "רגע",
+          "תזיז את העכבר מעל הישות ואז תלחץ (הבחירה נעשית לפי נקודת הריחוף ברגע הלחיצה).",
+          "warn"
+        );
+        return;
+      }
+
+      // Anti-double-fire
+      if (now - lastGovmapClickAt < 200) return;
+      lastGovmapClickAt = now;
+
       onMapClick({ mapPoint: { x: lastHoverMapPoint.x, y: lastHoverMapPoint.y }, __fallback: true });
     } catch (err) {
       console.warn("choropleth click fallback failed:", err);
     }
   }, true);
 }
+
 
 
 function geojsonGeomToWkt(geom){
