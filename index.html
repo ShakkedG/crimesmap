@@ -2509,88 +2509,36 @@ function isWktSafe(wkt){
   return true;
 }
 
-function filterChoroPayload(payload, predicate){
-      // יוצר עותק של ה-payload ומסנן רק את הגיאומטריות שעוברות את התנאי.
-      // חשוב: לא מעבירים tooltips כדי למנוע תצוגת hover שחוסמת קליקים.
-      const out = { ...payload, wkts: [], names: [], symbols: [] };
-      if (payload && payload.data) out.data = { ...payload.data };
+function filterChoroPayload(payload){
+  if(!payload) return null;
 
-      const n = Math.min(payload.wkts?.length || 0, payload.names?.length || 0, payload.symbols?.length || 0);
-      for (let i = 0; i < n; i++){
-        const name = payload.names[i];
-        if (!predicate || predicate(name, i) !== false){
-          out.wkts.push(payload.wkts[i]);
-          out.names.push(payload.names[i]);
-          out.symbols.push(payload.symbols[i]);
-        }
-      }
-      return out;
-    }
+  // We only keep the minimal fields GovMap needs for displayGeometries.
+  // IMPORTANT: we deliberately DO NOT pass payload.data / tooltips / bubbles,
+  // because those create hover tooltips that steal the click handler.
+  const out = {};
 
+  const wkts  = payload.wkts  || payload.WKTS  || payload.wkt  || payload.Wkt;
+  const names = payload.names || payload.Names || payload.name || payload.Name;
 
-   async function renderChoropleth(){
-  if(!mapInitialized || !choroplethEnabled) return;
-  if(currentMode !== "muni") return;
+  out.wkts  = Array.isArray(wkts) ? wkts : [];
+  out.names = Array.isArray(names) ? names : [];
 
-  if(!muniBoundariesLoaded){
-    const ok = await loadMuniBoundariesGeojson();
-    if(!ok) return;
-  }
+  const symbols = payload.symbols || payload.Symbols;
+  if (Array.isArray(symbols)) out.symbols = symbols;
 
-  const metric = (currentMetric === "rate") ? "rate" : "abs";
-  setMunicipalLayerOpacity(30);
+  // Geometry type (Polygon) – keep if provided
+  const gt = payload.geometryType ?? payload.GeometryType;
+  if (gt != null) out.geometryType = gt;
 
-  clearChoropleth();
+  // Clear behavior: keep if provided, otherwise don't clear other layers
+  if (payload.clearExisting != null) out.clearExisting = payload.clearExisting;
+  if (payload.ClearExisting != null) out.ClearExisting = payload.ClearExisting;
 
-  const built = buildChoroplethPayloadForYear(currentYear, metric);
-  if(!built){
-    showInfo("אין מספיק נתונים","לא נמצאו רשויות מתאימות לצביעה לפי המדד הנוכחי.","warn");
-    setMunicipalLayerOpacity(100);
-    return;
-  }
+  // Force no bubble / tooltip behavior
+  out.showBubble = false;
+  out.ShowBubble = false;
 
-  try {
-    const safePayload = filterChoroPayload(built.payload);
-    if (!safePayload.wkts.length) {
-      setMunicipalLayerOpacity(100);
-      showInfo("שגיאה", "כל הגיאומטריות נפסלו בגלל קואורדינטות לא תקינות ב-GeoJSON.", "error");
-      return;
-    }
-
-    const ret = govmap.displayGeometries(safePayload);
-
-      // Re-bind click and remove hover after drawing geometries
-      installChoroplethClickFallback();
-    if (ret && typeof ret.then === "function") await ret;
-
-    activeChoroplethNames = safePayload.names;
-  } catch (e) {
-    console.error("displayGeometries failed:", e);
-    setMunicipalLayerOpacity(100);
-    showInfo("שגיאה", `נכשלתי לצייר גיאומטריות: ${escapeHtml(e?.message || e)}`, "error");
-    return;
-  }
-
-  const { minV, maxV, missingGeomCount, noJurCount, noPopCount, missingGeom } = built.meta;
-
-  let extra = "";
-  if (missingGeomCount) {
-    extra = `<br><span style="font-size:13px;opacity:.92;">לא נמצאה גיאומטריה ל-${missingGeomCount} רשויות (פערי שמות בין הנתונים לגבולות).</span>`;
-    console.log("Missing geometry for:", missingGeom);
-  }
-
-  const noj = noJurCount ? `<br><span style="font-size:13px;opacity:.92;">"ללא שיפוט" צבוע באפור.</span>` : "";
-  const nop = (metric === "rate" && noPopCount)
-    ? `<br><span style="font-size:13px;opacity:.92;">רשויות בלי אוכלוסייה צבועות באפור.</span>`
-    : "";
-
-  showInfo(
-    (metric === "rate") ? "צביעה לפי ל-10,000" : "צביעה לפי כמות",
-    `ירוק = נמוך • כתום = בינוני • אדום = גבוה (מוגבל למקום 2)<br>טווח: <b>${Number(minV).toLocaleString()}</b> עד <b>${Number(maxV).toLocaleString()}</b>${noj}${nop}${extra}`,
-    "info"
-  );
-
-  setChoroBtnUI();
+  return out;
 }
 
    function subscribeGovmapProgressEvent(ev, handler){
@@ -2602,22 +2550,63 @@ function filterChoroPayload(payload, predicate){
   return false;
 }
 
+function killHoverEvents(){
+  try{
+    if (!window.govmap || !govmap.events || typeof govmap.unbindEvent !== "function") return;
+    for (const k in govmap.events){
+      if (!Object.prototype.hasOwnProperty.call(govmap.events, k)) continue;
+      if (/mouse|hover/i.test(k)){
+        try { govmap.unbindEvent(govmap.events[k]); } catch (_) {}
+      }
+    }
+  }catch(_){}
+}
+
+function ensureGovmapClickHandler(){
+  if (!window.govmap) return;
+
+  // Our single click handler
+  const handler = (e) => {
+    try { console.log("🖱️ CLICK event:", e); } catch(_){}
+    onMapClick(e);
+  };
+
+  // Prefer setOnClick if available (usually overrides internal handlers)
+  try{
+    if (typeof govmap.setOnClick === "function") {
+      govmap.setOnClick(handler);
+      return;
+    }
+  }catch(_){}
+
+  // Otherwise use onEvent().progress()
+  try{
+    const evs = govmap.events || {};
+    const candidates = [
+      evs.GEOMETRY_CLICK, evs.GEOM_CLICK, evs.FEATURE_CLICK, evs.SHAPE_CLICK, evs.ENTITY_CLICK, evs.OBJECT_CLICK,
+      evs.CLICK, evs.MapClick, evs.MAP_CLICK, evs.SINGLECLICK, evs.SINGLE_CLICK, evs.SINGLE
+    ].filter(Boolean);
+
+    // As a last resort, bind to the first event enum that contains "click"
+    if (!candidates.length){
+      for (const k in evs){
+        if (/click/i.test(k) && evs[k]) { candidates.push(evs[k]); break; }
+      }
+    }
+
+    const ev = candidates[0];
+    if (ev && typeof govmap.onEvent === "function") {
+      try { if (typeof govmap.unbindEvent === "function") govmap.unbindEvent(ev); } catch(_){}
+      const p = govmap.onEvent(ev);
+      if (p && typeof p.progress === "function") p.progress(handler);
+    }
+  }catch(_){}
+}
+
+// Called after drawing geometries – makes sure hover tooltips are gone and click is ours
 function installChoroplethClickFallback() {
-  if (!window.govmap || !govmap.onEvent) return;
-
-  // GovMap tends to keep only one active listener at a time.
-  // When choropleth geometries are drawn, GovMap may bind its own hover/click handlers.
-  // We force a single CLICK listener and explicitly remove hover.
-  try { govmap.unbindEvent && govmap.unbindEvent(govmap.events.MOUSE_MOVE); } catch (e) {}
-  try { govmap.unbindEvent && govmap.unbindEvent(govmap.events.CLICK); } catch (e) {}
-
-  subscribeGovmapProgressEvent(govmap.events.CLICK, function(e) {
-    const pt = normalizeMapPoint(e);
-    if (!pt) return;
-    lastHoverMapPoint = pt; // keep for compatibility, even though we don’t rely on hover
-    // Call the same click pipeline used everywhere else
-    onMapClick({ mapPoint: pt, __fromGovmap: true }, e);
-  });
+  killHoverEvents();
+  ensureGovmapClickHandler();
 }
 
 
@@ -2694,25 +2683,20 @@ function installChoroplethClickFallback() {
         zoomButtons: true,
         identifyOnClick: false,
         visibleLayers: [MUNICIPAL_LAYER],
+        onClick: (e) => {
+          try { console.log("🖱️ onClick:", e); } catch(_){}
+          onMapClick(e);
+        },
         onLoad: () => {
           mapInitialized = true;
 
           setMode(currentMode);
           setChoroBtnUI();
 
-        // CLICK (normal)
+        // CLICK (single handler - no hover listener)
 try {
- govmap.onEvent(govmap.events.CLICK).progress((e) => {
-  lastGovmapClickAt = Date.now();
-  const pt = normalizeMapPoint(e);
-  if (pt) lastHoverMapPoint = pt;
-
-  // ✅ קורא עם נקודה תקינה בלבד
-  onMapClick(pt ? { mapPoint: pt, __fromGovmap: true } : e);
-});
+  ensureGovmapClickHandler();
 } catch (e) {}
-
-
 installChoroplethClickFallback();
 
 
