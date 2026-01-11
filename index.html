@@ -726,13 +726,7 @@
   <script>
     // ===================== CONFIG =====================
   // Define coordinate systems
-proj4.defs("EPSG:2039", "+proj=tmerc +lat_0=31.73439361111111 +lon_0=35.20451694444445 +k=1.0000067 +x_0=219529.584 +y_0=626907.39 +ellps=GRS80 +towgs84=-48,55,52,0,0,0,0 +units=m +no_defs");
 
-// ITM to WGS84 transformer
-function itmToWgs84(x, y) {
-  const [lon, lat] = proj4("EPSG:2039", "EPSG:4326", [x, y]);
-  return { x: lon, y: lat };
-}
     const MUNICIPAL_LAYER      = "125";
     const POLICE_MERHAV_LAYER  = "200550";
     const POLICE_STATION_LAYER = "24";
@@ -747,6 +741,7 @@ let lastHoverMapPoint = null;
 let lastGovmapClickAt = 0;
 
     let mapInitialized = false;
+    let lastMoveAt = 0;
     let currentYear = "2025";
     let currentTab = "single";
     let currentMode = "muni";  // muni | merhav | station
@@ -799,6 +794,19 @@ let lastGovmapClickAt = 0;
       s = s.replace(/[\s\-]/g, "");
       return s.toLowerCase();
     }
+    function installMouseMovePointCapture(){
+  try{
+    if (!govmap?.events?.MOUSE_MOVE) return;
+    govmap.onEvent(govmap.events.MOUSE_MOVE).progress((e) => {
+      const now = Date.now();
+      if (now - lastMoveAt < 50) return; // 20fps
+      lastMoveAt = now;
+
+      const pt = normalizeMapPoint(e);
+      if (pt) lastHoverMapPoint = pt;
+    });
+  } catch(_){}
+}
     function normalizeKey(name) { return normalizeKeyBase(name); }
 
     function nameVariants(name) {
@@ -1228,6 +1236,11 @@ let lastGovmapClickAt = 0;
       if (currentTab === "compare") updateCompareView();
       if (currentTab === "trends" && selectedEntityName) showTrends(selectedEntityName, currentMode);
       if (currentTab === "rankings") renderRankings();
+      if (metric === "rate" && currentMode !== "muni") {
+  showInfo("לא זמין", "מדד ל-10,000 זמין רק במצב ישובים/רשויות.", "warn");
+  return;
+}
+
 
       setChoroBtnUI();
     }
@@ -2069,19 +2082,17 @@ function initModals(){
     }
 
     // ===================== GEOJSON -> WKT =====================
+// ===================== GEOJSON -> WKT (ITM SAFE) =====================
+
 function toFiniteNum(v){
   if (v == null) return null;
-  
+
   if (typeof v === "string") {
     v = v.trim().replace(/\s+/g, "");
-    
-    // אם יש גם נקודה וגם פסיק -> הפסיק כנראה מפריד אלפים
-    if (v.includes(",") && v.includes(".")) {
-      v = v.replace(/,/g, "");
-    } else if (v.includes(",")) {
-      // אם הפסיק נראה כמו מפריד אלפים (3 ספרות אחריו) -> להסיר
+    if (v.includes(",") && v.includes(".")) v = v.replace(/,/g, "");
+    else if (v.includes(",")) {
       if (/,(\d{3})$/.test(v)) v = v.replace(/,/g, "");
-      else v = v.replace(/,/g, "."); // אחרת נניח פסיק עשרוני
+      else v = v.replace(/,/g, ".");
     }
   }
 
@@ -2097,52 +2108,129 @@ function ensureClosedRing(coords){
   return coords.concat([[first[0], first[1]]]);
 }
 
-function ringToWkt(ring){
+function ringToWktITM(ring){
   if (!Array.isArray(ring) || ring.length < 3) return null;
-  
+
   const r = ensureClosedRing(ring);
   const out = [];
-  
+
   for (const p of r) {
     if (!Array.isArray(p) || p.length < 2) return null;
-    
     const x = toFiniteNum(p[0]);
     const y = toFiniteNum(p[1]);
     if (x == null || y == null) return null;
-    
-    // Transform from ITM to WGS84
-    const transformed = itmToWgs84(x, y);
-    
-    out.push(`${transformed.x.toFixed(6)} ${transformed.y.toFixed(6)}`);
+
+    // IMPORTANT: keep ITM coordinates (x y)
+    out.push(`${x} ${y}`);
   }
-  
+
   return out.join(", ");
 }
+    function getBoundaryNameFromProps(props){
+  if (!props || typeof props !== "object") return null;
 
-// 3. geojsonGeomToWkt מתוקנת
+  const candidates = [
+    props.name, props.NAME, props.Name,
+    props.MUNI_HEB, props.muni_heb,
+    props.SHEM_YISHUV, props.shem_yishuv,
+    props.HEB_NAME, props.heb_name,
+    props.MUNICIPALITY, props.municipality,
+  ];
+
+  const v = candidates.find(x => x != null && String(x).trim() !== "");
+  return v ? String(v).trim() : null;
+}
+
+async function loadMuniBoundariesGeojson(){
+  if(muniBoundariesLoaded) return true;
+
+  muniBoundariesLoadError = null;
+  try{
+    let feats = [];
+
+    if (window.MUNI_DATA && window.MUNI_DATA.features) {
+      feats = window.MUNI_DATA.features;
+    } else {
+      const res = await fetch(MUNI_BOUNDARIES_GEOJSON_URL, { cache: "no-store" });
+      if(!res.ok) throw new Error(`fetch failed (${res.status})`);
+      const gj = await res.json();
+      feats = Array.isArray(gj?.features) ? gj.features : [];
+    }
+
+    muniBoundariesIndex = Object.create(null);
+    muniBoundariesMeta = [];
+
+    for(const f of feats){
+      const name = getBoundaryNameFromProps(f?.properties);
+      const wkt  = geojsonGeomToWkt(f?.geometry);
+
+      if(!name || !wkt){
+        console.warn("❌ Skipping boundary feature:", { name, geomType: f?.geometry?.type });
+        continue;
+      }
+
+      muniBoundariesIndex[normalizeKey(name)] = wkt;
+      muniBoundariesMeta.push({ name: String(name), wkt });
+    }
+
+    muniBoundariesLoaded = true;
+    console.log("✅ Boundaries loaded:", Object.keys(muniBoundariesIndex).length);
+    return true;
+
+  }catch(e){
+    muniBoundariesLoadError = e;
+    console.error("❌ Failed loading muni boundaries:", e);
+    return false;
+  }finally{
+    setChoroBtnUI();
+  }
+}
+function installChoroplethClickFallback(){
+  const mapEl = document.getElementById("map");
+  if(!mapEl) return;
+
+  mapEl.addEventListener("click", (evt) => {
+    if (!choroplethEnabled || currentMode !== "muni") return;
+    if (evt.target.closest("#info-panel") || evt.target.closest(".modal")) return;
+
+    // אם GovMap כבר נתן CLICK לאחרונה - לא להתערב
+    if (Date.now() - lastGovmapClickAt < 250) return;
+
+    const pt = normalizeMapPoint(lastHoverMapPoint);
+    if (!pt) {
+      showInfo("רגע", "אין נקודת מפה זמינה לקליק בצביעה. הזז את העכבר מעל רשות ואז לחץ.", "warn");
+      return;
+    }
+
+    onMapClick({ mapPoint: pt, __fallback: true });
+  }, { passive: true });
+}
+
+
 function geojsonGeomToWkt(geom){
   if(!geom || !geom.type) return null;
 
   if(geom.type === "Polygon"){
-    const rings = (geom.coordinates || []).map(ringToWkt);
+    const rings = (geom.coordinates || []).map(ringToWktITM);
     if(!rings.length || rings.some(r => !r)) return null;
     return `POLYGON((${rings[0]})${rings.slice(1).map(h => `,(${h})`).join("")})`;
   }
-  
+
   if(geom.type === "MultiPolygon"){
     const polys = geom.coordinates || [];
     const parts = polys.map(poly => {
-      const rings = (poly || []).map(ringToWkt);
+      const rings = (poly || []).map(ringToWktITM);
       if(!rings.length || rings.some(r => !r)) return null;
       return `((${rings[0]})${rings.slice(1).map(h => `,(${h})`).join("")})`;
     }).filter(Boolean);
-    
+
     if(!parts.length) return null;
     return `MULTIPOLYGON(${parts.join(",")})`;
   }
-  
+
   return null;
 }
+
 
     async function loadMuniBoundariesGeojson(){
       if(muniBoundariesLoaded) return true;
