@@ -725,14 +725,7 @@
 
   <script>
     // ===================== CONFIG =====================
-  // Define coordinate systems
-proj4.defs("EPSG:2039", "+proj=tmerc +lat_0=31.73439361111111 +lon_0=35.20451694444445 +k=1.0000067 +x_0=219529.584 +y_0=626907.39 +ellps=GRS80 +towgs84=-48,55,52,0,0,0,0 +units=m +no_defs");
-
-// ITM to WGS84 transformer
-function itmToWgs84(x, y) {
-  const [lon, lat] = proj4("EPSG:2039", "EPSG:4326", [x, y]);
-  return { x: lon, y: lat };
-}
+  
     const MUNICIPAL_LAYER      = "125";
     const POLICE_MERHAV_LAYER  = "200550";
     const POLICE_STATION_LAYER = "24";
@@ -765,8 +758,6 @@ let lastGovmapClickAt = 0;
 
     // Rankings UI state
     let rankingsOrder = "desc"; // desc | asc
-    let rankingsFilter = "";
-
     // For efficiency:
     const wktByCrimeNameCache = new Map(); // normalizeKey(name)->wkt
     const choroplethCache = new Map(); // `${year}__${metric}` -> {payload, meta}
@@ -1507,11 +1498,6 @@ let lastGovmapClickAt = 0;
       renderRankings();
     }
 
-    function setRankingsFilter(val){
-      rankingsFilter = String(val || "").trim();
-      renderRankings();
-    }
-
     function renderRankings() {
       const container = document.getElementById("rankings-content");
       if (!container) return;
@@ -1542,13 +1528,8 @@ let lastGovmapClickAt = 0;
           rows.push({ name, value: total, extra: { total } });
         }
       }
-
-      // Filter by name
-      const f = normalizeKey(rankingsFilter);
-      const filtered = !f ? rows : rows.filter(r => normalizeKey(r.name).includes(f));
-
       // Sort
-      filtered.sort((a,b)=>{
+      rows.sort((a,b)=>{
         const av = Number(a.value || 0);
         const bv = Number(b.value || 0);
         return (rankingsOrder === "asc") ? (av - bv) : (bv - av);
@@ -1561,12 +1542,11 @@ let lastGovmapClickAt = 0;
         <div class="rank-controls">
           <button id="rankSortDesc" class="rank-ctl-btn ${rankingsOrder === "desc" ? "active" : ""}" onclick="setRankingsOrder('desc')">⬇️ הכי הרבה → הכי מעט</button>
           <button id="rankSortAsc" class="rank-ctl-btn ${rankingsOrder === "asc" ? "active" : ""}" onclick="setRankingsOrder('asc')">⬆️ הכי מעט → הכי הרבה</button>
-          <input class="rank-filter" placeholder="סינון לפי שם…" value="${escapeHtml(rankingsFilter)}" oninput="setRankingsFilter(this.value)" />
         </div>
 
         <div class="message message-info" style="margin-bottom:10px;">
           שנה: <strong>${escapeHtml(currentYear)}</strong> • מצב: <strong>${escapeHtml(getModeLabel(currentMode))}</strong><br>
-          דירוג לפי: <strong>${escapeHtml(metricLabel)}</strong> • סדר: <strong>${escapeHtml(orderLabel)}</strong> • מוצגים: <strong>${filtered.length}</strong>
+          דירוג לפי: <strong>${escapeHtml(metricLabel)}</strong> • סדר: <strong>${escapeHtml(orderLabel)}</strong> • מוצגים: <strong>${rows.length}</strong>
         </div>
       `;
 
@@ -1576,7 +1556,7 @@ let lastGovmapClickAt = 0;
 
       html += `<div class="rank-list">`;
 
-      filtered.forEach((r, idx) => {
+      rows.forEach((r, idx) => {
         const valueText = Number(r.value || 0).toLocaleString();
         const extra =
           wantRate
@@ -2110,10 +2090,7 @@ function ringToWkt(ring){
     const y = toFiniteNum(p[1]);
     if (x == null || y == null) return null;
     
-    // Transform from ITM to WGS84
-    const transformed = itmToWgs84(x, y);
-    
-    out.push(`${transformed.x.toFixed(6)} ${transformed.y.toFixed(6)}`);
+    out.push(`${x.toFixed(3)} ${y.toFixed(3)}`);
   }
   
   return out.join(", ");
@@ -2458,7 +2435,7 @@ function sanitizeFeatureGeometry(feature, pointFn) {
       const sortedDesc = [...refVals].sort((a,b)=>b-a);
       const maxV = (sortedDesc.length >= 2) ? sortedDesc[1] : (sortedDesc[0] ?? 0);
 
-      const wkts = [], names = [], symbols = [], tooltips = [];
+      const wkts = [], names = [], symbols = [];
       const prefix = `${CHORO_PREFIX}_${year}_${metric}`;
 
       for(let i = 0; i < normalRows.length; i++){
@@ -2476,7 +2453,6 @@ function sanitizeFeatureGeometry(feature, pointFn) {
         const tip = (metric === "rate")
           ? `${r.name} • ל-10,000: ${Number(r.value).toLocaleString()} • כמות: ${Number(r.total || 0).toLocaleString()}`
           : `${r.name} • כמות: ${Number(r.total || 0).toLocaleString()}`;
-        tooltips.push(tip);
       }
       // no-population rows (gray)
 for(let i = 0; i < noPopRows.length; i++){
@@ -2488,7 +2464,6 @@ for(let i = 0; i < noPopRows.length; i++){
     outlineColor: [25, 25, 25, 0.85],
     outlineWidth: 2
   });
-  tooltips.push(`${r.name} • אין נתון אוכלוסייה • כמות: ${Number(r.total || 0).toLocaleString()}`);
 }
 
 
@@ -2501,7 +2476,6 @@ for(let i = 0; i < noPopRows.length; i++){
           outlineColor: [25, 25, 25, 0.85],
           outlineWidth: 2
         });
-        tooltips.push(`${r.name} (ללא שיפוט)`);
       }
 
       const built = {
@@ -2512,7 +2486,6 @@ for(let i = 0; i < noPopRows.length; i++){
           clearExisting: false,
           showBubble: false,
           symbols,
-          data: { tooltips },
           allowIdentify: false
         },
      meta: { minV, maxV, missingGeomCount: missingGeom.length, noJurCount: noJurRows.length, noPopCount: noPopRows.length, missingGeom }
@@ -2536,30 +2509,24 @@ function isWktSafe(wkt){
   return true;
 }
 
-function filterChoroPayload(payload){
-  const keep = [];
-  for (let i = 0; i < payload.wkts.length; i++){
-    if (isWktSafe(payload.wkts[i])) keep.push(i);
-    else console.warn("❌ Bad WKT dropped:", payload.names[i], payload.wkts[i]);
-  }
+function filterChoroPayload(payload, predicate){
+      // יוצר עותק של ה-payload ומסנן רק את הגיאומטריות שעוברות את התנאי.
+      // חשוב: לא מעבירים tooltips כדי למנוע תצוגת hover שחוסמת קליקים.
+      const out = { ...payload, wkts: [], names: [], symbols: [] };
+      if (payload && payload.data) out.data = { ...payload.data };
 
-  const out = {
-    ...payload,
-    wkts: [],
-    names: [],
-    symbols: [],
-    data: { ...(payload.data || {}), tooltips: [] }
-  };
+      const n = Math.min(payload.wkts?.length || 0, payload.names?.length || 0, payload.symbols?.length || 0);
+      for (let i = 0; i < n; i++){
+        const name = payload.names[i];
+        if (!predicate || predicate(name, i) !== false){
+          out.wkts.push(payload.wkts[i]);
+          out.names.push(payload.names[i]);
+          out.symbols.push(payload.symbols[i]);
+        }
+      }
+      return out;
+    }
 
-  for (const i of keep){
-    out.wkts.push(payload.wkts[i]);
-    out.names.push(payload.names[i]);
-    out.symbols.push(payload.symbols[i]);
-    out.data.tooltips.push(payload.data.tooltips[i]);
-  }
-
-  return out;
-}
 
    async function renderChoropleth(){
   if(!mapInitialized || !choroplethEnabled) return;
@@ -2591,6 +2558,9 @@ function filterChoroPayload(payload){
     }
 
     const ret = govmap.displayGeometries(safePayload);
+
+      // Re-bind click and remove hover after drawing geometries
+      installChoroplethClickFallback();
     if (ret && typeof ret.then === "function") await ret;
 
     activeChoroplethNames = safePayload.names;
@@ -2632,24 +2602,22 @@ function filterChoroPayload(payload){
   return false;
 }
 
-function installChoroplethClickFallback(){
-  const mapEl = document.getElementById("map");
-  if(!mapEl) return;
+function installChoroplethClickFallback() {
+  if (!window.govmap || !govmap.onEvent) return;
 
-  mapEl.addEventListener("click", (evt) => {
-    if (!choroplethEnabled || currentMode !== "muni") return;
-    if (evt.target.closest("#info-panel") || evt.target.closest(".modal")) return;
-    if (Date.now() - lastGovmapClickAt < 200) return;
+  // GovMap tends to keep only one active listener at a time.
+  // When choropleth geometries are drawn, GovMap may bind its own hover/click handlers.
+  // We force a single CLICK listener and explicitly remove hover.
+  try { govmap.unbindEvent && govmap.unbindEvent(govmap.events.MOUSE_MOVE); } catch (e) {}
+  try { govmap.unbindEvent && govmap.unbindEvent(govmap.events.CLICK); } catch (e) {}
 
-    const pt = normalizeMapPoint(lastHoverMapPoint);
-
-    if (!pt) {
-      showInfo("רגע", "אין לי נקודת מפה זמינה לקליק בצביעה. נסה ללחוץ פעם אחת על המפה בלי צביעה, ואז להדליק צביעה וללחוץ.", "warn");
-      return;
-    }
-
-    onMapClick({ mapPoint: pt, __fallback: true });
-  }, true);
+  subscribeGovmapProgressEvent(govmap.events.CLICK, function(e) {
+    const pt = normalizeMapPoint(e);
+    if (!pt) return;
+    lastHoverMapPoint = pt; // keep for compatibility, even though we don’t rely on hover
+    // Call the same click pipeline used everywhere else
+    onMapClick({ mapPoint: pt, __fromGovmap: true }, e);
+  });
 }
 
 
@@ -2742,20 +2710,7 @@ try {
   // ✅ קורא עם נקודה תקינה בלבד
   onMapClick(pt ? { mapPoint: pt, __fromGovmap: true } : e);
 });
-  // נסה לעדכן lastHoverMapPoint גם בתזוזת עכבר (אם GovMap תומך באירוע הזה)
-try {
-  if (govmap?.events?.MOUSE_MOVE) {
-    govmap.onEvent(govmap.events.MOUSE_MOVE).progress((e) => {
-      const pt = normalizeMapPoint(e);
-      if (pt) lastHoverMapPoint = pt;
-    });
-  }
-} catch (_) {}
-
-
-
 } catch (e) {}
-          // MOUSE MOVE -> keep lastHoverMapPoint updated (so click on choropleth still works)
 
 
 installChoroplethClickFallback();
@@ -2790,7 +2745,6 @@ installChoroplethClickFallback();
     window.toggleChoropleth = toggleChoropleth;
     window.selectFromRank = selectFromRank;
     window.setRankingsOrder = setRankingsOrder;
-    window.setRankingsFilter = setRankingsFilter;
   </script>
 
   <!-- GOVMAP API -->
