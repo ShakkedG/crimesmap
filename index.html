@@ -2289,20 +2289,32 @@ function valueToColor(value, minV, maxV){
 }
 
 function clearChoropleth() {
-  const namesToClear = Array.isArray(activeChoroplethNames) ? [...activeChoroplethNames] : [];
-  try {
-    if (namesToClear.length && typeof govmap?.clearGeometriesByName === "function") {
-      govmap.clearGeometriesByName(namesToClear);
-    }
-  } catch (e) {
-    console.warn("clearGeometriesByName failed:", e);
-  }
-  activeChoroplethNames = [];
-    // Restore our normal map click handler when choropleth is cleared
-    try { attachGovmapHandlers(); } catch (_) {}
+    const namesToClear = Array.isArray(activeChoroplethNames) ? [...activeChoroplethNames] : [];
+    let clearedByName = false;
 
-}
-function setMunicipalLayerOpacity(opacity){
+    try {
+      if (namesToClear.length && typeof govmap?.clearGeometriesByName === "function") {
+        govmap.clearGeometriesByName(namesToClear);
+        clearedByName = true;
+      }
+    } catch (e) {
+      console.warn("clearGeometriesByName failed:", e);
+    }
+
+    // Fallback (older GovMap builds): clear all drawn geometries if we couldn't clear by name.
+    // This ensures the choropleth layer turns off completely.
+    if (!clearedByName) {
+      try {
+        if (typeof govmap?.clearGeometries === "function") {
+          govmap.clearGeometries();
+        }
+      } catch (_) {}
+    }
+
+    activeChoroplethNames = [];
+  }
+
+  function setMunicipalLayerOpacity(opacity){
   if (typeof govmap?.setLayerOpacity === "function") {
     try { govmap.setLayerOpacity({ layerName: MUNICIPAL_LAYER, opacity }); } catch (_) {}
   }
@@ -2339,13 +2351,19 @@ async function toggleChoropleth(){
 
   choroplethEnabled = !choroplethEnabled;
   setChoroBtnUI();
-  installChoroplethClickFallback();
-  installChoroplethClickFallback();
-
+    installChoroplethClickFallback();
   if(!mapInitialized) return;
 
   if(!choroplethEnabled){
     clearChoropleth();
+
+    // ודא שאין "שאריות" של צביעה (בחלק מגרסאות GovMap clearGeometriesByName לא מספיק)
+    try {
+      if (typeof govmap?.clearGeometries === "function") {
+        govmap.clearGeometries();
+      }
+    } catch (_) {}
+
     setMunicipalLayerOpacity(100);
     showInfo("צביעה כובתה","חזרתי לתצוגה רגילה.","info");
     return;
@@ -2410,15 +2428,29 @@ function buildChoroplethPayloadForYear(year, metric){
     .map(r => Number(r.value))
     .filter(v => Number.isFinite(v));
 
+  // כדי ששני המקומות המובילים יהיו באותו צבע אדום:
+  // נגדיר את "המקסימום לצביעה" לפי הערך השני בגובהו (Top-2 threshold),
+  // וכל ערך >= threshold יקבל בדיוק אותו אדום.
+  const sortedDesc = [...numericVals].sort((a, b) => b - a);
   const minV = numericVals.length ? Math.min(...numericVals) : 0;
-  const maxV = numericVals.length ? Math.max(...numericVals) : 1;
+  const rawMaxV = sortedDesc.length ? sortedDesc[0] : 1;
+  const top2Threshold = (sortedDesc.length >= 2) ? sortedDesc[1] : rawMaxV;
+  const forceTop2SameRed = (sortedDesc.length >= 2 && Number.isFinite(top2Threshold) && top2Threshold > minV);
+  const maxV = forceTop2SameRed ? top2Threshold : rawMaxV;
 
   // בונה אובייקטים לציור (עם שם ייחודי שנוכל למחוק)
   const geoms = allRows.map((r, i) => {
     let rgb;
 
     if (Number.isFinite(Number(r.value))) {
-      rgb = valueToColor(Number(r.value), minV, maxV);
+      {
+        const v = Number(r.value);
+        if (forceTop2SameRed && v >= top2Threshold) {
+          rgb = [240, 20, 20]; // Top 1 + Top 2: same red
+        } else {
+          rgb = valueToColor(v, minV, maxV);
+        }
+      }
     } else {
       // רשויות בלי אוכלוסייה (במצב rate) – צובעים באפור
       rgb = [160, 160, 160];
@@ -2489,8 +2521,8 @@ function safeDisplayGeometries(geoms, opts = {}) {
   const symbols = geoms.map(g => {
     const fill = g.color || { r: 160, g: 160, b: 160 };
     return {
-      fillColor: [fill.r, fill.g, fill.b, 0.55],
-      strokeColor: [40, 40, 40, 0.85],
+      fillColor: [fill.r, fill.g, fill.b, ((fill.r === 160 && fill.g === 160 && fill.b === 160) ? 0.35 : 0.92)],
+      strokeColor: [40, 40, 40, 0.90],
       lineWidth: 1,
       clickable: false,
       Clickable: false,
