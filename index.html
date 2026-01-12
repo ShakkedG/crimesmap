@@ -2248,8 +2248,10 @@ function clearChoropleth() {
     console.warn("clearGeometriesByName failed:", e);
   }
   activeChoroplethNames = [];
-}
+    // Restore our normal map click handler when choropleth is cleared
+    try { attachGovmapHandlers(); } catch (_) {}
 
+}
 function setMunicipalLayerOpacity(opacity){
   if (typeof govmap?.setLayerOpacity === "function") {
     try { govmap.setLayerOpacity({ layerName: MUNICIPAL_LAYER, opacity }); } catch (_) {}
@@ -2399,55 +2401,78 @@ function buildChoroplethPayloadForYear(year, metric){
   return payload;
 }
 
-function safeDisplayGeometries(geoms){
-  // מנסה כמה פורמטים נפוצים כדי להיות עמיד לשינויים ב-API
-  const arr = (geoms || []).map(g => {
-    const fill = g.color || { r: 0, g: 0, b: 0 };
-    const fillObj = { r: fill.r, g: fill.g, b: fill.b, a: 0.65 };
-    const strokeObj = { r: 70, g: 70, b: 70, a: 0.9 };
+function safeDisplayGeometries(geoms, { clearExisting = true, year = null } = {}) {
+    if (!window.govmap || typeof govmap.displayGeometries !== "function") {
+      console.warn("govmap.displayGeometries לא זמין עדיין");
+      return Promise.reject(new Error("govmap.displayGeometries not available"));
+    }
+    if (!Array.isArray(geoms) || geoms.length === 0) return Promise.resolve(null);
 
-    return {
-      // שמות שונים (ליתר ביטחון)
-      name: g.drawName,
-      Name: g.drawName,
+    // GovMap expects a single payload object: { wkts, names, geometryType, symbols, ... }
+    const wkts = geoms.map(g => g.wkt);
+    const names = geoms.map(g => g.drawName || g.name || "");
 
-      // גיאומטריה
-      wkt: g.wkt,
-      WKT: g.wkt,
+    const geomType =
+      (govmap.geometryType && (govmap.geometryType.POLYGON || govmap.geometryType.Polygon)) ||
+      (govmap.drawType && (govmap.drawType.Polygon || govmap.drawType.POLYGON)) ||
+      "Polygon";
 
-      // צבעים
-      fillColor: fillObj,
-      FillColor: fillObj,
-      strokeColor: strokeObj,
-      StrokeColor: strokeObj,
+    // Per-geometry symbols (RGBA). GovMap uses 0..255 for RGB and 0..1 for alpha.
+    const symbols = geoms.map(g => {
+      const c = g.color || { r: 0, g: 0, b: 0, a: 0.35 };
+      const a = (typeof c.a === "number") ? c.a : 0.45;
+      return {
+        outlineColor: [30, 30, 30, 0.25],
+        outlineWidth: 1,
+        fillColor: [c.r || 0, c.g || 0, c.b || 0, a]
+      };
+    });
 
-      // עובי/שקיפות
-      lineWidth: 1,
-      LineWidth: 1,
-      opacity: 0.65,
-      Opacity: 0.65,
+    // CLICK bubble (so we do not need our own govmap click listener while choropleth is on)
+    // Keep tooltips empty to avoid hover tooltips interfering.
+    const bubbleHTML = `
+      <div dir="rtl" style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:14px;line-height:1.35;">
+        <div style="font-weight:700;margin-bottom:4px">{0}</div>
+        <div>כמות: {1}</div>
+        <div>ל־10,000 תושבים: {2}</div>
+      </div>`;
 
-      // “לא לתפוס קליקים” אם ה-API מכבד את זה (לא תמיד)
-      clickable: false,
-      Clickable: false
+    const bubbleHTMLParameters = geoms.map(g => {
+      const name = (g.name ?? g.drawName ?? "").toString();
+      const total = (g.total ?? g.value ?? 0);
+      const rate = (g.value ?? null);
+      const totalTxt = (typeof total === "number") ? total.toLocaleString("he-IL") : String(total);
+      const rateTxt =
+        (rate === null || rate === undefined || Number.isNaN(rate))
+          ? "—"
+          : (Math.round(Number(rate) * 100) / 100).toLocaleString("he-IL");
+      return [name, totalTxt, rateTxt];
+    });
+
+    const payload = {
+      wkts,
+      names,
+      geometryType: geomType,
+      clearExisting,
+      // defaultSymbol is required by some versions even if symbols[] exists
+      defaultSymbol: { outlineColor: [0, 0, 0, 0], outlineWidth: 0, fillColor: [0, 0, 0, 0] },
+      symbols,
+      data: { tooltips: new Array(wkts.length).fill(""), headers: new Array(wkts.length).fill("") },
+      bubbleHTML,
+      bubbleHTMLParameters
     };
-  });
 
-  try {
-    return govmap.displayGeometries(arr);
-  } catch (e1) {
     try {
-      return govmap.displayGeometries({ geometries: arr });
-    } catch (e2) {
-      try {
-        return govmap.displayGeometries({ Geometries: arr });
-      } catch (e3) {
-        console.error("❌ displayGeometries failed (all formats):", e1, e2, e3);
-        return null;
-      }
+      const ret = govmap.displayGeometries(payload);
+      // Support both promise and non-promise implementations
+      if (ret && typeof ret.then === "function") return ret;
+      return Promise.resolve(ret);
+    } catch (err) {
+      console.error("displayGeometries נכשל:", err);
+      return Promise.reject(err);
     }
   }
-}
+
 
 
 async function renderChoropleth(){
@@ -2465,13 +2490,11 @@ async function renderChoropleth(){
 
   activeChoroplethNames = payload.geoms.map(g => g.drawName);
 
-  // מצייר
-  safeDisplayGeometries(payload.geoms);
-
-  // ✅ חשוב: בחלק מהגרסאות ציור גיאומטריות "גונב" את הקליק מהשכבה.
-  // לכן אנחנו מחברים שוב את מאזין הקליק שלנו אחרי הצביעה.
-  try { attachGovmapHandlers(); } catch (_) {}
-
+  // מצייר (אחרי טיק אחד כדי לוודא שהמפה מוכנה)
+  setTimeout(() => {
+    safeDisplayGeometries(payload.geoms, { clearExisting: true, year: currentYear })
+      .catch(() => {});
+  }, 0);
   const parts = [];
   parts.push(`צביעה הופעלה לפי <strong>${metric === "rate" ? "ל-10,000" : "כמות"}</strong> לשנת <strong>${escapeHtml(currentYear)}</strong>.`);
 
