@@ -5,14 +5,10 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>מפת פשיעה – לפי שנה (2020–2025) | ישובים / מרחבים / תחנות</title>
 
-  <!-- DATA -->
   <script src="crimeByYear_2020_2025.js"></script>
   <script src="crimeByYearMerhav.js"></script>
   <script src="PopulationDB.js"></script>
   <script src="crimeByYearStations.js"></script>
-
-  <!-- Boundaries -->
- 
 
   <style>
     * { box-sizing: border-box; }
@@ -725,8 +721,8 @@
 
   <script>
     // ===================== CONFIG =====================
-  
-    const MUNICIPAL_LAYER      = "125";
+   
+    const MUNICIPAL_LAYER       = "125";
     const POLICE_MERHAV_LAYER  = "200550";
     const POLICE_STATION_LAYER = "24";
     const TOKEN = "ede9a5fd-7c23-432f-8ffb-d85feffa3f3c";
@@ -1697,6 +1693,12 @@ let lastGovmapClickAt = 0;
 
   // 3) אם עדיין אין נקודה – לא ממשיכים
   if (!pt) {
+    // לפעמים יש עיכוב קטן בעדכון, ניתן צ'אנס קטן
+    await new Promise(r => setTimeout(r, 50));
+    if (lastHoverMapPoint) pt = normalizeMapPoint(lastHoverMapPoint);
+  }
+
+  if (!pt) {
     showInfo("רגע", "לא התקבלה נקודת מפה תקינה (X/Y). הזז עכבר על הרשות ואז לחץ.", "warn");
     return;
   }
@@ -1791,6 +1793,7 @@ let lastGovmapClickAt = 0;
 }
 
     
+   
 
     // ===================== MODALS & PANEL =====================
    let lastFocusedElement = null;
@@ -2206,7 +2209,7 @@ function findWktForCrimeName(crimeName){
 }
 
 
-    
+   
 
     // ===================== CHOROPLETH (unchanged logic) =====================
     // --- Guard: only transform finite [x,y] ---
@@ -2273,7 +2276,7 @@ function sanitizeFeatureGeometry(feature, pointFn) {
       .map(poly => (poly || [])
         .map(r => closeRingIfNeeded(r))
         .filter(Boolean)
-      )
+        )
       .filter(poly => poly.length);
     if (!polys.length) return null;
     return { ...feature, geometry: { ...g, coordinates: polys } };
@@ -2488,7 +2491,7 @@ for(let i = 0; i < noPopRows.length; i++){
           symbols,
           allowIdentify: false
         },
-     meta: { minV, maxV, missingGeomCount: missingGeom.length, noJurCount: noJurRows.length, noPopCount: noPopRows.length, missingGeom }
+      meta: { minV, maxV, missingGeomCount: missingGeom.length, noJurCount: noJurRows.length, noPopCount: noPopRows.length, missingGeom }
 
       };
 
@@ -2608,15 +2611,16 @@ function installChoroplethClickFallback() {
   // GovMap tends to keep only one active listener at a time.
   // When choropleth geometries are drawn, GovMap may bind its own hover/click handlers.
   // We force a single CLICK listener and explicitly remove hover.
-  try { govmap.unbindEvent && govmap.unbindEvent(govmap.events.MOUSE_MOVE); } catch (e) {}
+  
+  // *** תיקון: לא מבטלים את MOUSE_MOVE כדי שנוכל לעקוב אחרי המיקום האמיתי גם כשלוחצים על גיאומטריה ***
+  // try { govmap.unbindEvent && govmap.unbindEvent(govmap.events.MOUSE_MOVE); } catch (e) {}
+  
   try { govmap.unbindEvent && govmap.unbindEvent(govmap.events.CLICK); } catch (e) {}
 
   subscribeGovmapProgressEvent(govmap.events.CLICK, function(e) {
     const pt = normalizeMapPoint(e);
-    if (!pt) return;
-    lastHoverMapPoint = pt; // keep for compatibility, even though we don’t rely on hover
     // Call the same click pipeline used everywhere else
-    onMapClick({ mapPoint: pt, __fromGovmap: true }, e);
+    onMapClick(pt ? { mapPoint: pt, __fromGovmap: true } : e);
   });
 }
 
@@ -2700,6 +2704,15 @@ function installChoroplethClickFallback() {
           setMode(currentMode);
           setChoroBtnUI();
 
+          // *** תיקון: מאזין קבוע לתנועת עכבר כדי לתפוס קואורדינטות גם כשיש צביעה ***
+          try {
+            govmap.onEvent(govmap.events.MOUSE_MOVE).progress((e) => {
+              const pt = normalizeMapPoint(e);
+              if (pt) lastHoverMapPoint = pt;
+            });
+          } catch(err) { console.warn("Cannot bind mouse move", err); }
+
+
         // CLICK (normal)
 try {
  govmap.onEvent(govmap.events.CLICK).progress((e) => {
@@ -2747,7 +2760,6 @@ installChoroplethClickFallback();
     window.setRankingsOrder = setRankingsOrder;
   </script>
 
-  <!-- GOVMAP API -->
   <script src="https://www.govmap.gov.il/govmap/api/govmap.api.js" defer onload="initGovMap()"></script>
 </head>
 
@@ -2836,7 +2848,6 @@ installChoroplethClickFallback();
     </div>
   </div>
 
-  <!-- Search Modal -->
   <div id="searchModal" class="modal" aria-hidden="true">
     <div id="searchOverlay" class="modalOverlay"></div>
     <div class="modalCard" role="dialog">
@@ -2854,7 +2865,6 @@ installChoroplethClickFallback();
     </div>
   </div>
 
-  <!-- About Modal -->
   <div id="aboutModal" class="modal" aria-hidden="true">
     <div id="aboutOverlay" class="modalOverlay"></div>
     <div class="modalCard" role="dialog">
