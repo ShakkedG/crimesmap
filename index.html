@@ -737,7 +737,6 @@
     // ===================== STATE =====================
     // Mouse tracking for choropleth-click fallback
 let lastHoverMapPoint = null;
-let lastHoverAt = 0;
 let lastGovmapClickAt = 0;
 
     let mapInitialized = false;
@@ -1686,55 +1685,6 @@ let lastGovmapClickAt = 0;
   return { x: nx, y: ny };
 }
 
-// ===================== CHOROPLETH CLICK FALLBACK =====================
-// Sometimes govmap.displayGeometries adds an overlay that eats the click.
-// We track the last hovered mapPoint and, if govmap.onClick didn't fire,
-// we identify using that last hover point.
-function updateLastHoverFromGovmapEvent(e){
-  const pt = normalizeMapPoint(e);
-  if (pt) {
-    lastHoverMapPoint = pt;
-    lastHoverAt = Date.now();
-  }
-}
-
-function installChoroplethClickFallback(){
-  const mapEl = document.getElementById("map");
-  if (!mapEl || mapEl.__choroFallbackInstalled) return;
-  mapEl.__choroFallbackInstalled = true;
-
-  mapEl.addEventListener("click", (ev) => {
-    if (!choroplethEnabled || currentMode !== "muni") return;
-
-    const now = Date.now();
-    // If govmap's onClick already fired, don't double-handle.
-    if (now - lastGovmapClickAt < 120) return;
-
-    // Ignore clicks on UI overlays (panel/modals)
-    const panel = document.getElementById("info-panel");
-    if (panel && panel.contains(ev.target)) return;
-
-    const searchModal = document.getElementById("searchModal");
-    if (searchModal && searchModal.style.display === "block" && searchModal.contains(ev.target)) return;
-
-    const aboutModal = document.getElementById("aboutModal");
-    if (aboutModal && aboutModal.style.display === "block" && aboutModal.contains(ev.target)) return;
-
-    // Need a fresh hover point (user must be hovering the polygon when clicking)
-    if (!lastHoverMapPoint || (now - lastHoverAt) > 1500) return;
-
-    lastGovmapClickAt = now;
-    try {
-      onMapClick({ mapPoint: lastHoverMapPoint });
-    } catch (err) {
-      console.warn("⚠️ choropleth fallback click failed:", err);
-    }
-  }, true); // capture phase
-}
-// =================== /CHOROPLETH CLICK FALLBACK ===================
-
-
-
 
     async function onMapClick(e) {
   if (!mapInitialized) return;
@@ -2339,8 +2289,6 @@ async function toggleChoropleth(){
 
   choroplethEnabled = !choroplethEnabled;
   setChoroBtnUI();
-  installChoroplethClickFallback();
-  installChoroplethClickFallback();
 
   if(!mapInitialized) return;
 
@@ -2453,67 +2401,81 @@ function buildChoroplethPayloadForYear(year, metric){
   return payload;
 }
 
-function safeDisplayGeometries(geoms, opts = {}) {
-    // GovMap API: displayGeometries expects wkts/names + symbol objects (fillColor / outlineColor arrays)
-    // Return a real Promise even if the API returns something else.
-    const clearExisting = (opts.clearExisting !== false);
-
-    const wkts = [];
-    const names = [];
-    const symbols = [];
-
-    for (let i = 0; i < (geoms || []).length; i++) {
-      const g = geoms[i] || {};
-      const wkt = g.WKT || g.wkt;
-      if (!wkt) continue;
-
-      const name = String(g.name ?? g.NAME ?? g.id ?? `CHORO_${i}`);
-      const c = g.color || g.fill || null;
-
-      const r = Math.max(0, Math.min(255, Math.round((c && (c.r ?? c[0])) ?? 180)));
-      const gg = Math.max(0, Math.min(255, Math.round((c && (c.g ?? c[1])) ?? 180)));
-      const b = Math.max(0, Math.min(255, Math.round((c && (c.b ?? c[2])) ?? 180)));
-
-      wkts.push(wkt);
-      names.push(name);
-
-      symbols.push({
-        outlineColor: [30, 30, 30, 0.9],
-        outlineWidth: 1,
-        fillColor: [r, gg, b, 0.92]
-        // NOTE: We intentionally do not provide bubbles/tooltips and disable bubbles via showBubble=false
-      });
+function safeDisplayGeometries(geoms, { clearExisting = true, year = null } = {}) {
+    if (!window.govmap || typeof govmap.displayGeometries !== "function") {
+      console.warn("govmap.displayGeometries לא זמין עדיין");
+      return Promise.reject(new Error("govmap.displayGeometries not available"));
     }
+    if (!Array.isArray(geoms) || geoms.length === 0) return Promise.resolve(null);
 
-    if (!wkts.length) return Promise.resolve({ ok: true, skipped: true });
+    // GovMap expects a single payload object: { wkts, names, geometryType, symbols, ... }
+    const wkts = geoms.map(g => g.wkt);
+    const names = geoms.map(g => g.drawName || g.name || "");
+
+    const geomType =
+      (govmap.geometryType && (govmap.geometryType.POLYGON || govmap.geometryType.Polygon)) ||
+      (govmap.drawType && (govmap.drawType.Polygon || govmap.drawType.POLYGON)) ||
+      "Polygon";
+
+    // Per-geometry symbols (RGBA). GovMap uses 0..255 for RGB and 0..1 for alpha.
+    const symbols = geoms.map(g => {
+      const c = g.color || { r: 0, g: 0, b: 0, a: 0.35 };
+      const a = (typeof c.a === "number") ? c.a : 0.45;
+      return {
+        outlineColor: [30, 30, 30, 0.25],
+        outlineWidth: 1,
+        fillColor: [c.r || 0, c.g || 0, c.b || 0, a]
+      };
+    });
+
+    // CLICK bubble (so we do not need our own govmap click listener while choropleth is on)
+    // Keep tooltips empty to avoid hover tooltips interfering.
+    const bubbleHTML = `
+      <div dir="rtl" style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:14px;line-height:1.35;">
+        <div style="font-weight:700;margin-bottom:4px">{0}</div>
+        <div>כמות: {1}</div>
+        <div>ל־10,000 תושבים: {2}</div>
+      </div>`;
+
+    const bubbleHTMLParameters = geoms.map(g => {
+      const name = (g.name ?? g.drawName ?? "").toString();
+      const total = (g.total ?? g.value ?? 0);
+      const rate = (g.value ?? null);
+      const totalTxt = (typeof total === "number") ? total.toLocaleString("he-IL") : String(total);
+      const rateTxt =
+        (rate === null || rate === undefined || Number.isNaN(rate))
+          ? "—"
+          : (Math.round(Number(rate) * 100) / 100).toLocaleString("he-IL");
+      return [name, totalTxt, rateTxt];
+    });
 
     const payload = {
       wkts,
       names,
-      geometryType: govmap.geometryType.POLYGON,
-      defaultSymbol: {
-        outlineColor: [30, 30, 30, 0.9],
-        outlineWidth: 1,
-        fillColor: [180, 180, 180, 0.35]
-      },
-      symbols,
+      geometryType: geomType,
       clearExisting,
-      // Some GovMap builds documented this typo; providing both doesn't hurt.
-      clearExistings: clearExisting,
-      showBubble: false
+      // defaultSymbol is required by some versions even if symbols[] exists
+      defaultSymbol: { outlineColor: [0, 0, 0, 0], outlineWidth: 0, fillColor: [0, 0, 0, 0] },
+      symbols,
+      data: { tooltips: new Array(wkts.length).fill(""), headers: new Array(wkts.length).fill("") },
+      bubbleHTML,
+      bubbleHTMLParameters
     };
 
     try {
       const ret = govmap.displayGeometries(payload);
+      // Support both promise and non-promise implementations
       if (ret && typeof ret.then === "function") return ret;
       return Promise.resolve(ret);
     } catch (err) {
+      console.error("displayGeometries נכשל:", err);
       return Promise.reject(err);
     }
   }
 
 
-function renderChoropleth(){
+
+async function renderChoropleth(){
   if(!choroplethEnabled || currentMode !== "muni") return;
 
   const metric = (currentMetric === "rate") ? "rate" : "abs";
@@ -2619,12 +2581,8 @@ function initGovMap() {
         zoomButtons: true,
         identifyOnClick: false,
         visibleLayers: [MUNICIPAL_LAYER],
-        onMouseMove: (e) => {
-          updateLastHoverFromGovmapEvent(e);
-        },
         onClick: (e) => {
           try { console.log("🖱️ onClick:", e); } catch(_){}
-          lastGovmapClickAt = Date.now();
           onMapClick(e);
         },
         onLoad: () => {
@@ -2633,8 +2591,7 @@ function initGovMap() {
           setMode(currentMode);
           setChoroBtnUI();
 
-        // CLICK (single handler - no hover listener)
-          initModals();
+        // CLICK (single handler - no hover listener)          initModals();
           initAddressSearchUI();
 
           const toggleBtn = document.getElementById("panelToggleBtn");
