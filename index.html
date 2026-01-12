@@ -2413,8 +2413,8 @@ function safeDisplayGeometries(geoms, opts = {}) {
       const symbols = geoms.map(g => {
         const fill = g.color || { r: 160, g: 160, b: 160 };
         return {
-          fillColor:   { r: fill.r, g: fill.g, b: fill.b, a: 0.55 },
-          strokeColor: { r: 40, g: 40, b: 40, a: 0.85 },
+          fillColor: [fill.r, fill.g, fill.b, 0.55],
+          strokeColor: [40, 40, 40, 0.85],
           lineWidth: 1,
           clickable: false,
           Clickable: false
