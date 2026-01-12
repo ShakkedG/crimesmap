@@ -2454,64 +2454,105 @@ function buildChoroplethPayloadForYear(year, metric){
 }
 
 function safeDisplayGeometries(geoms, opts = {}) {
-    // GovMap API: displayGeometries expects wkts/names + symbol objects (fillColor / outlineColor arrays)
-    // Return a real Promise even if the API returns something else.
-    const clearExisting = (opts.clearExisting !== false);
+  // Always return a *native Promise* so callers can safely use .catch().
+  const toNativePromise = (ret) => {
+    // Native promises (or promise-like that already supports catch)
+    if (ret && typeof ret.then === "function" && typeof ret.catch === "function") return ret;
 
-    const wkts = [];
-    const names = [];
-    const symbols = [];
-
-    for (let i = 0; i < (geoms || []).length; i++) {
-      const g = geoms[i] || {};
-      const wkt = g.WKT || g.wkt;
-      if (!wkt) continue;
-
-      const name = String(g.name ?? g.NAME ?? g.id ?? `CHORO_${i}`);
-      const c = g.color || g.fill || null;
-
-      const r = Math.max(0, Math.min(255, Math.round((c && (c.r ?? c[0])) ?? 180)));
-      const gg = Math.max(0, Math.min(255, Math.round((c && (c.g ?? c[1])) ?? 180)));
-      const b = Math.max(0, Math.min(255, Math.round((c && (c.b ?? c[2])) ?? 180)));
-
-      wkts.push(wkt);
-      names.push(name);
-
-      symbols.push({
-        outlineColor: [30, 30, 30, 0.9],
-        outlineWidth: 1,
-        fillColor: [r, gg, b, 0.92]
-        // NOTE: We intentionally do not provide bubbles/tooltips and disable bubbles via showBubble=false
+    // jQuery Deferred / other thenables that don't implement .catch
+    if (ret && typeof ret.then === "function") {
+      return new Promise((resolve, reject) => {
+        try { ret.then(resolve, reject); }
+        catch (e) { reject(e); }
       });
     }
 
-    if (!wkts.length) return Promise.resolve({ ok: true, skipped: true });
+    // Old-style Deferred (done/fail)
+    if (ret && typeof ret.done === "function") {
+      return new Promise((resolve, reject) => {
+        try { ret.done(resolve); } catch (_) {}
+        try { ret.fail(reject); } catch (_) {}
+      });
+    }
 
-    const payload = {
-      wkts,
-      names,
-      geometryType: govmap.geometryType.POLYGON,
-      defaultSymbol: {
-        outlineColor: [30, 30, 30, 0.9],
-        outlineWidth: 1,
-        fillColor: [180, 180, 180, 0.35]
-      },
-      symbols,
-      clearExisting,
-      // Some GovMap builds documented this typo; providing both doesn't hurt.
-      clearExistings: clearExisting,
-      showBubble: false
+    return Promise.resolve(ret);
+  };
+
+  const { clearExisting = false, silent = false } = (opts || {});
+  if (!geoms || !geoms.length) return Promise.resolve(null);
+
+  const wkts = geoms.map(g => g.wkt);
+  const names = geoms.map(g =>
+    String(g.drawName ?? g.name ?? g.NAME ?? g.id ?? g.ID ?? ("choro_" + Math.random().toString(36).slice(2)))
+  );
+
+  const symbols = geoms.map(g => {
+    const fill = g.color || { r: 160, g: 160, b: 160 };
+    return {
+      fillColor: [fill.r, fill.g, fill.b, 0.55],
+      strokeColor: [40, 40, 40, 0.85],
+      lineWidth: 1,
+      clickable: false,
+      Clickable: false,
+      showBubble: false,
+      ShowBubble: false
     };
+  });
 
+  // "data" left intentionally empty – helps prevent bubbles/tooltips in some GovMap builds
+  const emptyData = { tooltips: [], headers: [] };
+
+  const payloadV1 = {
+    wkts,
+    names,
+    geometryType: "POLYGON",
+    symbols,
+    data: emptyData,
+    clearExisting,
+    showBubble: false
+  };
+
+  const payloadV2 = {
+    Wkts: wkts,
+    Names: names,
+    GeometryType: "POLYGON",
+    Symbols: symbols,
+    Data: emptyData,
+    ClearExisting: clearExisting,
+    ShowBubble: false
+  };
+
+  const payloadV3 = {
+    geometries: wkts.map((wkt, i) => ({
+      name: names[i],
+      wkt,
+      fillColor: symbols[i].fillColor,
+      strokeColor: symbols[i].strokeColor,
+      lineWidth: 1,
+      clickable: false
+    })),
+    clearExisting
+  };
+
+  const tryDisplay = (payload) => toNativePromise(govmap.displayGeometries(payload));
+
+  try {
+    return tryDisplay(payloadV1);
+  } catch (e1) {
+    if (!silent) console.warn("displayGeometries format#1 failed:", e1);
     try {
-      const ret = govmap.displayGeometries(payload);
-      if (ret && typeof ret.then === "function") return ret;
-      return Promise.resolve(ret);
-    } catch (err) {
-      return Promise.reject(err);
+      return tryDisplay(payloadV2);
+    } catch (e2) {
+      if (!silent) console.warn("displayGeometries format#2 failed:", e2);
+      try {
+        return tryDisplay(payloadV3);
+      } catch (e3) {
+        console.error("❌ displayGeometries failed (all formats):", e1, e2, e3);
+        return Promise.reject(e3 || e2 || e1);
+      }
     }
   }
-
+}
 
 function renderChoropleth(){
   if(!choroplethEnabled || currentMode !== "muni") return;
