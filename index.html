@@ -2453,7 +2453,6 @@ function safeDisplayGeometries(geoms, opts = {}) {
 
     try {
       const ret = govmap.displayGeometries(payload);
-      if (ret && typeof ret.then === "function") return ret;
       return Promise.resolve(ret);
     } catch (err) {
       return Promise.reject(err);
