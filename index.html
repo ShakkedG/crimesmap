@@ -1,3 +1,4 @@
+קוד תקין 
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
@@ -2559,17 +2560,14 @@ function filterChoroPayload(payload, predicate){
 
     const ret = govmap.displayGeometries(safePayload);
 
-      // חשוב: ב-GovMap לעתים מחזיר Promise (וגם מגדיר מאזיני click/hover בסוף הרינדור).
-      // אם נבצע bind לפני שה-Promise הסתיים, GovMap עלול לדרוס את ה-listeners שלנו אחרי כמה שניות.
-      if (ret && typeof ret.then === "function") await ret;
+    // Wait for async rendering (GovMap may rebind handlers when render completes)
+    if (ret && typeof ret.then === "function") await ret;
 
-      // Re-bind click AFTER drawing geometries finishes
-      installChoroplethClickFallback();
-      setTimeout(installChoroplethClickFallback, 0);
-      setTimeout(installChoroplethClickFallback, 250);
+    // Re-bind click AFTER render completion (and also do delayed re-binds)
+    installChoroplethClickFallback("after-displayGeometries");
 
-      activeChoroplethNames = safePayload.names;
-} catch (e) {
+    activeChoroplethNames = safePayload.names;
+  } catch (e) {
     console.error("displayGeometries failed:", e);
     setMunicipalLayerOpacity(100);
     showInfo("שגיאה", `נכשלתי לצייר גיאומטריות: ${escapeHtml(e?.message || e)}`, "error");
@@ -2607,22 +2605,37 @@ function filterChoroPayload(payload, predicate){
   return false;
 }
 
-function installChoroplethClickFallback() {
-  if (!window.govmap || !govmap.onEvent) return;
+function installChoroplethClickFallback(reason) {
+  if (!window.govmap || typeof govmap.onEvent !== "function") return;
 
-  // GovMap tends to keep only one active listener at a time.
-  // When choropleth geometries are drawn, GovMap may bind its own hover/click handlers.
-  // We force a single CLICK listener and explicitly remove hover.
-  try { govmap.unbindEvent && govmap.unbindEvent(govmap.events.MOUSE_MOVE); } catch (e) {}
-  try { govmap.unbindEvent && govmap.unbindEvent(govmap.events.CLICK); } catch (e) {}
+  // Optional debug: set window.DEBUG_CHORO_CLICK = true in console
+  const dbg = !!window.DEBUG_CHORO_CLICK;
+  const log = (...a) => { if (dbg) console.log("[CHORO-CLICK]", ...a); };
 
-  subscribeGovmapProgressEvent(govmap.events.CLICK, function(e) {
-    const pt = normalizeMapPoint(e);
-    if (!pt) return;
-    lastHoverMapPoint = pt; // keep for compatibility, even though we don’t rely on hover
-    // Call the same click pipeline used everywhere else
-    onMapClick({ mapPoint: pt, __fromGovmap: true }, e);
-  });
+  // Do NOT unbind here: unbindEvent can sometimes disable/alter the internal click pipeline.
+  // Instead, we repeatedly re-register our handler to survive GovMap re-binds after async renders.
+  const bindOnce = (why) => {
+    try {
+      const h = govmap.onEvent(govmap.events.CLICK);
+      if (h && typeof h.progress === "function") {
+        log("bind", why, Date.now());
+        h.progress((e) => {
+          // If GovMap overwrote our handler later, this callback simply won't run.
+          // When it does run, we have a valid click and can continue the pipeline.
+          const pt = normalizeMapPoint(e);
+          if (!pt) return;
+          lastHoverMapPoint = pt;
+          onMapClick({ mapPoint: pt, __fromGovmap: true }, e);
+        });
+      }
+    } catch (err) {
+      log("bind failed", why, err);
+    }
+  };
+
+  // Immediate bind + a few delayed binds to defeat late internal re-binding
+  bindOnce(reason || "install");
+  [0, 50, 200, 800, 2000].forEach((ms) => setTimeout(() => bindOnce("retry+" + ms), ms));
 }
 
 
@@ -2736,33 +2749,6 @@ installChoroplethClickFallback();
           console.log("✅ Map initialized successfully");
         }
       });
-      (function installClickSpy(){
-  window.__CLICK_SPY__ = true;
-
-  document.addEventListener('pointerdown', (e) => {
-    if (!window.__CLICK_SPY__) return;
-
-    const els = document.elementsFromPoint(e.clientX, e.clientY).slice(0, 8);
-    console.log('[pointerdown] target=', e.target);
-    console.log('[elementsFromPoint top->down]',
-      els.map(el => ({
-        tag: el.tagName,
-        id: el.id,
-        cls: el.className,
-        pe: getComputedStyle(el).pointerEvents,
-        z: getComputedStyle(el).zIndex,
-        op: getComputedStyle(el).opacity
-      }))
-    );
-
-    // האם onMapClick בכלל רץ? (נשען על lastGovmapClickAt שכבר יש אצלך)
-    const before = window.lastGovmapClickAt;
-    setTimeout(() => {
-      console.log('[govmap click fired?]', window.lastGovmapClickAt !== before, { before, after: window.lastGovmapClickAt });
-    }, 0);
-  }, true);
-})();
-
     }
 
     // Expose functions for inline handlers
@@ -2777,11 +2763,49 @@ installChoroplethClickFallback();
     window.toggleChoropleth = toggleChoropleth;
     window.selectFromRank = selectFromRank;
     window.setRankingsOrder = setRankingsOrder;
-    
   </script>
 
   <!-- GOVMAP API -->
-  <script src="https://www.govmap.gov.il/govmap/api/govmap.api.js" defer onload="initGovMap()"></script>
+  <script src="https://www.govmap.gov.il/govmap/api/govmap.api.js" defer onload="initGovMap()">
+/* ===================== DEBUG: CLICK SPY (optional) =====================
+   Enable at runtime:
+     window.DEBUG_CLICK_SPY = true;
+     window.DEBUG_CHORO_CLICK = true;
+   Then click on the map and inspect console.
+*/
+(function installClickSpy(){
+  if (window.__CLICK_SPY_INSTALLED__) return;
+  window.__CLICK_SPY_INSTALLED__ = true;
+
+  document.addEventListener("pointerdown", (e) => {
+    if (!window.DEBUG_CLICK_SPY) return;
+
+    try {
+      const els = document.elementsFromPoint(e.clientX, e.clientY).slice(0, 10);
+      console.log("[CLICK-SPY] target:", e.target);
+      console.log("[CLICK-SPY] elementsFromPoint:", els.map(el => ({
+        tag: el.tagName,
+        id: el.id,
+        cls: el.className,
+        pe: getComputedStyle(el).pointerEvents,
+        z: getComputedStyle(el).zIndex,
+        op: getComputedStyle(el).opacity
+      })));
+
+      const before = window.lastGovmapClickAt;
+      setTimeout(() => {
+        console.log("[CLICK-SPY] govmap click fired?",
+          window.lastGovmapClickAt !== before,
+          { before, after: window.lastGovmapClickAt }
+        );
+      }, 0);
+    } catch (err) {
+      console.warn("[CLICK-SPY] error:", err);
+    }
+  }, true);
+})();
+
+</script>
 </head>
 
 <body>
