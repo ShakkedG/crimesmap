@@ -2736,6 +2736,33 @@ installChoroplethClickFallback();
           console.log("✅ Map initialized successfully");
         }
       });
+      (function installClickSpy(){
+  window.__CLICK_SPY__ = true;
+
+  document.addEventListener('pointerdown', (e) => {
+    if (!window.__CLICK_SPY__) return;
+
+    const els = document.elementsFromPoint(e.clientX, e.clientY).slice(0, 8);
+    console.log('[pointerdown] target=', e.target);
+    console.log('[elementsFromPoint top->down]',
+      els.map(el => ({
+        tag: el.tagName,
+        id: el.id,
+        cls: el.className,
+        pe: getComputedStyle(el).pointerEvents,
+        z: getComputedStyle(el).zIndex,
+        op: getComputedStyle(el).opacity
+      }))
+    );
+
+    // האם onMapClick בכלל רץ? (נשען על lastGovmapClickAt שכבר יש אצלך)
+    const before = window.lastGovmapClickAt;
+    setTimeout(() => {
+      console.log('[govmap click fired?]', window.lastGovmapClickAt !== before, { before, after: window.lastGovmapClickAt });
+    }, 0);
+  }, true);
+})();
+
     }
 
     // Expose functions for inline handlers
@@ -2750,6 +2777,7 @@ installChoroplethClickFallback();
     window.toggleChoropleth = toggleChoropleth;
     window.selectFromRank = selectFromRank;
     window.setRankingsOrder = setRankingsOrder;
+    
   </script>
 
   <!-- GOVMAP API -->
