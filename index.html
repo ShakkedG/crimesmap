@@ -2282,6 +2282,29 @@ installChoroplethClickByGovmapEvent(muniFeatures, (feature, info) => {
         muniBoundariesLoaded = true;
         console.log("✅ Boundaries loaded:", Object.keys(muniBoundariesIndex).length);
         return true;
+       // אחרי שהגבולות נטענו בהצלחה:
+const muniFeatures = feats;
+installChoroplethClickByGovmapEvent(muniFeatures, (feature, info) => {
+  const nameFromGeo = feature?.properties?.name;
+  if (!nameFromGeo) return;
+
+  const k = normalizeKey(nameFromGeo);
+  const entry = muniIndex[k] || muniIndex[nameVariants(nameFromGeo)[0]] || null;
+
+  if (!entry) {
+    showInfo("לא נמצאו נתונים", `אין נתוני פשיעה עבור <strong>${escapeHtml(nameFromGeo)}</strong> בשנת ${currentYear}`, "error");
+    return;
+  }
+
+  selectedEntityName = entry.name;
+  selectedEntityKey = entry.key;
+
+  if (currentTab === "compare") updateCompareView();
+  else if (currentTab === "trends") showTrends(selectedEntityName, "muni");
+  else if (currentTab === "rankings") renderRankings();
+  else showEntry(entry);
+});
+
 
       }catch(e){
         muniBoundariesLoadError = e;
