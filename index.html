@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
-<head> 
+<head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>מפת פשיעה – לפי שנה (2020–2025) | ישובים / מרחבים / תחנות</title>
@@ -2559,11 +2559,13 @@ function filterChoroPayload(payload, predicate){
 
     const ret = govmap.displayGeometries(safePayload);
 
-    // Wait for async rendering (GovMap may rebind handlers when render completes)
+    // IMPORTANT: wait for GovMap to finish drawing BEFORE (re)binding click.
+    // GovMap may reinitialize interaction handlers after drawing.
     if (ret && typeof ret.then === "function") await ret;
 
-    // Re-bind click AFTER render completion (and also do delayed re-binds)
-    installChoroplethClickFallback("after-displayGeometries");
+    installChoroplethClickFallback();
+    // One extra bind on next tick to win late internal rebinding.
+    setTimeout(installChoroplethClickFallback, 0);
 
     activeChoroplethNames = safePayload.names;
   } catch (e) {
@@ -2604,38 +2606,29 @@ function filterChoroPayload(payload, predicate){
   return false;
 }
 
-function installChoroplethClickFallback(reason) {
+function installChoroplethClickFallback() {
   if (!window.govmap || typeof govmap.onEvent !== "function") return;
 
-  // Optional debug: set window.DEBUG_CHORO_CLICK = true in console
-  const dbg = !!window.DEBUG_CHORO_CLICK;
-  const log = (...a) => { if (dbg) console.log("[CHORO-CLICK]", ...a); };
+  // Do NOT call govmap.unbindEvent() here.
+  // Unbinding CLICK/MOUSE_MOVE may disable GovMap's internal interaction pipeline (iframe),
+  // which then prevents CLICK from ever reaching onEvent handlers.
 
-  // Do NOT unbind here: unbindEvent can sometimes disable/alter the internal click pipeline.
-  // Instead, we repeatedly re-register our handler to survive GovMap re-binds after async renders.
-  const bindOnce = (why) => {
-    try {
-      const h = govmap.onEvent(govmap.events.CLICK);
-      if (h && typeof h.progress === "function") {
-        log("bind", why, Date.now());
-        h.progress((e) => {
-          log("CLICK event received", e);
-          // If GovMap overwrote our handler later, this callback simply won't run.
-          // When it does run, we have a valid click and can continue the pipeline.
-          const pt = normalizeMapPoint(e);
-          if (!pt) return;
-          lastHoverMapPoint = pt;
-          onMapClick({ mapPoint: pt, __fromGovmap: true }, e);
-        });
-      }
-    } catch (err) {
-      log("bind failed", why, err);
-    }
-  };
+  // Re-subscribe click handler. GovMap may keep only one active listener; calling progress again
+  // after drawing is safe and helps recover when GovMap rebinds internally.
+  try {
+    const handler = function(e) {
+      lastGovmapClickAt = Date.now();
+      const pt = normalizeMapPoint(e);
+      if (!pt) return;
+      lastHoverMapPoint = pt; // keep compatibility with existing click pipeline
+      onMapClick({ mapPoint: pt, __fromGovmap: true }, e);
+    };
 
-  // Immediate bind + a few delayed binds to defeat late internal re-binding
-  bindOnce(reason || "install");
-  [0, 50, 200, 800, 2000].forEach((ms) => setTimeout(() => bindOnce("retry+" + ms), ms));
+    const h = govmap.onEvent(govmap.events.CLICK);
+    if (h && typeof h.progress === "function") h.progress(handler);
+  } catch (err) {
+    // silent
+  }
 }
 
 
@@ -2767,93 +2760,6 @@ installChoroplethClickFallback();
 
   <!-- GOVMAP API -->
   <script src="https://www.govmap.gov.il/govmap/api/govmap.api.js" defer onload="initGovMap()"></script>
-
-<script>
-/* ===================== DEBUG: CLICK SPY + MAP WATCH (optional) =====================
-   Enable at runtime:
-     window.DEBUG_CLICK_SPY = true;
-     window.DEBUG_CHORO_CLICK = true;
-   Then click on the map and inspect console.
-   Goal: determine whether (A) DOM/overlay blocks clicks, or (B) GovMap CLICK pipeline stops emitting.
-===================================================================================== */
-(function installDebugTools(){
-  if (window.__DEBUG_TOOLS_INSTALLED__) return;
-  window.__DEBUG_TOOLS_INSTALLED__ = true;
-
-  function topElementsAt(x,y){
-    try{
-      return document.elementsFromPoint(x,y).slice(0,8).map(el => {
-        const cs = getComputedStyle(el);
-        return {
-          tag: el.tagName,
-          id: el.id || "",
-          cls: (el.className && String(el.className).slice(0,120)) || "",
-          pe: cs.pointerEvents,
-          z: cs.zIndex,
-          pos: cs.position,
-          op: cs.opacity
-        };
-      });
-    }catch(_){ return []; }
-  }
-
-  function onAnyPointer(e){
-    if (!window.DEBUG_CLICK_SPY) return;
-
-    console.log("[CLICK-SPY] event=", e.type, "target=", e.target);
-    console.log("[CLICK-SPY] elementsFromPoint:", topElementsAt(e.clientX, e.clientY));
-
-    const before = window.lastGovmapClickAt || 0;
-    setTimeout(() => {
-      const after = window.lastGovmapClickAt || 0;
-      console.log("[CLICK-SPY] govmap click fired?", after !== before, { before, after });
-    }, 0);
-  }
-
-  // Capture at document-level
-  document.addEventListener("pointerdown", onAnyPointer, true);
-  document.addEventListener("click", onAnyPointer, true);
-
-  // Also capture on #map (helps detect iframe case: clicks inside iframe won't reach here)
-  const mapEl = document.getElementById("map");
-  if (mapEl) {
-    mapEl.addEventListener("pointerdown", (e) => {
-      if (!window.DEBUG_CLICK_SPY) return;
-      console.log("[CLICK-SPY] #map received pointerdown (not iframe)");
-    }, true);
-  }
-
-  // Watch for late DOM overlays inserted into #map
-  if (mapEl && "MutationObserver" in window) {
-    const obs = new MutationObserver((mutations) => {
-      if (!window.DEBUG_CLICK_SPY) return;
-      for (const mu of mutations) {
-        for (const n of mu.addedNodes) {
-          if (!(n instanceof HTMLElement)) continue;
-          const cs = getComputedStyle(n);
-          const suspicious =
-            (cs.pointerEvents !== "none") &&
-            (cs.position === "absolute" || cs.position === "fixed") &&
-            (parseInt(cs.zIndex || "0", 10) >= 1000 || cs.zIndex === "auto") &&
-            (n.offsetWidth >= mapEl.offsetWidth * 0.6) &&
-            (n.offsetHeight >= mapEl.offsetHeight * 0.6);
-
-          if (suspicious) {
-            console.warn("[MAP-WATCH] suspicious overlay added:", n, {
-              tag: n.tagName, id: n.id, cls: n.className,
-              pe: cs.pointerEvents, z: cs.zIndex, pos: cs.position, op: cs.opacity,
-              w: n.offsetWidth, h: n.offsetHeight
-            });
-          }
-        }
-      }
-    });
-    obs.observe(mapEl, { childList: true, subtree: true });
-    console.log("[MAP-WATCH] MutationObserver installed on #map");
-  }
-})();
-</script>
-
 </head>
 
 <body>
