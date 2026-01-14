@@ -1,4 +1,3 @@
-קוד תקין 
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
@@ -2560,12 +2559,17 @@ function filterChoroPayload(payload, predicate){
 
     const ret = govmap.displayGeometries(safePayload);
 
-      // Re-bind click and remove hover after drawing geometries
-      installChoroplethClickFallback();
-    if (ret && typeof ret.then === "function") await ret;
+      // חשוב: ב-GovMap לעתים מחזיר Promise (וגם מגדיר מאזיני click/hover בסוף הרינדור).
+      // אם נבצע bind לפני שה-Promise הסתיים, GovMap עלול לדרוס את ה-listeners שלנו אחרי כמה שניות.
+      if (ret && typeof ret.then === "function") await ret;
 
-    activeChoroplethNames = safePayload.names;
-  } catch (e) {
+      // Re-bind click AFTER drawing geometries finishes
+      installChoroplethClickFallback();
+      setTimeout(installChoroplethClickFallback, 0);
+      setTimeout(installChoroplethClickFallback, 250);
+
+      activeChoroplethNames = safePayload.names;
+} catch (e) {
     console.error("displayGeometries failed:", e);
     setMunicipalLayerOpacity(100);
     showInfo("שגיאה", `נכשלתי לצייר גיאומטריות: ${escapeHtml(e?.message || e)}`, "error");
