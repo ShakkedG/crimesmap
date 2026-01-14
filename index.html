@@ -1,3 +1,4 @@
+קוד תקין 
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
@@ -1685,15 +1686,17 @@ let lastGovmapClickAt = 0;
   return { x: nx, y: ny };
 }
 
-async function onMapClick(e) {
+
+    async function onMapClick(e) {
   if (!mapInitialized) return;
 
-  // 1) נקודת קליק
+  // 1) נסה להוציא נקודה תקינה מהאירוע
   let pt = normalizeMapPoint(e);
 
-  // 2) fallback ל-hover (אם יש)
+  // 2) אם אין נקודה תקינה, נסה מה-hover האחרון (חשוב בעיקר בצביעה)
   if (!pt && lastHoverMapPoint) pt = normalizeMapPoint(lastHoverMapPoint);
 
+  // 3) אם עדיין אין נקודה – לא ממשיכים
   if (!pt) {
     showInfo("רגע", "לא התקבלה נקודת מפה תקינה (X/Y). הזז עכבר על הרשות ואז לחץ.", "warn");
     return;
@@ -1705,15 +1708,22 @@ async function onMapClick(e) {
       (currentMode === "merhav") ? POLICE_MERHAV_LAYER :
       POLICE_STATION_LAYER;
 
-    // ✅ פתרון 2: identifyByXYAndLayer -> ואם אין, fallback ל-getLayerData
-    const attrsRaw = await getAttrsAtPoint(pt, layerName);
+   const resp = await govmap.getLayerData({
+  LayerName: layerName,
+  Point: { x: pt.x, y: pt.y, X: pt.x, Y: pt.y },
+  Radius: 300
+});
 
-    if (!attrsRaw) {
+
+    const items = resp?.data || resp?.Data || [];
+    if (!items.length) {
       showInfo("לא נמצא", "אין אובייקט באזור זה", "info");
       return;
     }
 
-    const attrsObj = fieldsToObject(attrsRaw) || attrsRaw || {};
+    const first = items[0];
+    const attrs = first.Fields || first.Attributes || first;
+    const attrsObj = fieldsToObject(attrs) || attrs || {};
     const index = getIndexByMode(currentMode);
 
     if (currentMode === "muni") {
@@ -1722,10 +1732,7 @@ async function onMapClick(e) {
 
       const k = normalizeKey(nameFromMap);
       const entry = index[k] || index[nameVariants(nameFromMap)[0]] || null;
-      if (!entry) {
-        showInfo("לא נמצאו נתונים", `אין נתוני פשיעה עבור <strong>${escapeHtml(nameFromMap)}</strong> בשנת ${currentYear}`, "error");
-        return;
-      }
+      if (!entry) { showInfo("לא נמצאו נתונים", `אין נתוני פשיעה עבור <strong>${escapeHtml(nameFromMap)}</strong> בשנת ${currentYear}`, "error"); return; }
 
       selectedEntityName = entry.name;
       selectedEntityKey = entry.key;
@@ -1734,7 +1741,6 @@ async function onMapClick(e) {
       else if (currentTab === "trends") showTrends(selectedEntityName, "muni");
       else if (currentTab === "rankings") renderRankings();
       else showEntry(entry);
-
       return;
     }
 
@@ -1742,11 +1748,9 @@ async function onMapClick(e) {
       const stationName = detectStationName(attrsObj);
       if (!stationName) {
         const keysList = Object.keys(attrsObj || {});
-        showInfo(
-          "שגיאה",
+        showInfo("שגיאה",
           `לא הצלחתי לזהות <strong>שם תחנה</strong>.<br/>שדות: <span style="direction:ltr;unicode-bidi:bidi-override">${escapeHtml(keysList.join(" | "))}</span>`,
-          "error"
-        );
+          "error");
         return;
       }
 
@@ -1754,11 +1758,7 @@ async function onMapClick(e) {
       if (!entry) {
         for (const v of stationNameVariants(stationName)) { if (index[v]) { entry = index[v]; break; } }
       }
-
-      if (!entry) {
-        showInfo("לא נמצאו נתונים", `אין נתוני פשיעה עבור <strong>${escapeHtml(stationName)}</strong> בשנת ${currentYear}`, "error");
-        return;
-      }
+      if (!entry) { showInfo("לא נמצאו נתונים", `אין נתוני פשיעה עבור <strong>${escapeHtml(stationName)}</strong> בשנת ${currentYear}`, "error"); return; }
 
       selectedEntityName = entry.name;
       selectedEntityKey = entry.key;
@@ -1767,7 +1767,6 @@ async function onMapClick(e) {
       else if (currentTab === "trends") showTrends(selectedEntityName, "station");
       else if (currentTab === "rankings") renderRankings();
       else showEntry(entry);
-
       return;
     }
 
@@ -1776,10 +1775,7 @@ async function onMapClick(e) {
     if (!merhavName) { showInfo("שגיאה", "לא ניתן לזהות את שם מרחב המשטרה", "error"); return; }
 
     const entry = index[normalizeKey(merhavName)] || null;
-    if (!entry) {
-      showInfo("לא נמצאו נתונים", `אין נתוני פשיעה עבור <strong>${escapeHtml(merhavName)}</strong> בשנת ${currentYear}`, "error");
-      return;
-    }
+    if (!entry) { showInfo("לא נמצאו נתונים", `אין נתוני פשיעה עבור <strong>${escapeHtml(merhavName)}</strong> בשנת ${currentYear}`, "error"); return; }
 
     selectedEntityName = entry.name;
     selectedEntityKey = entry.key;
@@ -1795,7 +1791,6 @@ async function onMapClick(e) {
   }
 }
 
-    
     
 
     // ===================== MODALS & PANEL =====================
@@ -2608,33 +2603,23 @@ function filterChoroPayload(payload, predicate){
   return false;
 }
 
-let _boundClick = false;
-let _boundMove  = false;
-
 function installChoroplethClickFallback() {
-  if (!window.govmap || typeof govmap.onEvent !== "function") return;
+  if (!window.govmap || !govmap.onEvent) return;
 
-  // תמיד לשמור נקודת hover עדכנית (זה קריטי לצביעה)
-  if (!_boundMove) {
-    _boundMove = true;
-    govmap.onEvent(govmap.events.MOUSE_MOVE).progress((e) => {
-      const pt = normalizeMapPoint(e);
-      if (pt) lastHoverMapPoint = pt;
-    });
-  }
+  // GovMap tends to keep only one active listener at a time.
+  // When choropleth geometries are drawn, GovMap may bind its own hover/click handlers.
+  // We force a single CLICK listener and explicitly remove hover.
+  try { govmap.unbindEvent && govmap.unbindEvent(govmap.events.MOUSE_MOVE); } catch (e) {}
+  try { govmap.unbindEvent && govmap.unbindEvent(govmap.events.CLICK); } catch (e) {}
 
-  // קליק תמיד מפעיל את אותו pipeline (פתרון 2 משתמש ב-identifyByXYAndLayer)
-  if (!_boundClick) {
-    _boundClick = true;
-    govmap.onEvent(govmap.events.CLICK).progress((e) => {
-      const pt = normalizeMapPoint(e) || normalizeMapPoint(lastHoverMapPoint);
-      if (!pt) return;
-      lastHoverMapPoint = pt;
-      onMapClick({ mapPoint: pt, __fromGovmap: true });
-    });
-  }
+  subscribeGovmapProgressEvent(govmap.events.CLICK, function(e) {
+    const pt = normalizeMapPoint(e);
+    if (!pt) return;
+    lastHoverMapPoint = pt; // keep for compatibility, even though we don’t rely on hover
+    // Call the same click pipeline used everywhere else
+    onMapClick({ mapPoint: pt, __fromGovmap: true }, e);
+  });
 }
-
 
 
     // ===================== GOVMAP INIT =====================
