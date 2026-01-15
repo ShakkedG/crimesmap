@@ -1047,7 +1047,8 @@ let lastGovmapClickAt = 0;
     }
 
     // ===================== ENTITY RENDER =====================
-    function showEntry(entry) {
+    function showEntry(entry, opts = null) {
+      const viewMode = (opts && opts.mode) ? opts.mode : currentMode;
       const d = entry?.data || {};
       let html = "";
 
@@ -1055,14 +1056,14 @@ let lastGovmapClickAt = 0;
 
       let popRaw = null;
       let rate = null;
-      if (currentMode === "muni") {
+      if (viewMode === "muni") {
         popRaw = getPopulationForAuthority(entry.name);
         if (popRaw != null) rate = calcRatePer10k(total, popRaw);
       }
 
       if (total != null) {
         // If user asked for "rate" but there's no population, show total and a clear hint.
-        if (currentMetric === "rate" && currentMode === "muni") {
+        if (currentMetric === "rate" && viewMode === "muni") {
           if (popRaw == null || rate == null) {
             html += `<div class="total-summary">${Number(total).toLocaleString()} אירועים</div>`;
             html += `<div class="message message-warn">אין נתון אוכלוסייה עבור הרשות הזו, לכן לא מוצג חישוב ל‑10,000.</div>`;
@@ -1072,7 +1073,7 @@ let lastGovmapClickAt = 0;
           }
         } else {
           html += `<div class="total-summary">${Number(total).toLocaleString()} אירועים</div>`;
-          if (currentMode === "muni" && popRaw != null) {
+          if (viewMode === "muni" && popRaw != null) {
             html += `<div class="sub-summary">אוכלוסייה (סטטית): ${Number(popRaw).toLocaleString()}</div>`;
           }
         }
@@ -2120,6 +2121,70 @@ function geojsonGeomToWkt(geom){
   
   return null;
 }
+    // ===================== HIT TEST UTILS (GeoJSON) =====================
+    function bboxOfGeojsonGeometry(geom){
+      if(!geom) return null;
+      const coords = geom.coordinates;
+      let minx = Infinity, miny = Infinity, maxx = -Infinity, maxy = -Infinity;
+
+      function visit(pt){
+        const x = Number(pt[0]), y = Number(pt[1]);
+        if(!Number.isFinite(x) || !Number.isFinite(y)) return;
+        if(x < minx) minx = x;
+        if(y < miny) miny = y;
+        if(x > maxx) maxx = x;
+        if(y > maxy) maxy = y;
+      }
+      function walk(c){
+        if(!Array.isArray(c)) return;
+        if(typeof c[0] === "number" && typeof c[1] === "number"){ visit(c); return; }
+        for(const x of c) walk(x);
+      }
+      walk(coords);
+      if(minx === Infinity) return null;
+      return { minx, miny, maxx, maxy };
+    }
+
+    function bboxContains(b, p){
+      return b && p && p.x >= b.minx && p.x <= b.maxx && p.y >= b.miny && p.y <= b.maxy;
+    }
+
+    function pointInRing(pt, ring){
+      let inside = false;
+      for(let i=0, j=ring.length-1; i<ring.length; j=i++){
+        const xi = ring[i][0], yi = ring[i][1];
+        const xj = ring[j][0], yj = ring[j][1];
+        const denom = (yj - yi) || 1e-12;
+        const intersect = ((yi > pt.y) !== (yj > pt.y)) &&
+          (pt.x < (xj - xi) * (pt.y - yi) / denom + xi);
+        if(intersect) inside = !inside;
+      }
+      return inside;
+    }
+
+    function pointInPolygonRings(pt, rings){
+      if(!Array.isArray(rings) || !rings.length) return false;
+      if(!pointInRing(pt, rings[0])) return false;
+      for(let i=1;i<rings.length;i++){
+        if(pointInRing(pt, rings[i])) return false;
+      }
+      return true;
+    }
+
+    function pointInGeojsonGeometry(pt, geom){
+      if(!pt || !geom) return false;
+      if(geom.type === "Polygon"){
+        return pointInPolygonRings(pt, geom.coordinates);
+      }
+      if(geom.type === "MultiPolygon"){
+        for(const poly of geom.coordinates){
+          if(pointInPolygonRings(pt, poly)) return true;
+        }
+        return false;
+      }
+      return false;
+    }
+
 
     async function loadMuniBoundariesGeojson(){
       if(muniBoundariesLoaded) return true;
@@ -2144,7 +2209,8 @@ function geojsonGeomToWkt(geom){
 
         for(const f of feats){
           const name = f?.properties?.name;
-          const wkt  = geojsonGeomToWkt(f?.geometry);
+          const geom = f?.geometry;
+          const wkt  = geojsonGeomToWkt(geom);
           if(!name || !wkt){
   console.warn("❌ Skipping bad boundary feature:", name, f?.geometry);
   continue;
@@ -2319,6 +2385,7 @@ function sanitizeFeatureGeometry(feature, pointFn) {
         console.warn("clearGeometriesByName failed:", e);
       }
       activeChoroplethNames = [];
+      window.__activeChoroHitTest = [];
     }
 
     function setMunicipalLayerOpacity(opacity){
@@ -2558,16 +2625,14 @@ function filterChoroPayload(payload, predicate){
     }
 
     const ret = govmap.displayGeometries(safePayload);
-
-    // IMPORTANT: wait for GovMap to finish drawing BEFORE (re)binding click.
-    // GovMap may reinitialize interaction handlers after drawing.
     if (ret && typeof ret.then === "function") await ret;
 
-    installChoroplethClickFallback();
-    // One extra bind on next tick to win late internal rebinding.
-    setTimeout(installChoroplethClickFallback, 0);
-
     activeChoroplethNames = safePayload.names;
+
+    rebuildActiveChoroHitTest(activeChoroplethNames);
+
+    // Install stable selection bridge
+    installChoroplethClickFallback();
   } catch (e) {
     console.error("displayGeometries failed:", e);
     setMunicipalLayerOpacity(100);
@@ -2607,27 +2672,50 @@ function filterChoroPayload(payload, predicate){
 }
 
 function installChoroplethClickFallback() {
-  if (!window.govmap || typeof govmap.onEvent !== "function") return;
+  // Stable choropleth selection: no dependency on govmap.events.CLICK (iframe resets it).
+  if (!window.govmap) return;
 
-  // Do NOT call govmap.unbindEvent() here.
-  // Unbinding CLICK/MOUSE_MOVE may disable GovMap's internal interaction pipeline (iframe),
-  // which then prevents CLICK from ever reaching onEvent handlers.
-
-  // Re-subscribe click handler. GovMap may keep only one active listener; calling progress again
-  // after drawing is safe and helps recover when GovMap rebinds internally.
-  try {
-    const handler = function(e) {
-      lastGovmapClickAt = Date.now();
+  // 1) Track mouse map-point via GovMap MOUSE_MOVE (keeps lastHoverMapPoint fresh)
+  // GovMap can reset listeners after drawing geometries; we re-subscribe a few times safely.
+  const _mmCount = Number(window.__choroMouseMoveBindCount || 0);
+  if (_mmCount < 5) {
+    window.__choroMouseMoveBindCount = _mmCount + 1;
+subscribeGovmapProgressEvent(govmap.events.MOUSE_MOVE, function(e){
       const pt = normalizeMapPoint(e);
-      if (!pt) return;
-      lastHoverMapPoint = pt; // keep compatibility with existing click pipeline
-      onMapClick({ mapPoint: pt, __fromGovmap: true }, e);
-    };
+      if(!pt) return;
+      lastHoverMapPoint = pt;
+      window.__lastMouseMoveAt = Date.now();
 
-    const h = govmap.onEvent(govmap.events.CLICK);
-    if (h && typeof h.progress === "function") h.progress(handler);
-  } catch (err) {
-    // silent
+      if (choroplethEnabled && Array.isArray(window.__activeChoroHitTest) && window.__activeChoroHitTest.length){
+        const hit = hitTestChoropleth(pt);
+        window.__lastHoverChoroName = hit || null;
+      }
+    });
+  }
+
+  // 2) Use postMessage from the iframe as the "click trigger"
+  // GovMap emits a message to the parent on click; the payload is not usable for identification,
+  // so we pair it with the most recent mouse map-point from MOUSE_MOVE and do local hit-test.
+  if (!window.__choroMessageBridgeInstalled) {
+    window.__choroMessageBridgeInstalled = true;
+
+    window.addEventListener("message", function(ev){
+      if(!choroplethEnabled) return;
+
+      const now = Date.now();
+      const lastMove = window.__lastMouseMoveAt || 0;
+      if(!lastHoverMapPoint || (now - lastMove) > 650) return; // stale position
+      if(now - (window.__lastChoroMsgClickAt || 0) < 250) return; // throttle
+      window.__lastChoroMsgClickAt = now;
+
+      const pt = normalizeMapPoint(lastHoverMapPoint);
+      if(!pt) return;
+
+      const name = hitTestChoropleth(pt) || window.__lastHoverChoroName;
+      if(!name) return;
+
+      onChoroplethSelected(name, pt);
+    }, true);
   }
 }
 
