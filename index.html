@@ -2606,19 +2606,73 @@ function filterChoroPayload(payload, predicate){
 function installChoroplethClickFallback() {
   if (!window.govmap || !govmap.onEvent) return;
 
-  // GovMap tends to keep only one active listener at a time.
-  // When choropleth geometries are drawn, GovMap may bind its own hover/click handlers.
-  // We force a single CLICK listener and explicitly remove hover.
-  try { govmap.unbindEvent && govmap.unbindEvent(govmap.events.MOUSE_MOVE); } catch (e) {}
-  try { govmap.unbindEvent && govmap.unbindEvent(govmap.events.CLICK); } catch (e) {}
+  // The core issue:
+  // - Polygons drawn via displayGeometries may consume pointer events (feature-click),
+  //   so govmap.events.CLICK might not fire when clicking the colored geometry.
+  // - However, GovMap still posts a window "message" from the iframe on user clicks.
+  //
+  // Strategy:
+  // 1) Keep a persistent MOUSE_MOVE listener to always know the current mapPoint.
+  // 2) Keep the normal govmap.events.CLICK listener (already registered elsewhere).
+  // 3) Add a postMessage-based fallback that triggers ONLY when:
+  //    - choroplethEnabled is true
+  //    - we did NOT just receive a govmap CLICK (dedupe by lastGovmapClickAt)
+  //    - we have a recent lastHoverMapPoint
 
-  subscribeGovmapProgressEvent(govmap.events.CLICK, function(e) {
-    const pt = normalizeMapPoint(e);
-    if (!pt) return;
-    lastHoverMapPoint = pt; // keep for compatibility, even though we don’t rely on hover
-    // Call the same click pipeline used everywhere else
-    onMapClick({ mapPoint: pt, __fromGovmap: true }, e);
-  });
+  // 1) Persistent hover tracking (do NOT unbind it)
+  if (!window.__CHORO_HOVER_TRACKING__) {
+    window.__CHORO_HOVER_TRACKING__ = true;
+
+    // Mouse move gives mapPoint+screenPoint per GovMap docs.
+    subscribeGovmapProgressEvent(govmap.events.MOUSE_MOVE, function(e){
+      const pt = normalizeMapPoint(e);
+      if (pt) lastHoverMapPoint = pt;
+    });
+
+    // Some builds return {data:{mapPoint,...}} for MOUSE_OVER, keep it as extra safety.
+    subscribeGovmapProgressEvent(govmap.events.MOUSE_OVER, function(e){
+      const pt = normalizeMapPoint(e?.data || e);
+      if (pt) lastHoverMapPoint = pt;
+    });
+  }
+
+  // 2) postMessage click fallback
+  if (!window.__CHORO_CLICK_MESSAGE_FALLBACK__) {
+    window.__CHORO_CLICK_MESSAGE_FALLBACK__ = true;
+
+    let lastSynthetic = 0;
+
+    window.addEventListener("message", function(ev){
+      try{
+        // Only relevant when choropleth is enabled
+        if (!choroplethEnabled) return;
+
+        // GovMap messages typically include an object payload. We only use them as a "click happened" pulse.
+        const d = ev && ev.data;
+        if (!d || typeof d !== "object") return;
+
+        // Heuristic: GovMap API messages often include requestId.
+        // (We avoid over-filtering because some builds omit requestType.)
+        if (typeof d.requestId !== "string") return;
+
+        const now = Date.now();
+
+        // Dedupe: normal clicks trigger BOTH govmap.events.CLICK and postMessage.
+        // If CLICK fired in the last ~120ms, do nothing.
+        if (now - (lastGovmapClickAt || 0) < 120) return;
+
+        // We need a recent mapPoint from hover to know where the click was.
+        if (!lastHoverMapPoint) return;
+
+        // Throttle synthetic clicks
+        if (now - lastSynthetic < 180) return;
+        lastSynthetic = now;
+
+        // Reuse the same pipeline as regular clicks
+        onMapClick({ mapPoint: { x: lastHoverMapPoint.x, y: lastHoverMapPoint.y }, __fromChoroFallback: true });
+      }catch(_){}
+    }, true);
+  }
 }
 
 
