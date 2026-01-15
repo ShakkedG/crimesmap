@@ -1,3 +1,4 @@
+קוד תקין 
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
@@ -774,9 +775,7 @@ let lastGovmapClickAt = 0;
     // Boundaries
     let muniBoundariesLoaded = false;
     let muniBoundariesLoadError = null;
-    let muniBoundariesIndex = Object.create(null); 
-let muniBoundariesGeomIndex = Object.create(null); // normalizeKey(name) -> GeoJSON geometry (numeric)
-// normalizedKey -> WKT
+    let muniBoundariesIndex = Object.create(null); // normalizedKey -> WKT
     let muniBoundariesMeta = [];  // [{ name, wkt }]
 
     // ===================== NORMALIZATION =====================
@@ -1049,8 +1048,7 @@ let muniBoundariesGeomIndex = Object.create(null); // normalizeKey(name) -> GeoJ
     }
 
     // ===================== ENTITY RENDER =====================
-    function showEntry(entry, opts = null) {
-      const viewMode = (opts && opts.mode) ? opts.mode : currentMode;
+    function showEntry(entry) {
       const d = entry?.data || {};
       let html = "";
 
@@ -1058,14 +1056,14 @@ let muniBoundariesGeomIndex = Object.create(null); // normalizeKey(name) -> GeoJ
 
       let popRaw = null;
       let rate = null;
-      if (viewMode === "muni") {
+      if (currentMode === "muni") {
         popRaw = getPopulationForAuthority(entry.name);
         if (popRaw != null) rate = calcRatePer10k(total, popRaw);
       }
 
       if (total != null) {
         // If user asked for "rate" but there's no population, show total and a clear hint.
-        if (currentMetric === "rate" && viewMode === "muni") {
+        if (currentMetric === "rate" && currentMode === "muni") {
           if (popRaw == null || rate == null) {
             html += `<div class="total-summary">${Number(total).toLocaleString()} אירועים</div>`;
             html += `<div class="message message-warn">אין נתון אוכלוסייה עבור הרשות הזו, לכן לא מוצג חישוב ל‑10,000.</div>`;
@@ -1075,7 +1073,7 @@ let muniBoundariesGeomIndex = Object.create(null); // normalizeKey(name) -> GeoJ
           }
         } else {
           html += `<div class="total-summary">${Number(total).toLocaleString()} אירועים</div>`;
-          if (viewMode === "muni" && popRaw != null) {
+          if (currentMode === "muni" && popRaw != null) {
             html += `<div class="sub-summary">אוכלוסייה (סטטית): ${Number(popRaw).toLocaleString()}</div>`;
           }
         }
@@ -2123,136 +2121,7 @@ function geojsonGeomToWkt(geom){
   
   return null;
 }
-    // ===================== HIT TEST UTILS (GeoJSON) =====================
-    function bboxOfGeojsonGeometry(geom){
-      if(!geom) return null;
-      const coords = geom.coordinates;
-      let minx = Infinity, miny = Infinity, maxx = -Infinity, maxy = -Infinity;
 
-      function visit(pt){
-        const x = Number(pt[0]), y = Number(pt[1]);
-        if(!Number.isFinite(x) || !Number.isFinite(y)) return;
-        if(x < minx) minx = x;
-        if(y < miny) miny = y;
-        if(x > maxx) maxx = x;
-        if(y > maxy) maxy = y;
-      }
-      function walk(c){
-        if(!Array.isArray(c)) return;
-        if(typeof c[0] === "number" && typeof c[1] === "number"){ visit(c); return; }
-        for(const x of c) walk(x);
-      }
-      walk(coords);
-      if(minx === Infinity) return null;
-      return { minx, miny, maxx, maxy };
-    }
-
-    function bboxContains(b, p){
-      return b && p && p.x >= b.minx && p.x <= b.maxx && p.y >= b.miny && p.y <= b.maxy;
-    }
-
-    function pointInRing(pt, ring){
-      let inside = false;
-      for(let i=0, j=ring.length-1; i<ring.length; j=i++){
-        const xi = ring[i][0], yi = ring[i][1];
-        const xj = ring[j][0], yj = ring[j][1];
-        const denom = (yj - yi) || 1e-12;
-        const intersect = ((yi > pt.y) !== (yj > pt.y)) &&
-          (pt.x < (xj - xi) * (pt.y - yi) / denom + xi);
-        if(intersect) inside = !inside;
-      }
-      return inside;
-    }
-
-    function pointInPolygonRings(pt, rings){
-      if(!Array.isArray(rings) || !rings.length) return false;
-      if(!pointInRing(pt, rings[0])) return false;
-      for(let i=1;i<rings.length;i++){
-        if(pointInRing(pt, rings[i])) return false;
-      }
-      return true;
-    }
-
-    function pointInGeojsonGeometry(pt, geom){
-      if(!pt || !geom) return false;
-      if(geom.type === "Polygon"){
-        return pointInPolygonRings(pt, geom.coordinates);
-      }
-      if(geom.type === "MultiPolygon"){
-        for(const poly of geom.coordinates){
-          if(pointInPolygonRings(pt, poly)) return true;
-        }
-        return false;
-      }
-      return false;
-    }
-
-
-
-// ===================== CHOROPLETH HIT TEST (local, stable) =====================
-function rebuildActiveChoroHitTest(names){
-  const list = [];
-  if(!Array.isArray(names) || !names.length){
-    window.__activeChoroHitTest = [];
-    return;
-  }
-
-  for(const nm of names){
-    const nk = normalizeKey(nm);
-    const geom = muniBoundariesGeomIndex?.[nk];
-    if(!geom) continue;
-    const bbox = bboxOfGeojsonGeometry(geom);
-    if(!bbox) continue;
-    list.push({ name: nm, geom, bbox });
-  }
-
-  // Smallest bbox first: usually reduces polygon checks
-  list.sort((a,b) => {
-    const aa = (a.bbox.maxx-a.bbox.minx) * (a.bbox.maxy-a.bbox.miny);
-    const bb = (b.bbox.maxx-b.bbox.minx) * (b.bbox.maxy-b.bbox.miny);
-    return aa - bb;
-  });
-
-  window.__activeChoroHitTest = list;
-}
-
-function hitTestChoropleth(pt){
-  const list = window.__activeChoroHitTest;
-  if(!pt || !Array.isArray(list) || !list.length) return null;
-
-  for(const it of list){
-    if(!bboxContains(it.bbox, pt)) continue;
-    if(pointInGeojsonGeometry(pt, it.geom)) return it.name;
-  }
-
-
-function onChoroplethSelected(muniName, pt){
-  const nameFromMap = (muniName == null) ? "" : String(muniName).trim();
-  if(!nameFromMap) return;
-
-  // Choropleth exists only in municipalities mode, but guard anyway
-  if(currentMode !== "muni") setMode("muni");
-
-  const index = getIndexByMode("muni");
-  const k = normalizeKey(nameFromMap);
-  const entry = index[k] || index[nameVariants(nameFromMap)?.[0]] || null;
-
-  if(!entry){
-    showInfo("לא נמצאו נתונים", `אין נתוני פשיעה עבור <strong>${escapeHtml(nameFromMap)}</strong> בשנת ${currentYear}`, "error");
-    return;
-  }
-
-  selectedEntityName = entry.name;
-  selectedEntityKey = entry.key;
-
-  if (currentTab === "compare") updateCompareView();
-  else if (currentTab === "trends") showTrends(selectedEntityName, "muni");
-  else if (currentTab === "rankings") renderRankings();
-  else showEntry(entry);
-}
-
-  return null;
-}
     async function loadMuniBoundariesGeojson(){
       if(muniBoundariesLoaded) return true;
 
@@ -2272,31 +2141,17 @@ function onChoroplethSelected(muniName, pt){
         }
 
         muniBoundariesIndex = Object.create(null);
-        muniBoundariesGeomIndex = Object.create(null);
         muniBoundariesMeta = [];
 
         for(const f of feats){
           const name = f?.properties?.name;
-          const rawGeom = f?.geometry;
-
-          // Sanitize & coerce coordinates to finite numbers to prevent GovMap/proj4 crashes
-          const sanitized = sanitizeFeatureGeometry({ type:"Feature", geometry: rawGeom, properties:{} }, (xy) => xy);
-          const geom = sanitized?.geometry;
-
-          if(!name || !geom){
-            console.warn("❌ Skipping bad boundary feature:", name, rawGeom);
-            continue;
-          }
-
-          const wkt  = geojsonGeomToWkt(geom);
-          if(!wkt){
-            console.warn("❌ Skipping boundary with invalid WKT:", name, geom);
-            continue;
-          }
-
-          const nk = normalizeKey(name);
-          muniBoundariesIndex[nk] = wkt;
-          muniBoundariesGeomIndex[nk] = geom;
+          const wkt  = geojsonGeomToWkt(f?.geometry);
+          if(!name || !wkt){
+  console.warn("❌ Skipping bad boundary feature:", name, f?.geometry);
+  continue;
+}
+        
+          muniBoundariesIndex[normalizeKey(name)] = wkt;
           muniBoundariesMeta.push({ name: String(name), wkt });
         }
 
@@ -2465,7 +2320,6 @@ function sanitizeFeatureGeometry(feature, pointFn) {
         console.warn("clearGeometriesByName failed:", e);
       }
       activeChoroplethNames = [];
-      window.__activeChoroHitTest = [];
     }
 
     function setMunicipalLayerOpacity(opacity){
@@ -2582,7 +2436,7 @@ function sanitizeFeatureGeometry(feature, pointFn) {
       const sortedDesc = [...refVals].sort((a,b)=>b-a);
       const maxV = (sortedDesc.length >= 2) ? sortedDesc[1] : (sortedDesc[0] ?? 0);
 
-      const wkts = [], names = [], symbols = [], entityNames = [];
+      const wkts = [], names = [], symbols = [];
       const prefix = `${CHORO_PREFIX}_${year}_${metric}`;
 
       for(let i = 0; i < normalRows.length; i++){
@@ -2596,7 +2450,6 @@ function sanitizeFeatureGeometry(feature, pointFn) {
           outlineColor: [25, 25, 25, 0.85],
           outlineWidth: 2
         });
-        entityNames.push(r.name);
 
         const tip = (metric === "rate")
           ? `${r.name} • ל-10,000: ${Number(r.value).toLocaleString()} • כמות: ${Number(r.total || 0).toLocaleString()}`
@@ -2612,9 +2465,7 @@ for(let i = 0; i < noPopRows.length; i++){
     outlineColor: [25, 25, 25, 0.85],
     outlineWidth: 2
   });
-  entityNames.push(r.name);
 }
-
 
 
       for(let i = 0; i < noJurRows.length; i++){
@@ -2626,12 +2477,9 @@ for(let i = 0; i < noPopRows.length; i++){
           outlineColor: [25, 25, 25, 0.85],
           outlineWidth: 2
         });
-        entityNames.push(r.name);
       }
 
-
       const built = {
-        entityNames,
         payload: {
           wkts,
           names,
@@ -2666,7 +2514,6 @@ function filterChoroPayload(payload, predicate){
       // יוצר עותק של ה-payload ומסנן רק את הגיאומטריות שעוברות את התנאי.
       // חשוב: לא מעבירים tooltips כדי למנוע תצוגת hover שחוסמת קליקים.
       const out = { ...payload, wkts: [], names: [], symbols: [] };
-      out.__keptIdx = [];
       if (payload && payload.data) out.data = { ...payload.data };
 
       const n = Math.min(payload.wkts?.length || 0, payload.names?.length || 0, payload.symbols?.length || 0);
@@ -2676,7 +2523,6 @@ function filterChoroPayload(payload, predicate){
           out.wkts.push(payload.wkts[i]);
           out.names.push(payload.names[i]);
           out.symbols.push(payload.symbols[i]);
-          out.__keptIdx.push(i);
         }
       }
       return out;
@@ -2705,28 +2551,20 @@ function filterChoroPayload(payload, predicate){
   }
 
   try {
-    const safePayload = filterChoroPayload(built.payload, (_name, i) => isWktSafe(built.payload.wkts[i]));
-const kept = Array.isArray(safePayload.__keptIdx) ? safePayload.__keptIdx : [];
-delete safePayload.__keptIdx;
+    const safePayload = filterChoroPayload(built.payload);
+    if (!safePayload.wkts.length) {
+      setMunicipalLayerOpacity(100);
+      showInfo("שגיאה", "כל הגיאומטריות נפסלו בגלל קואורדינטות לא תקינות ב-GeoJSON.", "error");
+      return;
+    }
 
-if (!safePayload.wkts.length) {
-  setMunicipalLayerOpacity(100);
-  showInfo("שגיאה", "כל הגיאומטריות נפסלו בגלל קואורדינטות לא תקינות ב-GeoJSON.", "error");
-  return;
-}
+    const ret = govmap.displayGeometries(safePayload);
 
-const ret = govmap.displayGeometries(safePayload);
-if (ret && typeof ret.then === "function") await ret;
+      // Re-bind click and remove hover after drawing geometries
+      installChoroplethClickFallback();
+    if (ret && typeof ret.then === "function") await ret;
 
-// Names used by GovMap for clearing geometries
-activeChoroplethNames = safePayload.names;
-
-// Entity names used for local hit-test selection
-const safeEntityNames = kept.map(i => built.entityNames?.[i]).filter(Boolean);
-rebuildActiveChoroHitTest(safeEntityNames);
-
-    // Install stable selection bridge
-    installChoroplethClickFallback();
+    activeChoroplethNames = safePayload.names;
   } catch (e) {
     console.error("displayGeometries failed:", e);
     setMunicipalLayerOpacity(100);
@@ -2766,53 +2604,21 @@ rebuildActiveChoroHitTest(safeEntityNames);
 }
 
 function installChoroplethClickFallback() {
-  // Stable choropleth selection: no dependency on govmap.events.CLICK (iframe resets it).
-  if (!window.govmap) return;
+  if (!window.govmap || !govmap.onEvent) return;
 
-  // 1) Track mouse map-point via GovMap MOUSE_MOVE (keeps lastHoverMapPoint fresh)
-  // GovMap can reset listeners after drawing geometries; we re-subscribe a few times safely.
-  const _mmCount = Number(window.__choroMouseMoveBindCount || 0);
-  if (_mmCount < 5) {
-    window.__choroMouseMoveBindCount = _mmCount + 1;
-subscribeGovmapProgressEvent(govmap.events.MOUSE_MOVE, function(e){
-      const pt = normalizeMapPoint(e);
-      if(!pt) return;
-      lastHoverMapPoint = pt;
-      window.__lastMouseMoveAt = Date.now();
+  // GovMap tends to keep only one active listener at a time.
+  // When choropleth geometries are drawn, GovMap may bind its own hover/click handlers.
+  // We force a single CLICK listener and explicitly remove hover.
+  try { govmap.unbindEvent && govmap.unbindEvent(govmap.events.MOUSE_MOVE); } catch (e) {}
+  try { govmap.unbindEvent && govmap.unbindEvent(govmap.events.CLICK); } catch (e) {}
 
-      if (choroplethEnabled && Array.isArray(window.__activeChoroHitTest) && window.__activeChoroHitTest.length){
-        const hit = hitTestChoropleth(pt);
-        window.__lastHoverChoroName = hit || null;
-      }
-    });
-  }
-
-  // 2) Use postMessage from the iframe as the "click trigger"
-  // GovMap emits a message to the parent on click; the payload is not usable for identification,
-  // so we pair it with the most recent mouse map-point from MOUSE_MOVE and do local hit-test.
-  if (!window.__choroMessageBridgeInstalled) {
-    window.__choroMessageBridgeInstalled = true;
-
-    window.addEventListener("message", function(ev){
-      if(!choroplethEnabled) return;
-      const d = ev?.data;
-      if(!d || typeof d !== "object" || !d.requestId) return;
-
-      const now = Date.now();
-      const lastMove = window.__lastMouseMoveAt || 0;
-      if(!lastHoverMapPoint || (now - lastMove) > 650) return; // stale position
-      if(now - (window.__lastChoroMsgClickAt || 0) < 250) return; // throttle
-      window.__lastChoroMsgClickAt = now;
-
-      const pt = normalizeMapPoint(lastHoverMapPoint);
-      if(!pt) return;
-
-      const name = hitTestChoropleth(pt) || window.__lastHoverChoroName;
-      if(!name) return;
-
-      onChoroplethSelected(name, pt);
-    }, true);
-  }
+  subscribeGovmapProgressEvent(govmap.events.CLICK, function(e) {
+    const pt = normalizeMapPoint(e);
+    if (!pt) return;
+    lastHoverMapPoint = pt; // keep for compatibility, even though we don’t rely on hover
+    // Call the same click pipeline used everywhere else
+    onMapClick({ mapPoint: pt, __fromGovmap: true }, e);
+  });
 }
 
 
