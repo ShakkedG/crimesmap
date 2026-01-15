@@ -774,7 +774,9 @@ let lastGovmapClickAt = 0;
     // Boundaries
     let muniBoundariesLoaded = false;
     let muniBoundariesLoadError = null;
-    let muniBoundariesIndex = Object.create(null); // normalizedKey -> WKT
+    let muniBoundariesIndex = Object.create(null); 
+let muniBoundariesGeomIndex = Object.create(null); // normalizeKey(name) -> GeoJSON geometry (numeric)
+// normalizedKey -> WKT
     let muniBoundariesMeta = [];  // [{ name, wkt }]
 
     // ===================== NORMALIZATION =====================
@@ -2186,6 +2188,71 @@ function geojsonGeomToWkt(geom){
     }
 
 
+
+// ===================== CHOROPLETH HIT TEST (local, stable) =====================
+function rebuildActiveChoroHitTest(names){
+  const list = [];
+  if(!Array.isArray(names) || !names.length){
+    window.__activeChoroHitTest = [];
+    return;
+  }
+
+  for(const nm of names){
+    const nk = normalizeKey(nm);
+    const geom = muniBoundariesGeomIndex?.[nk];
+    if(!geom) continue;
+    const bbox = bboxOfGeojsonGeometry(geom);
+    if(!bbox) continue;
+    list.push({ name: nm, geom, bbox });
+  }
+
+  // Smallest bbox first: usually reduces polygon checks
+  list.sort((a,b) => {
+    const aa = (a.bbox.maxx-a.bbox.minx) * (a.bbox.maxy-a.bbox.miny);
+    const bb = (b.bbox.maxx-b.bbox.minx) * (b.bbox.maxy-b.bbox.miny);
+    return aa - bb;
+  });
+
+  window.__activeChoroHitTest = list;
+}
+
+function hitTestChoropleth(pt){
+  const list = window.__activeChoroHitTest;
+  if(!pt || !Array.isArray(list) || !list.length) return null;
+
+  for(const it of list){
+    if(!bboxContains(it.bbox, pt)) continue;
+    if(pointInGeojsonGeometry(pt, it.geom)) return it.name;
+  }
+
+
+function onChoroplethSelected(muniName, pt){
+  const nameFromMap = (muniName == null) ? "" : String(muniName).trim();
+  if(!nameFromMap) return;
+
+  // Choropleth exists only in municipalities mode, but guard anyway
+  if(currentMode !== "muni") setMode("muni");
+
+  const index = getIndexByMode("muni");
+  const k = normalizeKey(nameFromMap);
+  const entry = index[k] || index[nameVariants(nameFromMap)?.[0]] || null;
+
+  if(!entry){
+    showInfo("לא נמצאו נתונים", `אין נתוני פשיעה עבור <strong>${escapeHtml(nameFromMap)}</strong> בשנת ${currentYear}`, "error");
+    return;
+  }
+
+  selectedEntityName = entry.name;
+  selectedEntityKey = entry.key;
+
+  if (currentTab === "compare") updateCompareView();
+  else if (currentTab === "trends") showTrends(selectedEntityName, "muni");
+  else if (currentTab === "rankings") renderRankings();
+  else showEntry(entry);
+}
+
+  return null;
+}
     async function loadMuniBoundariesGeojson(){
       if(muniBoundariesLoaded) return true;
 
@@ -2205,18 +2272,31 @@ function geojsonGeomToWkt(geom){
         }
 
         muniBoundariesIndex = Object.create(null);
+        muniBoundariesGeomIndex = Object.create(null);
         muniBoundariesMeta = [];
 
         for(const f of feats){
           const name = f?.properties?.name;
-          const geom = f?.geometry;
+          const rawGeom = f?.geometry;
+
+          // Sanitize & coerce coordinates to finite numbers to prevent GovMap/proj4 crashes
+          const sanitized = sanitizeFeatureGeometry({ type:"Feature", geometry: rawGeom, properties:{} }, (xy) => xy);
+          const geom = sanitized?.geometry;
+
+          if(!name || !geom){
+            console.warn("❌ Skipping bad boundary feature:", name, rawGeom);
+            continue;
+          }
+
           const wkt  = geojsonGeomToWkt(geom);
-          if(!name || !wkt){
-  console.warn("❌ Skipping bad boundary feature:", name, f?.geometry);
-  continue;
-}
-        
-          muniBoundariesIndex[normalizeKey(name)] = wkt;
+          if(!wkt){
+            console.warn("❌ Skipping boundary with invalid WKT:", name, geom);
+            continue;
+          }
+
+          const nk = normalizeKey(name);
+          muniBoundariesIndex[nk] = wkt;
+          muniBoundariesGeomIndex[nk] = geom;
           muniBoundariesMeta.push({ name: String(name), wkt });
         }
 
@@ -2502,7 +2582,7 @@ function sanitizeFeatureGeometry(feature, pointFn) {
       const sortedDesc = [...refVals].sort((a,b)=>b-a);
       const maxV = (sortedDesc.length >= 2) ? sortedDesc[1] : (sortedDesc[0] ?? 0);
 
-      const wkts = [], names = [], symbols = [];
+      const wkts = [], names = [], symbols = [], entityNames = [];
       const prefix = `${CHORO_PREFIX}_${year}_${metric}`;
 
       for(let i = 0; i < normalRows.length; i++){
@@ -2516,6 +2596,7 @@ function sanitizeFeatureGeometry(feature, pointFn) {
           outlineColor: [25, 25, 25, 0.85],
           outlineWidth: 2
         });
+        entityNames.push(r.name);
 
         const tip = (metric === "rate")
           ? `${r.name} • ל-10,000: ${Number(r.value).toLocaleString()} • כמות: ${Number(r.total || 0).toLocaleString()}`
@@ -2531,7 +2612,9 @@ for(let i = 0; i < noPopRows.length; i++){
     outlineColor: [25, 25, 25, 0.85],
     outlineWidth: 2
   });
+  entityNames.push(r.name);
 }
+
 
 
       for(let i = 0; i < noJurRows.length; i++){
@@ -2543,9 +2626,12 @@ for(let i = 0; i < noPopRows.length; i++){
           outlineColor: [25, 25, 25, 0.85],
           outlineWidth: 2
         });
+        entityNames.push(r.name);
       }
 
+
       const built = {
+        entityNames,
         payload: {
           wkts,
           names,
@@ -2580,6 +2666,7 @@ function filterChoroPayload(payload, predicate){
       // יוצר עותק של ה-payload ומסנן רק את הגיאומטריות שעוברות את התנאי.
       // חשוב: לא מעבירים tooltips כדי למנוע תצוגת hover שחוסמת קליקים.
       const out = { ...payload, wkts: [], names: [], symbols: [] };
+      out.__keptIdx = [];
       if (payload && payload.data) out.data = { ...payload.data };
 
       const n = Math.min(payload.wkts?.length || 0, payload.names?.length || 0, payload.symbols?.length || 0);
@@ -2589,6 +2676,7 @@ function filterChoroPayload(payload, predicate){
           out.wkts.push(payload.wkts[i]);
           out.names.push(payload.names[i]);
           out.symbols.push(payload.symbols[i]);
+          out.__keptIdx.push(i);
         }
       }
       return out;
@@ -2617,19 +2705,25 @@ function filterChoroPayload(payload, predicate){
   }
 
   try {
-    const safePayload = filterChoroPayload(built.payload);
-    if (!safePayload.wkts.length) {
-      setMunicipalLayerOpacity(100);
-      showInfo("שגיאה", "כל הגיאומטריות נפסלו בגלל קואורדינטות לא תקינות ב-GeoJSON.", "error");
-      return;
-    }
+    const safePayload = filterChoroPayload(built.payload, (_name, i) => isWktSafe(built.payload.wkts[i]));
+const kept = Array.isArray(safePayload.__keptIdx) ? safePayload.__keptIdx : [];
+delete safePayload.__keptIdx;
 
-    const ret = govmap.displayGeometries(safePayload);
-    if (ret && typeof ret.then === "function") await ret;
+if (!safePayload.wkts.length) {
+  setMunicipalLayerOpacity(100);
+  showInfo("שגיאה", "כל הגיאומטריות נפסלו בגלל קואורדינטות לא תקינות ב-GeoJSON.", "error");
+  return;
+}
 
-    activeChoroplethNames = safePayload.names;
+const ret = govmap.displayGeometries(safePayload);
+if (ret && typeof ret.then === "function") await ret;
 
-    rebuildActiveChoroHitTest(activeChoroplethNames);
+// Names used by GovMap for clearing geometries
+activeChoroplethNames = safePayload.names;
+
+// Entity names used for local hit-test selection
+const safeEntityNames = kept.map(i => built.entityNames?.[i]).filter(Boolean);
+rebuildActiveChoroHitTest(safeEntityNames);
 
     // Install stable selection bridge
     installChoroplethClickFallback();
@@ -2701,6 +2795,8 @@ subscribeGovmapProgressEvent(govmap.events.MOUSE_MOVE, function(e){
 
     window.addEventListener("message", function(ev){
       if(!choroplethEnabled) return;
+      const d = ev?.data;
+      if(!d || typeof d !== "object" || !d.requestId) return;
 
       const now = Date.now();
       const lastMove = window.__lastMouseMoveAt || 0;
