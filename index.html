@@ -2558,12 +2558,10 @@ function filterChoroPayload(payload, predicate){
     }
 
     const ret = govmap.displayGeometries(safePayload);
-
-      // Re-bind click and remove hover after drawing geometries
-      installChoroplethClickFallback();
     if (ret && typeof ret.then === "function") await ret;
-
-    activeChoroplethNames = safePayload.names;
+    // Ensure our map click listeners exist (do NOT unbind GovMap internals)
+    installChoroplethClickFallback();
+activeChoroplethNames = safePayload.names;
   } catch (e) {
     console.error("displayGeometries failed:", e);
     setMunicipalLayerOpacity(100);
@@ -2605,19 +2603,33 @@ function filterChoroPayload(payload, predicate){
 function installChoroplethClickFallback() {
   if (!window.govmap || !govmap.onEvent) return;
 
-  // GovMap tends to keep only one active listener at a time.
-  // When choropleth geometries are drawn, GovMap may bind its own hover/click handlers.
-  // We force a single CLICK listener and explicitly remove hover.
-  try { govmap.unbindEvent && govmap.unbindEvent(govmap.events.MOUSE_MOVE); } catch (e) {}
-  try { govmap.unbindEvent && govmap.unbindEvent(govmap.events.CLICK); } catch (e) {}
+  // IMPORTANT:
+  // Do NOT call govmap.unbindEvent() here.
+  // displayGeometries() registers internal handlers that route clicks from drawn geometries.
+  // Unbinding CLICK/MOUSE_MOVE may remove those internal handlers and make choropleth clicks disappear.
+  const st = window.__CHORO_CLICK_STATE || (window.__CHORO_CLICK_STATE = { click:false, hover:false });
 
-  subscribeGovmapProgressEvent(govmap.events.CLICK, function(e) {
-    const pt = normalizeMapPoint(e);
-    if (!pt) return;
-    lastHoverMapPoint = pt; // keep for compatibility, even though we don’t rely on hover
-    // Call the same click pipeline used everywhere else
-    onMapClick({ mapPoint: pt, __fromGovmap: true }, e);
-  });
+  // Keep hover mapPoint updated so we always have a reliable point, even if GovMap stops emitting CLICK over geometries.
+  if (!st.hover) {
+    st.hover = true;
+    subscribeGovmapProgressEvent(govmap.events.MOUSE_MOVE, function (e) {
+      const pt = normalizeMapPoint(e);
+      if (pt) lastHoverMapPoint = pt;
+    });
+  }
+
+  // Bind CLICK only once. This handler is used for both normal map clicks and choropleth clicks.
+  if (!st.click) {
+    st.click = true;
+    subscribeGovmapProgressEvent(govmap.events.CLICK, function (e) {
+      lastGovmapClickAt = Date.now();
+      const pt = normalizeMapPoint(e) || lastHoverMapPoint;
+      if (!pt) return;
+      lastHoverMapPoint = pt;
+            if (window.DEBUG_CHORO_CLICK) console.log("[GM-CLICK]", { x: pt.x, y: pt.y, mode: currentMode, choro: !!choroplethEnabled, metric: currentMetric });
+      onMapClick({ mapPoint: pt, __fromGovmap: true }, e);
+    });
+  }
 }
 
 
@@ -2701,18 +2713,7 @@ function installChoroplethClickFallback() {
           setChoroBtnUI();
 
         // CLICK (normal)
-try {
- govmap.onEvent(govmap.events.CLICK).progress((e) => {
-  lastGovmapClickAt = Date.now();
-  const pt = normalizeMapPoint(e);
-  if (pt) lastHoverMapPoint = pt;
-
-  // ✅ קורא עם נקודה תקינה בלבד
-  onMapClick(pt ? { mapPoint: pt, __fromGovmap: true } : e);
-});
-} catch (e) {}
-
-
+          installChoroplethClickFallback();
 installChoroplethClickFallback();
 
 
