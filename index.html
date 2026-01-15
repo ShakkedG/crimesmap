@@ -2590,6 +2590,62 @@ activeChoroplethNames = safePayload.names;
 
   setChoroBtnUI();
 }
+function installChoroplethClickFallback() {
+  if (!window.govmap || !govmap.onEvent) return;
+
+  try { govmap.unbindEvent && govmap.unbindEvent(govmap.events.MOUSE_MOVE); } catch (e) {}
+  try { govmap.unbindEvent && govmap.unbindEvent(govmap.events.CLICK); } catch (e) {}
+
+  subscribeGovmapProgressEvent(govmap.events.CLICK, function(e) {
+    const pt = normalizeMapPoint(e);
+    if (!pt) return;
+
+    lastHoverMapPoint = pt;
+
+    // ✅ לוג רק כשצביעה פעילה
+    if (choroplethEnabled && currentMode === "muni" && Array.isArray(activeChoroplethNames) && activeChoroplethNames.length) {
+      console.log("[CHORO-CLICK][GOVMAP] click", { mapPoint: pt, raw: e });
+    }
+
+    onMapClick({ mapPoint: pt, __fromGovmap: true }, e);
+  });
+}
+function installChoroplethDomClickSpy() {
+  if (installChoroplethDomClickSpy.__installed) return;
+  installChoroplethDomClickSpy.__installed = true;
+
+  const mapEl = document.getElementById("map");
+  if (!mapEl) return;
+
+  mapEl.addEventListener(
+    "pointerdown",
+    (ev) => {
+      // רק כשצביעה באמת פעילה ויש גיאומטריות על המסך
+      if (!choroplethEnabled || currentMode !== "muni") return;
+      if (!Array.isArray(activeChoroplethNames) || !activeChoroplethNames.length) return;
+
+      // לא להחשיב קליקים על הפאנל
+      if (ev.target && ev.target.closest && ev.target.closest("#info-panel")) return;
+
+      const stack = (document.elementsFromPoint(ev.clientX, ev.clientY) || [])
+        .slice(0, 6)
+        .map((el) => ({
+          tag: el.tagName,
+          id: el.id,
+          class: (el.className && String(el.className).slice(0, 120)) || "",
+        }));
+
+      console.log("[CHORO-CLICK][DOM] pointerdown", {
+        x: ev.clientX,
+        y: ev.clientY,
+        target: ev.target,
+        top: stack[0],
+        stack,
+      });
+    },
+    { capture: true, passive: true }
+  );
+}
 
    function subscribeGovmapProgressEvent(ev, handler){
   try{
@@ -2599,24 +2655,6 @@ activeChoroplethNames = safePayload.names;
   }catch(_){}
   return false;
 }
-
-function installChoroplethClickFallback() {
-  if (!window.govmap || !govmap.onEvent) return;
-
-  // IMPORTANT:
-  // Do NOT call govmap.unbindEvent() here.
-  // displayGeometries() registers internal handlers that route clicks from drawn geometries.
-  // Unbinding CLICK/MOUSE_MOVE may remove those internal handlers and make choropleth clicks disappear.
-  const st = window.__CHORO_CLICK_STATE || (window.__CHORO_CLICK_STATE = { click:false, hover:false });
-
-  // Keep hover mapPoint updated so we always have a reliable point, even if GovMap stops emitting CLICK over geometries.
-  if (!st.hover) {
-    st.hover = true;
-    subscribeGovmapProgressEvent(govmap.events.MOUSE_MOVE, function (e) {
-      const pt = normalizeMapPoint(e);
-      if (pt) lastHoverMapPoint = pt;
-    });
-  }
 
   // Bind CLICK only once. This handler is used for both normal map clicks and choropleth clicks.
   if (!st.click) {
@@ -2714,9 +2752,7 @@ function installChoroplethClickFallback() {
 
         // CLICK (normal)
           installChoroplethClickFallback();
-installChoroplethClickFallback();
-
-
+          installChoroplethDomClickSpy();
           initModals();
           initAddressSearchUI();
 
