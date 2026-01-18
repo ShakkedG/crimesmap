@@ -3196,11 +3196,18 @@ if (ret && typeof ret.then === "function") {
 
     console.log("displayGeometries resolved:", ev);
 
-    const name = ev?.data?.[0]?.name;
-    if (name) {
-      const popRaw = getPopulationForAuthority(name);
-      console.log("popRaw", popRaw);
-      selectFromRank(name);
+  const name = ev?.data?.[0]?.name;
+if (!name) return;
+
+// אם זה שם שנוצר ע"י הצביעה (nopop/nojur) – לא מנסים לבחור מהאינדקס
+if (String(name).startsWith(CHORO_PREFIX)) {
+  // אופציונלי: להציג הודעה מותאמת במקום
+  showInfo("מידע", "לרשות הזו אין נתון אוכלוסייה/ללא שיפוט ולכן אין פירוט.", "warn");
+  return;
+}
+
+selectFromRank(name);
+
     }
   }, (err) => {  // ✅ שינוי מ-catch ל-fail callback
     console.warn("displayGeometries promise rejected:", err);
