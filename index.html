@@ -55,7 +55,7 @@
 			#info-panel {
 				position: absolute;
 				top: 15px;
-				right: 15px;
+				left: 15px;
 				z-index: 9999;
 				background: white;
 				padding: 0;
@@ -2100,7 +2100,6 @@
 
 				// 1) נסה להוציא נקודה תקינה מהאירוע
 				let pt = normalizeMapPoint(e);
-        console.log('normalizeMapPoint', pt)
 				// 2) אם אין נקודה תקינה, נסה מה-hover האחרון (חשוב בעיקר בצביעה)
 				if (!pt && lastHoverMapPoint) pt = normalizeMapPoint(lastHoverMapPoint);
 
@@ -2122,7 +2121,6 @@
 							: currentMode === "merhav"
 								? POLICE_MERHAV_LAYER
 								: POLICE_STATION_LAYER;
-          console.log('layerName', layerName)
 					const resp = await govmap.getLayerData({
 						LayerName: layerName,
 						Point: { x: pt.x, y: pt.y, X: pt.x, Y: pt.y },
