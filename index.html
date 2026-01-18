@@ -3237,10 +3237,7 @@
   } catch (e) {
     console.error("displayGeometries failed:", e);
     setMunicipalLayerOpacity(100);
-    showInfo(
-      "שגיאה",
-      `נכשלתי לצייר גיאומטריות: ${escapeHtml(e?.message || e)}`,
-      "error",
+ 
     );
   }
 }
