@@ -3191,56 +3191,50 @@
     // קריטי: לשמור שמות לפני הציור (כדי שכיבוי באמצע יוכל לנסות לנקות)
     activeChoroplethNames = safePayload.names.slice();
 
-    const ret = govmap.displayGeometries(safePayload);
+   const ret = govmap.displayGeometries(safePayload);
 
-    // ✅ שומר את ret.then (אבל עם guard כדי שלא ירוץ אחרי כיבוי)
-    if (ret && typeof ret.then === "function") {
-      ret.then((ev) => {
-        // אם כיבו או התחיל רינדור חדש — לא עושים כלום
-        if (!choroplethEnabled || mySeq !== choroRenderSeq) return;
+const onOk = (ev) => {
+  // אם כיבו או התחיל רינדור חדש — לא עושים כלום
+  if (!choroplethEnabled || mySeq !== choroRenderSeq) return;
 
-        console.log("displayGeometries resolved:", ev);
+  // נסה להוציא שם מתוך ה-event (תשאיר את זה כמו שאתה רוצה)
+  const name =
+    ev?.data?.[0]?.name ??
+    ev?.data?.[0]?.Name ??
+    ev?.data?.[0]?.attributes?.name ??
+    ev?.data?.[0]?.Attributes?.name;
 
-        // הערה: ev.data[0].name לא תמיד יהיה "שם רשות".
-        // אם אצלך זה כן מחזיר שם רשות — תשאיר ככה.
-        const name = ev?.data?.[0]?.name;
-        if (name) {
-          const popRaw = getPopulationForAuthority(name);
-          console.log("popRaw", popRaw);
-          selectFromRank(name);
-        }
-      }).catch((err) => {
-        // לא חובה, אבל טוב כדי לראות failures בלי להפיל את הכל
-        console.warn("displayGeometries promise rejected:", err);
-      });
-
-      // נחכה לסיום הציור כדי שנוכל לבצע ניקוי אם כיבו באמצע
-      await ret;
-    }
-
-    // אם כיבו בזמן הציור או התחיל רינדור חדש — לנקות את מה שנצבע עכשיו
-    if (!choroplethEnabled || mySeq !== choroRenderSeq) {
-      try {
-        if (typeof govmap.clearGeometriesByName === "function") {
-          govmap.clearGeometriesByName(activeChoroplethNames);
-        } else if (typeof govmap.clearGeometries === "function") {
-          govmap.clearGeometries();
-        }
-      } catch (_) {}
-      setMunicipalLayerOpacity(100);
-      return;
-    }
-
-    // הרינדור עדיין בתוקף
-    activeChoroplethNames = safePayload.names;
-    setChoroBtnUI();
-  } catch (e) {
-    console.error("displayGeometries failed:", e);
-    setMunicipalLayerOpacity(100);
- 
-    );
+  if (name) {
+    // ✅ זה נשאר בתוך ret.then (כמו שביקשת)
+    selectFromRank(String(name).trim());
+  } else {
+    console.warn("displayGeometries resolved but no name in event:", ev);
   }
+};
+
+const onErr = (err) => {
+  console.warn("displayGeometries failed:", err);
+};
+
+// 1) אם זה Promise-like/thenable בלי catch
+if (ret && typeof ret.then === "function") {
+  ret.then(onOk, onErr); // ✅ בלי .catch()
 }
+// 2) אם זה jQuery Deferred
+else if (ret && typeof ret.done === "function" && typeof ret.fail === "function") {
+  ret.done(onOk).fail(onErr);
+}
+
+// אם אתה צריך "await" כדי לבצע ניקוי/בדיקות אחרי הציור:
+await new Promise((resolve, reject) => {
+  if (ret && typeof ret.then === "function") return ret.then(resolve, reject);
+  if (ret && typeof ret.done === "function" && typeof ret.fail === "function") {
+    ret.done(resolve).fail(reject);
+    return;
+  }
+  resolve();
+});
+
 
 
 			function subscribeGovmapProgressEvent(ev, handler) {
