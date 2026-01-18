@@ -3185,6 +3185,8 @@
             // use const popRaw = getPopulationForAuthority(name);
             popRaw = getPopulationForAuthority(e.data[0].name);
             console.log('popRaw', popRaw)
+			  selectFromRank(e.data[0].name);
+
           })
 					// Re-bind click and remove hover after drawing geometries
 					//installChoroplethClickFallback();
