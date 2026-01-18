@@ -947,7 +947,6 @@
 			// ===================== CONFIG =====================
 
 			const MUNICIPAL_LAYER = "125";
-			const choroGeomNameToMuniName = Object.create(null);
 			const POLICE_MERHAV_LAYER = "200550";
 			const POLICE_STATION_LAYER = "24";
 			const TOKEN = "ede9a5fd-7c23-432f-8ffb-d85feffa3f3c";
@@ -1165,28 +1164,21 @@
 				return true;
 			}
 
-		function getPopulationForAuthority(nameFromCrime) {
-  for (const v of nameVariants(nameFromCrime)) {
-    const pop = populationIndex[v];
-    if (pop != null) {
-      const n = Number(pop);
-      // ✅ בדיוק 1 => אין אוכלוסייה
-      if (!Number.isFinite(n) || n === 1) return null;
-      return n;
-    }
-  }
-  return null;
-}
+			function getPopulationForAuthority(nameFromCrime) {
+     
+				for (const v of nameVariants(nameFromCrime)) {
+					const pop = populationIndex[v];
+					if (pop != null) return pop;
+				}
+				return null;
+			}
 
-
-		function calcRatePer10k(total, pop) {
-  if (!Number.isFinite(Number(total))) return null;
-  const p = Number(pop);
-  // ✅ בדיוק 1 => אין אוכלוסייה
-  if (!Number.isFinite(p) || p === 1 || p <= 0) return null;
-  return Math.round((Number(total) / p) * 10000 * 10) / 10;
-}
-
+			function calcRatePer10k(total, pop) {
+				if (!Number.isFinite(Number(total))) return null;
+				const p = Number(pop);
+				if (!Number.isFinite(p) || p <= 0) return null;
+				return Math.round((Number(total) / p) * 10000 * 10) / 10;
+			}
 
 			// ===================== UI: INFO =====================
 			function showInfo(title, body, type = "info") {
@@ -3026,8 +3018,8 @@
 					}
 				}
 
-			const allRows = [...normalRows, ...noPopRows, ...noJurRows];
-if (!allRows.length) return null;
+				const allRows = [...normalRows, ...noJurRows];
+				if (!allRows.length) return null;
 
 				const refVals = normalRows.length
 					? normalRows
@@ -3051,10 +3043,7 @@ if (!allRows.length) return null;
 					const [rr, gg, bb] = valueToColor(Number(r.value), minV, maxV);
 
 					wkts.push(r.wkt);
-					const geomName = `${prefix}_muni_${i}`;
-names.push(geomName);
-choroGeomNameToMuniName[geomName] = r.name;
-
+					names.push(r.name);
 					symbols.push({
 						fillColor: [rr, gg, bb, 0.55],
 						outlineColor: [25, 25, 25, 0.85],
@@ -3070,10 +3059,7 @@ choroGeomNameToMuniName[geomName] = r.name;
 				for (let i = 0; i < noPopRows.length; i++) {
 					const r = noPopRows[i];
 					wkts.push(r.wkt);
-				const geomName = `${prefix}_nopop_${i}`;
-names.push(geomName);
-choroGeomNameToMuniName[geomName] = r.name;
-
+					names.push(`${prefix}_nopop_${i}`);
 					symbols.push({
 						fillColor: [160, 160, 160, 0.65],
 						outlineColor: [25, 25, 25, 0.85],
@@ -3085,7 +3071,6 @@ choroGeomNameToMuniName[geomName] = r.name;
 					const r = noJurRows[i];
 					wkts.push(r.wkt);
 					names.push(`${prefix}_nojur_${i}`);
-					`choroGeomNameToMuniName[geomName] = null;
 					symbols.push({
 						fillColor: [140, 140, 140, 0.65],
 						outlineColor: [25, 25, 25, 0.85],
@@ -3211,21 +3196,17 @@ if (ret && typeof ret.then === "function") {
 
     console.log("displayGeometries resolved:", ev);
 
-const geomName = ev?.data?.[0]?.name;
-if (!geomName) return;
+  const name = ev?.data?.[0]?.name;
+if (!name) return;
 
-const muniName = choroGeomNameToMuniName[geomName];
-
-if (!muniName) {
-  // למשל "ללא שיפוט" או משהו שלא מיפינו
-  showInfo("מידע", "לא ניתן להציג נתונים עבור אזור ללא שיפוט.", "warn");
+// אם זה שם שנוצר ע"י הצביעה (nopop/nojur) – לא מנסים לבחור מהאינדקס
+if (String(name).startsWith(CHORO_PREFIX)) {
+  // אופציונלי: להציג הודעה מותאמת במקום
+  showInfo("מידע", "לרשות הזו אין נתון אוכלוסייה/ללא שיפוט ולכן אין פירוט.", "warn");
   return;
 }
 
-// ✅ עכשיו תמיד זה שם רשות אמיתי מהדאטה,
-// גם אם נצבע באפור בגלל אוכלוסייה חסרה / אוכלוסייה == 1
-selectFromRank(muniName);
-
+selectFromRank(name);
 
     
   }, (err) => {  // ✅ שינוי מ-catch ל-fail callback
