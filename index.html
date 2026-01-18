@@ -3191,40 +3191,32 @@
     // קריטי: לשמור שמות לפני הציור (כדי שכיבוי באמצע יוכל לנסות לנקות)
     activeChoroplethNames = safePayload.names.slice();
 
- const ret = govmap.displayGeometries(safePayload);
+    const ret = govmap.displayGeometries(safePayload);
 
-// ✅ בדיקה אם ret הוא Promise לפני שימוש ב-await
-if (ret && typeof ret.then === "function") {
-  try {
-    const ev = await ret;
-    
-    // אם כיבו או התחיל רינדור חדש — לא עושים כלום
-    if (!choroplethEnabled || mySeq !== choroRenderSeq) return;
+    // ✅ שומר את ret.then (אבל עם guard כדי שלא ירוץ אחרי כיבוי)
+    if (ret && typeof ret.then === "function") {
+      ret.then((ev) => {
+        // אם כיבו או התחיל רינדור חדש — לא עושים כלום
+        if (!choroplethEnabled || mySeq !== choroRenderSeq) return;
 
-    console.log("displayGeometries resolved:", ev);
+        console.log("displayGeometries resolved:", ev);
 
-    const name = ev?.data?.[0]?.name;
-    if (name) {
-      const popRaw = getPopulationForAuthority(name);
-      console.log("popRaw", popRaw);
-      selectFromRank(name);
+        // הערה: ev.data[0].name לא תמיד יהיה "שם רשות".
+        // אם אצלך זה כן מחזיר שם רשות — תשאיר ככה.
+        const name = ev?.data?.[0]?.name;
+        if (name) {
+          const popRaw = getPopulationForAuthority(name);
+          console.log("popRaw", popRaw);
+          selectFromRank(name);
+        }
+      }).catch((err) => {
+        // לא חובה, אבל טוב כדי לראות failures בלי להפיל את הכל
+        console.warn("displayGeometries promise rejected:", err);
+      });
+
+      // נחכה לסיום הציור כדי שנוכל לבצע ניקוי אם כיבו באמצע
+      await ret;
     }
-  } catch (err) {
-    console.warn("displayGeometries failed:", err);
-  }
-} else if (ret && typeof ret.done === "function") {
-  // אם זה jQuery Deferred (API ישן)
-  ret.done((ev) => {
-    if (!choroplethEnabled || mySeq !== choroRenderSeq) return;
-    
-    const name = ev?.data?.[0]?.name;
-    if (name) {
-      selectFromRank(name);
-    }
-  }).fail((err) => {
-    console.warn("displayGeometries failed:", err);
-  });
-}
 
     // אם כיבו בזמן הציור או התחיל רינדור חדש — לנקות את מה שנצבע עכשיו
     if (!choroplethEnabled || mySeq !== choroRenderSeq) {
