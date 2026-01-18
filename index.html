@@ -1164,21 +1164,28 @@
 				return true;
 			}
 
-			function getPopulationForAuthority(nameFromCrime) {
-     
-				for (const v of nameVariants(nameFromCrime)) {
-					const pop = populationIndex[v];
-					if (pop != null) return pop;
-				}
-				return null;
-			}
+		function getPopulationForAuthority(nameFromCrime) {
+  for (const v of nameVariants(nameFromCrime)) {
+    const pop = populationIndex[v];
+    if (pop != null) {
+      const n = Number(pop);
+      // ✅ בדיוק 1 => אין אוכלוסייה
+      if (!Number.isFinite(n) || n === 1) return null;
+      return n;
+    }
+  }
+  return null;
+}
 
-			function calcRatePer10k(total, pop) {
-				if (!Number.isFinite(Number(total))) return null;
-				const p = Number(pop);
-				if (!Number.isFinite(p) || p <= 0) return null;
-				return Math.round((Number(total) / p) * 10000 * 10) / 10;
-			}
+
+		function calcRatePer10k(total, pop) {
+  if (!Number.isFinite(Number(total))) return null;
+  const p = Number(pop);
+  // ✅ בדיוק 1 => אין אוכלוסייה
+  if (!Number.isFinite(p) || p === 1 || p <= 0) return null;
+  return Math.round((Number(total) / p) * 10000 * 10) / 10;
+}
+
 
 			// ===================== UI: INFO =====================
 			function showInfo(title, body, type = "info") {
@@ -3043,7 +3050,10 @@
 					const [rr, gg, bb] = valueToColor(Number(r.value), minV, maxV);
 
 					wkts.push(r.wkt);
-					names.push(r.name);
+					const geomName = `${prefix}_muni_${i}`;
+names.push(geomName);
+choroGeomNameToMuniName[geomName] = r.name;
+
 					symbols.push({
 						fillColor: [rr, gg, bb, 0.55],
 						outlineColor: [25, 25, 25, 0.85],
@@ -3059,7 +3069,10 @@
 				for (let i = 0; i < noPopRows.length; i++) {
 					const r = noPopRows[i];
 					wkts.push(r.wkt);
-					names.push(`${prefix}_nopop_${i}`);
+				const geomName = `${prefix}_nopop_${i}`;
+names.push(geomName);
+choroGeomNameToMuniName[geomName] = r.name;
+
 					symbols.push({
 						fillColor: [160, 160, 160, 0.65],
 						outlineColor: [25, 25, 25, 0.85],
@@ -3196,17 +3209,21 @@ if (ret && typeof ret.then === "function") {
 
     console.log("displayGeometries resolved:", ev);
 
-  const name = ev?.data?.[0]?.name;
-if (!name) return;
+const geomName = ev?.data?.[0]?.name;
+if (!geomName) return;
 
-// אם זה שם שנוצר ע"י הצביעה (nopop/nojur) – לא מנסים לבחור מהאינדקס
-if (String(name).startsWith(CHORO_PREFIX)) {
-  // אופציונלי: להציג הודעה מותאמת במקום
-  showInfo("מידע", "לרשות הזו אין נתון אוכלוסייה/ללא שיפוט ולכן אין פירוט.", "warn");
+const muniName = choroGeomNameToMuniName[geomName];
+
+if (!muniName) {
+  // למשל "ללא שיפוט" או משהו שלא מיפינו
+  showInfo("מידע", "לא ניתן להציג נתונים עבור אזור ללא שיפוט.", "warn");
   return;
 }
 
-selectFromRank(name);
+// ✅ עכשיו תמיד זה שם רשות אמיתי מהדאטה,
+// גם אם נצבע באפור בגלל אוכלוסייה חסרה / אוכלוסייה == 1
+selectFromRank(muniName);
+
 
     
   }, (err) => {  // ✅ שינוי מ-catch ל-fail callback
