@@ -3,7 +3,7 @@
 	lang="he"
 	dir="rtl"
 >
-	<head> 
+	<head>
 		<!-- 1. cmd => cd C:\Shaked\crimesmap-main -->
 		<!-- 2. cmd => C:\Python311\python.exe -m http.server 3000 -->
 		<!-- 3. run from http://shakkedg.github.io:3000 -->
@@ -2111,7 +2111,7 @@
           console.log("no point!");
 					showInfo(
 						"רגע",
-						"לא הצלחתי לזהות בדיוק איפה לחצת. הזז את העכבר מעל הרשות ולחץ שוב.",
+						"לא התקבלה נקודת מפה תקינה (X/Y). הזז עכבר על הרשות ואז לחץ.",
 						"warn",
 					);
 					return;
@@ -2238,15 +2238,15 @@
 						showTrends(selectedEntityName, "merhav");
 					else if (currentTab === "rankings") renderRankings();
 					else showEntry(entry);
-			} catch (error) {
-  console.error("❌ onMapClick failed:", error);
-  showInfo(
-    "לא הצלחתי לקרוא נתונים",
-    "הייתה תקלה זמנית בזיהוי האזור שנלחץ. נסה ללחוץ שוב, או להתקרב/להתרחק מעט.",
-    "error",
-  );
-}
-
+				} catch (error) {
+					console.error("❌ Error in onMapClick:", error);
+					showInfo(
+						"שגיאה",
+						`אירעה שגיאה: ${escapeHtml(error?.message || "שגיאה לא מוגדרת")}`,
+						"error",
+					);
+				}
+			}
 
 			// ===================== MODALS & PANEL =====================
 			let lastFocusedElement = null;
@@ -2943,18 +2943,13 @@
 					showInfo("צביעה כובתה", "חזרתי לתצוגה רגילה.", "info");
 					return;
 				}
-const ok = await loadMuniBoundariesGeojson();
-if (!ok) {
-  choroplethEnabled = false;
-  setChoroBtnUI();
-  showInfo(
-    "הצביעה לא הופעלה",
-    "כדי להפעיל צביעה צריך את קובץ הגבולות muni_boundaries_ITM.geojson ליד הקובץ הזה, ולפתוח את האתר דרך שרת (localhost או GitHub Pages).",
-    "warn",
-  );
-  return;
-}
 
+				const ok = await loadMuniBoundariesGeojson();
+				if (!ok) {
+					choroplethEnabled = false;
+					setChoroBtnUI();
+					return;
+				}
 
 				setMunicipalLayerOpacity(30);
 				await renderChoropleth();
@@ -3147,57 +3142,8 @@ if (!ok) {
 				}
 				return out;
 			}
-				function waitGovmapAsync(ret, onOk, onErr) {
-  // jQuery Deferred style
-  if (ret && typeof ret.done === "function" && typeof ret.fail === "function") {
-    if (typeof onOk === "function") ret.done(onOk);
-    if (typeof onErr === "function") ret.fail(onErr);
 
-    return new Promise((resolve, reject) => {
-      try {
-        ret.done(resolve);
-        ret.fail(reject);
-      } catch (e) {
-        reject(e);
-      }
-    });
-  }
-
-  // Promise / thenable style (אבל בלי .catch)
-  if (ret && typeof ret.then === "function") {
-    return new Promise((resolve, reject) => {
-      try {
-        ret.then(
-          (v) => {
-            try {
-              if (typeof onOk === "function") onOk(v);
-            } catch (_) {}
-            resolve(v);
-          },
-          (err) => {
-            try {
-              if (typeof onErr === "function") onErr(err);
-            } catch (_) {}
-            reject(err);
-          },
-        );
-      } catch (e) {
-        try {
-          if (typeof onErr === "function") onErr(e);
-        } catch (_) {}
-        reject(e);
-      }
-    });
-  }
-
-  // Synchronous / unknown
-  try {
-    if (typeof onOk === "function") onOk(ret);
-  } catch (_) {}
-  return Promise.resolve(ret);
-}
-
-async function renderChoropleth() {
+			async function renderChoropleth() {
   if (!mapInitialized || !choroplethEnabled) return;
   if (currentMode !== "muni") return;
 
@@ -3221,8 +3167,8 @@ async function renderChoropleth() {
   const built = buildChoroplethPayloadForYear(currentYear, metric);
   if (!built) {
     showInfo(
-      "אין מה לצבוע כרגע",
-      "לא נמצאו נתונים מתאימים לצביעה לפי המדד שבחרת.",
+      "אין מספיק נתונים",
+      "לא נמצאו רשויות מתאימות לצביעה לפי המדד הנוכחי.",
       "warn",
     );
     setMunicipalLayerOpacity(100);
@@ -3235,8 +3181,8 @@ async function renderChoropleth() {
     if (!safePayload.wkts.length) {
       setMunicipalLayerOpacity(100);
       showInfo(
-        "לא הצלחתי להפעיל צביעה",
-        "נראה שיש בעיה בקובץ הגבולות. בדוק שהוא תקין ונסה שוב.",
+        "שגיאה",
+        "כל הגיאומטריות נפסלו בגלל קואורדינטות לא תקינות ב-GeoJSON.",
         "error",
       );
       return;
@@ -3247,27 +3193,30 @@ async function renderChoropleth() {
 
     const ret = govmap.displayGeometries(safePayload);
 
-    // במקום ret.then(...).catch(...) — תומך גם ב-Promise וגם ב-Deferred
-    await waitGovmapAsync(
-      ret,
-      (ev) => {
+    // ✅ שומר את ret.then (אבל עם guard כדי שלא ירוץ אחרי כיבוי)
+    if (ret && typeof ret.then === "function") {
+      ret.then((ev) => {
         // אם כיבו או התחיל רינדור חדש — לא עושים כלום
         if (!choroplethEnabled || mySeq !== choroRenderSeq) return;
 
         console.log("displayGeometries resolved:", ev);
 
+        // הערה: ev.data[0].name לא תמיד יהיה "שם רשות".
+        // אם אצלך זה כן מחזיר שם רשות — תשאיר ככה.
         const name = ev?.data?.[0]?.name;
         if (name) {
           const popRaw = getPopulationForAuthority(name);
           console.log("popRaw", popRaw);
           selectFromRank(name);
         }
-      },
-      (err) => {
-        // לא מציגים הודעת מתכנתים לציבור — רק לוג לקונסול
-        console.warn("displayGeometries failed:", err);
-      },
-    );
+      }).catch((err) => {
+        // לא חובה, אבל טוב כדי לראות failures בלי להפיל את הכל
+        console.warn("displayGeometries promise rejected:", err);
+      });
+
+      // נחכה לסיום הציור כדי שנוכל לבצע ניקוי אם כיבו באמצע
+      await ret;
+    }
 
     // אם כיבו בזמן הציור או התחיל רינדור חדש — לנקות את מה שנצבע עכשיו
     if (!choroplethEnabled || mySeq !== choroRenderSeq) {
@@ -3289,14 +3238,13 @@ async function renderChoropleth() {
     console.error("displayGeometries failed:", e);
     setMunicipalLayerOpacity(100);
     showInfo(
-      "הצביעה לא הושלמה",
-      "הייתה תקלה זמנית בהפעלת הצביעה. נסה לכבות ולהדליק שוב.",
+      "שגיאה",
+      `נכשלתי לצייר גיאומטריות: ${escapeHtml(e?.message || e)}`,
       "error",
     );
   }
 }
 
-		
 
 			function subscribeGovmapProgressEvent(ev, handler) {
 				try {
