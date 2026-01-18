@@ -3191,32 +3191,28 @@
     // קריטי: לשמור שמות לפני הציור (כדי שכיבוי באמצע יוכל לנסות לנקות)
     activeChoroplethNames = safePayload.names.slice();
 
-    const ret = govmap.displayGeometries(safePayload);
+  const ret = govmap.displayGeometries(safePayload);
 
-    // ✅ שומר את ret.then (אבל עם guard כדי שלא ירוץ אחרי כיבוי)
-    if (ret && typeof ret.then === "function") {
-      ret.then((ev) => {
-        // אם כיבו או התחיל רינדור חדש — לא עושים כלום
-        if (!choroplethEnabled || mySeq !== choroRenderSeq) return;
+// ✅ שומר את ret.then (אבל עם guard כדי שלא ירוץ אחרי כיבוי)
+if (ret && typeof ret.then === "function") {
+  ret.then((ev) => {
+    // אם כיבו או התחיל רינדור חדש — לא עושים כלום
+    if (!choroplethEnabled || mySeq !== choroRenderSeq) return;
 
-        console.log("displayGeometries resolved:", ev);
+    console.log("displayGeometries resolved:", ev);
 
-        // הערה: ev.data[0].name לא תמיד יהיה "שם רשות".
-        // אם אצלך זה כן מחזיר שם רשות — תשאיר ככה.
-        const name = ev?.data?.[0]?.name;
-        if (name) {
-          const popRaw = getPopulationForAuthority(name);
-          console.log("popRaw", popRaw);
-          selectFromRank(name);
-        }
-      }).catch((err) => {
-        // לא חובה, אבל טוב כדי לראות failures בלי להפיל את הכל
-        console.warn("displayGeometries promise rejected:", err);
-      });
-
-      // נחכה לסיום הציור כדי שנוכל לבצע ניקוי אם כיבו באמצע
-      await ret;
+    const name = ev?.data?.[0]?.name;
+    if (name) {
+      const popRaw = getPopulationForAuthority(name);
+      console.log("popRaw", popRaw);
+      selectFromRank(name);
     }
+  }, (err) => {  // ✅ שינוי מ-catch ל-fail callback
+    console.warn("displayGeometries promise rejected:", err);
+  });
+
+  // ✅ לא צריך await - ה-then כבר מטפל בזה
+}
 
     // אם כיבו בזמן הציור או התחיל רינדור חדש — לנקות את מה שנצבע עכשיו
     if (!choroplethEnabled || mySeq !== choroRenderSeq) {
