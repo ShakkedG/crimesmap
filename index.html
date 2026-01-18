@@ -55,7 +55,7 @@
 			#info-panel {
 				position: absolute;
 				top: 15px;
-				left: 15px;
+				right: 15px;
 				z-index: 9999;
 				background: white;
 				padding: 0;
@@ -1165,7 +1165,7 @@
 			}
 
 			function getPopulationForAuthority(nameFromCrime) {
-        console.log("nameFromCrime", nameFromCrime);
+     
 				for (const v of nameVariants(nameFromCrime)) {
 					const pop = populationIndex[v];
 					if (pop != null) return pop;
@@ -1284,9 +1284,7 @@
 					muniIndex[canonicalKey] = entry;
 					for (const v of nameVariants(name)) muniIndex[v] = entry;
 				}
-				console.log(
-					`✅ Year ${year}: muni index keys = ${Object.keys(muniIndex).length}`,
-				);
+				
 			}
 
 			function buildMerhavIndexForYear(year) {
