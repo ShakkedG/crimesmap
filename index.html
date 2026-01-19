@@ -1928,9 +1928,7 @@
         </div>
       `;
 
-				if (wantRate && skippedNoPop) {
-					html += `<div class="message message-warn">לא הוצגו ${skippedNoPop.toLocaleString()} רשויות ללא נתון אוכלוסייה (כדי למנוע חישוב שגוי ל‑10,000).</div>`;
-				}
+			
 
 				html += `<div class="rank-list">`;
 
@@ -3217,7 +3215,7 @@ if (ret && typeof ret.then === "function") {
     // אם כיבו או התחיל רינדור חדש — לא עושים כלום
     if (!choroplethEnabled || mySeq !== choroRenderSeq) return;
 
-    console.log("displayGeometries resolved:", ev);
+    
 
 const geomName = ev?.data?.[0]?.name;
 if (!geomName) return;
