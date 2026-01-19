@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html
-	lang="he"F
+	lang="he"
 	dir="rtl"
 >
 	<head>
@@ -875,17 +875,7 @@
 			}
 
 			/* Address search results */
-			#addrResults {
-				border: 1px solid #e0e0e0;
-				background: #fff;
-				border-radius: 16px;
-				overflow: hidden;
-				max-height: 320px;
-				overflow-y: auto;
-				display: none;
-				margin-top: 10px;
-				box-shadow: 0 10px 22px rgba(0, 0, 0, 0.06);
-			}
+		
 			.addr-item {
 				padding: 10px 12px;
 				cursor: pointer;
@@ -982,7 +972,8 @@
 #top-searchbar{
   position: fixed;
   top: 12px;
-  right: 12px;
+  left: 12px;     /* ✅ שמאל */
+  right: auto;    /* ✅ לא ימין */
   width: min(760px, calc(100vw - 24px));
   z-index: 30000;
   background: #fff;
@@ -2403,61 +2394,28 @@
 				document.body.style.overflow = "";
 			}
 			function initModals() {
-				const aboutBtn = document.getElementById("aboutBtn");
-				const aboutClose = document.getElementById("aboutCloseBtn");
-				const aboutOverlay = document.getElementById("aboutOverlay");
-				if (aboutBtn)
-					aboutBtn.addEventListener("click", () =>
-						openModal("aboutModal", "aboutCloseBtn"),
-					);
-				if (aboutClose)
-					aboutClose.addEventListener("click", () => closeModal("aboutModal"));
-				if (aboutOverlay)
-					aboutOverlay.addEventListener("click", () =>
-						closeModal("aboutModal"),
-					);
+  const aboutBtn = document.getElementById("aboutBtn");
+  const aboutClose = document.getElementById("aboutCloseBtn");
+  const aboutOverlay = document.getElementById("aboutOverlay");
 
-				const searchBtn = document.getElementById("searchBtn");
-				const searchClose = document.getElementById("searchCloseBtn");
-				const searchOverlay = document.getElementById("searchOverlay");
+  if (aboutBtn)
+    aboutBtn.addEventListener("click", () =>
+      openModal("aboutModal", "aboutCloseBtn")
+    );
+  if (aboutClose)
+    aboutClose.addEventListener("click", () => closeModal("aboutModal"));
+  if (aboutOverlay)
+    aboutOverlay.addEventListener("click", () => closeModal("aboutModal"));
 
-				if (searchBtn) {
-					searchBtn.addEventListener("click", () => {
-						openModal("searchModal", "addrInput");
-						const inp = document.getElementById("addrInput");
-						if (inp) setTimeout(() => inp.focus(), 50);
-					});
-				}
-
-				if (searchClose)
-					searchClose.addEventListener("click", () =>
-						closeModal("searchModal"),
-					);
-				if (searchOverlay)
-					searchOverlay.addEventListener("click", () =>
-						closeModal("searchModal"),
-					);
-
-				document.addEventListener("keydown", (e) => {
-					if (e.key === "Escape") {
-						closeModal("aboutModal");
-						closeModal("searchModal");
-					}
-					
-				});
-				const searchBtn = document.getElementById("searchBtn");
-if (searchBtn) {
-  searchBtn.addEventListener("click", () => {
-    const inp = document.getElementById("addrInput");
-    if (inp) {
-      inp.focus();
-      try { inp.select(); } catch (_) {}
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      closeModal("aboutModal");
+      const box = document.getElementById("addrResults");
+      if (box) box.style.display = "none";
     }
   });
 }
 
-
-			}
 
 			function togglePanel() {
 				const panel = document.getElementById("info-panel");
