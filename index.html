@@ -2162,11 +2162,12 @@
 						const entry =
 							index[k] || index[nameVariants(nameFromMap)[0]] || null;
 						if (!entry) {
-							showInfo(
-								"לא נמצאו נתונים",
-								`אין נתוני פשיעה עבור <strong>${escapeHtml(nameFromMap)}</strong> בשנת ${currentYear}`,
-								"error",
-							);
+						showInfo(
+  "לא נמצאו נתונים",
+  "רשות ללא שיפוט, אין נתוני פשיעה",
+  "error",
+);
+
 							return;
 						}
 
