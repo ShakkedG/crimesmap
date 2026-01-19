@@ -3228,14 +3228,11 @@ if (String(geomName).startsWith(CHORO_PREFIX)) {
   const s = String(geomName);
 
   // 1) ללא שיפוט -> אדום (אין נתוני פשיעה)
-  if (s.includes("_nojur_")) {
-    showInfo(
-      "לא נמצאו נתונים",
-      `אין נתוני פשיעה עבור <strong>ללא שיפוט</strong> בשנת ${escapeHtml(currentYear)}`,
-      "error",
-    );
-    return;
-  }
+ if (s.includes("_nojur_")) {
+  showInfo("לא נמצאו נתונים", "אין נתוני פשיעה עבור רשות זו", "error");
+  return;
+}
+
 
   // 2) nopop -> יש פשיעה אבל אין אוכלוסייה => להציג את מסך הרשות הרגיל (כמו בלי צביעה)
   if (s.includes("_nopop_")) {
