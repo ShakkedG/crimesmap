@@ -978,6 +978,74 @@
 					grid-template-columns: 52px 1fr auto;
 				}
 			}
+			/* ===== Always-open top search bar ===== */
+#top-searchbar{
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  width: min(760px, calc(100vw - 24px));
+  z-index: 30000;
+  background: #fff;
+  border-radius: 999px;
+  padding: 8px;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.16);
+  border: 2px solid rgba(11,99,206,0.35);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#addrInput{
+  flex: 1;
+  border: 2px solid #111;
+  border-radius: 999px;
+  padding: 10px 12px;
+  font-weight: 900;
+  font-size: 14px;
+  outline: none;
+  text-align: right;
+  direction: rtl;
+}
+
+#addrBtn{
+  padding: 10px 14px;
+  background: #0b63ce;
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 1000;
+  font-size: 14px;
+  white-space: nowrap;
+}
+#addrBtn:active{ transform: translateY(1px); }
+
+/* Dropdown results under the bar */
+#addrResults{
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  left: 0;
+  margin-top: 0 !important;
+  display: none; /* נשלט מה-JS */
+  border: 1px solid #e0e0e0;
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  max-height: 320px;
+  overflow-y: auto;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.10);
+}
+
+/* Mobile */
+@media (max-width: 768px){
+  #top-searchbar{
+    left: 10px;
+    right: 10px;
+    width: auto;
+  }
+}
+
 		</style>
 
 		<script>
@@ -2377,14 +2445,17 @@
 					}
 					
 				});
-				const floatingSearchBtn = document.getElementById("floatingSearchBtn");
-if (floatingSearchBtn) {
-  floatingSearchBtn.addEventListener("click", () => {
-    openModal("searchModal", "addrInput");
+				const searchBtn = document.getElementById("searchBtn");
+if (searchBtn) {
+  searchBtn.addEventListener("click", () => {
     const inp = document.getElementById("addrInput");
-    if (inp) setTimeout(() => inp.focus(), 50);
+    if (inp) {
+      inp.focus();
+      try { inp.select(); } catch (_) {}
+    }
   });
 }
+
 
 			}
 
@@ -3527,10 +3598,20 @@ selectFromRank(mappedMuniName || geomName,false);
 		</div>
 
 		<div id="map"></div>
-		<button id="floatingSearchBtn" type="button" title="חיפוש כתובת">
-  🔎 חיפוש כתובת
-</button>
+		
+       <!-- Top Always-Open Search Bar -->
+<div id="top-searchbar">
+  <button id="addrBtn" type="button">חפש</button>
 
+  <input
+    id="addrInput"
+    type="text"
+    placeholder="לדוגמה: דיזנגוף 50 תל אביב"
+    autocomplete="off"
+  />
+
+  <div id="addrResults"></div>
+</div>
 
 		<div id="info-panel">
 			<div id="panel-header">
