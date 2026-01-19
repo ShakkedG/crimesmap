@@ -1,4 +1,4 @@
-window.crimeByYear = { 
+window.crimeByYear = {
   "2020": {
     "כל הארץ": {
       "total": 132,
@@ -10,7 +10,7 @@ window.crimeByYear = {
         "עבירות מרמה": 1,
         "עבירות נגד גוף": 11,
         "עבירות סדר ציבורי": 42
-      } 
+      }
     },
     "אבו גוש": {
       "total": 452,
@@ -12365,7 +12365,11 @@ window.crimeByYear = {
         "שאר עבירות": 5
       }
     },
-
+    "Grand Total": {
+      "total": 414130,
+      "breakdown": {}
+    }
+  },
   "2023": {
     "כל הארץ": {
       "total": 125,
@@ -24588,5 +24592,5 @@ window.crimeByYear = {
       }
     }
   }
-  }
+
 };
