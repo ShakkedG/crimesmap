@@ -44,18 +44,50 @@
 				height: 100%;
 				position: relative;
 			}
+			/* Floating always-available search button */
+#floatingSearchBtn {
+  position: fixed;
+  top: 12px;
+  right: 12px; /* RTL: שים בצד ימין */
+  z-index: 30000; /* מעל הכל */
+  padding: 11px 14px;
+  border-radius: 14px;
+  border: 2px solid rgba(255,255,255,0.35);
+  background: linear-gradient(135deg, #0b63ce 0%, #084eac 100%);
+  color: #fff;
+  font-weight: 1000;
+  cursor: pointer;
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.18);
+}
+
+#floatingSearchBtn:active {
+  transform: translateY(1px);
+}
+
+/* במובייל – תישאר למעלה אבל עם קצת מרווח */
+@media (max-width: 768px) {
+  #floatingSearchBtn {
+    top: 10px;
+    right: 10px;
+  }
+}
+
 
 			/* hide ESRI widgets if appear */
 			.esri-layer-list,
 			.esri-legend {
 				display: none !important;
 			}
+			
 
 			/* PANEL */
 			#info-panel {
 				position: absolute;
 				top: 15px;
-				right: 15px;
+				right: 30px;
 				z-index: 9999;
 				background: white;
 				padding: 0;
@@ -2343,7 +2375,17 @@
 						closeModal("aboutModal");
 						closeModal("searchModal");
 					}
+					
 				});
+				const floatingSearchBtn = document.getElementById("floatingSearchBtn");
+if (floatingSearchBtn) {
+  floatingSearchBtn.addEventListener("click", () => {
+    openModal("searchModal", "addrInput");
+    const inp = document.getElementById("addrInput");
+    if (inp) setTimeout(() => inp.focus(), 50);
+  });
+}
+
 			}
 
 			function togglePanel() {
@@ -3485,6 +3527,10 @@ selectFromRank(mappedMuniName || geomName,false);
 		</div>
 
 		<div id="map"></div>
+		<button id="floatingSearchBtn" type="button" title="חיפוש כתובת">
+  🔎 חיפוש כתובת
+</button>
+
 
 		<div id="info-panel">
 			<div id="panel-header">
