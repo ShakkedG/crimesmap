@@ -24588,5 +24588,5 @@ window.crimeByYear = {
       }
     }
   }
-
+  }
 };
