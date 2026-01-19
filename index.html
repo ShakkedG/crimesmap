@@ -2956,6 +2956,7 @@
 			}
 
 			function buildChoroplethPayloadForYear(year, metric) {
+				const geomNameToMuniName = Object.create(null);
 				const cacheKey = getChoroCacheKey(year, metric);
 				const noPopRows = [];
 				if (choroplethCache.has(cacheKey)) return choroplethCache.get(cacheKey);
@@ -3059,7 +3060,9 @@
 				for (let i = 0; i < noPopRows.length; i++) {
 					const r = noPopRows[i];
 					wkts.push(r.wkt);
-					names.push(`${prefix}_nopop_${i}`);
+                    const geomName = `${prefix}_nopop_${i}`;
+                    names.push(geomName);
+                    geomNameToMuniName[geomName] = r.name; // ✅ לשייך לרשות האמיתית
 					symbols.push({
 						fillColor: [160, 160, 160, 0.65],
 						outlineColor: [25, 25, 25, 0.85],
@@ -3070,7 +3073,10 @@
 				for (let i = 0; i < noJurRows.length; i++) {
 					const r = noJurRows[i];
 					wkts.push(r.wkt);
-					names.push(`${prefix}_nojur_${i}`);
+					const geomName = `${prefix}_nojur_${i}`;
+                    names.push(geomName);
+                    geomNameToMuniName[geomName] = r.name;
+
 					symbols.push({
 						fillColor: [140, 140, 140, 0.65],
 						outlineColor: [25, 25, 25, 0.85],
@@ -3089,14 +3095,16 @@
 						symbols,
 						allowIdentify: true,
 					},
-					meta: {
-						minV,
-						maxV,
-						missingGeomCount: missingGeom.length,
-						noJurCount: noJurRows.length,
-						noPopCount: noPopRows.length,
-						missingGeom,
-					},
+				meta: {
+                minV,
+                maxV,
+                missingGeomCount: missingGeom.length,
+                noJurCount: noJurRows.length,
+                noPopCount: noPopRows.length,
+                missingGeom,
+                geomNameToMuniName, // ✅
+},
+
 				};
 
 				choroplethCache.set(cacheKey, built);
@@ -3196,14 +3204,16 @@ if (ret && typeof ret.then === "function") {
 
     console.log("displayGeometries resolved:", ev);
 
-  const name = ev?.data?.[0]?.name;
-if (!name) return;
+const geomName = ev?.data?.[0]?.name;
+if (!geomName) return;
 
-// אם זה שם שנוצר ע"י הצביעה (nopop/nojur) – לא מנסים לבחור מהאינדקס
-if (String(name).startsWith(CHORO_PREFIX)) {
-  const s = String(name);
+// ניסיון למפות שם גיאומטריה לשם רשות אמיתי (ל-nopop/nojur)
+const mappedMuniName = built?.meta?.geomNameToMuniName?.[geomName] || null;
 
-  // 1) ללא שיפוט -> זה באמת "אין נתוני פשיעה" => אדום
+if (String(geomName).startsWith(CHORO_PREFIX)) {
+  const s = String(geomName);
+
+  // 1) ללא שיפוט -> אדום (אין נתוני פשיעה)
   if (s.includes("_nojur_")) {
     showInfo(
       "לא נמצאו נתונים",
@@ -3213,23 +3223,29 @@ if (String(name).startsWith(CHORO_PREFIX)) {
     return;
   }
 
-  // 2) no-pop -> זו רשות שיש לה פשיעה אבל אין אוכלוסייה (או אוכלוסייה=1 אצלך) => תציג נתוני פשיעה
+  // 2) nopop -> יש פשיעה אבל אין אוכלוסייה => להציג את מסך הרשות הרגיל (כמו בלי צביעה)
   if (s.includes("_nopop_")) {
-    // אם תרצה לזהות את שם הרשות המדויק כאן – צריך מיפוי (מוסיף לך בהמשך אם תרצה).
+    if (mappedMuniName) {
+      selectFromRank(mappedMuniName); // ✅ זה יביא למסך "X אירועים" + ההודעה הצהובה על אין אוכלוסייה
+      return;
+    }
+
+    // אם אין מיפוי (לא עשית את סעיף 2) – אין דרך לדעת איזו רשות זו
     showInfo(
       "אין אוכלוסייה",
-      "לרשות הזו אין נתון אוכלוסייה (או שהאוכלוסייה=1), אבל נתוני הפשיעה מוצגים לפי כמות.",
+      "נבחרה גיאומטריית צביעה של 'אין אוכלוסייה', אבל אין מיפוי לשם רשות. הוסף מיפוי ב-buildChoroplethPayloadForYear.",
       "warn",
     );
     return;
   }
 
-  // fallback
+  // fallback לכל גיאומטריה של צביעה בלי שיוך
   showInfo("מידע", "נבחרה גיאומטריית צביעה ללא שיוך.", "warn");
   return;
 }
 
-selectFromRank(name);
+// שם רגיל מהשכבה -> עובד כרגיל
+selectFromRank(mappedMuniName || geomName);
 
     
   }, (err) => {  // ✅ שינוי מ-catch ל-fail callback
