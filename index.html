@@ -923,11 +923,7 @@
 				justify-content: flex-end;
 			}
 
-			/* תסתיר רק את הכפתורים שלא צריכים במצב מוקטן */
-			#info-panel.collapsed #searchBtn,
-			#info-panel.collapsed #aboutBtn {
-				display: none;
-			}
+			
 
 			/* כפתור ההקטנה/הגדלה נשאר תמיד */
 			#info-panel.collapsed #panelToggleBtn {
@@ -2500,7 +2496,7 @@
 						const picked = lastAddrItems[idx];
 						if (picked) focusToGeocodeItem(picked);
 						box.style.display = "none";
-						closeModal("searchModal");
+						
 					});
 				});
 			}
@@ -3580,12 +3576,7 @@ selectFromRank(mappedMuniName || geomName,false);
 				</p>
 
 				<div id="header-actions">
-					<button
-						id="searchBtn"
-						class="hbtn"
-					>
-						🔎 חיפוש כתובת
-					</button>
+					
 					<button
 						id="aboutBtn"
 						class="hbtn secondary"
@@ -3765,12 +3756,7 @@ selectFromRank(mappedMuniName || geomName,false);
 		</div>
 
 		<!-- Search Modal -->
-		<div
-			id="searchModal"
-			class="modal"
-			aria-hidden="true"
-		>
-			<div
+		
 				id="searchOverlay"
 				class="modalOverlay"
 			></div>
