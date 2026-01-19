@@ -1948,41 +1948,50 @@
 				container.innerHTML = html;
 			}
 
-			function selectFromRank(name) {
-				try {
-					switchTab("single");
-				} catch (_) {}
-				const index = getIndexByMode(currentMode);
+			function selectFromRank(name, goToSingle = true) {
+  // רק אם רוצים – לעבור לתצוגה
+  if (goToSingle) {
+    try { switchTab("single"); } catch (_) {}
+  }
 
-				let entry = null;
-				if (currentMode === "muni") {
-					const k = normalizeKey(name);
-					entry = index[k] || index[nameVariants(name)[0]] || null;
-				} else if (currentMode === "station") {
-					entry = index[normalizeKey(name)] || null;
-					if (!entry) {
-						const vars = stationNameVariants(name);
-						for (const v of vars) {
-							if (index[v]) {
-								entry = index[v];
-								break;
-							}
-						}
-					}
-				} else {
-					entry = index[normalizeKey(name)] || null;
-				}
+  const index = getIndexByMode(currentMode);
+  let entry = null;
 
-				if (!entry) {
-					showInfo("לא נמצא", "לא הצלחתי למצוא את הישות בתוך האינדקס", "warn");
-					return;
-				}
+  if (currentMode === "muni") {
+    const k = normalizeKey(name);
+    entry = index[k] || index[nameVariants(name)[0]] || null;
+  } else if (currentMode === "station") {
+    entry = index[normalizeKey(name)] || null;
+    if (!entry) {
+      const vars = stationNameVariants(name);
+      for (const v of vars) {
+        if (index[v]) { entry = index[v]; break; }
+      }
+    }
+  } else {
+    entry = index[normalizeKey(name)] || null;
+  }
 
-				selectedEntityName = entry.name;
-				selectedEntityKey = entry.key;
+  if (!entry) {
+    showInfo("לא נמצא", "לא הצלחתי למצוא את הישות בתוך האינדקס", "warn");
+    return;
+  }
 
-				showEntry(entry);
-			}
+  selectedEntityName = entry.name;
+  selectedEntityKey = entry.key;
+
+  // ✅ במקום לכפות תצוגה – מעדכנים לפי הטאב הנוכחי
+  if (currentTab === "single") {
+    showEntry(entry);
+  } else if (currentTab === "compare") {
+    updateCompareView();
+  } else if (currentTab === "trends") {
+    showTrends(selectedEntityName, currentMode);
+  } else if (currentTab === "rankings") {
+    renderRankings();
+  }
+}
+
 
 			// ===================== GOVMAP CLICK HELPERS =====================
 			function fieldsToObject(fields) {
@@ -3226,7 +3235,8 @@ if (String(geomName).startsWith(CHORO_PREFIX)) {
   // 2) nopop -> יש פשיעה אבל אין אוכלוסייה => להציג את מסך הרשות הרגיל (כמו בלי צביעה)
   if (s.includes("_nopop_")) {
     if (mappedMuniName) {
-      selectFromRank(mappedMuniName); // ✅ זה יביא למסך "X אירועים" + ההודעה הצהובה על אין אוכלוסייה
+     selectFromRank(mappedMuniName, false);
+ // ✅ זה יביא למסך "X אירועים" + ההודעה הצהובה על אין אוכלוסייה
       return;
     }
 
@@ -3245,7 +3255,7 @@ if (String(geomName).startsWith(CHORO_PREFIX)) {
 }
 
 // שם רגיל מהשכבה -> עובד כרגיל
-selectFromRank(mappedMuniName || geomName);
+selectFromRank(mappedMuniName || geomName,false);
 
     
   }, (err) => {  // ✅ שינוי מ-catch ל-fail callback
