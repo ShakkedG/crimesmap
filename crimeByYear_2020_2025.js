@@ -4094,7 +4094,7 @@ window.crimeByYear = {
       }
     }
   },
-  "2021": {
+  "2021": { 
     "כל הארץ": {
       "total": 178,
       "breakdown": {
