@@ -2634,12 +2634,7 @@
 						sub = String(sub || "").trim();
 						return { ...r, __title: title, __sub: sub };
 					});
-					if (mapped.length === 1) {
-  focusToGeocodeItem(mapped[0]);
-  const { box } = getAddrEls();
-  if (box) box.style.display = "none";
-  return;
-}
+			
 
 
 					renderAddrResults(mapped);
