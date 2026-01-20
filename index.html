@@ -2634,6 +2634,13 @@
 						sub = String(sub || "").trim();
 						return { ...r, __title: title, __sub: sub };
 					});
+					if (mapped.length === 1) {
+  focusToGeocodeItem(mapped[0]);
+  const { box } = getAddrEls();
+  if (box) box.style.display = "none";
+  return;
+}
+
 
 					renderAddrResults(mapped);
 				};
@@ -2659,12 +2666,35 @@
   const { input, btn, box } = getAddrEls();
   if (!input || !btn || !box) return;
 
-  btn.addEventListener("click", () => runGeocode(input.value));
+ btn.addEventListener("click", () => {
+  const q = String(input.value || "").trim();
+  if (!q) return;
 
-  input.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") runGeocode(input.value);
-    if (e.key === "Escape") box.style.display = "none";
-  });
+  const sameQuery = String(lastGeocodeQuery || "").trim() === q;
+
+  // אם כבר יש תוצאות עבור אותה מחרוזת – קפוץ לתוצאה הראשונה
+  if (sameQuery && Array.isArray(lastAddrItems) && lastAddrItems.length) {
+    // נסה קודם התאמה מדויקת לכותרת, אחרת ראשון
+    const exact =
+      lastAddrItems.find((it) => String(it?.__title || "").trim() === q) ||
+      lastAddrItems[0];
+
+    focusToGeocodeItem(exact);
+    box.style.display = "none";
+    return;
+  }
+
+  // אחרת: הפעל חיפוש
+  runGeocode(q);
+});
+
+input.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    btn.click(); // אותו לוגיקה כמו הכפתור
+  }
+  if (e.key === "Escape") box.style.display = "none";
+});
 
   input.addEventListener("input", () => {
     if (searchTimeout) clearTimeout(searchTimeout);
