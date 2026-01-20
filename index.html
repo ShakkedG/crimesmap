@@ -3552,6 +3552,14 @@
           },
         });
       }
+      function setMobileVh() {
+  const vh = window.innerHeight * 0.01;
+  document.documentElement.style.setProperty("--vh", `${vh}px`);
+}
+setMobileVh();
+window.addEventListener("resize", setMobileVh);
+if (window.visualViewport) window.visualViewport.addEventListener("resize", setMobileVh);
+
 
       // Expose functions for inline handlers
       window.initGovMap = initGovMap;
