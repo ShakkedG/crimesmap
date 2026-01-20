@@ -2432,6 +2432,17 @@
 					btn.title = collapsed ? "הגדל" : "הקטן/הגדל";
 				}
 			}
+			function getAddrEls() {
+  const root = document.getElementById("top-searchbar");
+  if (!root) return { root: null, input: null, btn: null, box: null };
+  return {
+    root,
+    input: root.querySelector("#addrInput"),
+    btn: root.querySelector("#addrBtn"),
+    box: root.querySelector("#addrResults"),
+  };
+}
+
 
 			// ===================== ADDRESS SEARCH =====================
 			function parseGeocodeList(resp) {
@@ -2471,42 +2482,42 @@
 				);
 			}
 
-			function renderAddrResults(items) {
-				const box = document.getElementById("addrResults");
-				if (!box) return;
+		function renderAddrResults(items) {
+  const { box } = getAddrEls();
+  if (!box) return;
 
-				lastAddrItems = items || [];
+  lastAddrItems = items || [];
 
-				if (!items || !items.length) {
-					box.style.display = "block";
-					box.innerHTML = `<div class="addr-item">לא נמצאו תוצאות</div>`;
-					return;
-				}
+  if (!items || !items.length) {
+    box.style.display = "block";
+    box.innerHTML = `<div class="addr-item">לא נמצאו תוצאות</div>`;
+    return;
+  }
 
-				box.style.display = "block";
-				box.innerHTML = items
-					.map((it, idx) => {
-						const title = escapeHtml(it.__title || lastGeocodeQuery || "תוצאה");
-						const sub = escapeHtml(it.__sub || "");
-						return `
-          <div class="addr-item" data-idx="${idx}">
-            <div style="font-weight:1000; color:#111;">${title}</div>
-            ${sub ? `<div class="addr-sub">${sub}</div>` : ""}
-          </div>
-        `;
-					})
-					.join("");
+  box.style.display = "block";
+  box.innerHTML = items
+    .map((it, idx) => {
+      const title = escapeHtml(it.__title || lastGeocodeQuery || "תוצאה");
+      const sub = escapeHtml(it.__sub || "");
+      return `
+        <div class="addr-item" data-idx="${idx}">
+          <div style="font-weight:1000; color:#111;">${title}</div>
+          ${sub ? `<div class="addr-sub">${sub}</div>` : ""}
+        </div>
+      `;
+    })
+    .join("");
 
-				box.querySelectorAll(".addr-item").forEach((el) => {
-					el.addEventListener("click", () => {
-						const idx = Number(el.dataset.idx);
-						const picked = lastAddrItems[idx];
-						if (picked) focusToGeocodeItem(picked);
-						box.style.display = "none";
-						
-					});
-				});
-			}
+  box.querySelectorAll(".addr-item").forEach((el) => {
+    el.addEventListener("click", () => {
+      const idx = Number(el.dataset.idx);
+      const picked = lastAddrItems[idx];
+      if (picked) focusToGeocodeItem(picked);
+      box.style.display = "none";
+    });
+  });
+}
+
 
 			function focusToGeocodeItem(item) {
 				if (!mapInitialized) return;
@@ -2531,12 +2542,13 @@
 				);
 			}
 
-			function setAddrLoading(msg) {
-				const box = document.getElementById("addrResults");
-				if (!box) return;
-				box.style.display = "block";
-				box.innerHTML = `<div class="addr-item">${escapeHtml(msg || "מחפש…")}</div>`;
-			}
+		function setAddrLoading(msg) {
+  const { box } = getAddrEls();
+  if (!box) return;
+  box.style.display = "block";
+  box.innerHTML = `<div class="addr-item">${escapeHtml(msg || "מחפש…")}</div>`;
+}
+
 
 			function runGeocode(query) {
 				const q = String(query || "").trim();
@@ -2644,38 +2656,32 @@
 			}
 
 			function initAddressSearchUI() {
-				const input = document.getElementById("addrInput");
-				const btn = document.getElementById("addrBtn");
-				const box = document.getElementById("addrResults");
-				if (!input || !btn || !box) return;
+  const { input, btn, box } = getAddrEls();
+  if (!input || !btn || !box) return;
 
-				btn.addEventListener("click", () => runGeocode(input.value));
+  btn.addEventListener("click", () => runGeocode(input.value));
 
-				input.addEventListener("keydown", (e) => {
-					if (e.key === "Enter") runGeocode(input.value);
-					if (e.key === "Escape") box.style.display = "none";
-				});
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") runGeocode(input.value);
+    if (e.key === "Escape") box.style.display = "none";
+  });
 
-				input.addEventListener("input", () => {
-					if (searchTimeout) clearTimeout(searchTimeout);
-					const v = input.value.trim();
-					if (v.length < 3) {
-						box.style.display = "none";
-						return;
-					}
-					searchTimeout = setTimeout(() => runGeocode(v), 350);
-				});
+  input.addEventListener("input", () => {
+    if (searchTimeout) clearTimeout(searchTimeout);
+    const v = input.value.trim();
+    if (v.length < 3) {
+      box.style.display = "none";
+      return;
+    }
+    searchTimeout = setTimeout(() => runGeocode(v), 350);
+  });
 
-				document.addEventListener("click", (e) => {
-					if (
-						!box.contains(e.target) &&
-						e.target !== input &&
-						e.target !== btn
-					) {
-						box.style.display = "none";
-					}
-				});
-			}
+  document.addEventListener("click", (e) => {
+    if (!box.contains(e.target) && e.target !== input && e.target !== btn) {
+      box.style.display = "none";
+    }
+  });
+}
 
 			// ===================== GEOJSON -> WKT =====================
 			function toFiniteNum(v) {
@@ -3762,59 +3768,7 @@ selectFromRank(mappedMuniName || geomName,false);
 			</div>
 		</div>
 
-		<!-- Search Modal -->
 		
-				id="searchOverlay"
-				class="modalOverlay"
-			></div>
-			<div
-				class="modalCard"
-				role="dialog"
-			>
-				<div class="modalHeader">
-					<div class="modalHeaderTitle">🔎 חיפוש כתובת</div>
-					<button
-						id="searchCloseBtn"
-						class="modalClose"
-					>
-						×
-					</button>
-				</div>
-				<div class="modalBody">
-					<div style="display: flex; gap: 8px">
-						<input
-							id="addrInput"
-							type="text"
-							placeholder="לדוגמה: דיזנגוף 50 תל אביב"
-							style="
-								flex: 1;
-								padding: 10px;
-								border-radius: 12px;
-								border: 1px solid #ccc;
-								font-weight: 900;
-							"
-						/>
-						<button
-							id="addrBtn"
-							style="
-								padding: 10px 14px;
-								background: #0b63ce;
-								color: white;
-								border: none;
-								border-radius: 12px;
-								cursor: pointer;
-								font-weight: 1000;
-							"
-						>
-							חפש
-						</button>
-					</div>
-					<div id="addrResults"></div>
-				</div>
-			</div>
-		</div>
-
-		<!-- About Modal -->
 		<div
 			id="aboutModal"
 			class="modal"
