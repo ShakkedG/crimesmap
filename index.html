@@ -1444,22 +1444,7 @@ html, body {
         }
         return null;
       }
-      function isolatePanelScrollFromMap() {
-  const panel = document.getElementById("info-panel");
-  const scroller = document.getElementById("info-content");
-  if (!panel || !scroller) return;
-
-  // עוצרים propagation כדי שהמפה לא “תבלע” את ה-touch של הפאנל
-  const stop = (e) => e.stopPropagation();
-
-  // capture=true כדי לתפוס לפני מאזינים של המפה
-  panel.addEventListener("touchstart", stop, { passive: true, capture: true });
-  panel.addEventListener("touchmove", stop, { passive: false, capture: true });
-
-  scroller.addEventListener("touchstart", stop, { passive: true, capture: true });
-  scroller.addEventListener("touchmove", stop, { passive: false, capture: true });
-}
-
+     
 
       function calcRatePer10k(total, pop) {
         if (!Number.isFinite(Number(total))) return null;
@@ -1836,6 +1821,16 @@ html, body {
         );
         updateCompareView();
       }
+      function isolatePanelScrollFromMap() {
+  const panel = document.getElementById("info-panel");
+  if (!panel) return;
+
+  const stop = (e) => e.stopPropagation();
+
+  panel.addEventListener("touchstart", stop, { capture: true, passive: true });
+  panel.addEventListener("touchmove",  stop, { capture: true, passive: false });
+}
+
 
       function updateCompareView() {
         const container = document.getElementById("compare-content");
@@ -3765,6 +3760,7 @@ try {
             initModals();
             initAddressSearchUI();
             isolatePanelScrollFromMap();
+            
 
 
             const toggleBtn = document.getElementById("panelToggleBtn");
