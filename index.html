@@ -2875,6 +2875,19 @@ input, select, textarea {
           }
           searchTimeout = setTimeout(() => runGeocode(v), 350);
         });
+        const panel = document.getElementById("info-panel");
+
+input.addEventListener("focus", () => {
+  if (window.matchMedia("(max-width: 768px)").matches && panel) {
+    panel.classList.add("collapsed");
+    const btn = document.getElementById("panelToggleBtn");
+    if (btn) {
+      btn.textContent = "➕ הגדל";
+      btn.title = "הגדל";
+    }
+  }
+});
+
 
         document.addEventListener("click", (e) => {
           if (
@@ -3704,6 +3717,20 @@ input, select, textarea {
 
             setMode(currentMode);
             setChoroBtnUI();
+            
+            // Default collapsed on mobile
+try {
+  if (window.matchMedia("(max-width: 768px)").matches) {
+    const panel = document.getElementById("info-panel");
+    const btn = document.getElementById("panelToggleBtn");
+    if (panel) panel.classList.add("collapsed");
+    if (btn) {
+      btn.textContent = "➕ הגדל";
+      btn.title = "הגדל";
+    }
+  }
+} catch (_) {}
+
 
             // CLICK (normal)
             try {
@@ -3782,7 +3809,9 @@ if (window.visualViewport) window.visualViewport.addEventListener("resize", setM
 
     <!-- Top Always-Open Search Bar -->
     <div id="top-searchbar">
-      <button id="addrBtn" type="button">חפש</button>
+   <input id="addrInput" ... />
+<button id="addrBtn" type="button">חפש</button>
+
 
       <input
         id="addrInput"
