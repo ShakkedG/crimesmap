@@ -5,7 +5,7 @@
     <!-- 2. cmd => C:\Python311\python.exe -m http.server 3000 -->
     <!-- 3. run from http://shakkedg.github.io:3000 -->
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>מפת פשיעה – לפי שנה (2020–2025) | ישובים / מרחבים / תחנות</title>
 
     <!-- DATA -->
@@ -1017,12 +1017,7 @@ input, select, textarea {
  
 
   /* כפתור חיפוש צף – שלא יסתיר דברים */
-  #floatingSearchBtn {
-    top: calc(var(--m-pad) + var(--safe-top));
-    right: var(--m-pad);
-    padding: 10px 12px;
-    border-radius: 14px;
-  }
+
 
   /* ===== פאנל מידע הופך ל-Bottom Sheet ===== */
   #info-panel {
@@ -1153,7 +1148,8 @@ input, select, textarea {
 @media (max-width: 420px) {
   :root { --m-pad: 8px; }
   .tab { min-width: 82px; }
-  #info-panel { max-height: 75vh; }
+#info-panel { max-height: calc(var(--vh, 1vh) * 72); }
+
 }
 
 /* אם יש לך אזור חיפוש קבוע למעלה (בר חיפוש): 
