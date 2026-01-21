@@ -1171,7 +1171,26 @@ html, body {
   overscroll-behavior: none;
 }
 
-      
+      /* ===== FIX: scroll works on mobile (especially iOS) ===== */
+@media (max-width: 768px) {
+  /* תן לפאנל גובה אמיתי (ולא רק max-height) כדי ש-Flex + overflow יעבדו */
+  #info-panel {
+    height: calc(var(--vh, 1vh) * 72);
+    max-height: none;
+    overscroll-behavior: contain;
+    touch-action: pan-y;
+  }
+
+  /* גלילה פנימית אמיתית לתוכן */
+  #info-content {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
+  }
+}
+
     </style>
 
     <script>
