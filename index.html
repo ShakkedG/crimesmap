@@ -1020,15 +1020,202 @@
       }
 
       /* Mobile */
-      @media (max-width: 768px) {
-        #top-searchbar {
-          top: 10px;
-          left: 50%;
-          right: auto;
-          transform: translateX(-50%);
-          width: calc(100vw - 20px);
-        }
-      }
+    /* =========================
+   MOBILE RESPONSIVE OVERRIDES
+   הדבק בסוף ה-CSS
+========================= */
+
+/* איכות מגע + מניעת זום/היילייט מוזר */
+html, body {
+  -webkit-text-size-adjust: 100%;
+}
+button, .hbtn, .mode-btn, .tab {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* אייפון: כדי למנוע "Zoom" אוטומטי בשדות טקסט */
+input, select, textarea {
+  font-size: 16px;
+}
+
+/* משתנים נוחים */
+:root {
+  --m-pad: 10px;
+  --m-radius: 16px;
+  --m-shadow: 0 10px 30px rgba(0,0,0,0.18);
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* טלפון */
+@media (max-width: 768px) {
+  html, body {
+    font-size: 15px;
+    overflow: hidden; /* חשוב: המפה תמיד מלאה, הגלילה בתוך הפאנל */
+  }
+
+  /* המפה תמיד "מסך מלא" */
+  #map {
+    height: 100vh;
+    height: 100dvh; /* עדיף במובייל מודרני */
+  }
+
+  /* כפתור חיפוש צף – שלא יסתיר דברים */
+  #floatingSearchBtn {
+    top: calc(var(--m-pad) + var(--safe-top));
+    right: var(--m-pad);
+    padding: 10px 12px;
+    border-radius: 14px;
+  }
+
+  /* ===== פאנל מידע הופך ל-Bottom Sheet ===== */
+  #info-panel {
+    position: fixed;               /* במקום absolute */
+    left: var(--m-pad);
+    right: var(--m-pad);
+    top: auto;
+    bottom: calc(var(--m-pad) + var(--safe-bottom));
+    width: auto;                   /* מבטל 440px */
+    max-height: 72vh;              /* פאנל נוח */
+    border-radius: var(--m-radius);
+    box-shadow: var(--m-shadow);
+    z-index: 40000;
+  }
+
+  /* מצב "מכווץ" (רק כותרת) – יופעל ע"י JS בסעיף 2 */
+  #info-panel.collapsed {
+    max-height: 64px;              /* רק header בערך */
+  }
+  #info-panel.collapsed #tabs,
+  #info-panel.collapsed #controls,
+  #info-panel.collapsed #info-content {
+    display: none;
+  }
+
+  /* כותרת פאנל – יותר קומפקטית */
+  #panel-header {
+    padding: 12px 14px;
+  }
+  #panel-header h1 {
+    font-size: 16px;
+  }
+  #panel-header p {
+    font-size: 12.5px;
+  }
+
+  /* אזור פעולות בכותרת – שיהיה נוח למגע */
+  #header-actions {
+    gap: 8px;
+  }
+  .hbtn {
+    padding: 10px 12px;
+    border-radius: 12px;
+    font-size: 13px;
+  }
+
+  /* Tabs – גלילה אופקית נוחה במובייל */
+  #tabs {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .tab {
+    min-width: 88px;
+    padding: 12px 10px;
+    font-size: 13px;
+  }
+
+  /* Controls – יותר צפוף אבל קריא */
+  #controls {
+    padding: 10px 12px;
+  }
+
+  /* כפתורי מצב – מגע נוח */
+  .mode-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .mode-btn {
+    padding: 12px 10px;
+    border-radius: 14px;
+    min-height: 44px; /* סטנדרט נוחות */
+  }
+  .mode-btn.primary {
+    min-height: 48px;
+  }
+
+  /* שנה + תווית */
+  #controls-row {
+    gap: 8px;
+  }
+  #yearSelect {
+    min-height: 44px;
+  }
+
+  /* סטטיסטיקות מהירות – 3 עמודות -> 2 במובייל */
+  #quick-stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  .stat-card {
+    padding: 10px;
+    border-radius: 14px;
+  }
+  .stat-value {
+    font-size: 18px;
+  }
+
+  /* תוכן הפאנל: גלילה פנימית חלקה */
+  #info-content {
+    padding: 12px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    min-height: 0;
+    touch-action: pan-y;
+  }
+
+  /* כותרות/סיכומים – לא ענק מדי */
+  #info-title {
+    font-size: 15px;
+  }
+  .total-summary {
+    font-size: 22px;
+    padding: 12px;
+  }
+
+  /* גריד עבירות – 2 עמודות -> עמודה אחת */
+  .crime-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .crime-item {
+    border-radius: 14px;
+    padding: 12px;
+  }
+}
+
+/* טלפונים קטנים מאוד */
+@media (max-width: 420px) {
+  :root { --m-pad: 8px; }
+  .tab { min-width: 82px; }
+  #info-panel { max-height: 75vh; }
+}
+
+/* אם יש לך אזור חיפוש קבוע למעלה (בר חיפוש): 
+   החלף #top-searchbar לשם האמיתי של הקונטיינר */
+@media (max-width: 768px) {
+  #top-searchbar {
+    position: fixed;
+    top: calc(var(--m-pad) + var(--safe-top) + 54px); /* מתחת לכפתור הצף */
+    left: var(--m-pad);
+    right: var(--m-pad);
+    width: auto;
+    transform: none !important;
+    z-index: 40001;
+  }
+}
+
+      
     </style>
 
     <script>
@@ -3037,7 +3224,7 @@
       }
 
       async function toggleChoropleth() {
-        if (currentMode !== "muni") setMode("muni");
+        if (currentMode !== "muni") setMode("muni");///ת
 
         choroplethEnabled = !choroplethEnabled;
         setChoroBtnUI();
