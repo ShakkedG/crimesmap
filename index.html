@@ -968,36 +968,10 @@
    MOBILE RESPONSIVE OVERRIDES
    הדבק בסוף ה-CSS
 ========================= */
-@media (max-width: 768px) {
-  #top-searchbar {
-    top: calc(var(--safe-top) + var(--m-pad));
-    left: var(--m-pad);
-    right: var(--m-pad);
-    width: auto;
-    transform: none !important;
-  }
+/* =========================
+   MOBILE FIXES - COMPLETE
+========================= */
 
-  /* iOS: למנוע זום אוטומטי בשדה */
-  #addrInput {
-    font-size: 16px;
-  }
-}
-
-/* איכות מגע + מניעת זום/היילייט מוזר */
-html, body {
-  -webkit-text-size-adjust: 100%;
-}
-button, .hbtn, .mode-btn, .tab {
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
-}
-
-/* אייפון: כדי למנוע "Zoom" אוטומטי בשדות טקסט */
-input, select, textarea {
-  font-size: 16px;
-}
-
-/* משתנים נוחים */
 :root {
   --m-pad: 10px;
   --m-radius: 16px;
@@ -1006,217 +980,306 @@ input, select, textarea {
   --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
 
-/* טלפון */
+/* גובה מסך אמיתי (Safari fix) */
+#map {
+  height: 100vh;
+  height: calc(var(--vh, 1vh) * 100);
+}
+
+/* מניעת "bouncing" ב-iOS */
+html, body {
+  overscroll-behavior: none;
+  -webkit-text-size-adjust: 100%;
+  touch-action: pan-x pan-y;
+}
+
+/* שיפור מגע */
+button, .hbtn, .mode-btn, .tab {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* מניעת zoom אוטומטי ב-iOS */
+input, select, textarea {
+  font-size: 16px !important;
+}
+
+/* =========================
+   MOBILE LAYOUT (< 768px)
+========================= */
 @media (max-width: 768px) {
-  html, body {
-    font-size: 15px;
-    overflow: hidden; /* חשוב: המפה תמיד מלאה, הגלילה בתוך הפאנל */
-  }
-
-  /* המפה תמיד "מסך מלא" */
- 
-
-  /* כפתור חיפוש צף – שלא יסתיר דברים */
-
-
-  /* ===== פאנל מידע הופך ל-Bottom Sheet ===== */
-  #info-panel {
-    position: fixed;               /* במקום absolute */
+  
+  /* בר חיפוש - מתחת לפאנל */
+  #top-searchbar {
+    position: fixed;
+    top: calc(var(--safe-top) + 10px);
     left: var(--m-pad);
     right: var(--m-pad);
+    width: auto;
+    transform: none !important;
+    z-index: 39000; /* מתחת לפאנל! */
+    padding: 6px;
+    gap: 8px;
+  }
+  
+  #addrInput {
+    font-size: 16px;
+    padding: 12px 14px;
+  }
+  
+  #addrBtn {
+    padding: 12px 16px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  
+  #addrResults {
+    z-index: 39001;
+    max-height: 240px;
+  }
+  
+  /* ========== פאנל תחתון ========== */
+  #info-panel {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
     top: auto;
-    bottom: calc(var(--m-pad) + var(--safe-bottom));
-    width: auto;                   /* מבטל 440px */
-    max-height: 72vh;              /* פאנל נוח */
-    border-radius: var(--m-radius);
-    box-shadow: var(--m-shadow);
+    width: 100%;
+    
+    /* גובה דינמי */
+    height: auto;
+    max-height: calc((var(--vh, 1vh) * 70) - var(--safe-bottom));
+    min-height: 200px;
+    
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
     z-index: 40000;
+    
+    /* Flexbox לגלילה נכונה */
+    display: flex;
+    flex-direction: column;
   }
-
-  /* מצב "מכווץ" (רק כותרת) – יופעל ע"י JS בסעיף 2 */
+  
+  /* מצב מכווץ */
   #info-panel.collapsed {
-    max-height: 64px;              /* רק header בערך */
+    height: 68px;
+    max-height: 68px;
+    min-height: 68px;
   }
+  
   #info-panel.collapsed #tabs,
   #info-panel.collapsed #controls,
   #info-panel.collapsed #info-content {
     display: none;
   }
-
-  /* כותרת פאנל – יותר קומפקטית */
-  #panel-header {
-    padding: 12px 14px;
+  
+  #info-panel.collapsed #panel-header p {
+    display: none;
   }
-  #panel-header h1 {
-    font-size: 16px;
-  }
-  #panel-header p {
-    font-size: 12.5px;
-  }
-
-  /* אזור פעולות בכותרת – שיהיה נוח למגע */
-  #header-actions {
-    gap: 8px;
-  }
-  .hbtn {
-    padding: 10px 12px;
-    border-radius: 12px;
-    font-size: 13px;
-  }
-
-  /* Tabs – גלילה אופקית נוחה במובייל */
-  #tabs {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-  .tab {
-    min-width: 88px;
-    padding: 12px 10px;
-    font-size: 13px;
-  }
-
-  /* Controls – יותר צפוף אבל קריא */
-  #controls {
-    padding: 10px 12px;
-  }
-
-  /* כפתורי מצב – מגע נוח */
-  .mode-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-  }
-  .mode-btn {
-    padding: 12px 10px;
-    border-radius: 14px;
-    min-height: 44px; /* סטנדרט נוחות */
-  }
-  .mode-btn.primary {
-    min-height: 48px;
-  }
-
-  /* שנה + תווית */
-  #controls-row {
-    gap: 8px;
-  }
-  #yearSelect {
-    min-height: 44px;
-  }
-
-  /* סטטיסטיקות מהירות – 3 עמודות -> 2 במובייל */
-  #quick-stats {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
-  }
-  .stat-card {
-    padding: 10px;
-    border-radius: 14px;
-  }
-  .stat-value {
-    font-size: 18px;
-  }
-
-  /* תוכן הפאנל: גלילה פנימית חלקה */
+  
+  /* ========== תוכן הפאנל - הכי חשוב! ========== */
   #info-content {
-    padding: 12px;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+    flex: 1 1 0;
     min-height: 0;
+    padding: 14px;
+    
+    /* גלילה */
+    overflow-y: scroll;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
     touch-action: pan-y;
   }
-
-  /* כותרות/סיכומים – לא ענק מדי */
-  #info-title {
-    font-size: 15px;
+  
+  /* ========== כותרת =========== */
+  #panel-header {
+    flex-shrink: 0;
+    padding: 14px;
   }
-  .total-summary {
-    font-size: 22px;
+  
+  #panel-header h1 {
+    font-size: 17px;
+    margin-bottom: 4px;
+  }
+  
+  #panel-header p {
+    font-size: 13px;
+  }
+  
+  #header-actions {
+    margin-top: 8px;
+    gap: 6px;
+  }
+  
+  .hbtn {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+  
+  /* ========== טאבים =========== */
+  #tabs {
+    flex-shrink: 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  
+  #tabs::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .tab {
+    min-width: 85px;
+    padding: 12px 8px;
+    font-size: 13px;
+  }
+  
+  /* ========== Controls =========== */
+  #controls {
+    flex-shrink: 0;
     padding: 12px;
   }
-
-  /* גריד עבירות – 2 עמודות -> עמודה אחת */
+  
+  .mode-grid {
+    gap: 6px;
+  }
+  
+  .mode-btn {
+    padding: 11px 8px;
+    font-size: 13px;
+    min-height: 44px;
+  }
+  
+  #controls-row {
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  
+  #yearSelect {
+    padding: 11px 12px;
+    font-size: 15px;
+  }
+  
+  /* ========== סטטיסטיקות =========== */
+  #quick-stats {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+  
+  .stat-card {
+    padding: 10px 8px;
+  }
+  
+  .stat-value {
+    font-size: 16px;
+  }
+  
+  .stat-label {
+    font-size: 11px;
+  }
+  
+  /* ========== תוכן =========== */
+  #info-title {
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+  
+  .total-summary {
+    font-size: 24px;
+    padding: 14px 12px;
+  }
+  
+  .sub-summary {
+    font-size: 13px;
+  }
+  
+  /* גריד עבירות - עמודה אחת */
   .crime-grid {
     grid-template-columns: 1fr;
     gap: 8px;
   }
+  
   .crime-item {
-    border-radius: 14px;
     padding: 12px;
   }
+  
+  /* השוואה */
+  .compare-kpis {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+  
+  .bar-row {
+    grid-template-columns: 1fr 1.8fr auto;
+    gap: 8px;
+  }
+  
+  /* מגמות */
+  .trend-kpis {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+  
+  .trow {
+    grid-template-columns: 50px 1fr auto;
+    gap: 8px;
+  }
+  
+  /* דירוגים */
+  .rank-controls {
+    flex-direction: column;
+    gap: 6px;
+  }
+  
+  .rank-ctl-btn {
+    width: 100%;
+  }
+  
+  .rank-row {
+    grid-template-columns: 36px 1fr auto;
+    padding: 10px;
+  }
 }
 
-/* טלפונים קטנים מאוד */
+/* ========== טלפונים קטנים (<420px) =========== */
 @media (max-width: 420px) {
-  :root { --m-pad: 8px; }
-  .tab { min-width: 82px; }
-#info-panel { max-height: calc(var(--vh, 1vh) * 72); }
-
+  :root { 
+    --m-pad: 8px; 
+  }
+  
+  .tab { 
+    min-width: 75px;
+    font-size: 12px;
+  }
+  
+  #info-panel { 
+    max-height: calc(var(--vh, 1vh) * 75);
+  }
+  
+  .mode-btn {
+    font-size: 12px;
+    padding: 10px 6px;
+  }
+  
+  #quick-stats {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
-/* אם יש לך אזור חיפוש קבוע למעלה (בר חיפוש): 
-   החלף #top-searchbar לשם האמיתי של הקונטיינר */
-
-:root{
-  --safe-top: env(safe-area-inset-top, 0px);
-  --safe-bottom: env(safe-area-inset-bottom, 0px);
-  --m-pad: 10px;
-}
-
-/* גובה מסך אמיתי (כולל Safari) */
-#map {
-  height: calc(var(--vh, 1vh) * 100);
-}
-
-/* מניעת "באנדינג" / גלילה של הרקע */
-html, body {
-  overscroll-behavior: none;
-}
-
-      /* ===== FIX: scroll works on mobile (especially iOS) ===== */
-@media (max-width: 768px) {
-  /* תן לפאנל גובה אמיתי (ולא רק max-height) כדי ש-Flex + overflow יעבדו */
+/* ========== Landscape Mode =========== */
+@media (max-width: 768px) and (orientation: landscape) {
   #info-panel {
-    height: calc(var(--vh, 1vh) * 72);
-    max-height: none;
-    overscroll-behavior: contain;
-    touch-action: pan-y;
+    max-height: calc(var(--vh, 1vh) * 85);
   }
-
-  /* גלילה פנימית אמיתית לתוכן */
-  #info-content {
-    flex: 1 1 auto;
-    min-height: 0;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    touch-action: pan-y;
-  }
-}
-/* ===== Mobile: make panel scrollable and stable ===== */
-@media (max-width: 768px) {
-  /* גובה אמיתי לפאנל (לא רק max-height) */
-  #info-panel {
-    height: calc(var(--vh, 1vh) * 72);
-    max-height: none;
-  }
-
-  /* כשמכווץ – גובה קבוע */
+  
   #info-panel.collapsed {
-    height: 64px;
-    max-height: 64px;
-  }
-
-  /* התוכן הוא האזור שנגלל */
-  #info-content {
-    flex: 1 1 auto;
-    min-height: 0;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior: contain;
-    touch-action: pan-y;
+    height: 56px;
+    max-height: 56px;
   }
 }
 
     </style>
-
     <script>
       // ===================== CONFIG =====================
 
@@ -3760,7 +3823,8 @@ try {
             initModals();
             initAddressSearchUI();
             isolatePanelScrollFromMap();
-            
+              preventPanelBlockingMap();
+            autoCollapsePanelOnSearch();
 
 
             const toggleBtn = document.getElementById("panelToggleBtn");
@@ -3788,9 +3852,65 @@ setMobileVh();
 window.addEventListener("resize", setMobileVh);
 if (window.visualViewport) window.visualViewport.addEventListener("resize", setMobileVh);
 
+function setMobileVh() {
+  const vh = window.innerHeight * 0.01;
+  document.documentElement.style.setProperty("--vh", `${vh}px`);
+}
+setMobileVh();
+window.addEventListener("resize", setMobileVh);
+if (window.visualViewport) window.visualViewport.addEventListener("resize", setMobileVh);
+
+      // ========== MOBILE: Prevent panel from blocking map ==========
+      function preventPanelBlockingMap() {
+        const panel = document.getElementById("info-panel");
+        const map = document.getElementById("map");
+        
+        if (!panel || !map) return;
+        
+        panel.addEventListener("touchstart", (e) => {
+          e.stopPropagation();
+        }, { passive: true });
+        
+        panel.addEventListener("touchmove", (e) => {
+          const content = document.getElementById("info-content");
+          if (!content) return;
+          
+          const atTop = content.scrollTop === 0;
+          const atBottom = content.scrollTop + content.clientHeight >= content.scrollHeight;
+          
+          if ((atTop && e.touches[0].clientY > e.touches[0].startY) ||
+              (atBottom && e.touches[0].clientY < e.touches[0].startY)) {
+            e.preventDefault();
+          }
+          
+          e.stopPropagation();
+        }, { passive: false });
+      }
+
+      // ========== MOBILE: Auto-collapse panel on search focus ==========
+      function autoCollapsePanelOnSearch() {
+        const input = document.getElementById("addrInput");
+        const panel = document.getElementById("info-panel");
+        const btn = document.getElementById("panelToggleBtn");
+        
+        if (!input || !panel) return;
+        
+        input.addEventListener("focus", () => {
+          if (window.matchMedia("(max-width: 768px)").matches) {
+            panel.classList.add("collapsed");
+            if (btn) {
+              btn.textContent = "➕ הגדל";
+              btn.title = "הגדל";
+            }
+          }
+        });
+      }
 
       // Expose functions for inline handlers
       window.initGovMap = initGovMap;
+      // Expose functions for inline handlers
+      window.initGovMap = initGovMap;
+      
       window.switchTab = switchTab;
       window.setMode = setMode;
       window.setMetric = setMetric;
