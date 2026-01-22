@@ -937,8 +937,8 @@
     bottom: 0;
 
     width: 100%;
-   height: calc(var(--vh, 1vh) * 55);
-  max-height: calc(var(--vh, 1vh) * 55);
+    height: calc(var(--vh, 1vh) * 70);
+    max-height: calc(var(--vh, 1vh) * 70);
 
     border-radius: 20px 20px 0 0;
     overscroll-behavior: contain;
@@ -1038,8 +1038,8 @@
     touch-action: pan-y;
   }
   #info-panel.collapsed {
-    height: calc(var(--vh, 1vh) * 45);
-  max-height: none;
+    height: 62vh;          /* נשאר bottom-sheet בגובה רגיל */
+    max-height: none;
   }
 
   #info-panel.collapsed #tabs,
@@ -2341,19 +2341,15 @@
             const k = normalizeKey(nameFromMap);
             const entry =
               index[k] || index[nameVariants(nameFromMap)[0]] || null;
-          if (!entry) {
-  // מציג את שם הרשות בכותרת במקום "לא נמצאו נתונים"
-  selectedEntityName = nameFromMap;
-  selectedEntityKey = null;
+            if (!entry) {
+              showInfo(
+                "לא נמצאו נתונים",
+                "רשות ללא שיפוט, אין נתוני פשיעה",
+                "error",
+              );
 
-  showInfo(
-    nameFromMap,
-    `אין נתוני פשיעה עבור <strong>${escapeHtml(nameFromMap)}</strong> בשנת ${escapeHtml(currentYear)}.`,
-    "warn",
-  );
-  return;
-}
-
+              return;
+            }
 
             selectedEntityName = entry.name;
             selectedEntityKey = entry.key;
@@ -3427,16 +3423,14 @@
                   const s = String(geomName);
 
                   // 1) ללא שיפוט -> אדום (אין נתוני פשיעה)
-               if (s.includes("_nojur_")) {
-  const n = mappedMuniName || "ללא שיפוט";
-  showInfo(
-    n,
-    `אין נתוני פשיעה עבור <strong>${escapeHtml(n)}</strong> בשנת ${escapeHtml(currentYear)}.`,
-    "warn",
-  );
-  return;
-}
-
+                  if (s.includes("_nojur_")) {
+                    showInfo(
+                      "לא נמצאו נתונים",
+                      "אין נתוני פשיעה עבור רשות זו",
+                      "error",
+                    );
+                    return;
+                  }
 
                   // 2) nopop -> יש פשיעה אבל אין אוכלוסייה => להציג את מסך הרשות הרגיל (כמו בלי צביעה)
                   if (s.includes("_nopop_")) {
