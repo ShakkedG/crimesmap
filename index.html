@@ -2341,15 +2341,23 @@
             const k = normalizeKey(nameFromMap);
             const entry =
               index[k] || index[nameVariants(nameFromMap)[0]] || null;
-            if (!entry) {
-              showInfo(
-                "לא נמצאו נתונים",
-                "רשות ללא שיפוט, אין נתוני פשיעה",
-                "error",
-              );
+           if (!entry) {
+  selectedEntityName = nameFromMap; // לשמור את השם שנמצא מהשכבה
+  selectedEntityKey = null;
 
-              return;
-            }
+  const nm = String(nameFromMap || "").trim();
+  const isNoJur = nm.startsWith("ללא שיפוט");
+
+  showInfo(
+    nm || "ישוב",
+    isNoJur
+      ? `אין נתוני פשיעה עבור <strong>${escapeHtml(nm)}</strong> בשנת ${escapeHtml(currentYear)} (רשות ללא שיפוט).`
+      : `אין נתוני פשיעה עבור <strong>${escapeHtml(nm)}</strong> בשנת ${escapeHtml(currentYear)}.`,
+    "warn",
+  );
+  return;
+}
+
 
             selectedEntityName = entry.name;
             selectedEntityKey = entry.key;
@@ -3423,14 +3431,16 @@
                   const s = String(geomName);
 
                   // 1) ללא שיפוט -> אדום (אין נתוני פשיעה)
-                  if (s.includes("_nojur_")) {
-                    showInfo(
-                      "לא נמצאו נתונים",
-                      "אין נתוני פשיעה עבור רשות זו",
-                      "error",
-                    );
-                    return;
-                  }
+                if (s.includes("_nojur_")) {
+  const nm = mappedMuniName || "ללא שיפוט";
+  showInfo(
+    nm,
+    `אין נתוני פשיעה עבור <strong>${escapeHtml(nm)}</strong> בשנת ${escapeHtml(currentYear)}.`,
+    "warn",
+  );
+  return;
+}
+
 
                   // 2) nopop -> יש פשיעה אבל אין אוכלוסייה => להציג את מסך הרשות הרגיל (כמו בלי צביעה)
                   if (s.includes("_nopop_")) {
