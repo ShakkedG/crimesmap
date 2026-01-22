@@ -985,6 +985,32 @@
   height: 100vh;
   height: calc(var(--vh, 1vh) * 100);
 }
+#app {
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+#mapWrap {
+  flex: 0 0 32dvh;     /* אפשר לשנות ל-28/35 לפי נוחות */
+  min-height: 220px;
+  position: relative;
+}
+
+#map {
+  width: 100%;
+  height: 100%;
+}
+
+/* זה הפאנל שגולל במובייל */
+#panel {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: env(safe-area-inset-bottom);
+}
 
 /* מניעת "bouncing" ב-iOS */
 html, body {
@@ -1295,15 +1321,22 @@ input, select, textarea {
   }
 
   /* מונע “שרשרת גלילה” שמגיעה ל־body ואז נתקעת */
-  html, body {
-    overscroll-behavior: none;
-  }
+ html, body {
+  height: 100%;
+  margin: 0;
 }
+
+body {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
 /* ===== FULLSCREEN MAP MODE ===== */
 body.fullscreen-map #info-panel,
-body.fullscreen-map #topbar {
+body.fullscreen-map #top-searchbar {
   display: none !important;
 }
+
 
 body.fullscreen-map #map {
   position: fixed !important;
@@ -1328,6 +1361,24 @@ body.fullscreen-map #map {
   }
 }
 
+/* הצג כפתורי Extras רק במצב טלפון */
+@media (min-width: 769px) {
+  #btnGPS,
+  #btnFullscreen,
+  #btnShare,
+  #btnLegend {
+    display: none !important;
+  }
+}
+/* הצג כפתורי Extras רק במצב טלפון */
+@media (min-width: 769px) {
+  #btnGPS,
+  #btnFullscreen,
+  #btnShare,
+  #btnLegend {
+    display: none !important;
+  }
+}
 
     </style>
     <script>
@@ -4163,6 +4214,11 @@ if (window.visualViewport) window.visualViewport.addEventListener("resize", setM
           <button id="aboutBtn" class="hbtn secondary">ℹ️ אודות</button>
           <button
             id="panelToggleBtn"
+            <button id="btnGPS" class="hbtn secondary">📍 GPS</button>
+<button id="btnFullscreen" class="hbtn secondary">⛶ מסך מלא</button>
+<button id="btnShare" class="hbtn secondary">🔗 שתף</button>
+<button id="btnLegend" class="hbtn secondary">🗂 מקרא</button>
+
             class="hbtn secondary"
             title="כיווץ/הרחבה"
           >
