@@ -921,39 +921,119 @@
       }
 
       /* Mobile bottom sheet */
-      @media (max-width: 768px) {
-        #info-panel {
-          left: 0;
-          right: 0;
-          top: auto;
-          bottom: 0;
-          width: 100%;
-          max-height: none;
-          height: 62vh;
-          border-radius: 20px 20px 0 0;
-        }
-        #info-panel.collapsed {
-          height: 74px;
-        }
-        #info-content {
-          padding: 12px;
-        }
-        .crime-grid {
-          grid-template-columns: 1fr;
-        }
-        .compare-kpis {
-          grid-template-columns: 1fr;
-        }
-        .bar-row {
-          grid-template-columns: 1fr 1.6fr auto;
-        }
-        .trend-kpis {
-          grid-template-columns: 1fr;
-        }
-        .trow {
-          grid-template-columns: 52px 1fr auto;
-        }
-      }
+    /* ===== Mobile bottom sheet: compact controls + better scrolling ===== */
+@media (max-width: 768px) {
+  /* make the panel a real fixed bottom sheet */
+  #info-panel {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: auto;
+    bottom: 0;
+
+    width: 100%;
+    height: calc(var(--vh, 1vh) * 70);
+    max-height: calc(var(--vh, 1vh) * 70);
+
+    border-radius: 20px 20px 0 0;
+    overscroll-behavior: contain;
+    touch-action: pan-y;
+  }
+
+  /* header smaller */
+  #panel-header {
+    padding: 10px 12px;
+  }
+  #panel-header h1 {
+    font-size: 15px;
+  }
+  #panel-header p {
+    margin-top: 4px;
+    font-size: 12px;
+    line-height: 1.25;
+  }
+  #header-actions {
+    margin-top: 8px;
+  }
+  #header-actions .hbtn {
+    padding: 8px 10px;
+    font-size: 12px;
+    border-radius: 12px;
+  }
+
+  /* tabs slightly smaller */
+  #tabs .tab {
+    padding: 9px 8px;
+    font-size: 12px;
+    min-width: 78px;
+  }
+
+  /* controls area smaller */
+  #controls {
+    padding: 8px 10px;
+  }
+
+  /* mode/metric buttons: compact and 2 rows of 3 */
+  .mode-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+  .mode-btn {
+    padding: 9px 8px;
+    font-size: 12px;
+    border-radius: 12px;
+    border-width: 2px;
+  }
+  /* stop "full" buttons from consuming a whole row on mobile */
+  .mode-btn.full {
+    grid-column: auto;
+  }
+  .mode-btn.primary {
+    font-size: 12.5px;
+    padding: 9px 8px;
+    border-width: 2px;
+  }
+
+  /* year row smaller */
+  #controls-row {
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  #controls label {
+    font-size: 12px;
+  }
+  #yearSelect {
+    padding: 8px 10px;
+    font-size: 13px;
+    border-radius: 12px;
+  }
+
+  /* quick stats smaller */
+  #quick-stats {
+    gap: 6px;
+  }
+  .stat-card {
+    padding: 9px;
+    border-radius: 12px;
+  }
+  .stat-value {
+    font-size: 16px;
+  }
+  .stat-label {
+    font-size: 11px;
+  }
+
+  /* IMPORTANT: smooth/usable scroll for the data area */
+  #info-content {
+    padding: 10px 10px 16px 10px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    touch-action: pan-y;
+  }
+}
+
       /* ===== Always-open top search bar ===== */
       #top-searchbar {
         position: fixed;
