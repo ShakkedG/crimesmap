@@ -937,8 +937,8 @@
     bottom: 0;
 
     width: 100%;
-    height: calc(var(--vh, 1vh) * 70);
-    max-height: calc(var(--vh, 1vh) * 70);
+    height: calc(var(--vh, 1vh) * 55);
+    max-height: calc(var(--vh, 1vh) * 55);
 
     border-radius: 20px 20px 0 0;
     overscroll-behavior: contain;
@@ -1037,11 +1037,10 @@
     overscroll-behavior: contain;
     touch-action: pan-y;
   }
-  #info-panel.collapsed {
-    height: 62vh;          /* נשאר bottom-sheet בגובה רגיל */
-    max-height: none;
-  }
-
+ #info-panel.collapsed {
+  height: calc(var(--vh, 1vh) * 45);
+  max-height: none;
+}
   #info-panel.collapsed #tabs,
   #info-panel.collapsed #controls {
     display: none !important;
