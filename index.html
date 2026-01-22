@@ -919,6 +919,38 @@
       #info-panel.collapsed #panelToggleBtn {
         display: inline-flex;
       }
+      /* Drag handle (default hidden on desktop) */
+#panelDragHandle {
+  display: none;
+}
+
+/* Mobile: show drag handle above the title */
+@media (max-width: 768px) {
+  #panelDragHandle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 8px 0 6px 0;
+    cursor: ns-resize;
+    touch-action: none; /* חשוב: שלא יגלול בזמן גרירה */
+    user-select: none;
+  }
+
+  #panelDragHandle .grabber {
+    width: 54px;
+    height: 6px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+  }
+
+  /* כדי שהידית תהיה "מעל" עם ריווח יפה */
+  #panel-header {
+    padding-top: 8px; /* יש לך כבר padding, זה עדין */
+  }
+}
+
 
       /* Mobile bottom sheet */
     /* ===== Mobile bottom sheet: compact controls + better scrolling ===== */
@@ -2541,6 +2573,78 @@
         if (Array.isArray(list?.Result)) return list.Result;
         return [];
       }
+      function initPanelDragResize() {
+  const panel = document.getElementById("info-panel");
+  const handle = document.getElementById("panelDragHandle");
+  if (!panel || !handle) return;
+
+  let dragging = false;
+  let startY = 0;
+  let startH = 0;
+
+  const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
+
+  const isMobile = () => window.matchMedia("(max-width: 768px)").matches;
+
+  function getBounds() {
+    const vh = window.innerHeight || 800;
+    const minH = 140;                 // מינימום סביר לתוכן
+    const maxH = Math.round(vh * 0.90); // עד 90% גובה מסך
+    return { minH, maxH };
+  }
+
+  function onDown(ev) {
+    if (!isMobile()) return;
+
+    // אם היה "collapsed" – תן לגרירה לפתוח אותו
+    panel.classList.remove("collapsed");
+
+    dragging = true;
+    startY = ev.clientY;
+    startH = panel.getBoundingClientRect().height;
+
+    // מבטל transition בזמן גרירה (כדי שלא "יקפוץ")
+    panel.style.transition = "none";
+
+    handle.setPointerCapture?.(ev.pointerId);
+    ev.preventDefault();
+  }
+
+  function onMove(ev) {
+    if (!dragging) return;
+
+    const { minH, maxH } = getBounds();
+
+    // גוררים למעלה => מגדילים (delta חיובי)
+    const delta = startY - ev.clientY;
+    const newH = clamp(startH + delta, minH, maxH);
+
+    panel.style.height = `${Math.round(newH)}px`;
+    panel.style.maxHeight = "none"; // לא להילחם עם CSS mobile
+  }
+
+  function onUp() {
+    if (!dragging) return;
+    dragging = false;
+
+    // מחזירים transition רגיל (אם תרצה)
+    panel.style.transition = "";
+  }
+
+  handle.addEventListener("pointerdown", onDown);
+  window.addEventListener("pointermove", onMove);
+  window.addEventListener("pointerup", onUp);
+
+  // אם מסובבים מסך/משנים גודל – לוודא שהגובה לא יוצא מהטווח
+  window.addEventListener("resize", () => {
+    if (!isMobile()) return;
+    const { minH, maxH } = getBounds();
+    const h = panel.getBoundingClientRect().height;
+    if (h < minH) panel.style.height = `${minH}px`;
+    if (h > maxH) panel.style.height = `${maxH}px`;
+  });
+}
+
 
       function extractXY(item) {
         const x =
@@ -3639,6 +3743,8 @@
 
             initModals();
             initAddressSearchUI();
+            initPanelDragResize();
+
 
             const toggleBtn = document.getElementById("panelToggleBtn");
             if (toggleBtn) toggleBtn.addEventListener("click", togglePanel);
@@ -3712,8 +3818,11 @@ if (window.visualViewport) window.visualViewport.addEventListener("resize", setM
       <div id="addrResults"></div>
     </div>
 
-    <div id="info-panel">
       <div id="panel-header">
+        <div id="panelDragHandle" title="גרור לשינוי גובה">
+  <div class="grabber"></div>
+</div>
+
         <h1>🗺️ מפת פשיעה בישראל</h1>
         <p>
           מצב נוכחי: <strong>ישובים/רשויות</strong><br />מדד ל-10,000 זמין כאן
