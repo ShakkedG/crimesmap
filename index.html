@@ -923,6 +923,8 @@
       /* Mobile bottom sheet */
     /* ===== Mobile bottom sheet: compact controls + better scrolling ===== */
 @media (max-width: 768px) {
+  
+  
   /* make the panel a real fixed bottom sheet */
    #quick-stats {
     display: none !important;
@@ -1034,6 +1036,20 @@
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;
     touch-action: pan-y;
+  }
+  #info-panel.collapsed {
+    height: 62vh;          /* נשאר bottom-sheet בגובה רגיל */
+    max-height: none;
+  }
+
+  #info-panel.collapsed #tabs,
+  #info-panel.collapsed #controls {
+    display: none !important;
+  }
+
+  /* דריסה לחוק הכללי שמסתיר גם את info-content */
+  #info-panel.collapsed #info-content {
+    display: block !important;
   }
 }
 
