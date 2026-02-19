@@ -1,9 +1,20 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
   <head>
+    <!-- 1. cmd => cd C:\Shaked\crimesmap-main -->
+    <!-- 2. cmd => C:\Python311\python.exe -m http.server 3000 -->
+    <!-- 3. run from http://shakkedg.github.io:3000 -->
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>SatMap – Buildings + CSV (Outliers)</title>
+    <title>מפת פשיעה – לפי שנה (2020–2025) | ישובים / מרחבים / תחנות</title>
+
+    <!-- DATA -->
+    <script src="crimeByYear_2020_2025.js"></script>
+    <script src="crimeByYearMerhav.js"></script>
+    <script src="PopulationDB.js"></script>
+    <script src="crimeByYearStations.js"></script>
+
+    <!-- Boundaries -->
 
     <style>
       * {
@@ -15,7 +26,8 @@
         margin: 0;
         padding: 0;
         height: 100%;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
         overflow: hidden;
         background: #f5f5f5;
         font-size: 15px;
@@ -26,6 +38,36 @@
         height: 100%;
         position: relative;
       }
+      /* Floating always-available search button */
+      #floatingSearchBtn {
+        position: fixed;
+        top: 12px;
+        right: 12px; /* RTL: שים בצד ימין */
+        z-index: 30000; /* מעל הכל */
+        padding: 11px 14px;
+        border-radius: 14px;
+        border: 2px solid rgba(255, 255, 255, 0.35);
+        background: linear-gradient(135deg, #0b63ce 0%, #084eac 100%);
+        color: #fff;
+        font-weight: 1000;
+        cursor: pointer;
+        display: inline-flex;
+        gap: 8px;
+        align-items: center;
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+      }
+
+      #floatingSearchBtn:active {
+        transform: translateY(1px);
+      }
+
+      /* במובייל – תישאר למעלה אבל עם קצת מרווח */
+      @media (max-width: 768px) {
+        #floatingSearchBtn {
+          top: 10px;
+          right: 10px;
+        }
+      }
 
       /* hide ESRI widgets if appear */
       .esri-layer-list,
@@ -33,153 +75,7 @@
         display: none !important;
       }
 
-      /* ===== Top Always-Open Search Bar (CrimesMap-like) ===== */
-      #top-searchbar {
-        position: fixed;
-        top: 12px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: min(980px, calc(100vw - 24px));
-        z-index: 30000;
-
-        background: #fff;
-        border-radius: 999px;
-        padding: 8px;
-        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16);
-        border: 2px solid rgba(11, 99, 206, 0.35);
-
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
-
-      .pillBtn {
-        padding: 10px 14px;
-        background: #0b63ce;
-        color: #fff;
-        border: none;
-        border-radius: 999px;
-        cursor: pointer;
-        font-weight: 1000;
-        font-size: 14px;
-        white-space: nowrap;
-      }
-      .pillBtn.secondary {
-        background: #084eac;
-      }
-      .pillBtn:active {
-        transform: translateY(1px);
-      }
-
-      .pillInput {
-        flex: 1;
-        border: 2px solid #111;
-        border-radius: 999px;
-        padding: 10px 12px;
-        font-weight: 900;
-        font-size: 14px;
-        outline: none;
-        text-align: right;
-        direction: rtl;
-        min-width: 160px;
-      }
-      .pillInput.ltr {
-        direction: ltr;
-        text-align: left;
-      }
-
-      #addrResults,
-      #idResults {
-        position: absolute;
-        top: calc(100% + 10px);
-        right: 0;
-        left: 0;
-        display: none;
-        border: 1px solid #e0e0e0;
-        background: #fff;
-        border-radius: 16px;
-        overflow: hidden;
-        max-height: 320px;
-        overflow-y: auto;
-        box-shadow: 0 10px 22px rgba(0, 0, 0, 0.1);
-      }
-
-      .dropSectionTitle {
-        padding: 10px 12px;
-        background: #f6f6f6;
-        font-weight: 1000;
-        color: #333;
-        border-bottom: 1px solid #eee;
-      }
-
-      .addr-item {
-        padding: 10px 12px;
-        cursor: pointer;
-        font-size: 14px;
-        border-bottom: 1px solid #f0f0f0;
-        font-weight: 900;
-      }
-      .addr-item:last-child {
-        border-bottom: none;
-      }
-      .addr-item:hover {
-        background: #f5f9ff;
-      }
-      .addr-sub {
-        font-size: 12.5px;
-        color: #666;
-        margin-top: 3px;
-        font-weight: 800;
-      }
-
-      @media (max-width: 768px) {
-        #top-searchbar {
-          top: 10px;
-          width: calc(100vw - 20px);
-          flex-wrap: wrap;
-          border-radius: 18px;
-        }
-        .pillInput {
-          flex: 1 1 100%;
-          min-width: 0;
-        }
-        .pillBtn {
-          flex: 1 1 auto;
-        }
-      }
-
-      /* ===== Loading ===== */
-      #loading {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: white;
-        padding: 24px 28px;
-        border-radius: 16px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.22);
-        z-index: 10000;
-        text-align: center;
-      }
-      .spinner {
-        width: 40px;
-        height: 40px;
-        margin: 0 auto 14px;
-        border: 4px solid #e7e7e7;
-        border-top: 4px solid #0b63ce;
-        border-radius: 50%;
-        animation: spin 0.8s linear infinite;
-      }
-      @keyframes spin {
-        0% {
-          transform: rotate(0deg);
-        }
-        100% {
-          transform: rotate(360deg);
-        }
-      }
-
-      /* ===== PANEL (CrimesMap-like) ===== */
+      /* PANEL */
       #info-panel {
         position: absolute;
         top: 15px;
@@ -188,14 +84,16 @@
         background: white;
         padding: 0;
         border-radius: 14px;
-        width: 460px;
+        width: 440px;
         max-height: calc(100vh - 30px);
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
         font-size: 14px;
         overflow: hidden;
         display: flex;
         flex-direction: column;
-        transition: height 0.2s ease, max-height 0.2s ease;
+        transition:
+          height 0.2s ease,
+          max-height 0.2s ease;
       }
 
       #panel-header {
@@ -293,6 +191,7 @@
         gap: 8px;
         margin-bottom: 10px;
       }
+
       .mode-btn {
         padding: 11px 10px;
         border-radius: 12px;
@@ -335,6 +234,29 @@
         border-width: 3px;
       }
 
+      #controls-row {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+      #controls label {
+        font-weight: 1000;
+        font-size: 13px;
+        color: #333;
+        white-space: nowrap;
+      }
+      #yearSelect {
+        flex: 1;
+        padding: 10px 12px;
+        border-radius: 12px;
+        border: 1px solid #cfcfcf;
+        font-size: 14px;
+        background: white;
+        cursor: pointer;
+        font-weight: 1000;
+      }
+
       #quick-stats {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
@@ -353,7 +275,6 @@
         font-weight: 1000;
         color: #0b63ce;
         margin-bottom: 3px;
-        direction: ltr;
       }
       .stat-label {
         font-size: 12px;
@@ -390,6 +311,59 @@
         color: #444;
       }
 
+      .total-summary {
+        font-size: 26px;
+        font-weight: 1000;
+        color: #0b63ce;
+        margin: 12px 0 10px 0;
+        text-align: center;
+        padding: 14px;
+        background: linear-gradient(135deg, #e7f3ff 0%, #f3f8ff 100%);
+        border-radius: 14px;
+        border: 2px solid #b3d9ff;
+      }
+
+      .sub-summary {
+        margin-top: 0;
+        margin-bottom: 12px;
+        text-align: center;
+        font-size: 13px;
+        color: #333;
+        font-weight: 1000;
+      }
+
+      .crime-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+        margin-top: 10px;
+      }
+      .crime-item {
+        background: #fafafa;
+        padding: 12px;
+        border-radius: 14px;
+        border: 1px solid #e6e6e6;
+        border-right: 4px solid #0b63ce;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.03);
+      }
+      .crime-name {
+        font-weight: 1000;
+        color: #222;
+        font-size: 13px;
+        line-height: 1.35;
+        min-height: 32px;
+        display: flex;
+        align-items: center;
+      }
+      .crime-count {
+        font-weight: 1000;
+        color: #0b63ce;
+        font-size: 17px;
+      }
+
       .message {
         padding: 12px 14px;
         border-radius: 12px;
@@ -415,25 +389,71 @@
         border-right-color: #ff0000;
       }
 
-      .total-summary {
-        font-size: 24px;
-        font-weight: 1000;
-        color: #0b63ce;
-        margin: 12px 0 10px 0;
+      #loading {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        padding: 24px 28px;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.22);
+        z-index: 10000;
         text-align: center;
-        padding: 14px;
-        background: linear-gradient(135deg, #e7f3ff 0%, #f3f8ff 100%);
-        border-radius: 14px;
-        border: 2px solid #b3d9ff;
-        direction: ltr;
+      }
+      .spinner {
+        width: 40px;
+        height: 40px;
+        margin: 0 auto 14px;
+        border: 4px solid #e7e7e7;
+        border-top: 4px solid #0b63ce;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
       }
 
-      .badgeRow {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        justify-content: center;
+      /* Compare cards */
+      .compare-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
         margin-bottom: 12px;
+      }
+      .compare-card {
+        border: 1px solid #e8e8e8;
+        border-radius: 16px;
+        padding: 12px;
+        background: #fff;
+        box-shadow: 0 10px 22px rgba(0, 0, 0, 0.06);
+      }
+      .compare-card-title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+      .compare-name {
+        font-weight: 1000;
+        color: #111;
+        font-size: 14px;
+        max-width: 280px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .compare-badges {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
       }
       .badge {
         font-size: 12px;
@@ -449,18 +469,250 @@
         background: #fff7e6;
         color: #6a3f00;
       }
-      .badge-good {
-        border-color: #b7e3c6;
-        background: #ecfff2;
-        color: #0b6b2f;
+      .compare-kpis {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        margin-bottom: 10px;
       }
-      .badge-bad {
-        border-color: #ffb3b3;
-        background: #fff0f0;
-        color: #b20000;
+      .kpi {
+        border: 1px solid #eee;
+        background: #fafafa;
+        border-radius: 14px;
+        padding: 10px;
+        text-align: center;
+      }
+      .kpi .kpi-value {
+        font-weight: 1000;
+        color: #0b63ce;
+        font-size: 14px;
+        margin-bottom: 4px;
+      }
+      .kpi .kpi-label {
+        font-size: 11px;
+        font-weight: 1000;
+        color: #666;
+        letter-spacing: 0.2px;
       }
 
-      /* Outliers list (CrimesMap-like rankings list) */
+      .add-compare-btn {
+        width: 100%;
+        padding: 12px;
+        background: #0b63ce;
+        color: white;
+        border: none;
+        border-radius: 14px;
+        font-size: 14px;
+        font-weight: 1000;
+        cursor: pointer;
+        margin-bottom: 12px;
+        box-shadow: 0 10px 24px rgba(11, 99, 206, 0.18);
+      }
+      .add-compare-btn:active {
+        transform: translateY(1px);
+      }
+
+      .compare-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+      .compare-city-tag {
+        background: #e7f3ff;
+        color: #0b63ce;
+        padding: 8px 12px;
+        border-radius: 12px;
+        border: 1px solid #b3d9ff;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        font-weight: 1000;
+      }
+      .compare-city-tag button {
+        border: none;
+        background: none;
+        color: #0b63ce;
+        cursor: pointer;
+        font-size: 18px;
+        line-height: 1;
+        padding: 0;
+        width: 22px;
+        height: 22px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+      }
+      .compare-city-tag button:hover {
+        background: #0b63ce;
+        color: white;
+      }
+
+      /* Compare bars */
+      .compare-bars-title {
+        margin: 12px 0 8px;
+        font-weight: 1000;
+        font-size: 14px;
+        color: #111;
+      }
+      .bar-row {
+        display: grid;
+        grid-template-columns: 1fr 2.2fr auto;
+        gap: 10px;
+        align-items: center;
+        padding: 10px;
+        border: 1px solid #eee;
+        border-radius: 14px;
+        background: #fafafa;
+        margin-bottom: 8px;
+      }
+      .bar-name {
+        font-weight: 1000;
+        font-size: 12.5px;
+        color: #222;
+
+        /* במקום ellipsis */
+        white-space: normal;
+        overflow: visible;
+        text-overflow: clip;
+        word-break: break-word;
+        line-height: 1.25;
+      }
+
+      .bar-track {
+        height: 28px;
+        background: #f0f0f0;
+        border-radius: 12px;
+        overflow: hidden;
+        position: relative;
+        border: 1px solid #e5e5e5;
+      }
+      .bar-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #0b63ce 0%, #1f86ff 100%);
+        border-radius: 10px;
+        transition: width 0.35s ease;
+      }
+      .bar-value {
+        font-weight: 1000;
+        color: #0b63ce;
+        font-size: 13px;
+        text-align: left;
+        min-width: 72px;
+        direction: ltr;
+      }
+
+      /* Trends (Redesign) */
+      .trend-shell {
+        border: 1px solid #eee;
+        border-radius: 18px;
+        background: #fff;
+        box-shadow: 0 10px 22px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+      }
+      .trend-top {
+        padding: 12px 12px 10px 12px;
+        background: linear-gradient(135deg, #e7f3ff 0%, #f3f8ff 100%);
+        border-bottom: 1px solid #e6e6e6;
+      }
+      .trend-title {
+        font-weight: 1000;
+        color: #063a73;
+        font-size: 14px;
+        margin-bottom: 6px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px;
+      }
+      .trend-sub {
+        font-weight: 900;
+        color: #222;
+        font-size: 12.8px;
+        opacity: 0.95;
+        line-height: 1.45;
+      }
+      .trend-kpis {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        margin-top: 10px;
+      }
+      .trend-kpi {
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid #e0e0e0;
+        border-radius: 14px;
+        padding: 10px;
+        text-align: center;
+      }
+      .trend-kpi .v {
+        font-weight: 1000;
+        color: #0b63ce;
+        font-size: 14px;
+        margin-bottom: 4px;
+      }
+      .trend-kpi .l {
+        font-weight: 1000;
+        color: #666;
+        font-size: 11px;
+        letter-spacing: 0.2px;
+      }
+
+      .trend-list {
+        padding: 10px 12px 12px 12px;
+        background: #fff;
+      }
+      .trow {
+        display: grid;
+        grid-template-columns: 56px 1fr auto;
+        gap: 10px;
+        align-items: center;
+        padding: 10px;
+        border: 1px solid #eee;
+        border-radius: 14px;
+        background: #fafafa;
+        margin-bottom: 8px;
+      }
+      .trow .y {
+        font-weight: 1000;
+        color: #111;
+        direction: ltr;
+        text-align: left;
+      }
+      .tbar {
+        height: 22px;
+        background: #f0f0f0;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid #e5e5e5;
+      }
+      .tfill {
+        height: 100%;
+        background: linear-gradient(90deg, #0b63ce 0%, #1f86ff 100%);
+        border-radius: 10px;
+        transition: width 0.35s ease;
+      }
+      .tval {
+        font-weight: 1000;
+        color: #0b63ce;
+        min-width: 90px;
+        direction: ltr;
+        text-align: left;
+        font-size: 13px;
+      }
+      .tval small {
+        display: block;
+        font-weight: 900;
+        color: #666;
+        font-size: 11px;
+        direction: ltr;
+        text-align: left;
+        margin-top: 2px;
+      }
+
+      /* Rankings controls */
       .rank-controls {
         display: flex;
         gap: 8px;
@@ -495,6 +747,7 @@
         outline: none;
       }
 
+      /* Rankings */
       .rank-list {
         border: 1px solid #eee;
         border-radius: 16px;
@@ -537,15 +790,13 @@
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        direction: ltr;
-        text-align: left;
       }
       .rank-value {
         font-weight: 1000;
         color: #0b63ce;
         direction: ltr;
         font-size: 13.5px;
-        min-width: 110px;
+        min-width: 86px;
         text-align: left;
       }
       .rank-extra {
@@ -556,125 +807,9 @@
         color: #666;
         font-weight: 900;
         font-size: 12px;
-        direction: ltr;
-        text-align: left;
       }
 
-      /* Collapse */
-      #info-panel.collapsed {
-        max-height: 74px;
-        height: 74px;
-      }
-      #info-panel.collapsed #tabs,
-      #info-panel.collapsed #controls,
-      #info-panel.collapsed #info-content {
-        display: none;
-      }
-      #info-panel.collapsed #panel-header {
-        padding: 10px 12px;
-      }
-      #info-panel.collapsed #panel-header p {
-        display: none;
-      }
-      #info-panel.collapsed #panel-header h1 {
-        font-size: 15px;
-      }
-      #info-panel.collapsed #header-actions {
-        margin-top: 0;
-        justify-content: flex-end;
-      }
-      #info-panel.collapsed #panelToggleBtn {
-        display: inline-flex;
-      }
-
-      /* Mobile bottom sheet */
-      @media (max-width: 768px) {
-        #quick-stats {
-          display: none !important;
-        }
-        #info-panel {
-          position: fixed;
-          left: 0;
-          right: 0;
-          top: auto;
-          bottom: 0;
-
-          width: 100%;
-          height: calc(var(--vh, 1vh) * 55);
-          max-height: calc(var(--vh, 1vh) * 55);
-
-          border-radius: 20px 20px 0 0;
-          overscroll-behavior: contain;
-          touch-action: pan-y;
-          right: 0;
-        }
-        #panel-header {
-          padding: 10px 12px;
-        }
-        #panel-header h1 {
-          font-size: 15px;
-        }
-        #panel-header p {
-          margin-top: 4px;
-          font-size: 12px;
-          line-height: 1.25;
-        }
-        #header-actions {
-          margin-top: 8px;
-        }
-        #header-actions .hbtn {
-          padding: 8px 10px;
-          font-size: 12px;
-          border-radius: 12px;
-        }
-        #tabs .tab {
-          padding: 9px 8px;
-          font-size: 12px;
-          min-width: 78px;
-        }
-        #controls {
-          padding: 8px 10px;
-        }
-        .mode-grid {
-          grid-template-columns: repeat(3, 1fr);
-          gap: 6px;
-          margin-bottom: 8px;
-        }
-        .mode-btn {
-          padding: 9px 8px;
-          font-size: 12px;
-          border-radius: 12px;
-          border-width: 2px;
-        }
-        .mode-btn.full {
-          grid-column: auto;
-        }
-        .mode-btn.primary {
-          font-size: 12.5px;
-          padding: 9px 8px;
-          border-width: 2px;
-        }
-        #info-content {
-          padding: 10px 10px 16px 10px;
-          overflow-y: auto;
-          -webkit-overflow-scrolling: touch;
-          overscroll-behavior: contain;
-          touch-action: pan-y;
-        }
-        #info-panel.collapsed {
-          height: calc(var(--vh, 1vh) * 45);
-          max-height: none;
-        }
-        #info-panel.collapsed #tabs,
-        #info-panel.collapsed #controls {
-          display: none !important;
-        }
-        #info-panel.collapsed #info-content {
-          display: block !important;
-        }
-      }
-
-      /* Modal */
+      /* MODALS */
       .modal {
         display: none;
         position: fixed;
@@ -730,78 +865,390 @@
         padding: 16px;
         overflow: auto;
       }
-      code.inline {
-        background: #f5f5f5;
-        border: 1px solid #eee;
-        padding: 2px 6px;
-        border-radius: 8px;
+
+      /* Address search results */
+
+      .addr-item {
+        padding: 10px 12px;
+        cursor: pointer;
+        font-size: 14px;
+        border-bottom: 1px solid #f0f0f0;
         font-weight: 900;
-        direction: ltr;
-        display: inline-block;
+      }
+      .addr-item:last-child {
+        border-bottom: none;
+      }
+      .addr-item:hover {
+        background: #f5f9ff;
+      }
+      .addr-sub {
+        font-size: 12.5px;
+        color: #666;
+        margin-top: 3px;
+        font-weight: 800;
+      }
+
+      /* Collapse behavior (more compact) */
+      #info-panel.collapsed {
+        max-height: 74px;
+        height: 74px;
+      }
+      #info-panel.collapsed #tabs,
+      #info-panel.collapsed #controls,
+      #info-panel.collapsed #info-content {
+        display: none;
+      }
+
+      #info-panel.collapsed #panel-header {
+        padding: 10px 12px;
+      }
+      #info-panel.collapsed #panel-header p {
+        display: none;
+      }
+      #info-panel.collapsed #panel-header h1 {
+        font-size: 15px;
+      }
+
+      /* אל תסתיר את כל ה-header-actions כי שם נמצא כפתור ההגדלה */
+      #info-panel.collapsed #header-actions {
+        margin-top: 0;
+        justify-content: flex-end;
+      }
+
+      /* כפתור ההקטנה/הגדלה נשאר תמיד */
+      #info-panel.collapsed #panelToggleBtn {
+        display: inline-flex;
+      }
+
+      /* Mobile bottom sheet */
+    /* ===== Mobile bottom sheet: compact controls + better scrolling ===== */
+@media (max-width: 768px) {
+  
+  
+  /* make the panel a real fixed bottom sheet */
+   #quick-stats {
+    display: none !important;
+  }
+  #info-panel {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: auto;
+    bottom: 0;
+
+    width: 100%;
+    height: calc(var(--vh, 1vh) * 55);
+    max-height: calc(var(--vh, 1vh) * 55);
+
+    border-radius: 20px 20px 0 0;
+    overscroll-behavior: contain;
+    touch-action: pan-y;
+  }
+
+  /* header smaller */
+  #panel-header {
+    padding: 10px 12px;
+  }
+  #panel-header h1 {
+    font-size: 15px;
+  }
+  #panel-header p {
+    margin-top: 4px;
+    font-size: 12px;
+    line-height: 1.25;
+  }
+  #header-actions {
+    margin-top: 8px;
+  }
+  #header-actions .hbtn {
+    padding: 8px 10px;
+    font-size: 12px;
+    border-radius: 12px;
+  }
+
+  /* tabs slightly smaller */
+  #tabs .tab {
+    padding: 9px 8px;
+    font-size: 12px;
+    min-width: 78px;
+  }
+
+  /* controls area smaller */
+  #controls {
+    padding: 8px 10px;
+  }
+
+  /* mode/metric buttons: compact and 2 rows of 3 */
+  .mode-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+  .mode-btn {
+    padding: 9px 8px;
+    font-size: 12px;
+    border-radius: 12px;
+    border-width: 2px;
+  }
+  /* stop "full" buttons from consuming a whole row on mobile */
+  .mode-btn.full {
+    grid-column: auto;
+  }
+  .mode-btn.primary {
+    font-size: 12.5px;
+    padding: 9px 8px;
+    border-width: 2px;
+  }
+
+  /* year row smaller */
+  #controls-row {
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  #controls label {
+    font-size: 12px;
+  }
+  #yearSelect {
+    padding: 8px 10px;
+    font-size: 13px;
+    border-radius: 12px;
+  }
+
+  /* quick stats smaller */
+  #quick-stats {
+    gap: 6px;
+  }
+  .stat-card {
+    padding: 9px;
+    border-radius: 12px;
+  }
+  .stat-value {
+    font-size: 16px;
+  }
+  .stat-label {
+    font-size: 11px;
+  }
+
+  /* IMPORTANT: smooth/usable scroll for the data area */
+  #info-content {
+    padding: 10px 10px 16px 10px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    touch-action: pan-y;
+  }
+ #info-panel.collapsed {
+  height: calc(var(--vh, 1vh) * 45);
+  max-height: none;
+}
+  #info-panel.collapsed #tabs,
+  #info-panel.collapsed #controls {
+    display: none !important;
+  }
+
+  /* דריסה לחוק הכללי שמסתיר גם את info-content */
+  #info-panel.collapsed #info-content {
+    display: block !important;
+  }
+}
+
+      /* ===== Always-open top search bar ===== */
+      #top-searchbar {
+        position: fixed;
+        top: 12px;
+        left: 50%;
+        transform: translateX(-50%);
+        right: auto;
+
+        width: min(760px, calc(100vw - 24px));
+        z-index: 30000;
+
+        background: #fff;
+        border-radius: 999px;
+        padding: 8px;
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16);
+        border: 2px solid rgba(11, 99, 206, 0.35);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      #addrInput {
+        flex: 1;
+        border: 2px solid #111;
+        border-radius: 999px;
+        padding: 10px 12px;
+        font-weight: 900;
+        font-size: 14px;
+        outline: none;
+        text-align: right;
+        direction: rtl;
+      }
+
+      #addrBtn {
+        padding: 10px 14px;
+        background: #0b63ce;
+        color: #fff;
+        border: none;
+        border-radius: 999px;
+        cursor: pointer;
+        font-weight: 1000;
+        font-size: 14px;
+        white-space: nowrap;
+      }
+      #addrBtn:active {
+        transform: translateY(1px);
+      }
+
+      /* Dropdown results under the bar */
+      #addrResults {
+        position: absolute;
+        top: calc(100% + 10px);
+        right: 0;
+        left: 0;
+        margin-top: 0 !important;
+        display: none; /* נשלט מה-JS */
+        border: 1px solid #e0e0e0;
+        background: #fff;
+        border-radius: 16px;
+        overflow: hidden;
+        max-height: 320px;
+        overflow-y: auto;
+        box-shadow: 0 10px 22px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Mobile */
+      @media (max-width: 768px) {
+        #top-searchbar {
+          top: 10px;
+          left: 50%;
+          right: auto;
+          transform: translateX(-50%);
+          width: calc(100vw - 20px);
+        }
       }
     </style>
 
     <script>
       // ===================== CONFIG =====================
+
+      const MUNICIPAL_LAYER = "125";
+      const POLICE_MERHAV_LAYER = "200550";
+      const POLICE_STATION_LAYER = "24";
       const TOKEN = "ede9a5fd-7c23-432f-8ffb-d85feffa3f3c";
 
-      // GovMap buildings layer
-      const BUILDINGS_LAYER = "225287";
-
-      // CSV location (we try several paths until one works)
-      const CSV_CANDIDATES = [
-        "data/tablecsv.csv",
-        "./data/tablecsv.csv",
-        "public/data/tablecsv.csv",
-        "./public/data/tablecsv.csv",
-        "client/public/data/tablecsv.csv",
-        "./client/public/data/tablecsv.csv",
-      ];
-
-      // Optional hint: if you KNOW the ID column name in the CSV, set it here (leave "" for auto-detect)
-      const CSV_ID_HINT = ""; // e.g. "objectid" / "OBJECTID" / "BLDG_ID"
-
-      // Optional hint: if you KNOW the rate column name in the CSV, set it here (leave "" for auto-detect)
-      const CSV_RATE_HINT = ""; // e.g. "rate" / "v" / "mm_yr" / "velocity"
-
-      // Rate threshold (outlier = value <= threshold, usually negative means subsidence)
-      let rateThreshold = -10; // mm/yr (default)
-      let onlyOutliersMode = true; // "מצב חריגים" – emphasis
+      // If muni_boundaries_ITM.geojson exists alongside index.html, it will be fetched.
+      const MUNI_BOUNDARIES_GEOJSON_URL = "muni_boundaries_ITM.geojson";
 
       // ===================== STATE =====================
+      // Mouse tracking for choropleth-click fallback
+      let lastHoverMapPoint = null;
+      let lastGovmapClickAt = 0;
+      let choroRenderSeq = 0; // מזהה רינדור לצביעה (ביטול/החלפה של רינדור שעוד לא הסתיים)
+
       let mapInitialized = false;
+      let currentYear = "2025";
+      let currentTab = "single";
+      let currentMode = "muni"; // muni | merhav | station
+      let currentMetric = "abs"; // abs | rate (rate only for muni)
 
-      // CSV data
-      let csvLoaded = false;
-      let csvLoadError = null;
+      let selectedEntityName = null;
+      let selectedEntityKey = null; // canonical key for the currentMode
+      let compareList = []; // items: { mode, key, name }
 
-      let csvHeaders = [];
-      let csvHasHeader = true;
+      const muniIndex = Object.create(null);
+      const merhavIndex = Object.create(null);
+      const stationIndex = Object.create(null);
 
-      let csvIdCol = null;   // index
-      let csvRateCol = null; // index
-      let csvXCol = null;    // index (optional)
-      let csvYCol = null;    // index (optional)
+      const populationIndex = Object.create(null);
+      const variantsCache = new Map();
 
-      // Map: buildingId -> rows[]
-      const csvById = new Map();
+      // Rankings UI state
+      let rankingsOrder = "desc"; // desc | asc
+      // For efficiency:
+      const wktByCrimeNameCache = new Map(); // normalizeKey(name)->wkt
+      const choroplethCache = new Map(); // `${year}__${metric}` -> {payload, meta}
+      let activeChoroplethNames = [];
+      let choroplethEnabled = false;
+      const CHORO_PREFIX = "crime_rate_choropleth";
 
-      // Building aggregated stats: buildingId -> { id, worstRate, rowsCount, anyXY, x, y }
-      const buildingAgg = new Map();
-      let outliersList = []; // [{id, worstRate, rowsCount, x,y}]
-
-      // Selection
-      let selectedBuildingId = null;
-      let selectedBuildingRows = null; // rows[]
-      let selectedGovmapPoint = null;  // {x,y}
-
-      // Search dropdown
+      // Address search state
       let lastGeocodeReqId = 0;
       let lastAddrItems = [];
       let lastGeocodeQuery = "";
       let searchTimeout = null;
 
-      // ===================== HELPERS =====================
+      // Boundaries
+      let muniBoundariesLoaded = false;
+      let muniBoundariesLoadError = null;
+      let muniBoundariesIndex = Object.create(null); // normalizedKey -> WKT
+      let muniBoundariesMeta = []; // [{ name, wkt }]
+
+      // ===================== NORMALIZATION =====================
+      function normalizeKeyBase(name) {
+        if (name == null) return "";
+        let s = String(name).trim();
+        s = s
+          .replace(/[׳״"']/g, "")
+          .replace(/[(){}\[\],.:]/g, "")
+          .replace(/־/g, "-")
+          .replace(/\s+/g, " ")
+          .trim();
+        s = s.replace(/[\s\-]/g, "");
+        return s.toLowerCase();
+      }
+      function normalizeKey(name) {
+        return normalizeKeyBase(name);
+      }
+
+      function nameVariants(name) {
+        if (!name) return [];
+        if (variantsCache.has(name)) return variantsCache.get(name);
+
+        const raw = String(name).trim();
+        if (!raw) return [];
+
+        const withoutCityHall = raw
+          .replace(/^עיריית\s+/g, "")
+          .replace(/^עיריה\s+/g, "");
+        const withoutLocalCouncil = withoutCityHall.replace(
+          /^מועצה\s+מקומית\s+/g,
+          "",
+        );
+        const withoutRegionalCouncil = withoutLocalCouncil.replace(
+          /^מועצה\s+אזורית\s+/g,
+          "",
+        );
+
+        const variants = [
+          raw,
+          withoutCityHall,
+          withoutLocalCouncil,
+          withoutRegionalCouncil,
+        ]
+          .map(normalizeKeyBase)
+          .filter(Boolean);
+
+        variantsCache.set(name, variants);
+        return variants;
+      }
+
+      function stationNameVariants(name) {
+        const raw = String(name || "").trim();
+        if (!raw) return [];
+        const v = new Set();
+        const add = (s) => {
+          const k = normalizeKey(s);
+          if (k) v.add(k);
+        };
+        add(raw);
+        const noPrefix = raw.replace(/^תחנת\s+/, "").trim();
+        add(noPrefix);
+        add("תחנת " + noPrefix);
+        add(raw.replace(/\s+/g, " ").trim());
+        return Array.from(v);
+      }
+
       function escapeHtml(s) {
         return String(s ?? "")
           .replace(/&/g, "&amp;")
@@ -810,27 +1257,932 @@
           .replace(/"/g, "&quot;");
       }
 
-      function toFiniteNum(v) {
-        if (v == null) return null;
-        if (typeof v === "number") return Number.isFinite(v) ? v : null;
+      function fmtMaybe(num) {
+        if (num == null) return "—";
+        const n = Number(num);
+        if (!Number.isFinite(n)) return "—";
+        return n.toLocaleString();
+      }
 
-        let s = String(v).trim();
-        if (!s) return null;
+      // ===================== DATA RESOLVERS =====================
+      function getStationsDataset() {
+        // Resolve dataset from possible globals without recursion.
+        try {
+          if (
+            window.crimeByYearStations &&
+            typeof window.crimeByYearStations === "object"
+          )
+            return window.crimeByYearStations;
+        } catch (_) {}
+        try {
+          // eslint-disable-next-line no-undef
+          if (
+            typeof crimeByYearStations !== "undefined" &&
+            crimeByYearStations &&
+            typeof crimeByYearStations === "object"
+          )
+            return crimeByYearStations;
+        } catch (_) {}
+        try {
+          // eslint-disable-next-line no-undef
+          if (
+            typeof CRIMEBYYEARSTATIONS !== "undefined" &&
+            CRIMEBYYEARSTATIONS &&
+            typeof CRIMEBYYEARSTATIONS === "object"
+          )
+            return CRIMEBYYEARSTATIONS;
+        } catch (_) {}
+        try {
+          if (
+            window.CRIMEBYYEARSTATIONS &&
+            typeof window.CRIMEBYYEARSTATIONS === "object"
+          )
+            return window.CRIMEBYYEARSTATIONS;
+        } catch (_) {}
+        return null;
+      }
 
-        // remove spaces
-        s = s.replace(/\s+/g, "");
+      function getModeLabel(mode) {
+        if (mode === "muni") return "ישובים/רשויות";
+        if (mode === "merhav") return "מרחבים";
+        if (mode === "station") return "תחנות משטרה";
+        return "ישויות";
+      }
+      function getEntityLabel(mode) {
+        if (mode === "muni") return "רשות";
+        if (mode === "merhav") return "מרחב";
+        if (mode === "station") return "תחנה";
+        return "ישות";
+      }
+      function getIndexByMode(mode) {
+        if (mode === "muni") return muniIndex;
+        if (mode === "merhav") return merhavIndex;
+        if (mode === "station") return stationIndex;
+        return muniIndex;
+      }
+      function getYearDataByMode(mode, year) {
+        if (mode === "muni") return window.crimeByYear?.[year] || null;
+        if (mode === "merhav") return window.crimeByYearMerhav?.[year] || null;
+        if (mode === "station") return getStationsDataset()?.[year] || null;
+        return null;
+      }
 
-        // handle comma/decimal
-        if (s.includes(",") && s.includes(".")) {
-          s = s.replace(/,/g, "");
-        } else if (s.includes(",")) {
-          // if looks like thousands separator -> remove, else treat as decimal
-          if (/,(\d{3})$/.test(s)) s = s.replace(/,/g, "");
-          else s = s.replace(/,/g, ".");
+      // ===================== POPULATION =====================
+      // Population is static and does not change per crime-year.
+      function buildPopulationIndex() {
+        for (const k in populationIndex) delete populationIndex[k];
+
+        const raw = window.PopulationDB;
+        if (!raw || typeof raw !== "object") {
+          console.warn("⚠️ PopulationDB.js not loaded or invalid");
+          return false;
+        }
+        for (const displayName in raw) {
+          const pop = Number(raw[displayName]);
+          if (!Number.isFinite(pop)) continue;
+          for (const v of nameVariants(displayName)) populationIndex[v] = pop;
+        }
+        console.log(
+          "✅ Population index ready:",
+          Object.keys(populationIndex).length,
+        );
+        return true;
+      }
+
+      function getPopulationForAuthority(nameFromCrime) {
+        for (const v of nameVariants(nameFromCrime)) {
+          const pop = populationIndex[v];
+          if (pop != null) return pop;
+        }
+        return null;
+      }
+
+      function calcRatePer10k(total, pop) {
+        if (!Number.isFinite(Number(total))) return null;
+        const p = Number(pop);
+        if (!Number.isFinite(p) || p <= 0) return null;
+        return Math.round((Number(total) / p) * 10000 * 10) / 10;
+      }
+
+      // ===================== UI: INFO =====================
+      function showInfo(title, body, type = "info") {
+        const t = document.getElementById("info-title");
+        const b = document.getElementById("info-body");
+        if (!t || !b) return;
+        t.textContent = title;
+        b.innerHTML = `<div class="message message-${type}">${body}</div>`;
+      }
+
+      function updateHeaderModeLine() {
+        const headerP = document.querySelector("#panel-header p");
+        if (!headerP) return;
+
+        const muniOnly = currentMode === "muni";
+        const extra = muniOnly
+          ? "מדד ל-10,000 זמין כאן (רק אם יש נתון אוכלוסייה)"
+          : "מדד ל-10,000 לא זמין במצב זה";
+        headerP.innerHTML = `מצב נוכחי: <strong>${escapeHtml(getModeLabel(currentMode))}</strong><br>${extra}`;
+      }
+
+      function updateMetricButtonsUI() {
+        const btnRate = document.getElementById("btnMetricRate");
+        const muniOnly = currentMode === "muni";
+
+        if (btnRate) {
+          btnRate.classList.toggle("disabled", !muniOnly);
+          btnRate.disabled = !muniOnly;
+          btnRate.onclick = muniOnly ? () => setMetric("rate") : null;
+          btnRate.title = muniOnly
+            ? "מציג עבירות ל-10,000 תושבים (רק אם יש אוכלוסייה)"
+            : "זמין רק במצב ישובים/רשויות";
         }
 
-        const n = Number(s);
-        return Number.isFinite(n) ? n : null;
+        if (!muniOnly && currentMetric === "rate") {
+          currentMetric = "abs";
+          const bAbs = document.getElementById("btnMetricAbs");
+          const bRate2 = document.getElementById("btnMetricRate");
+          if (bAbs) bAbs.classList.add("active");
+          if (bRate2) bRate2.classList.remove("active");
+        }
+
+        updateHeaderModeLine();
+        setChoroBtnUI();
+      }
+
+      // ===================== QUICK STATS =====================
+      function calculateStats(year, mode) {
+        const m = mode || currentMode || "muni";
+        const yearData = getYearDataByMode(m, year);
+        if (!yearData) return { entities: 0, total: 0, avg: 0 };
+
+        let total = 0,
+          count = 0;
+        for (const name in yearData) {
+          const data = yearData[name];
+          if (data && typeof data.total === "number") {
+            total += data.total;
+            count++;
+          }
+        }
+        return {
+          entities: count,
+          total,
+          avg: count > 0 ? Math.round(total / count) : 0,
+        };
+      }
+
+      function updateQuickStats() {
+        const stats = calculateStats(currentYear, currentMode);
+
+        const a = document.getElementById("stat-municipalities");
+        const b = document.getElementById("stat-total");
+        const c = document.getElementById("stat-avg");
+        const l = document.getElementById("stat-entities-label");
+
+        if (a) a.textContent = Number(stats.entities || 0).toLocaleString();
+        if (b) b.textContent = Number(stats.total || 0).toLocaleString();
+        if (c) c.textContent = Number(stats.avg || 0).toLocaleString();
+        if (l)
+          l.textContent =
+            currentMode === "muni"
+              ? "רשויות"
+              : currentMode === "merhav"
+                ? "מרחבים"
+                : "תחנות";
+      }
+
+      // ===================== INDEX BUILDING (MUNI / MERHAV / STATION) =====================
+      function clearIndex(obj) {
+        Object.keys(obj).forEach((k) => delete obj[k]);
+      }
+
+      function buildMuniIndexForYear(year) {
+        clearIndex(muniIndex);
+        const yearData = window.crimeByYear?.[year];
+        if (!yearData) return;
+
+        for (const name in yearData) {
+          const canonicalKey = normalizeKey(name);
+          const entry = { key: canonicalKey, name, data: yearData[name] };
+
+          muniIndex[canonicalKey] = entry;
+          for (const v of nameVariants(name)) muniIndex[v] = entry;
+        }
+      }
+
+      function buildMerhavIndexForYear(year) {
+        clearIndex(merhavIndex);
+        const yearData = window.crimeByYearMerhav?.[year];
+        if (!yearData) {
+          console.warn(`⚠️ No merhav data for year ${year}`);
+          return;
+        }
+
+        for (const name in yearData) {
+          const k = normalizeKey(name);
+          merhavIndex[k] = { key: k, name, data: yearData[name] };
+        }
+        console.log(
+          `✅ Year ${year}: merhav index keys = ${Object.keys(merhavIndex).length}`,
+        );
+      }
+
+      function buildStationIndexForYear(year) {
+        clearIndex(stationIndex);
+        const yearData = getStationsDataset()?.[year] || null;
+        if (!yearData) return;
+
+        for (const stationName in yearData) {
+          const canonicalKey = normalizeKey(stationName);
+          const entry = {
+            key: canonicalKey,
+            name: String(stationName).trim(),
+            data: yearData[stationName] || { total: 0, breakdown: {} },
+          };
+
+          stationIndex[canonicalKey] = entry;
+          for (const v of stationNameVariants(stationName))
+            stationIndex[v] = entry;
+        }
+        console.log(
+          `✅ Year ${year}: station index keys = ${Object.keys(stationIndex).length}`,
+        );
+      }
+
+      function buildAllIndexesForYear(year) {
+        buildMuniIndexForYear(year);
+        buildMerhavIndexForYear(year);
+        buildStationIndexForYear(year);
+      }
+
+      // ===================== ENTITY RENDER =====================
+      function showEntry(entry) {
+        const d = entry?.data || {};
+        let html = "";
+
+        const total = typeof d.total === "number" ? d.total : null;
+
+        let popRaw = null;
+        let rate = null;
+        if (currentMode === "muni") {
+          popRaw = getPopulationForAuthority(entry.name);
+          if (popRaw != null) rate = calcRatePer10k(total, popRaw);
+        }
+
+        if (total != null) {
+          // If user asked for "rate" but there's no population, show total and a clear hint.
+          if (currentMetric === "rate" && currentMode === "muni") {
+            if (popRaw == null || rate == null) {
+              html += `<div class="total-summary">${Number(total).toLocaleString()} אירועים</div>`;
+              html += `<div class="message message-warn">אין נתון אוכלוסייה עבור הרשות הזו, לכן לא מוצג חישוב ל‑10,000.</div>`;
+            } else {
+              html += `<div class="total-summary">${Number(rate).toLocaleString()} ל-10,000</div>`;
+              html += `<div class="sub-summary">אוכלוסייה (סטטית): ${Number(popRaw).toLocaleString()} • סה"כ אירועים: ${Number(total).toLocaleString()}</div>`;
+            }
+          } else {
+            html += `<div class="total-summary">${Number(total).toLocaleString()} אירועים</div>`;
+            if (currentMode === "muni" && popRaw != null) {
+              html += `<div class="sub-summary">אוכלוסייה (סטטית): ${Number(popRaw).toLocaleString()}</div>`;
+            }
+          }
+        }
+
+        if (d.breakdown && Object.keys(d.breakdown).length > 0) {
+          const sorted = Object.entries(d.breakdown).sort(
+            (a, b) => (b[1] || 0) - (a[1] || 0),
+          );
+          html += `<div class="crime-grid">`;
+          for (const [name, count] of sorted) {
+            html += `<div class="crime-item">
+            <div class="crime-name">${escapeHtml(name)}</div>
+            <div class="crime-count">${Number(count || 0).toLocaleString()}</div>
+          </div>`;
+          }
+          html += `</div>`;
+        }
+
+        const it = document.getElementById("info-title");
+        const ib = document.getElementById("info-body");
+        if (!it || !ib) return;
+        it.textContent = entry.name;
+        ib.innerHTML =
+          html || `<div class="message message-info">אין נתונים להצגה</div>`;
+      }
+
+      // ===================== TABS =====================
+      function switchTab(tabName) {
+        currentTab = tabName;
+
+        document
+          .querySelectorAll(".tab")
+          .forEach((tab) =>
+            tab.classList.toggle("active", tab.dataset.tab === tabName),
+          );
+
+        document
+          .querySelectorAll(".tab-content")
+          .forEach((content) =>
+            content.classList.toggle("active", content.id === `tab-${tabName}`),
+          );
+
+        if (tabName === "single") {
+          showInfo(
+            "מפה לפי " + getModeLabel(currentMode),
+            `שנה נבחרת: ${currentYear}<br>לחץ על ${getEntityLabel(currentMode)} במפה כדי לראות נתונים`,
+            "info",
+          );
+        } else if (tabName === "compare") {
+          updateCompareView();
+        } else if (tabName === "trends") {
+          const tc = document.getElementById("trends-content");
+          if (!selectedEntityName) {
+            if (tc)
+              tc.innerHTML = `<div class="message message-info">בחר ${getEntityLabel(currentMode)} במפה כדי לראות נתונים היסטוריים</div>`;
+            return;
+          }
+          showTrends(selectedEntityName, currentMode);
+        } else if (tabName === "rankings") {
+          renderRankings();
+        }
+      }
+
+      // ===================== MODE / METRIC =====================
+      function setMode(mode) {
+        currentMode = mode;
+
+        const bm = document.getElementById("btnModeMuni");
+        const br = document.getElementById("btnModeMerhav");
+        const bs = document.getElementById("btnModeStation");
+        if (bm) bm.classList.toggle("active", mode === "muni");
+        if (br) br.classList.toggle("active", mode === "merhav");
+        if (bs) bs.classList.toggle("active", mode === "station");
+
+        updateMetricButtonsUI();
+        updateQuickStats();
+
+        // Layer visibility
+        const layerToShow =
+          mode === "muni"
+            ? MUNICIPAL_LAYER
+            : mode === "merhav"
+              ? POLICE_MERHAV_LAYER
+              : POLICE_STATION_LAYER;
+
+        const layersToHide =
+          mode === "muni"
+            ? [POLICE_MERHAV_LAYER, POLICE_STATION_LAYER]
+            : mode === "merhav"
+              ? [MUNICIPAL_LAYER, POLICE_STATION_LAYER]
+              : [MUNICIPAL_LAYER, POLICE_MERHAV_LAYER];
+
+        if (mapInitialized) {
+          try {
+            if (typeof govmap.setVisibleLayers === "function") {
+              govmap.setVisibleLayers([layerToShow], layersToHide);
+            }
+          } catch (err) {
+            console.warn("⚠️ setVisibleLayers failed:", err);
+          }
+        }
+
+        // Choropleth only for muni
+        if (mode !== "muni") {
+          choroplethEnabled = false;
+          clearChoropleth();
+          setMunicipalLayerOpacity(100);
+        }
+        setChoroBtnUI();
+
+        // Selection handling
+        selectedEntityName = null;
+        selectedEntityKey = null;
+
+        // Keep compare entries only for this mode
+        compareList = compareList.filter((c) => c.mode === mode);
+
+        if (currentTab === "compare") updateCompareView();
+        else if (currentTab === "rankings") renderRankings();
+        else if (currentTab === "trends") {
+          const tc = document.getElementById("trends-content");
+          if (tc)
+            tc.innerHTML = `<div class="message message-info">בחר ${getEntityLabel(mode)} במפה כדי לראות נתונים היסטוריים</div>`;
+        } else {
+          showInfo(
+            "מפה לפי " + getModeLabel(mode),
+            `שנה נבחרת: ${currentYear}<br>לחץ על ${getEntityLabel(mode)} במפה כדי לראות נתונים`,
+            "info",
+          );
+        }
+      }
+
+      function setMetric(metric) {
+        if (metric === "rate" && currentMode !== "muni") {
+          alert("זמין רק במצב ישובים/רשויות");
+          return;
+        }
+
+        currentMetric = metric;
+
+        const bAbs = document.getElementById("btnMetricAbs");
+        const bRate = document.getElementById("btnMetricRate");
+
+        if (bAbs) bAbs.classList.toggle("active", metric === "abs");
+        if (bRate) bRate.classList.toggle("active", metric === "rate");
+
+        // Choropleth depends on metric => render (cached)
+        if (choroplethEnabled && currentMode === "muni") renderChoropleth();
+
+        // Refresh current selection without re-click
+        if (currentTab === "single" && selectedEntityKey) {
+          const index = getIndexByMode(currentMode);
+          const entry = index[selectedEntityKey];
+          if (entry) showEntry(entry);
+        }
+        if (currentTab === "compare") updateCompareView();
+        if (currentTab === "trends" && selectedEntityName)
+          showTrends(selectedEntityName, currentMode);
+        if (currentTab === "rankings") renderRankings();
+
+        setChoroBtnUI();
+      }
+
+      // ===================== COMPARE =====================
+      function addToCompare() {
+        if (!selectedEntityName || !selectedEntityKey) {
+          alert(`אנא בחר ${getEntityLabel(currentMode)} במפה תחילה`);
+          return;
+        }
+        if (
+          !compareList.some(
+            (c) => c.mode === currentMode && c.key === selectedEntityKey,
+          )
+        ) {
+          compareList.push({
+            mode: currentMode,
+            key: selectedEntityKey,
+            name: selectedEntityName,
+          });
+          updateCompareView();
+        }
+      }
+
+      function removeFromCompare(key) {
+        compareList = compareList.filter(
+          (c) => !(c.mode === currentMode && c.key === key),
+        );
+        updateCompareView();
+      }
+
+      function updateCompareView() {
+        const container = document.getElementById("compare-content");
+        if (!container) return;
+
+        const entityType = getEntityLabel(currentMode);
+        const selectedHint = selectedEntityName
+          ? `<div class="message message-info">נבחר כעת: <strong>${escapeHtml(selectedEntityName)}</strong> (לחץ על ➕ כדי להוסיף להשוואה)</div>`
+          : `<div class="message message-info">לחץ על ${entityType} במפה ואז על ➕ כדי להוסיף להשוואה</div>`;
+
+        let html = `
+        <button class="add-compare-btn" onclick="addToCompare()">➕ הוסף ${entityType} נבחר להשוואה</button>
+        ${selectedHint}
+      `;
+
+        const filteredList = compareList.filter((c) => c.mode === currentMode);
+
+        if (filteredList.length > 0) {
+          html += '<div class="compare-tags">';
+          filteredList.forEach((item) => {
+            html += `<div class="compare-city-tag">${escapeHtml(item.name)}
+            <button onclick="removeFromCompare('${item.key}')" title="הסר">×</button></div>`;
+          });
+          html += "</div>";
+        }
+
+        if (filteredList.length < 2) {
+          html += `<div class="message message-info">הוסף עוד ${entityType} אחד לפחות כדי לראות השוואה</div>`;
+          container.innerHTML = html;
+          return;
+        }
+
+        const index = getIndexByMode(currentMode);
+
+        const metricType =
+          currentMode === "muni" && currentMetric === "rate" ? "rate" : "total";
+
+        const rows = filteredList.map((item) => {
+          const entry = index[item.key];
+          const total = entry?.data?.total ?? 0;
+
+          if (currentMode !== "muni") {
+            return {
+              name: entry?.name || item.name,
+              total,
+              pop: null,
+              rate: null,
+              hasPop: false,
+            };
+          }
+
+          const popRaw = getPopulationForAuthority(entry?.name || item.name);
+          const pop = popRaw == null ? null : Number(popRaw);
+          const rate = popRaw == null ? null : calcRatePer10k(total, popRaw);
+          return {
+            name: entry?.name || item.name,
+            total,
+            pop,
+            rate,
+            hasPop: popRaw != null,
+          };
+        });
+
+        if (currentMode !== "muni") {
+          html += `<div class="message message-info">במצב ${getModeLabel(currentMode)} ההשוואה היא לפי כמות בלבד.</div>`;
+        } else if (metricType === "rate") {
+          html += `<div class="message message-info">השוואה לפי <strong>ל-10,000 תושבים</strong> (רק אם יש נתון אוכלוסייה).</div>`;
+        } else {
+          html += `<div class="message message-info">טיפ: מעבר ל־<strong>ל-10,000</strong> משווה יחסית לגודל אוכלוסייה (אם קיים נתון).</div>`;
+        }
+
+        html += `<div class="compare-grid">`;
+        rows.forEach((r) => {
+          const badges = [];
+          if (currentMode === "muni" && !r.hasPop)
+            badges.push(
+              `<span class="badge badge-warn">אין נתון אוכלוסייה</span>`,
+            );
+
+          html += `
+          <div class="compare-card">
+            <div class="compare-card-title">
+              <div class="compare-name">${escapeHtml(r.name)}</div>
+              <div class="compare-badges">${badges.join("")}</div>
+            </div>
+
+            <div class="compare-kpis">
+              <div class="kpi">
+                <div class="kpi-value">${Number(r.total).toLocaleString()}</div>
+                <div class="kpi-label">כמות פשעים</div>
+              </div>
+              <div class="kpi">
+                <div class="kpi-value">${currentMode === "muni" ? fmtMaybe(r.pop) : "—"}</div>
+                <div class="kpi-label">אוכלוסייה</div>
+              </div>
+              <div class="kpi">
+                <div class="kpi-value">${currentMode === "muni" ? fmtMaybe(r.rate) : "—"}</div>
+                <div class="kpi-label">ל-10,000</div>
+              </div>
+            </div>
+          </div>
+        `;
+        });
+        html += `</div>`;
+
+        const title =
+          metricType === "rate"
+            ? `השוואה לפי כמות יחסית (${currentYear})`
+            : `השוואה לפי כמות (${currentYear})`;
+
+        html += `<div class="compare-bars-title">${title}</div>`;
+
+        const values = rows
+          .map((r) => (metricType === "rate" ? r.rate : r.total))
+          .filter((v) => Number.isFinite(Number(v)));
+
+        const max = values.length ? Math.max(...values) : 0;
+
+        rows.forEach((r) => {
+          const v = metricType === "rate" ? r.rate : r.total;
+          const vv = Number(v);
+          const hasV = Number.isFinite(vv);
+          const pct = hasV && max > 0 ? Math.round((vv / max) * 100) : 0;
+          const showText = hasV ? vv.toLocaleString() : "—";
+
+          html += `
+          <div class="bar-row" title="${escapeHtml(r.name)}">
+            <div class="bar-name">${escapeHtml(r.name)}</div>
+            <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
+            <div class="bar-value">${showText}</div>
+          </div>
+        `;
+        });
+
+        container.innerHTML = html;
+      }
+
+      // ===================== TRENDS (Redesign) =====================
+      function showTrends(entityName, mode = currentMode) {
+        const container = document.getElementById("trends-content");
+        if (!container) return;
+
+        if (!entityName) {
+          container.innerHTML = `<div class="message message-info">בחר ${getEntityLabel(mode)} במפה כדי לראות נתונים היסטוריים</div>`;
+          return;
+        }
+
+        const dataset =
+          mode === "muni"
+            ? window.crimeByYear
+            : mode === "merhav"
+              ? window.crimeByYearMerhav
+              : getStationsDataset();
+
+        if (!dataset || typeof dataset !== "object") {
+          container.innerHTML = `<div class="message message-error">אין נתוני היסטוריה זמינים עבור ${getModeLabel(mode)}.</div>`;
+          return;
+        }
+
+        const years = Object.keys(dataset).sort();
+        const targetVariants =
+          mode === "muni"
+            ? Array.from(
+                new Set(
+                  nameVariants(entityName)
+                    .map((v) => normalizeKey(v))
+                    .filter(Boolean),
+                ),
+              )
+            : mode === "station"
+              ? stationNameVariants(entityName)
+              : [normalizeKey(entityName)];
+
+        const findEntryInYear = (yearData) => {
+          if (!yearData) return null;
+
+          if (yearData[entityName])
+            return { name: entityName, data: yearData[entityName] };
+
+          for (const [k, d] of Object.entries(yearData)) {
+            const kk = normalizeKey(k);
+            if (targetVariants.includes(kk)) return { name: k, data: d };
+          }
+          return null;
+        };
+
+        // Find population (once) if muni
+        let popOnce = null;
+        if (mode === "muni") {
+          // Try from any matching year-name for better odds
+          for (const y of years) {
+            const found = findEntryInYear(dataset[y]);
+            const p = getPopulationForAuthority(found?.name || entityName);
+            if (p != null) {
+              popOnce = Number(p);
+              break;
+            }
+          }
+        }
+
+        const metricType =
+          mode === "muni" && currentMetric === "rate" && popOnce != null
+            ? "rate"
+            : "total";
+        const metricLabel = metricType === "rate" ? "ל-10,000" : "כמות";
+
+        const yearly = years.map((y) => {
+          const found = findEntryInYear(dataset[y]);
+          const total = Number(found?.data?.total || 0);
+          const rate =
+            mode === "muni" && metricType === "rate"
+              ? calcRatePer10k(total, popOnce)
+              : null;
+          return { year: y, total, rate };
+        });
+
+        const values = yearly
+          .map((r) => (metricType === "rate" ? r.rate : r.total))
+          .filter((v) => Number.isFinite(Number(v)));
+        const max = values.length ? Math.max(...values) : 0;
+        const min = values.length ? Math.min(...values) : 0;
+
+        // KPI: latest, change, min/max
+        const latest = yearly[yearly.length - 1];
+        const first = yearly[0];
+
+        const latestV = metricType === "rate" ? latest?.rate : latest?.total;
+        const firstV = metricType === "rate" ? first?.rate : first?.total;
+        const delta =
+          Number.isFinite(Number(latestV)) && Number.isFinite(Number(firstV))
+            ? Number(latestV) - Number(firstV)
+            : null;
+
+        const popLine =
+          mode === "muni" && popOnce != null
+            ? ` • אוכלוסייה (סטטית): <strong>${Number(popOnce).toLocaleString()}</strong>`
+            : "";
+        const popWarn =
+          mode === "muni" && popOnce == null
+            ? `<br><span style="opacity:.95;">אין נתון אוכלוסייה — לא מוצג חישוב ל‑10,000.</span>`
+            : "";
+
+        let html = `
+        <div class="trend-shell">
+          <div class="trend-top">
+            <div class="trend-title">
+              <span>${escapeHtml(entityName)}</span>
+              <span style="font-weight:1000;opacity:.95;">${escapeHtml(getModeLabel(mode))}</span>
+            </div>
+            <div class="trend-sub">
+              מציג לפי: <strong>${escapeHtml(metricLabel)}</strong>${popLine}${popWarn}
+            </div>
+            <div class="trend-kpis">
+              <div class="trend-kpi">
+                <div class="v">${fmtMaybe(latestV)}</div>
+                <div class="l">שנה אחרונה (${escapeHtml(latest?.year)})</div>
+              </div>
+              <div class="trend-kpi">
+                <div class="v">${delta == null ? "—" : (delta > 0 ? "+" : "") + Number(delta).toLocaleString()}</div>
+                <div class="l">שינוי מול ${escapeHtml(first?.year)}</div>
+              </div>
+              <div class="trend-kpi">
+                <div class="v">${fmtMaybe(min)} – ${fmtMaybe(max)}</div>
+                <div class="l">טווח שנים</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="trend-list">
+      `;
+
+        yearly.forEach((r) => {
+          const v = metricType === "rate" ? r.rate : r.total;
+          const vv = Number(v);
+          const hasV = Number.isFinite(vv);
+          const pct = hasV && max > 0 ? Math.round((vv / max) * 100) : 0;
+
+          const mainText = hasV ? vv.toLocaleString() : "—";
+          const subText =
+            metricType === "rate"
+              ? `כמות: ${Number(r.total || 0).toLocaleString()}`
+              : "";
+
+          html += `
+          <div class="trow">
+            <div class="y">${escapeHtml(r.year)}</div>
+            <div class="tbar"><div class="tfill" style="width:${pct}%"></div></div>
+            <div class="tval">${mainText}${subText ? `<small>${escapeHtml(subText)}</small>` : ""}</div>
+          </div>
+        `;
+        });
+
+        html += `
+          </div>
+        </div>
+      `;
+
+        container.innerHTML = html;
+      }
+
+      // ===================== RANKINGS =====================
+      function setRankingsOrder(order) {
+        rankingsOrder = order === "asc" ? "asc" : "desc";
+        const bDesc = document.getElementById("rankSortDesc");
+        const bAsc = document.getElementById("rankSortAsc");
+        if (bDesc) bDesc.classList.toggle("active", rankingsOrder === "desc");
+        if (bAsc) bAsc.classList.toggle("active", rankingsOrder === "asc");
+        renderRankings();
+      }
+
+      function renderRankings() {
+        const container = document.getElementById("rankings-content");
+        if (!container) return;
+
+        const yearData = getYearDataByMode(currentMode, currentYear);
+
+        if (!yearData) {
+          container.innerHTML = `<div class="message message-error">אין נתונים לשנה הזו.</div>`;
+          return;
+        }
+
+        const wantRate = currentMode === "muni" && currentMetric === "rate";
+        const rows = [];
+
+        let skippedNoPop = 0;
+
+        for (const name in yearData) {
+          const d = yearData[name];
+          const total = Number(d?.total || 0);
+
+          if (wantRate) {
+            const popRaw = getPopulationForAuthority(name);
+            if (popRaw == null) {
+              skippedNoPop++;
+              continue;
+            }
+            const rate = calcRatePer10k(total, popRaw);
+            if (rate == null) {
+              skippedNoPop++;
+              continue;
+            }
+            rows.push({
+              name,
+              value: rate,
+              extra: { pop: Number(popRaw), total },
+            });
+          } else {
+            rows.push({ name, value: total, extra: { total } });
+          }
+        }
+        // Sort
+        rows.sort((a, b) => {
+          const av = Number(a.value || 0);
+          const bv = Number(b.value || 0);
+          return rankingsOrder === "asc" ? av - bv : bv - av;
+        });
+
+        const metricLabel = wantRate ? "ל-10,000" : "כמות (אבסולוטי)";
+        const orderLabel =
+          rankingsOrder === "asc" ? "מהכי מעט להכי הרבה" : "מהכי הרבה להכי מעט";
+
+        let html = `
+        <div class="rank-controls">
+          <button id="rankSortDesc" class="rank-ctl-btn ${rankingsOrder === "desc" ? "active" : ""}" onclick="setRankingsOrder('desc')">⬇️ הכי הרבה → הכי מעט</button>
+          <button id="rankSortAsc" class="rank-ctl-btn ${rankingsOrder === "asc" ? "active" : ""}" onclick="setRankingsOrder('asc')">⬆️ הכי מעט → הכי הרבה</button>
+        </div>
+
+        <div class="message message-info" style="margin-bottom:10px;">
+          שנה: <strong>${escapeHtml(currentYear)}</strong> • מצב: <strong>${escapeHtml(getModeLabel(currentMode))}</strong><br>
+          דירוג לפי: <strong>${escapeHtml(metricLabel)}</strong> • סדר: <strong>${escapeHtml(orderLabel)}</strong> • מוצגים: <strong>${rows.length}</strong>
+        </div>
+      `;
+
+        html += `<div class="rank-list">`;
+
+        rows.forEach((r, idx) => {
+          const valueText = Number(r.value || 0).toLocaleString();
+          const extra = wantRate
+            ? `<div class="rank-extra">כמות: ${Number(r.extra?.total || 0).toLocaleString()} • אוכלוסייה: ${Number(r.extra?.pop || 0).toLocaleString()}</div>`
+            : ``;
+
+          html += `
+          <div class="rank-row" onclick="selectFromRank('${escapeHtml(r.name)}')">
+            <div class="rank-num">${idx + 1}</div>
+            <div class="rank-name">${escapeHtml(r.name)}</div>
+            <div class="rank-value">${valueText}</div>
+          </div>
+          ${extra}
+        `;
+        });
+
+        html += `</div>`;
+        container.innerHTML = html;
+      }
+
+      function selectFromRank(name, goToSingle = true) {
+        // רק אם רוצים – לעבור לתצוגה
+        if (goToSingle) {
+          try {
+            switchTab("single");
+          } catch (_) {}
+        }
+
+        const index = getIndexByMode(currentMode);
+        let entry = null;
+
+        if (currentMode === "muni") {
+          const k = normalizeKey(name);
+          entry = index[k] || index[nameVariants(name)[0]] || null;
+        } else if (currentMode === "station") {
+          entry = index[normalizeKey(name)] || null;
+          if (!entry) {
+            const vars = stationNameVariants(name);
+            for (const v of vars) {
+              if (index[v]) {
+                entry = index[v];
+                break;
+              }
+            }
+          }
+        } else {
+          entry = index[normalizeKey(name)] || null;
+        }
+
+        if (!entry) {
+          showInfo("לא נמצא", "לא הצלחתי למצוא את הישות בתוך האינדקס", "warn");
+          return;
+        }
+
+        selectedEntityName = entry.name;
+        selectedEntityKey = entry.key;
+
+        // ✅ במקום לכפות תצוגה – מעדכנים לפי הטאב הנוכחי
+        if (currentTab === "single") {
+          showEntry(entry);
+        } else if (currentTab === "compare") {
+          updateCompareView();
+        } else if (currentTab === "trends") {
+          showTrends(selectedEntityName, currentMode);
+        } else if (currentTab === "rankings") {
+          renderRankings();
+        }
+      }
+
+      // ===================== GOVMAP CLICK HELPERS =====================
+      function fieldsToObject(fields) {
+        if (!Array.isArray(fields)) return fields;
+        const obj = {};
+        for (const f of fields)
+          if (f.FieldName && f.Value !== undefined) obj[f.FieldName] = f.Value;
+        return obj;
       }
 
       function normalizeFieldName(n) {
@@ -838,18 +2190,11 @@
           .trim()
           .replace(/\s+/g, " ")
           .replace(/[׳״"'`]/g, "")
-          .replace(/[:;.,()\[\]{}<>!@#$%^&*+=?~\\|\/\-\u05be\u2010-\u2015]/g, "")
+          .replace(
+            /[:;.,()\[\]{}<>!@#$%^&*+=?~\\|\/\-\u05be\u2010-\u2015]/g,
+            "",
+          )
           .toLowerCase();
-      }
-
-      function fieldsToObject(fields) {
-        if (!Array.isArray(fields)) return fields;
-        const obj = {};
-        for (const f of fields) {
-          const k = f?.FieldName ?? f?.fieldName ?? f?.name;
-          if (k != null) obj[k] = f?.Value ?? f?.value;
-        }
-        return obj;
       }
 
       function getFieldFromAttrs(attrsRaw, candidates) {
@@ -857,11 +2202,11 @@
 
         if (Array.isArray(attrsRaw)) {
           for (const f of attrsRaw) {
-            const fn = normalizeFieldName(f?.FieldName ?? f?.fieldName ?? f?.name);
+            const fn = normalizeFieldName(
+              f?.FieldName ?? f?.fieldName ?? f?.name,
+            );
             if (!fn) continue;
-
             if (wanted.includes(fn)) return f?.Value ?? f?.value;
-
             for (const w of wanted) {
               if (fn.includes(w)) return f?.Value ?? f?.value;
             }
@@ -871,22 +2216,62 @@
         const attrsObj = fieldsToObject(attrsRaw) || attrsRaw;
         if (!attrsObj || typeof attrsObj !== "object") return null;
 
-        // Direct keys
         for (const c of candidates || []) {
-          if (attrsObj[c] != null && String(attrsObj[c]).trim() !== "") return attrsObj[c];
+          if (attrsObj[c] != null && String(attrsObj[c]).trim() !== "")
+            return attrsObj[c];
         }
 
-        // Normalized map
         const normMap = {};
         for (const k in attrsObj) normMap[normalizeFieldName(k)] = attrsObj[k];
 
         for (const w of wanted) {
-          if (normMap[w] != null && String(normMap[w]).trim() !== "") return normMap[w];
+          if (normMap[w] != null && String(normMap[w]).trim() !== "")
+            return normMap[w];
         }
 
         return null;
       }
 
+      function detectMunicipalityName(attrsRaw) {
+        const candidates = [
+          "שם רשות",
+          "שם רשות מקומית",
+          "שם ישוב",
+          "ישוב סופי",
+          "SHEM_YISHUV",
+          "NAME",
+          "Name",
+        ];
+        const v = getFieldFromAttrs(attrsRaw, candidates);
+        return v == null ? null : String(v).trim();
+      }
+
+      function detectMerhavName(attrsRaw) {
+        const candidates = [
+          "שם מרחב",
+          "שם מרחב משטרתי",
+          "MERHAV",
+          "SHEM_MERHAV",
+          "NAME",
+          "Name",
+        ];
+        const v = getFieldFromAttrs(attrsRaw, candidates);
+        return v == null ? null : String(v).trim();
+      }
+
+      function detectStationName(attrsRaw) {
+        const candidates = [
+          "שם תחנה",
+          "שם תחנת משטרה",
+          "SHEM_TAHANA",
+          "TAHANA",
+          "STATION",
+          "NAME",
+          "Name",
+        ];
+        const v = getFieldFromAttrs(attrsRaw, candidates);
+        return v == null ? null : String(v).trim();
+      }
       function normalizeMapPoint(input) {
         const mp = input?.mapPoint ?? input?.Point ?? input ?? null;
         if (!mp) return null;
@@ -901,97 +2286,234 @@
         return { x: nx, y: ny };
       }
 
-      function showInfo(title, body, type = "info") {
-        const t = document.getElementById("info-title");
-        const b = document.getElementById("info-body");
-        if (!t || !b) return;
-        t.textContent = title;
-        b.innerHTML = `<div class="message message-${type}">${body}</div>`;
-      }
+      async function onMapClick(e) {
+        console.log("onMapClick enter, mapInitialized:", mapInitialized);
+        if (!mapInitialized) return;
 
-      function setMobileVh() {
-        const vh = window.innerHeight * 0.01;
-        document.documentElement.style.setProperty("--vh", `${vh}px`);
-      }
-      setMobileVh();
-      window.addEventListener("resize", setMobileVh);
-      if (window.visualViewport) window.visualViewport.addEventListener("resize", setMobileVh);
+        // 1) נסה להוציא נקודה תקינה מהאירוע
+        let pt = normalizeMapPoint(e);
+        // 2) אם אין נקודה תקינה, נסה מה-hover האחרון (חשוב בעיקר בצביעה)
+        if (!pt && lastHoverMapPoint) pt = normalizeMapPoint(lastHoverMapPoint);
 
-      function fmt(n, digits = 2) {
-        if (n == null) return "—";
-        const x = Number(n);
-        if (!Number.isFinite(x)) return "—";
-        return x.toLocaleString(undefined, { maximumFractionDigits: digits });
-      }
-
-      function isOutlier(rate) {
-        const r = Number(rate);
-        if (!Number.isFinite(r)) return false;
-        return r <= rateThreshold;
-      }
-
-      function updateStats() {
-        const elTotal = document.getElementById("stat-total");
-        const elOut = document.getElementById("stat-outliers");
-        const elSel = document.getElementById("stat-selected");
-
-        const totalBuildings = buildingAgg.size;
-        const outCount = outliersList.length;
-        const sel = selectedBuildingId ? String(selectedBuildingId) : "—";
-
-        if (elTotal) elTotal.textContent = Number(totalBuildings).toLocaleString();
-        if (elOut) elOut.textContent = Number(outCount).toLocaleString();
-        if (elSel) elSel.textContent = sel;
-      }
-
-      function setPanelSubtitle() {
-        const p = document.querySelector("#panel-header p");
-        if (!p) return;
-
-        const status = csvLoaded
-          ? `CSV נטען • מזהה: <strong>${escapeHtml(csvHeaders?.[csvIdCol] ?? "col0")}</strong> • מדד: <strong>${escapeHtml(csvHeaders?.[csvRateCol] ?? "colN")}</strong>`
-          : csvLoadError
-            ? `שגיאה בטעינת CSV • ${escapeHtml(csvLoadError)}`
-            : `טוען CSV…`;
-
-        const mode = onlyOutliersMode
-          ? `מצב חריגים: <strong>פעיל</strong> (סף ${fmt(rateThreshold)}-)`
-          : `מצב חריגים: <strong>כבוי</strong>`;
-
-        p.innerHTML = `${status}<br>${mode}`;
-      }
-
-      // ===================== UI: TABS =====================
-      let currentTab = "single"; // single | outliers | search | about
-
-      function switchTab(tabName) {
-        currentTab = tabName;
-
-        document.querySelectorAll(".tab").forEach((tab) => {
-          tab.classList.toggle("active", tab.dataset.tab === tabName);
-        });
-        document.querySelectorAll(".tab-content").forEach((content) => {
-          content.classList.toggle("active", content.id === `tab-${tabName}`);
-        });
-
-        if (tabName === "single") {
-          if (!selectedBuildingId) {
-            showInfo(
-              "בניינים (GovMap) + CSV",
-              "לחץ על בניין במפה כדי לקבל את הנתונים שלו מקובץ ה-CSV.",
-              "info",
-            );
-          } else {
-            renderSelectedBuilding();
-          }
+        // 3) אם עדיין אין נקודה – לא ממשיכים
+        if (!pt) {
+          console.log("no point!");
+          showInfo(
+            "רגע",
+            "לא התקבלה נקודת מפה תקינה (X/Y). הזז עכבר על הרשות ואז לחץ.",
+            "warn",
+          );
+          return;
         }
 
-        if (tabName === "outliers") renderOutliers();
-        if (tabName === "search") renderSearchTab();
-        if (tabName === "about") renderAbout();
+        try {
+          const layerName =
+            currentMode === "muni"
+              ? MUNICIPAL_LAYER
+              : currentMode === "merhav"
+                ? POLICE_MERHAV_LAYER
+                : POLICE_STATION_LAYER;
+          const resp = await govmap.getLayerData({
+            LayerName: layerName,
+            Point: { x: pt.x, y: pt.y, X: pt.x, Y: pt.y },
+            Radius: 300,
+          });
+
+          const items = resp?.data || resp?.Data || [];
+          if (!items.length) {
+            showInfo("לא נמצא", "אין אובייקט באזור זה", "info");
+            return;
+          }
+
+          const first = items[0];
+          const attrs = first.Fields || first.Attributes || first;
+          const attrsObj = fieldsToObject(attrs) || attrs || {};
+          const index = getIndexByMode(currentMode);
+
+          if (currentMode === "muni") {
+            const nameFromMap = detectMunicipalityName(attrsObj);
+            if (!nameFromMap) {
+              showInfo("שגיאה", "לא ניתן לזהות את שם הרשות", "error");
+              return;
+            }
+
+            const k = normalizeKey(nameFromMap);
+            const entry =
+              index[k] || index[nameVariants(nameFromMap)[0]] || null;
+           if (!entry) {
+  selectedEntityName = nameFromMap; // לשמור את השם שנמצא מהשכבה
+  selectedEntityKey = null;
+
+  const nm = String(nameFromMap || "").trim();
+  const isNoJur = nm.startsWith("ללא שיפוט");
+
+  showInfo(
+    nm || "ישוב",
+    isNoJur
+      ? `אין נתוני פשיעה עבור <strong>${escapeHtml(nm)}</strong> בשנת ${escapeHtml(currentYear)} (רשות ללא שיפוט).`
+      : `אין נתוני פשיעה עבור <strong>${escapeHtml(nm)}</strong> בשנת ${escapeHtml(currentYear)}.`,
+    "warn",
+  );
+  return;
+}
+
+
+            selectedEntityName = entry.name;
+            selectedEntityKey = entry.key;
+
+            if (currentTab === "compare") updateCompareView();
+            else if (currentTab === "trends")
+              showTrends(selectedEntityName, "muni");
+            else if (currentTab === "rankings") renderRankings();
+            else showEntry(entry);
+            return;
+          }
+
+          if (currentMode === "station") {
+            const stationName = detectStationName(attrsObj);
+            if (!stationName) {
+              const keysList = Object.keys(attrsObj || {});
+              showInfo(
+                "שגיאה",
+                `לא הצלחתי לזהות <strong>שם תחנה</strong>.<br/>שדות: <span style="direction:ltr;unicode-bidi:bidi-override">${escapeHtml(keysList.join(" | "))}</span>`,
+                "error",
+              );
+              return;
+            }
+
+            let entry = index[normalizeKey(stationName)] || null;
+            if (!entry) {
+              for (const v of stationNameVariants(stationName)) {
+                if (index[v]) {
+                  entry = index[v];
+                  break;
+                }
+              }
+            }
+            if (!entry) {
+              showInfo(
+                "לא נמצאו נתונים",
+                `אין נתוני פשיעה עבור <strong>${escapeHtml(stationName)}</strong> בשנת ${currentYear}`,
+                "error",
+              );
+              return;
+            }
+
+            selectedEntityName = entry.name;
+            selectedEntityKey = entry.key;
+
+            if (currentTab === "compare") updateCompareView();
+            else if (currentTab === "trends")
+              showTrends(selectedEntityName, "station");
+            else if (currentTab === "rankings") renderRankings();
+            else showEntry(entry);
+            return;
+          }
+
+          // merhav
+          const merhavName = detectMerhavName(attrsObj);
+          if (!merhavName) {
+            showInfo("שגיאה", "לא ניתן לזהות את שם מרחב המשטרה", "error");
+            return;
+          }
+
+          const entry = index[normalizeKey(merhavName)] || null;
+          if (!entry) {
+            showInfo(
+              "לא נמצאו נתונים",
+              `אין נתוני פשיעה עבור <strong>${escapeHtml(merhavName)}</strong> בשנת ${currentYear}`,
+              "error",
+            );
+            return;
+          }
+
+          selectedEntityName = entry.name;
+          selectedEntityKey = entry.key;
+
+          if (currentTab === "compare") updateCompareView();
+          else if (currentTab === "trends")
+            showTrends(selectedEntityName, "merhav");
+          else if (currentTab === "rankings") renderRankings();
+          else showEntry(entry);
+        } catch (error) {
+          console.error("❌ Error in onMapClick:", error);
+          showInfo(
+            "שגיאה",
+            `אירעה שגיאה: ${escapeHtml(error?.message || "שגיאה לא מוגדרת")}`,
+            "error",
+          );
+        }
       }
 
-      // ===================== PANEL: COLLAPSE =====================
+      // ===================== MODALS & PANEL =====================
+      let lastFocusedElement = null;
+
+      function openModal(id, focusElId = null) {
+        const m = document.getElementById(id);
+        if (!m) return;
+
+        lastFocusedElement = document.activeElement;
+
+        m.style.display = "block";
+        m.setAttribute("aria-hidden", "false");
+
+        // למנוע גלילה ברקע (אופציונלי אבל נוח)
+        document.documentElement.style.overflow = "hidden";
+        document.body.style.overflow = "hidden";
+
+        const focusEl =
+          (focusElId && document.getElementById(focusElId)) ||
+          m.querySelector(
+            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+          );
+
+        if (focusEl) setTimeout(() => focusEl.focus(), 0);
+      }
+
+      function closeModal(id) {
+        const m = document.getElementById(id);
+        if (!m) return;
+
+        // אם הפוקוס בתוך המודאל — תחזיר אותו לכפתור שפתח
+        if (
+          m.contains(document.activeElement) &&
+          lastFocusedElement &&
+          typeof lastFocusedElement.focus === "function"
+        ) {
+          lastFocusedElement.focus();
+        }
+
+        m.setAttribute("aria-hidden", "true");
+        m.style.display = "none";
+
+        document.documentElement.style.overflow = "";
+        document.body.style.overflow = "";
+      }
+      function initModals() {
+        const aboutBtn = document.getElementById("aboutBtn");
+        const aboutClose = document.getElementById("aboutCloseBtn");
+        const aboutOverlay = document.getElementById("aboutOverlay");
+
+        if (aboutBtn)
+          aboutBtn.addEventListener("click", () =>
+            openModal("aboutModal", "aboutCloseBtn"),
+          );
+        if (aboutClose)
+          aboutClose.addEventListener("click", () => closeModal("aboutModal"));
+        if (aboutOverlay)
+          aboutOverlay.addEventListener("click", () =>
+            closeModal("aboutModal"),
+          );
+
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape") {
+            closeModal("aboutModal");
+            const box = document.getElementById("addrResults");
+            if (box) box.style.display = "none";
+          }
+        });
+      }
+
       function togglePanel() {
         const panel = document.getElementById("info-panel");
         if (!panel) return;
@@ -1004,822 +2526,18 @@
           btn.title = collapsed ? "הגדל" : "הקטן/הגדל";
         }
       }
-
-      // ===================== CSV LOADING =====================
-      function resolveCandidateUrls() {
-        const base = new URL("./", location.href);
-        const repoBase = (() => {
-          // If hosted under /<repo>/..., try using that as base prefix
-          // Example: https://user.github.io/SatMap/ -> prefix "/SatMap/"
-          const parts = location.pathname.split("/").filter(Boolean);
-          if (parts.length >= 1) return `/${parts[0]}/`;
-          return "/";
-        })();
-
-        const extra = [
-          `${repoBase}data/tablecsv.csv`,
-          `${repoBase}public/data/tablecsv.csv`,
-        ];
-
-        const urls = [];
-        for (const p of CSV_CANDIDATES) urls.push(new URL(p, base).toString());
-        for (const p of extra) urls.push(new URL(p, location.origin).toString());
-
-        // Dedup
-        return Array.from(new Set(urls));
+      function getAddrEls() {
+        const root = document.getElementById("top-searchbar");
+        if (!root) return { root: null, input: null, btn: null, box: null };
+        return {
+          root,
+          input: root.querySelector("#addrInput"),
+          btn: root.querySelector("#addrBtn"),
+          box: root.querySelector("#addrResults"),
+        };
       }
 
-      async function fetchFirstOk(urls) {
-        let lastErr = null;
-        for (const u of urls) {
-          try {
-            const res = await fetch(u, { cache: "no-store" });
-            if (res.ok) return { url: u, text: await res.text() };
-            lastErr = `HTTP ${res.status} (${u})`;
-          } catch (e) {
-            lastErr = String(e?.message || e);
-          }
-        }
-        throw new Error(lastErr || "fetch failed");
-      }
-
-      // Minimal CSV parser (handles quotes)
-      function parseCsvLine(line) {
-        const out = [];
-        let cur = "";
-        let inQ = false;
-
-        for (let i = 0; i < line.length; i++) {
-          const ch = line[i];
-
-          if (ch === '"') {
-            if (inQ && line[i + 1] === '"') {
-              cur += '"';
-              i++;
-            } else {
-              inQ = !inQ;
-            }
-            continue;
-          }
-
-          if (ch === "," && !inQ) {
-            out.push(cur);
-            cur = "";
-            continue;
-          }
-
-          cur += ch;
-        }
-        out.push(cur);
-        return out;
-      }
-
-      function detectHasHeader(firstRow) {
-        // If any cell contains Hebrew/English letters -> header
-        return firstRow.some((c) => /[A-Za-z\u0590-\u05FF]/.test(String(c || "")));
-      }
-
-      function pickIdCol(headers) {
-        const norm = headers.map(normalizeFieldName);
-
-        // If user forced a hint
-        if (CSV_ID_HINT) {
-          const h = normalizeFieldName(CSV_ID_HINT);
-          const idx = norm.indexOf(h);
-          if (idx >= 0) return idx;
-        }
-
-        const candidates = [
-          "objectid",
-          "objid",
-          "id",
-          "gid",
-          "fid",
-          "bldg_id",
-          "blgd_id",
-          "building_id",
-          "buildingid",
-          "bldgid",
-          "b_id",
-        ];
-        for (const c of candidates) {
-          const idx = norm.indexOf(c);
-          if (idx >= 0) return idx;
-        }
-
-        // fallback: first column
-        return 0;
-      }
-
-      function pickRateCol(headers) {
-        const norm = headers.map(normalizeFieldName);
-
-        if (CSV_RATE_HINT) {
-          const h = normalizeFieldName(CSV_RATE_HINT);
-          const idx = norm.indexOf(h);
-          if (idx >= 0) return idx;
-        }
-
-        // strong candidates
-        const candidates = [
-          "rate",
-          "v",
-          "vel",
-          "velocity",
-          "mmyr",
-          "mm_yr",
-          "mmperyear",
-          "subsidence",
-          "sink",
-          "dh",
-          "delta",
-          "delta_h",
-          "deltaheight",
-          "dz",
-        ];
-        for (const c of candidates) {
-          const idx = norm.indexOf(c);
-          if (idx >= 0) return idx;
-        }
-
-        // try contains
-        for (let i = 0; i < norm.length; i++) {
-          const n = norm[i];
-          if (n.includes("mm") && (n.includes("yr") || n.includes("year"))) return i;
-          if (n.includes("velo")) return i;
-          if (n.includes("subsid")) return i;
-          if (n === "v") return i;
-        }
-
-        // fallback: last column
-        return Math.max(0, headers.length - 1);
-      }
-
-      function pickXYCols(headers) {
-        const norm = headers.map(normalizeFieldName);
-
-        const xCandidates = ["x", "itmx", "easting", "east", "lon", "longitude", "centerx"];
-        const yCandidates = ["y", "itmy", "northing", "north", "lat", "latitude", "centery"];
-
-        let xCol = null, yCol = null;
-
-        for (const c of xCandidates) {
-          const idx = norm.indexOf(c);
-          if (idx >= 0) { xCol = idx; break; }
-        }
-        for (const c of yCandidates) {
-          const idx = norm.indexOf(c);
-          if (idx >= 0) { yCol = idx; break; }
-        }
-
-        return { xCol, yCol };
-      }
-
-      function buildCsvIndexes(lines) {
-        csvById.clear();
-        buildingAgg.clear();
-        outliersList = [];
-
-        if (!lines.length) throw new Error("CSV ריק");
-
-        // Parse first row
-        const first = parseCsvLine(lines[0]);
-
-        csvHasHeader = detectHasHeader(first);
-
-        if (csvHasHeader) {
-          csvHeaders = first.map((h, i) => String(h || `col${i}`).trim() || `col${i}`);
-        } else {
-          csvHeaders = first.map((_, i) => `col${i}`);
-        }
-
-        // Decide columns
-        csvIdCol = pickIdCol(csvHeaders);
-        csvRateCol = pickRateCol(csvHeaders);
-
-        const xy = pickXYCols(csvHeaders);
-        csvXCol = xy.xCol;
-        csvYCol = xy.yCol;
-
-        // Iterate rows
-        const start = csvHasHeader ? 1 : 0;
-        for (let i = start; i < lines.length; i++) {
-          const line = lines[i];
-          if (!line || !line.trim()) continue;
-
-          const cols = parseCsvLine(line);
-
-          // pad if shorter
-          while (cols.length < csvHeaders.length) cols.push("");
-
-          const idRaw = cols[csvIdCol];
-          if (idRaw == null || String(idRaw).trim() === "") continue;
-
-          const id = String(idRaw).trim(); // keep as string to avoid 64bit issues
-
-          const rateRaw = cols[csvRateCol];
-          const rate = toFiniteNum(rateRaw);
-
-          const x = csvXCol != null ? toFiniteNum(cols[csvXCol]) : null;
-          const y = csvYCol != null ? toFiniteNum(cols[csvYCol]) : null;
-
-          // store full row as array + also object for rendering
-          const row = { __cols: cols, __id: id, __rate: rate, __x: x, __y: y };
-
-          const arr = csvById.get(id);
-          if (arr) arr.push(row);
-          else csvById.set(id, [row]);
-        }
-
-        // Aggregate per building
-        for (const [id, rows] of csvById.entries()) {
-          let worst = null;
-          let anyXY = false;
-          let bestX = null, bestY = null;
-
-          for (const r of rows) {
-            if (Number.isFinite(Number(r.__rate))) {
-              if (worst == null || r.__rate < worst) worst = r.__rate; // more negative = "worse"
-            }
-            if (r.__x != null && r.__y != null) {
-              anyXY = true;
-              bestX = r.__x;
-              bestY = r.__y;
-            }
-          }
-
-          const agg = {
-            id,
-            worstRate: worst,
-            rowsCount: rows.length,
-            anyXY,
-            x: bestX,
-            y: bestY,
-          };
-          buildingAgg.set(id, agg);
-        }
-
-        // Build outliers list (exclude "no data" from being outlier)
-        outliersList = Array.from(buildingAgg.values())
-          .filter((a) => Number.isFinite(Number(a.worstRate)) && isOutlier(a.worstRate))
-          .sort((a, b) => Number(a.worstRate) - Number(b.worstRate)); // most negative first
-      }
-
-      async function loadCsv() {
-        csvLoaded = false;
-        csvLoadError = null;
-
-        try {
-          const urls = resolveCandidateUrls();
-          const { url, text } = await fetchFirstOk(urls);
-
-          // Split lines safely
-          const rawLines = text.split(/\r?\n/);
-
-          buildCsvIndexes(rawLines);
-
-          csvLoaded = true;
-          setPanelSubtitle();
-          updateStats();
-
-          // Update UI sections if already open
-          if (currentTab === "outliers") renderOutliers();
-          if (currentTab === "search") renderSearchTab();
-          if (currentTab === "single" && !selectedBuildingId) {
-            showInfo(
-              "CSV נטען ✅",
-              `נטענו <strong>${Number(buildingAgg.size).toLocaleString()}</strong> מזהי בניינים מה-CSV.<br>
-               חריגים לפי סף ${fmt(rateThreshold)}-: <strong>${Number(outliersList.length).toLocaleString()}</strong>`,
-              "info",
-            );
-          }
-
-          console.log("✅ CSV loaded from:", url, {
-            rows: rawLines.length,
-            buildings: buildingAgg.size,
-            outliers: outliersList.length,
-            idCol: csvHeaders[csvIdCol],
-            rateCol: csvHeaders[csvRateCol],
-            xCol: csvXCol != null ? csvHeaders[csvXCol] : null,
-            yCol: csvYCol != null ? csvHeaders[csvYCol] : null,
-          });
-        } catch (e) {
-          csvLoadError = String(e?.message || e);
-          setPanelSubtitle();
-          updateStats();
-          showInfo(
-            "שגיאה בטעינת CSV",
-            `לא הצלחתי לטעון את <code class="inline">tablecsv.csv</code>.<br>
-             ודא שהוא נמצא ביחס ל-<code class="inline">index.html</code> בנתיב <code class="inline">data/tablecsv.csv</code> (ללא / בתחילה).<br><br>
-             שגיאה: <span style="direction:ltr;unicode-bidi:bidi-override">${escapeHtml(csvLoadError)}</span>`,
-            "error",
-          );
-          console.error("❌ CSV load failed:", e);
-        }
-      }
-
-      // ===================== BUILDING: RENDER =====================
-      function renderSelectedBuilding() {
-        const title = document.getElementById("info-title");
-        const body = document.getElementById("info-body");
-        if (!title || !body) return;
-
-        if (!selectedBuildingId) {
-          showInfo(
-            "בניינים (GovMap) + CSV",
-            "לחץ על בניין במפה כדי לקבל את הנתונים שלו מקובץ ה-CSV.",
-            "info",
-          );
-          return;
-        }
-
-        const id = String(selectedBuildingId);
-
-        const rows = csvById.get(id) || null;
-        selectedBuildingRows = rows;
-
-        const agg = buildingAgg.get(id) || null;
-
-        title.textContent = `בניין #${id}`;
-
-        // Build badges
-        const badges = [];
-        if (!csvLoaded) badges.push(`<span class="badge badge-warn">CSV עדיין לא נטען</span>`);
-        else if (!rows) badges.push(`<span class="badge badge-warn">אין התאמה ב-CSV</span>`);
-        else badges.push(`<span class="badge badge-good">נמצא ב-CSV (${Number(rows.length).toLocaleString()} שורות)</span>`);
-
-        const worst = agg?.worstRate;
-        const hasRate = Number.isFinite(Number(worst));
-        if (hasRate) {
-          if (isOutlier(worst)) badges.push(`<span class="badge badge-bad">חריג (≤ ${fmt(rateThreshold)}-)</span>`);
-          else badges.push(`<span class="badge badge-good">לא חריג</span>`);
-        } else {
-          badges.push(`<span class="badge badge-warn">אין ערך מדד בשורה/ות</span>`);
-        }
-
-        // Emphasis in outliers mode: if not outlier, keep it minimal
-        if (onlyOutliersMode && csvLoaded && rows && hasRate && !isOutlier(worst)) {
-          body.innerHTML = `
-            <div class="badgeRow">${badges.join("")}</div>
-            <div class="message message-info">
-              מצב חריגים פעיל: הבניין הזה <strong>לא</strong> עומד בסף החריגים.<br>
-              אם אתה רוצה לראות את כל הפרטים בכל מקרה – כבה "מצב חריגים".
-            </div>
-          `;
-          return;
-        }
-
-        let html = `<div class="badgeRow">${badges.join("")}</div>`;
-
-        if (hasRate) {
-          html += `<div class="total-summary">${fmt(worst)} mm/yr</div>`;
-        } else {
-          html += `<div class="message message-warn">אין ערך מספרי בעמודת המדד (<strong>${escapeHtml(csvHeaders?.[csvRateCol] ?? "?" )}</strong>).</div>`;
-        }
-
-        if (!rows) {
-          html += `
-            <div class="message message-warn">
-              מצאתי את הבניין ב-GovMap (OBJECTID=${escapeHtml(id)}), אבל לא מצאתי אותו ב-CSV.<br>
-              בדוק שהעמודה <strong>${escapeHtml(csvHeaders?.[csvIdCol] ?? "col0")}</strong> ב-CSV תואמת ל-OBJECTID ש-GovMap מחזיר.
-            </div>
-          `;
-          body.innerHTML = html;
-          return;
-        }
-
-        // Render a small “preview table” of first row
-        const first = rows[0].__cols;
-
-        // Build key/value list with a few best columns:
-        const kv = [];
-        const prefer = [
-          csvHeaders[csvIdCol],
-          csvHeaders[csvRateCol],
-          csvXCol != null ? csvHeaders[csvXCol] : null,
-          csvYCol != null ? csvHeaders[csvYCol] : null,
-        ].filter(Boolean);
-
-        // Put preferred columns first
-        const used = new Set();
-        for (const name of prefer) {
-          const idx = csvHeaders.indexOf(name);
-          if (idx >= 0) {
-            used.add(idx);
-            kv.push([name, first[idx]]);
-          }
-        }
-
-        // Add up to 10 more columns (not the whole CSV row)
-        for (let i = 0; i < csvHeaders.length && kv.length < 14; i++) {
-          if (used.has(i)) continue;
-          const v = first[i];
-          if (v == null || String(v).trim() === "") continue;
-          kv.push([csvHeaders[i], v]);
-        }
-
-        html += `
-          <div class="message message-info">
-            עמודה מזהה ב-CSV: <strong>${escapeHtml(csvHeaders?.[csvIdCol] ?? "col0")}</strong> •
-            עמודת מדד: <strong>${escapeHtml(csvHeaders?.[csvRateCol] ?? "colN")}</strong> •
-            שורות ל-ID: <strong>${Number(rows.length).toLocaleString()}</strong>
-          </div>
-        `;
-
-        html += `<div style="border:1px solid #eee;border-radius:16px;overflow:hidden;background:#fff;box-shadow:0 10px 22px rgba(0,0,0,.05);">`;
-        html += `<div style="padding:10px 12px;background:#fafafa;border-bottom:1px solid #eee;font-weight:1000;color:#111;">פרטים (דוגמה מהשורה הראשונה)</div>`;
-        html += `<div style="padding:10px 12px;">`;
-        html += kv
-          .map(
-            ([k, v]) => `
-              <div style="display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px dashed #eee;">
-                <div style="min-width:150px;font-weight:1000;color:#333;">${escapeHtml(k)}</div>
-                <div style="flex:1;color:#111;direction:ltr;text-align:left;word-break:break-word;">${escapeHtml(v)}</div>
-              </div>
-            `,
-          )
-          .join("");
-        html += `</div></div>`;
-
-        // If multiple rows, show a hint
-        if (rows.length > 1) {
-          html += `
-            <div class="message message-info" style="margin-top:10px;">
-              ל-ID הזה יש <strong>${Number(rows.length).toLocaleString()}</strong> שורות ב-CSV.<br>
-              מוצג כאן ערך החריגות לפי <strong>הערך הנמוך ביותר</strong> בעמודת המדד.
-            </div>
-          `;
-        }
-
-        body.innerHTML = html;
-      }
-
-      // ===================== OUTLIERS TAB =====================
-      let outSort = "worst"; // worst | id | count
-      let outOrder = "asc";  // asc = most negative first
-
-      function setOutSort(v) {
-        outSort = v;
-        renderOutliers();
-      }
-      function setOutOrder(v) {
-        outOrder = v;
-        renderOutliers();
-      }
-
-      function renderOutliers() {
-        const container = document.getElementById("outliers-content");
-        if (!container) return;
-
-        if (!csvLoaded) {
-          container.innerHTML = `<div class="message message-warn">ה-CSV עדיין לא נטען, לכן אין רשימת חריגים.</div>`;
-          return;
-        }
-
-        // Recompute outliers according to current threshold
-        outliersList = Array.from(buildingAgg.values())
-          .filter((a) => Number.isFinite(Number(a.worstRate)) && isOutlier(a.worstRate))
-          .sort((a, b) => Number(a.worstRate) - Number(b.worstRate));
-
-        // Sort option
-        let rows = [...outliersList];
-        if (outSort === "id") rows.sort((a, b) => String(a.id).localeCompare(String(b.id)));
-        if (outSort === "count") rows.sort((a, b) => (b.rowsCount || 0) - (a.rowsCount || 0));
-        if (outSort === "worst") rows.sort((a, b) => Number(a.worstRate) - Number(b.worstRate));
-
-        if (outOrder === "desc") rows.reverse();
-
-        const orderLabel =
-          outOrder === "asc"
-            ? "מהכי חמור (שלילי) להכי פחות"
-            : "מהכי פחות חמור להכי חמור";
-        const sortLabel =
-          outSort === "worst" ? "מדד" : outSort === "id" ? "מזהה" : "מספר שורות";
-
-        let html = `
-          <div class="rank-controls">
-            <button class="rank-ctl-btn ${outSort === "worst" ? "active" : ""}" onclick="setOutSort('worst')">📉 לפי מדד</button>
-            <button class="rank-ctl-btn ${outSort === "id" ? "active" : ""}" onclick="setOutSort('id')">🆔 לפי מזהה</button>
-            <button class="rank-ctl-btn ${outSort === "count" ? "active" : ""}" onclick="setOutSort('count')">🧾 לפי כמות שורות</button>
-            <button class="rank-ctl-btn ${outOrder === "asc" ? "active" : ""}" onclick="setOutOrder('asc')">⬇️ חמור→קל</button>
-            <button class="rank-ctl-btn ${outOrder === "desc" ? "active" : ""}" onclick="setOutOrder('desc')">⬆️ קל→חמור</button>
-          </div>
-
-          <div class="message message-info" style="margin-bottom:10px;">
-            סף חריגים: <strong>${fmt(rateThreshold)}-</strong> mm/yr • חריגים נמצאו: <strong>${Number(rows.length).toLocaleString()}</strong><br>
-            מיון: <strong>${escapeHtml(sortLabel)}</strong> • סדר: <strong>${escapeHtml(orderLabel)}</strong><br>
-            טיפ: לחץ על שורה כדי לפתוח את פרטי הבניין (בכרטיס "בניין") ולנסות להתמקד אליו.
-          </div>
-
-          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px;">
-            <div style="font-weight:1000;">סף:</div>
-            <input id="thrInput" type="number" step="0.5" value="${escapeHtml(rateThreshold)}"
-                   style="padding:10px 12px;border-radius:12px;border:1px solid #cfcfcf;font-weight:1000;width:140px;direction:ltr;text-align:left;">
-            <button class="rank-ctl-btn" onclick="applyThreshold()">החל</button>
-            <button class="rank-ctl-btn" onclick="setPreset(-2)">-2</button>
-            <button class="rank-ctl-btn" onclick="setPreset(-5)">-5</button>
-            <button class="rank-ctl-btn" onclick="setPreset(-10)">-10</button>
-            <button class="rank-ctl-btn" onclick="setPreset(-20)">-20</button>
-          </div>
-        `;
-
-        if (!rows.length) {
-          html += `<div class="message message-warn">אין חריגים לפי הסף הנוכחי.</div>`;
-          container.innerHTML = html;
-          updateStats();
-          setPanelSubtitle();
-          return;
-        }
-
-        html += `<div class="rank-list">`;
-
-        const maxShow = 200; // keep UI responsive
-        const shown = rows.slice(0, maxShow);
-
-        shown.forEach((r, idx) => {
-          const valueText = `${fmt(r.worstRate)} mm/yr`;
-          const extra = `rows=${Number(r.rowsCount).toLocaleString()}${r.anyXY ? " • XY✅" : ""}`;
-
-          html += `
-            <div class="rank-row" onclick="selectBuildingFromList('${escapeHtml(r.id)}')">
-              <div class="rank-num">${idx + 1}</div>
-              <div class="rank-name">${escapeHtml(r.id)}</div>
-              <div class="rank-value">${escapeHtml(valueText)}</div>
-            </div>
-            <div class="rank-extra">${escapeHtml(extra)}</div>
-          `;
-        });
-
-        if (rows.length > maxShow) {
-          html += `
-            <div class="message message-info" style="margin:12px;">
-              מוצגים ${Number(maxShow).toLocaleString()} מתוך ${Number(rows.length).toLocaleString()} חריגים (כדי לשמור על ביצועים).
-            </div>
-          `;
-        }
-
-        html += `</div>`;
-
-        container.innerHTML = html;
-        updateStats();
-        setPanelSubtitle();
-      }
-
-      function applyThreshold() {
-        const el = document.getElementById("thrInput");
-        if (!el) return;
-        const v = toFiniteNum(el.value);
-        if (v == null) return;
-
-        rateThreshold = v;
-        renderOutliers();
-        setPanelSubtitle();
-        updateStats();
-
-        // refresh single view if selected
-        if (selectedBuildingId && currentTab === "single") renderSelectedBuilding();
-      }
-      function setPreset(v) {
-        rateThreshold = v;
-        const el = document.getElementById("thrInput");
-        if (el) el.value = String(v);
-        renderOutliers();
-        setPanelSubtitle();
-        updateStats();
-        if (selectedBuildingId && currentTab === "single") renderSelectedBuilding();
-      }
-
-      function selectBuildingFromList(id) {
-        selectedBuildingId = String(id);
-        selectedBuildingRows = csvById.get(selectedBuildingId) || null;
-
-        // If we have XY in agg, zoom there (nice “highlight”)
-        const agg = buildingAgg.get(selectedBuildingId);
-        if (agg?.anyXY && agg?.x != null && agg?.y != null && mapInitialized) {
-          try {
-            govmap.zoomToXY({ x: agg.x, y: agg.y, level: 12, marker: true });
-          } catch (_) {}
-        }
-
-        updateStats();
-        switchTab("single");
-      }
-
-      // ===================== SEARCH TAB =====================
-      function renderSearchTab() {
-        const container = document.getElementById("search-content");
-        if (!container) return;
-
-        if (!csvLoaded) {
-          container.innerHTML = `<div class="message message-warn">ה-CSV עדיין לא נטען, לכן חיפוש לפי ID לא זמין.</div>`;
-          return;
-        }
-
-        container.innerHTML = `
-          <div class="message message-info">
-            חיפוש לפי מזהה בניין (ID) מתוך ה-CSV. אפשר גם להשתמש בשורת החיפוש העליונה.
-          </div>
-
-          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px;">
-            <input id="searchIdInput" class="rank-filter" placeholder="הקלד ID… (למשל 417568)" style="direction:ltr;text-align:left;" />
-            <button class="rank-ctl-btn" onclick="runIdSearch()">חפש</button>
-          </div>
-
-          <div id="search-results"></div>
-        `;
-
-        const inp = document.getElementById("searchIdInput");
-        if (inp) {
-          inp.addEventListener("keydown", (e) => {
-            if (e.key === "Enter") {
-              e.preventDefault();
-              runIdSearch();
-            }
-          });
-        }
-      }
-
-      function runIdSearch() {
-        const inp = document.getElementById("searchIdInput");
-        const box = document.getElementById("search-results");
-        if (!inp || !box) return;
-
-        const q = String(inp.value || "").trim();
-        if (!q) return;
-
-        // exact match first
-        if (csvById.has(q)) {
-          box.innerHTML = `
-            <div class="message message-info">נמצא התאמה מדויקת ל-ID <strong>${escapeHtml(q)}</strong>. פותח פרטים…</div>
-          `;
-          selectBuildingFromList(q);
-          return;
-        }
-
-        // prefix contains
-        const items = [];
-        const limit = 50;
-        for (const id of buildingAgg.keys()) {
-          if (String(id).includes(q)) items.push(String(id));
-          if (items.length >= limit) break;
-        }
-
-        if (!items.length) {
-          box.innerHTML = `<div class="message message-warn">לא נמצאו תוצאות עבור <strong>${escapeHtml(q)}</strong>.</div>`;
-          return;
-        }
-
-        box.innerHTML = `
-          <div class="message message-info">נמצאו ${Number(items.length).toLocaleString()} תוצאות (מציג עד ${limit}). לחץ לפתיחה:</div>
-          <div class="rank-list">
-            ${items
-              .map((id, idx) => {
-                const agg = buildingAgg.get(id);
-                const w = agg?.worstRate;
-                const badge = Number.isFinite(Number(w))
-                  ? isOutlier(w)
-                    ? `<span class="badge badge-bad" style="margin-left:8px;">חריג</span>`
-                    : `<span class="badge badge-good" style="margin-left:8px;">לא חריג</span>`
-                  : `<span class="badge badge-warn" style="margin-left:8px;">אין מדד</span>`;
-                const val = Number.isFinite(Number(w)) ? `${fmt(w)} mm/yr` : "—";
-                return `
-                  <div class="rank-row" onclick="selectBuildingFromList('${escapeHtml(id)}')">
-                    <div class="rank-num">${idx + 1}</div>
-                    <div class="rank-name">${escapeHtml(id)}</div>
-                    <div class="rank-value">${escapeHtml(val)}</div>
-                  </div>
-                  <div class="rank-extra">${badge} rows=${Number(agg?.rowsCount || 0).toLocaleString()}</div>
-                `;
-              })
-              .join("")}
-          </div>
-        `;
-      }
-
-      // ===================== ABOUT TAB =====================
-      function renderAbout() {
-        const container = document.getElementById("about-content");
-        if (!container) return;
-
-        const idName = csvHeaders?.[csvIdCol] ?? "col0";
-        const rateName = csvHeaders?.[csvRateCol] ?? "colN";
-
-        container.innerHTML = `
-          <div class="message message-info">
-            <strong>מה האתר עושה?</strong><br>
-            1) טוען שכבת בניינים מ-GovMap (<code class="inline">${escapeHtml(BUILDINGS_LAYER)}</code>).<br>
-            2) טוען קובץ CSV בשם <code class="inline">tablecsv.csv</code> ומבצע אינדוקס לפי מזהה בניין.<br>
-            3) בלחיצה על בניין – מציג את הנתונים מה-CSV עבור אותו ID.<br><br>
-            <strong>מצב חריגים</strong> מדגיש רק בניינים עם ערך מדד ≤ סף (שלילי).<br>
-            חשוב: "אין נתונים" לא נחשב חריג (רק ערך מספרי).
-          </div>
-
-          <div class="message message-info">
-            <strong>חיבורים חשובים:</strong><br>
-            • GovMap מחזיר לרוב את המזהה בשדה <code class="inline">objectid</code> (כמו שראית).<br>
-            • ב-CSV צריך שהעמודה <strong>${escapeHtml(idName)}</strong> תתאים ל-OBJECTID הזה.<br>
-            • עמודת המדד הנוכחית מזוהה כ-<strong>${escapeHtml(rateName)}</strong>.
-          </div>
-
-          <div class="message message-info">
-            <strong>מיקום ה-CSV:</strong><br>
-            מומלץ לשים את הקובץ בנתיב יחסי: <code class="inline">data/tablecsv.csv</code> ליד ה-index.html (או בתוך dist).<br>
-            ב-GitHub Pages: אל תתחיל את הנתיב עם <code class="inline">/</code>.
-          </div>
-        `;
-      }
-
-      // ===================== GOVMAP: CLICK -> BUILDING ID =====================
-      function extractBuildingIdFromGovmapItem(item) {
-        const attrs = item?.Fields || item?.Attributes || item;
-        // The key fix: prefer objectid
-        const candidates = [
-          "objectid",
-          "OBJECTID",
-          "ObjectId",
-          "ObjectID",
-          "oid",
-          "OID",
-          "id",
-          "ID",
-          "bldg_id",
-          "BLDG_ID",
-          "blgd_id",
-          "BLGD_ID",
-          "building_id",
-          "BUILDING_ID",
-        ];
-        const v = getFieldFromAttrs(attrs, candidates);
-        if (v == null) return null;
-        const s = String(v).trim();
-        return s ? s : null;
-      }
-
-      async function onMapClick(e) {
-        if (!mapInitialized) return;
-
-        const pt = normalizeMapPoint(e);
-        if (!pt) {
-          showInfo("רגע", "לא התקבלה נקודת מפה תקינה (X/Y).", "warn");
-          return;
-        }
-
-        selectedGovmapPoint = pt;
-
-        try {
-          const resp = await govmap.getLayerData({
-            LayerName: BUILDINGS_LAYER,
-            Point: { x: pt.x, y: pt.y, X: pt.x, Y: pt.y },
-            Radius: 30,
-          });
-
-          const items = resp?.data || resp?.Data || [];
-          if (!items.length) {
-            showInfo("לא נמצא", "אין בניין באזור הזה.", "info");
-            return;
-          }
-
-          const id = extractBuildingIdFromGovmapItem(items[0]);
-          if (!id) {
-            // This is the exact place your old UI got stuck. Now we show fields to debug.
-            const attrsObj = fieldsToObject(items[0]?.Fields || items[0]?.Attributes) || {};
-            const keys = Object.keys(attrsObj);
-            showInfo(
-              "מצאתי בניין אבל חסר ID",
-              `מצאתי בניין, אבל לא הצלחתי לחלץ מזהה.<br>
-               שדות שחזרו: <span style="direction:ltr;unicode-bidi:bidi-override">${escapeHtml(keys.join(" | "))}</span><br>
-               טיפ: לרוב המזהה הוא <code class="inline">objectid</code>.`,
-              "error",
-            );
-            return;
-          }
-
-          selectedBuildingId = String(id);
-          selectedBuildingRows = csvById.get(selectedBuildingId) || null;
-          updateStats();
-
-          // If we have coordinates in CSV for this ID, we can “highlight” by zoom marker (optional)
-          const agg = buildingAgg.get(selectedBuildingId);
-          if (agg?.anyXY && agg?.x != null && agg?.y != null) {
-            try {
-              govmap.zoomToXY({ x: agg.x, y: agg.y, level: 12, marker: true });
-            } catch (_) {}
-          }
-
-          // Update single tab view
-          if (currentTab !== "single") switchTab("single");
-          else renderSelectedBuilding();
-        } catch (error) {
-          console.error("❌ Error in onMapClick:", error);
-          showInfo(
-            "שגיאה",
-            `אירעה שגיאה: ${escapeHtml(error?.message || "שגיאה לא מוגדרת")}`,
-            "error",
-          );
-        }
-      }
-
-      // ===================== ADDRESS SEARCH (GovMap geocode) =====================
+      // ===================== ADDRESS SEARCH =====================
       function parseGeocodeList(resp) {
         const list = resp?.data || resp?.Data || resp?.results || resp;
         if (Array.isArray(list)) return list;
@@ -1829,9 +2547,19 @@
 
       function extractXY(item) {
         const x =
-          item?.X ?? item?.x ?? item?.CenterX ?? item?.centerX ?? item?.Lon ?? item?.lon;
+          item?.X ??
+          item?.x ??
+          item?.CenterX ??
+          item?.centerX ??
+          item?.Lon ??
+          item?.lon;
         const y =
-          item?.Y ?? item?.y ?? item?.CenterY ?? item?.centerY ?? item?.Lat ?? item?.lat;
+          item?.Y ??
+          item?.y ??
+          item?.CenterY ??
+          item?.centerY ??
+          item?.Lat ??
+          item?.lat;
         return { x: Number(x), y: Number(y) };
       }
 
@@ -1839,64 +2567,46 @@
         const s = String(t ?? "").trim();
         if (!s) return true;
         const low = s.toLowerCase();
-        return s === "תוצאה" || low === "result" || low === "results" || low === "unknown";
-      }
-
-      function getTopBarEls() {
-        const root = document.getElementById("top-searchbar");
-        if (!root) return {};
-        return {
-          addrInput: root.querySelector("#addrInput"),
-          addrBtn: root.querySelector("#addrBtn"),
-          addrResults: document.getElementById("addrResults"),
-          idInput: root.querySelector("#idInput"),
-          idBtn: root.querySelector("#idBtn"),
-          idResults: document.getElementById("idResults"),
-          toggleOutliersBtn: root.querySelector("#toggleOutliersBtn"),
-        };
-      }
-
-      function setAddrLoading(msg) {
-        const { addrResults } = getTopBarEls();
-        if (!addrResults) return;
-        addrResults.style.display = "block";
-        addrResults.innerHTML = `<div class="addr-item">${escapeHtml(msg || "מחפש…")}</div>`;
+        return (
+          s === "תוצאה" ||
+          low === "result" ||
+          low === "results" ||
+          low === "unknown"
+        );
       }
 
       function renderAddrResults(items) {
-        const { addrResults } = getTopBarEls();
-        if (!addrResults) return;
+        const { box } = getAddrEls();
+        if (!box) return;
 
         lastAddrItems = items || [];
 
         if (!items || !items.length) {
-          addrResults.style.display = "block";
-          addrResults.innerHTML = `<div class="addr-item">לא נמצאו תוצאות</div>`;
+          box.style.display = "block";
+          box.innerHTML = `<div class="addr-item">לא נמצאו תוצאות</div>`;
           return;
         }
 
-        addrResults.style.display = "block";
-        addrResults.innerHTML =
-          `<div class="dropSectionTitle">תוצאות חיפוש כתובת</div>` +
-          items
-            .map((it, idx) => {
-              const title = escapeHtml(it.__title || lastGeocodeQuery || "תוצאה");
-              const sub = escapeHtml(it.__sub || "");
-              return `
-                <div class="addr-item" data-idx="${idx}">
-                  <div style="font-weight:1000; color:#111;">${title}</div>
-                  ${sub ? `<div class="addr-sub">${sub}</div>` : ""}
-                </div>
-              `;
-            })
-            .join("");
+        box.style.display = "block";
+        box.innerHTML = items
+          .map((it, idx) => {
+            const title = escapeHtml(it.__title || lastGeocodeQuery || "תוצאה");
+            const sub = escapeHtml(it.__sub || "");
+            return `
+        <div class="addr-item" data-idx="${idx}">
+          <div style="font-weight:1000; color:#111;">${title}</div>
+          ${sub ? `<div class="addr-sub">${sub}</div>` : ""}
+        </div>
+      `;
+          })
+          .join("");
 
-        addrResults.querySelectorAll(".addr-item[data-idx]").forEach((el) => {
+        box.querySelectorAll(".addr-item").forEach((el) => {
           el.addEventListener("click", () => {
             const idx = Number(el.dataset.idx);
             const picked = lastAddrItems[idx];
             if (picked) focusToGeocodeItem(picked);
-            addrResults.style.display = "none";
+            box.style.display = "none";
           });
         });
       }
@@ -1912,10 +2622,23 @@
 
         try {
           govmap.zoomToXY({ x, y, level: 10, marker: true });
-        } catch (_) {}
+        } catch (e) {}
 
-        const label = !isBadTitle(item.__title) ? item.__title : lastGeocodeQuery || "תוצאה";
-        showInfo("כתובת", `התמקדתי לכתובת: <strong>${escapeHtml(label)}</strong>`, "info");
+        const label = !isBadTitle(item.__title)
+          ? item.__title
+          : lastGeocodeQuery || "תוצאה";
+        showInfo(
+          "כתובת",
+          `התמקדתי לכתובת: <strong>${escapeHtml(label)}</strong>`,
+          "info",
+        );
+      }
+
+      function setAddrLoading(msg) {
+        const { box } = getAddrEls();
+        if (!box) return;
+        box.style.display = "block";
+        box.innerHTML = `<div class="addr-item">${escapeHtml(msg || "מחפש…")}</div>`;
       }
 
       function runGeocode(query) {
@@ -1931,17 +2654,26 @@
 
         const myId = ++lastGeocodeReqId;
 
-        showInfo("חיפוש כתובת", `מחפש: <strong>${escapeHtml(q)}</strong>`, "info");
+        showInfo(
+          "חיפוש כתובת",
+          `מחפש: <strong>${escapeHtml(q)}</strong>`,
+          "info",
+        );
         setAddrLoading("מחפש כתובת…");
 
         const payload = { keyword: q };
-        if (govmap.geocodeType?.AccuracyOnly) payload.type = govmap.geocodeType.AccuracyOnly;
+        if (govmap.geocodeType?.AccuracyOnly)
+          payload.type = govmap.geocodeType.AccuracyOnly;
 
         let res;
         try {
           res = govmap.geocode(payload);
         } catch (e) {
-          showInfo("חיפוש כתובת", `שגיאה בחיפוש עבור: <strong>${escapeHtml(q)}</strong>`, "error");
+          showInfo(
+            "חיפוש כתובת",
+            `שגיאה בחיפוש עבור: <strong>${escapeHtml(q)}</strong>`,
+            "error",
+          );
           renderAddrResults([]);
           return;
         }
@@ -1951,7 +2683,11 @@
 
           const list = parseGeocodeList(resp);
           if (!list || !list.length) {
-            showInfo("חיפוש כתובת", `לא נמצאו תוצאות עבור: <strong>${escapeHtml(q)}</strong>`, "warn");
+            showInfo(
+              "חיפוש כתובת",
+              `לא נמצאו תוצאות עבור: <strong>${escapeHtml(q)}</strong>`,
+              "warn",
+            );
             renderAddrResults([]);
             return;
           }
@@ -1995,285 +2731,956 @@
 
         const onFail = () => {
           if (myId !== lastGeocodeReqId) return;
-          showInfo("חיפוש כתובת", `לא ניתן לבצע חיפוש עבור: <strong>${escapeHtml(q)}</strong>`, "error");
+          showInfo(
+            "חיפוש כתובת",
+            `לא ניתן לבצע חיפוש עבור: <strong>${escapeHtml(q)}</strong>`,
+            "error",
+          );
           renderAddrResults([]);
         };
 
-        if (res && typeof res.then === "function") res.then(onSuccess).catch(onFail);
-        else if (res && typeof res.done === "function") res.done(onSuccess).fail(onFail);
+        if (res && typeof res.then === "function")
+          res.then(onSuccess).catch(onFail);
+        else if (res && typeof res.done === "function")
+          res.done(onSuccess).fail(onFail);
         else onFail();
       }
 
-      // ===================== TOP BAR: ID SEARCH DROPDOWN =====================
-      function renderIdDropdown(items, q) {
-        const { idResults } = getTopBarEls();
-        if (!idResults) return;
+      function initAddressSearchUI() {
+        const { input, btn, box } = getAddrEls();
+        if (!input || !btn || !box) return;
 
-        if (!items || !items.length) {
-          idResults.style.display = "block";
-          idResults.innerHTML = `
-            <div class="dropSectionTitle">חיפוש ID</div>
-            <div class="addr-item">לא נמצאו תוצאות עבור "${escapeHtml(q)}"</div>
-          `;
-          return;
-        }
-
-        idResults.style.display = "block";
-        idResults.innerHTML =
-          `<div class="dropSectionTitle">תוצאות ID (עד 20)</div>` +
-          items
-            .map((id) => {
-              const agg = buildingAgg.get(id);
-              const w = agg?.worstRate;
-              const val = Number.isFinite(Number(w)) ? `${fmt(w)} mm/yr` : "—";
-              const tag =
-                Number.isFinite(Number(w))
-                  ? isOutlier(w)
-                    ? `<span class="badge badge-bad" style="margin-right:8px;">חריג</span>`
-                    : `<span class="badge badge-good" style="margin-right:8px;">לא חריג</span>`
-                  : `<span class="badge badge-warn" style="margin-right:8px;">אין מדד</span>`;
-
-              return `
-                <div class="addr-item" data-id="${escapeHtml(id)}" style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
-                  <div style="direction:ltr;text-align:left;font-weight:1000;color:#111;">${escapeHtml(id)}</div>
-                  <div style="display:flex;align-items:center;gap:10px;direction:ltr;">
-                    ${tag}
-                    <span style="font-weight:1000;color:#0b63ce;">${escapeHtml(val)}</span>
-                  </div>
-                </div>
-              `;
-            })
-            .join("");
-
-        idResults.querySelectorAll(".addr-item[data-id]").forEach((el) => {
-          el.addEventListener("click", () => {
-            const id = el.getAttribute("data-id");
-            if (id) selectBuildingFromList(id);
-            idResults.style.display = "none";
-          });
-        });
-      }
-
-      function runTopIdSearch(q) {
-        if (!csvLoaded) {
-          showInfo("חיפוש ID", "ה-CSV עדיין לא נטען.", "warn");
-          return;
-        }
-        const query = String(q || "").trim();
-        if (!query) return;
-
-        if (csvById.has(query)) {
-          selectBuildingFromList(query);
-          return;
-        }
-
-        const hits = [];
-        for (const id of buildingAgg.keys()) {
-          if (String(id).includes(query)) hits.push(String(id));
-          if (hits.length >= 20) break;
-        }
-        renderIdDropdown(hits, query);
-      }
-
-      // ===================== INIT UI =====================
-      function initTopBar() {
-        const { addrInput, addrBtn, addrResults, idInput, idBtn, idResults, toggleOutliersBtn } = getTopBarEls();
-        if (!addrInput || !addrBtn || !idInput || !idBtn) return;
-
-        // Address
-        addrBtn.addEventListener("click", () => {
-          const q = String(addrInput.value || "").trim();
+        btn.addEventListener("click", () => {
+          const q = String(input.value || "").trim();
           if (!q) return;
 
-          // If same query + cached list, jump to first
           const sameQuery = String(lastGeocodeQuery || "").trim() === q;
-          if (sameQuery && Array.isArray(lastAddrItems) && lastAddrItems.length) {
+
+          // אם כבר יש תוצאות עבור אותה מחרוזת – קפוץ לתוצאה הראשונה
+          if (
+            sameQuery &&
+            Array.isArray(lastAddrItems) &&
+            lastAddrItems.length
+          ) {
+            // נסה קודם התאמה מדויקת לכותרת, אחרת ראשון
             const exact =
-              lastAddrItems.find((it) => String(it?.__title || "").trim() === q) || lastAddrItems[0];
+              lastAddrItems.find(
+                (it) => String(it?.__title || "").trim() === q,
+              ) || lastAddrItems[0];
+
             focusToGeocodeItem(exact);
-            if (addrResults) addrResults.style.display = "none";
+            box.style.display = "none";
             return;
           }
 
+          // אחרת: הפעל חיפוש
           runGeocode(q);
         });
 
-        addrInput.addEventListener("keydown", (e) => {
+        input.addEventListener("keydown", (e) => {
           if (e.key === "Enter") {
             e.preventDefault();
-            addrBtn.click();
+            btn.click(); // אותו לוגיקה כמו הכפתור
           }
-          if (e.key === "Escape" && addrResults) addrResults.style.display = "none";
+          if (e.key === "Escape") box.style.display = "none";
         });
 
-        addrInput.addEventListener("input", () => {
+        input.addEventListener("input", () => {
           if (searchTimeout) clearTimeout(searchTimeout);
-          const v = addrInput.value.trim();
+          const v = input.value.trim();
           if (v.length < 3) {
-            if (addrResults) addrResults.style.display = "none";
+            box.style.display = "none";
             return;
           }
           searchTimeout = setTimeout(() => runGeocode(v), 350);
         });
 
-        // ID
-        idBtn.addEventListener("click", () => runTopIdSearch(idInput.value));
-        idInput.addEventListener("keydown", (e) => {
-          if (e.key === "Enter") {
-            e.preventDefault();
-            idBtn.click();
+        document.addEventListener("click", (e) => {
+          if (
+            !box.contains(e.target) &&
+            e.target !== input &&
+            e.target !== btn
+          ) {
+            box.style.display = "none";
           }
-          if (e.key === "Escape" && idResults) idResults.style.display = "none";
         });
-        idInput.addEventListener("input", () => {
-          const v = idInput.value.trim();
-          if (!v) {
-            if (idResults) idResults.style.display = "none";
-            return;
+      }
+
+      // ===================== GEOJSON -> WKT =====================
+      function toFiniteNum(v) {
+        if (v == null) return null;
+
+        if (typeof v === "string") {
+          v = v.trim().replace(/\s+/g, "");
+
+          // אם יש גם נקודה וגם פסיק -> הפסיק כנראה מפריד אלפים
+          if (v.includes(",") && v.includes(".")) {
+            v = v.replace(/,/g, "");
+          } else if (v.includes(",")) {
+            // אם הפסיק נראה כמו מפריד אלפים (3 ספרות אחריו) -> להסיר
+            if (/,(\d{3})$/.test(v)) v = v.replace(/,/g, "");
+            else v = v.replace(/,/g, "."); // אחרת נניח פסיק עשרוני
           }
-          // quick suggestions
-          runTopIdSearch(v);
-        });
+        }
 
-        // Toggle outliers mode
-        if (toggleOutliersBtn) {
-          toggleOutliersBtn.addEventListener("click", () => {
-            onlyOutliersMode = !onlyOutliersMode;
-            toggleOutliersBtn.textContent = onlyOutliersMode ? "🚨 חריגים: פעיל" : "🚨 חריגים: כבוי";
-            toggleOutliersBtn.classList.toggle("secondary", !onlyOutliersMode);
-            setPanelSubtitle();
+        const n = Number(v);
+        return Number.isFinite(n) ? n : null;
+      }
 
-            // refresh current view
-            if (currentTab === "single") renderSelectedBuilding();
-            if (currentTab === "outliers") renderOutliers();
+      function ensureClosedRing(coords) {
+        if (!Array.isArray(coords) || coords.length < 3) return coords;
+        const first = coords[0];
+        const last = coords[coords.length - 1];
+        if (first && last && first[0] === last[0] && first[1] === last[1])
+          return coords;
+        return coords.concat([[first[0], first[1]]]);
+      }
+
+      function ringToWkt(ring) {
+        if (!Array.isArray(ring) || ring.length < 3) return null;
+
+        const r = ensureClosedRing(ring);
+        const out = [];
+
+        for (const p of r) {
+          if (!Array.isArray(p) || p.length < 2) return null;
+
+          const x = toFiniteNum(p[0]);
+          const y = toFiniteNum(p[1]);
+          if (x == null || y == null) return null;
+
+          out.push(`${x.toFixed(3)} ${y.toFixed(3)}`);
+        }
+
+        return out.join(", ");
+      }
+
+      // 3. geojsonGeomToWkt מתוקנת
+      function geojsonGeomToWkt(geom) {
+        if (!geom || !geom.type) return null;
+
+        if (geom.type === "Polygon") {
+          const rings = (geom.coordinates || []).map(ringToWkt);
+          if (!rings.length || rings.some((r) => !r)) return null;
+          return `POLYGON((${rings[0]})${rings
+            .slice(1)
+            .map((h) => `,(${h})`)
+            .join("")})`;
+        }
+
+        if (geom.type === "MultiPolygon") {
+          const polys = geom.coordinates || [];
+          const parts = polys
+            .map((poly) => {
+              const rings = (poly || []).map(ringToWkt);
+              if (!rings.length || rings.some((r) => !r)) return null;
+              return `((${rings[0]})${rings
+                .slice(1)
+                .map((h) => `,(${h})`)
+                .join("")})`;
+            })
+            .filter(Boolean);
+
+          if (!parts.length) return null;
+          return `MULTIPOLYGON(${parts.join(",")})`;
+        }
+
+        return null;
+      }
+
+      async function loadMuniBoundariesGeojson() {
+        if (muniBoundariesLoaded) return true;
+
+        muniBoundariesLoadError = null;
+        try {
+          let feats = [];
+
+          // 1) Try loading from variable (local file bypass)
+          if (window.MUNI_DATA && window.MUNI_DATA.features) {
+            feats = window.MUNI_DATA.features;
+          } else {
+            // 2) Try loading via fetch
+            const res = await fetch(MUNI_BOUNDARIES_GEOJSON_URL, {
+              cache: "no-store",
+            });
+            if (!res.ok) throw new Error(`fetch failed (${res.status})`);
+            const gj = await res.json();
+            feats = Array.isArray(gj?.features) ? gj.features : [];
+          }
+
+          muniBoundariesIndex = Object.create(null);
+          muniBoundariesMeta = [];
+
+          for (const f of feats) {
+            const name = f?.properties?.name;
+            const wkt = geojsonGeomToWkt(f?.geometry);
+            if (!name || !wkt) {
+              console.warn(
+                "❌ Skipping bad boundary feature:",
+                name,
+                f?.geometry,
+              );
+              continue;
+            }
+
+            muniBoundariesIndex[normalizeKey(name)] = wkt;
+            muniBoundariesMeta.push({ name: String(name), wkt });
+          }
+
+          muniBoundariesLoaded = true;
+          console.log(
+            "✅ Boundaries loaded:",
+            Object.keys(muniBoundariesIndex).length,
+          );
+          return true;
+        } catch (e) {
+          muniBoundariesLoadError = e;
+          console.error("❌ Failed loading muni boundaries:", e);
+          return false;
+        } finally {
+          setChoroBtnUI();
+        }
+      }
+
+      function extraHebrewNameVariants(n) {
+        const s = String(n || "").trim();
+        if (!s) return [];
+        const out = new Set([s]);
+
+        // קרית/קריית
+        out.add(s.replace(/קריית/g, "קרית"));
+        out.add(s.replace(/קרית/g, "קריית"));
+
+        // גרשיים/גרש
+        out.add(s.replace(/[״"]/g, "").replace(/[׳']/g, ""));
+
+        return Array.from(out);
+      }
+
+      function findWktForCrimeName(crimeName) {
+        const nk = normalizeKey(crimeName);
+        if (wktByCrimeNameCache.has(nk)) return wktByCrimeNameCache.get(nk);
+
+        const candidates = [
+          String(crimeName || "").trim(),
+          ...extraHebrewNameVariants(crimeName),
+          ...(Array.isArray(nameVariants(crimeName))
+            ? nameVariants(crimeName)
+            : []),
+        ].filter(Boolean);
+
+        for (const v of candidates) {
+          const wkt = muniBoundariesIndex?.[normalizeKey(v)];
+          if (wkt) {
+            wktByCrimeNameCache.set(nk, wkt);
+            return wkt;
+          }
+        }
+
+        wktByCrimeNameCache.set(nk, null);
+        return null;
+      }
+
+      // ===================== CHOROPLETH (unchanged logic) =====================
+      // --- Guard: only transform finite [x,y] ---
+      function isFiniteXY(x, y) {
+        return Number.isFinite(x) && Number.isFinite(y);
+      }
+
+      function safeToNumber(v) {
+        // Handles strings, null, undefined
+        const n = typeof v === "string" ? Number(v.trim()) : Number(v);
+        return Number.isFinite(n) ? n : NaN;
+      }
+
+      // Recursively map coordinates (supports Point/LineString/Polygon/MultiPolygon)
+      function mapCoordsDeep(coords, pointFn) {
+        if (!Array.isArray(coords)) return null;
+
+        // Point: [x,y] or [x,y,z]
+        if (typeof coords[0] === "number" || typeof coords[0] === "string") {
+          const x = safeToNumber(coords[0]);
+          const y = safeToNumber(coords[1]);
+          if (!isFiniteXY(x, y)) return null;
+          const out = pointFn([x, y]);
+          if (!out || !isFiniteXY(out[0], out[1])) return null;
+          return out;
+        }
+
+        // Nested: array of arrays
+        const out = [];
+        for (const c of coords) {
+          const mapped = mapCoordsDeep(c, pointFn);
+          if (mapped != null) out.push(mapped);
+        }
+        return out.length ? out : null;
+      }
+
+      function closeRingIfNeeded(ring) {
+        if (!Array.isArray(ring) || ring.length < 3) return null;
+        const first = ring[0],
+          last = ring[ring.length - 1];
+        if (!first || !last) return null;
+        if (first[0] !== last[0] || first[1] !== last[1])
+          ring.push([first[0], first[1]]);
+        return ring.length >= 4 ? ring : null;
+      }
+
+      // Sanitize GeoJSON feature geometry (drops broken parts)
+      function sanitizeFeatureGeometry(feature, pointFn) {
+        if (!feature || !feature.geometry) return null;
+        const g = feature.geometry;
+
+        const mapped = mapCoordsDeep(g.coordinates, pointFn);
+        if (!mapped) return null;
+
+        // Fix polygon rings (common source of crashes: empty/invalid rings)
+        if (g.type === "Polygon") {
+          const rings = mapped.map((r) => closeRingIfNeeded(r)).filter(Boolean);
+          if (!rings.length) return null;
+          return { ...feature, geometry: { ...g, coordinates: rings } };
+        }
+
+        if (g.type === "MultiPolygon") {
+          const polys = mapped
+            .map((poly) =>
+              (poly || []).map((r) => closeRingIfNeeded(r)).filter(Boolean),
+            )
+            .filter((poly) => poly.length);
+          if (!polys.length) return null;
+          return { ...feature, geometry: { ...g, coordinates: polys } };
+        }
+
+        return { ...feature, geometry: { ...g, coordinates: mapped } };
+      }
+
+      function lerp(a, b, t) {
+        return a + (b - a) * t;
+      }
+      function clamp01(x) {
+        return Math.max(0, Math.min(1, x));
+      }
+
+      function valueToColor(value, minV, maxV) {
+        const t = maxV > minV ? clamp01((value - minV) / (maxV - minV)) : 0.5;
+
+        const low = [0, 210, 60];
+        const mid = [255, 160, 0];
+        const high = [240, 20, 20];
+
+        if (t < 0.5) {
+          const tt = t / 0.5;
+          return [
+            Math.round(lerp(low[0], mid[0], tt)),
+            Math.round(lerp(low[1], mid[1], tt)),
+            Math.round(lerp(low[2], mid[2], tt)),
+          ];
+        } else {
+          const tt = (t - 0.5) / 0.5;
+          return [
+            Math.round(lerp(mid[0], high[0], tt)),
+            Math.round(lerp(mid[1], high[1], tt)),
+            Math.round(lerp(mid[2], high[2], tt)),
+          ];
+        }
+      }
+
+      function clearChoropleth() {
+        const namesToClear = Array.isArray(activeChoroplethNames)
+          ? [...activeChoroplethNames]
+          : [];
+        try {
+          if (
+            namesToClear.length &&
+            typeof govmap.clearGeometriesByName === "function"
+          ) {
+            try {
+              govmap.clearGeometriesByName(namesToClear);
+            } catch (_) {}
+          }
+        } catch (e) {
+          console.warn("clearGeometriesByName failed:", e);
+        }
+        activeChoroplethNames = [];
+      }
+
+      function setMunicipalLayerOpacity(opacity) {
+        if (typeof govmap.setLayerOpacity === "function") {
+          try {
+            govmap.setLayerOpacity({ layerName: MUNICIPAL_LAYER, opacity });
+          } catch (e) {}
+        }
+      }
+
+      function setChoroBtnUI() {
+        const btn = document.getElementById("btnChoro");
+        if (!btn) return;
+
+        const muniOnly = currentMode === "muni";
+        const metricLabel = currentMetric === "rate" ? "ל-10,000" : "כמות";
+
+        if (!muniOnly) {
+          btn.classList.remove("active");
+          btn.classList.add("disabled");
+          btn.disabled = true;
+          btn.textContent = "🎨 צביעה (זמין בישובים)";
+          btn.title = "צביעה זמינה רק במצב ישובים/רשויות";
+          return;
+        }
+
+        btn.classList.toggle("active", !!choroplethEnabled);
+        btn.classList.remove("disabled");
+        btn.disabled = false;
+
+        btn.textContent = choroplethEnabled
+          ? `🎨 צביעה (${metricLabel}): פעיל`
+          : `🎨 צביעה (${metricLabel})`;
+        btn.title = muniBoundariesLoaded
+          ? `צביעה לפי ${metricLabel}`
+          : muniBoundariesLoadError
+            ? "נכשל לטעון GeoJSON. ודא שהקובץ קיים ושאתה בשרת (GitHub Pages/localhost)."
+            : "טוען GeoJSON של גבולות הרשויות...";
+      }
+
+      async function toggleChoropleth() {
+        if (currentMode !== "muni") setMode("muni");
+
+        choroplethEnabled = !choroplethEnabled;
+        setChoroBtnUI();
+
+        if (!mapInitialized) return;
+
+        if (!choroplethEnabled) {
+          clearChoropleth();
+          setMunicipalLayerOpacity(100);
+          showInfo("צביעה כובתה", "חזרתי לתצוגה רגילה.", "info");
+          return;
+        }
+
+        const ok = await loadMuniBoundariesGeojson();
+        if (!ok) {
+          choroplethEnabled = false;
+          setChoroBtnUI();
+          return;
+        }
+
+        setMunicipalLayerOpacity(30);
+        await renderChoropleth();
+      }
+
+      function getChoroCacheKey(year, metric) {
+        return `${year}__${metric}`;
+      }
+
+      function buildChoroplethPayloadForYear(year, metric) {
+        const geomNameToMuniName = Object.create(null);
+        const cacheKey = getChoroCacheKey(year, metric);
+        const noPopRows = [];
+        if (choroplethCache.has(cacheKey)) return choroplethCache.get(cacheKey);
+
+        const yearData = window.crimeByYear?.[year];
+        if (!yearData) return null;
+
+        const NO_JUR_PREFIX = "ללא שיפוט";
+
+        const normalRows = [];
+        const missingGeom = [];
+
+        // Precollect "ללא שיפוט" boundaries (always gray)
+        const noJurRows = (
+          Array.isArray(muniBoundariesMeta) ? muniBoundariesMeta : []
+        )
+          .filter(
+            (b) =>
+              String(b?.name || "")
+                .trim()
+                .startsWith(NO_JUR_PREFIX) && b?.wkt,
+          )
+          .map((b) => ({
+            name: String(b.name).trim(),
+            wkt: b.wkt,
+            total: 0,
+            value: 0,
+          }));
+
+        for (const name in yearData) {
+          if (
+            String(name || "")
+              .trim()
+              .startsWith(NO_JUR_PREFIX)
+          )
+            continue;
+
+          const d = yearData[name];
+          const total = Number(d?.total || 0);
+
+          // Rate only if population exists
+          const popRaw = getPopulationForAuthority(name);
+          const rate = popRaw == null ? null : calcRatePer10k(total, popRaw);
+
+          const wkt = findWktForCrimeName(name);
+          if (!wkt) {
+            missingGeom.push(name);
+            continue;
+          }
+
+          if (metric === "rate") {
+            if (rate == null) {
+              // יש גיאומטריה אבל אין אוכלוסייה -> נצבע באפור
+              noPopRows.push({ name, wkt, total, value: null });
+            } else {
+              normalRows.push({ name, wkt, total, value: rate });
+            }
+          } else {
+            normalRows.push({ name, wkt, total, value: total });
+          }
+        }
+
+        const allRows = [...normalRows, ...noJurRows];
+        if (!allRows.length) return null;
+
+        const refVals = normalRows.length
+          ? normalRows
+              .map((r) => r.value)
+              .filter((v) => Number.isFinite(Number(v)))
+          : allRows
+              .map((r) => r.value)
+              .filter((v) => Number.isFinite(Number(v)));
+        const minV = refVals.length ? Math.min(...refVals) : 0;
+        const sortedDesc = [...refVals].sort((a, b) => b - a);
+        const maxV =
+          sortedDesc.length >= 2 ? sortedDesc[1] : (sortedDesc[0] ?? 0);
+
+        const wkts = [],
+          names = [],
+          symbols = [];
+        const prefix = `${CHORO_PREFIX}_${year}_${metric}`;
+
+        for (let i = 0; i < normalRows.length; i++) {
+          const r = normalRows[i];
+          const [rr, gg, bb] = valueToColor(Number(r.value), minV, maxV);
+
+          wkts.push(r.wkt);
+          names.push(r.name);
+          symbols.push({
+            fillColor: [rr, gg, bb, 0.55],
+            outlineColor: [25, 25, 25, 0.85],
+            outlineWidth: 2,
+          });
+
+          const tip =
+            metric === "rate"
+              ? `${r.name} • ל-10,000: ${Number(r.value).toLocaleString()} • כמות: ${Number(r.total || 0).toLocaleString()}`
+              : `${r.name} • כמות: ${Number(r.total || 0).toLocaleString()}`;
+        }
+        // no-population rows (gray)
+        for (let i = 0; i < noPopRows.length; i++) {
+          const r = noPopRows[i];
+          wkts.push(r.wkt);
+          const geomName = `${prefix}_nopop_${i}`;
+          names.push(geomName);
+          geomNameToMuniName[geomName] = r.name; // ✅ לשייך לרשות האמיתית
+          symbols.push({
+            fillColor: [160, 160, 160, 0.65],
+            outlineColor: [25, 25, 25, 0.85],
+            outlineWidth: 2,
           });
         }
 
-        // click outside to close dropdowns
-        document.addEventListener("click", (e) => {
-          if (addrResults && !addrResults.contains(e.target) && e.target !== addrInput && e.target !== addrBtn) {
-            addrResults.style.display = "none";
-          }
-          if (idResults && !idResults.contains(e.target) && e.target !== idInput && e.target !== idBtn) {
-            idResults.style.display = "none";
-          }
-        });
-      }
+        for (let i = 0; i < noJurRows.length; i++) {
+          const r = noJurRows[i];
+          wkts.push(r.wkt);
+          const geomName = `${prefix}_nojur_${i}`;
+          names.push(geomName);
+          geomNameToMuniName[geomName] = r.name;
 
-      // ===================== MODAL =====================
-      let lastFocusedElement = null;
-      function openModal(id, focusElId = null) {
-        const m = document.getElementById(id);
-        if (!m) return;
-        lastFocusedElement = document.activeElement;
-        m.style.display = "block";
-        m.setAttribute("aria-hidden", "false");
-        document.documentElement.style.overflow = "hidden";
-        document.body.style.overflow = "hidden";
-
-        const focusEl =
-          (focusElId && document.getElementById(focusElId)) ||
-          m.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
-        if (focusEl) setTimeout(() => focusEl.focus(), 0);
-      }
-      function closeModal(id) {
-        const m = document.getElementById(id);
-        if (!m) return;
-
-        if (m.contains(document.activeElement) && lastFocusedElement && typeof lastFocusedElement.focus === "function") {
-          lastFocusedElement.focus();
+          symbols.push({
+            fillColor: [140, 140, 140, 0.65],
+            outlineColor: [25, 25, 25, 0.85],
+            outlineWidth: 2,
+          });
         }
 
-        m.setAttribute("aria-hidden", "true");
-        m.style.display = "none";
-        document.documentElement.style.overflow = "";
-        document.body.style.overflow = "";
+        const built = {
+          payload: {
+            wkts,
+            names,
+            geometryType:
+              govmap.geometryType?.POLYGON ?? govmap.geometryType?.Polygon ?? 3,
+            clearExisting: false,
+            showBubble: false,
+            symbols,
+            allowIdentify: true,
+          },
+          meta: {
+            minV,
+            maxV,
+            missingGeomCount: missingGeom.length,
+            noJurCount: noJurRows.length,
+            noPopCount: noPopRows.length,
+            missingGeom,
+            geomNameToMuniName, // ✅
+          },
+        };
+
+        choroplethCache.set(cacheKey, built);
+        return built;
+      }
+      function isWktSafe(wkt) {
+        if (typeof wkt !== "string") return false;
+        if (/NaN|Infinity|undefined|null/i.test(wkt)) return false;
+
+        const nums = wkt.match(/-?\d+(?:\.\d+)?/g);
+        if (!nums || nums.length < 6) return false;
+
+        for (const s of nums) {
+          const n = Number(s);
+          if (!Number.isFinite(n)) return false;
+        }
+        return true;
       }
 
-      function initModals() {
-        const aboutBtn = document.getElementById("aboutBtn");
-        const aboutClose = document.getElementById("aboutCloseBtn");
-        const aboutOverlay = document.getElementById("aboutOverlay");
+      function filterChoroPayload(payload, predicate) {
+        // יוצר עותק של ה-payload ומסנן רק את הגיאומטריות שעוברות את התנאי.
+        // חשוב: לא מעבירים tooltips כדי למנוע תצוגת hover שחוסמת קליקים.
+        const out = { ...payload, wkts: [], names: [], symbols: [] };
+        if (payload && payload.data) out.data = { ...payload.data };
 
-        if (aboutBtn) aboutBtn.addEventListener("click", () => openModal("aboutModal", "aboutCloseBtn"));
-        if (aboutClose) aboutClose.addEventListener("click", () => closeModal("aboutModal"));
-        if (aboutOverlay) aboutOverlay.addEventListener("click", () => closeModal("aboutModal"));
-
-        document.addEventListener("keydown", (e) => {
-          if (e.key === "Escape") {
-            closeModal("aboutModal");
-            const { addrResults, idResults } = getTopBarEls();
-            if (addrResults) addrResults.style.display = "none";
-            if (idResults) idResults.style.display = "none";
+        const n = Math.min(
+          payload.wkts?.length || 0,
+          payload.names?.length || 0,
+          payload.symbols?.length || 0,
+        );
+        for (let i = 0; i < n; i++) {
+          const name = payload.names[i];
+          if (!predicate || predicate(name, i) !== false) {
+            out.wkts.push(payload.wkts[i]);
+            out.names.push(payload.names[i]);
+            out.symbols.push(payload.symbols[i]);
           }
+        }
+        return out;
+      }
+
+      async function renderChoropleth() {
+        if (!mapInitialized || !choroplethEnabled) return;
+        if (currentMode !== "muni") return;
+
+        const mySeq = ++choroRenderSeq; // מזהה רינדור נוכחי
+
+        // ודא גבולות נטענו
+        if (!muniBoundariesLoaded) {
+          const ok = await loadMuniBoundariesGeojson();
+          if (!ok) return;
+          if (!choroplethEnabled || mySeq !== choroRenderSeq) return;
+        }
+
+        const metric = currentMetric === "rate" ? "rate" : "abs";
+
+        // שקיפות שכבת הרשויות כדי לראות את הצביעה
+        setMunicipalLayerOpacity(30);
+
+        // נקה כל צביעה קודמת
+        clearChoropleth();
+
+        const built = buildChoroplethPayloadForYear(currentYear, metric);
+        if (!built) {
+          showInfo(
+            "אין מספיק נתונים",
+            "לא נמצאו רשויות מתאימות לצביעה לפי המדד הנוכחי.",
+            "warn",
+          );
+          setMunicipalLayerOpacity(100);
+          return;
+        }
+
+        try {
+          const safePayload = filterChoroPayload(built.payload);
+
+          if (!safePayload.wkts.length) {
+            setMunicipalLayerOpacity(100);
+            showInfo(
+              "שגיאה",
+              "כל הגיאומטריות נפסלו בגלל קואורדינטות לא תקינות ב-GeoJSON.",
+              "error",
+            );
+            return;
+          }
+
+          // קריטי: לשמור שמות לפני הציור (כדי שכיבוי באמצע יוכל לנסות לנקות)
+          activeChoroplethNames = safePayload.names.slice();
+
+          const ret = govmap.displayGeometries(safePayload);
+
+          // ✅ שומר את ret.then (אבל עם guard כדי שלא ירוץ אחרי כיבוי)
+          if (ret && typeof ret.then === "function") {
+            ret.then(
+              (ev) => {
+                // אם כיבו או התחיל רינדור חדש — לא עושים כלום
+                if (!choroplethEnabled || mySeq !== choroRenderSeq) return;
+
+                const geomName = ev?.data?.[0]?.name;
+                if (!geomName) return;
+
+                // ניסיון למפות שם גיאומטריה לשם רשות אמיתי (ל-nopop/nojur)
+                const mappedMuniName =
+                  built?.meta?.geomNameToMuniName?.[geomName] || null;
+
+                if (String(geomName).startsWith(CHORO_PREFIX)) {
+                  const s = String(geomName);
+
+                  // 1) ללא שיפוט -> אדום (אין נתוני פשיעה)
+                if (s.includes("_nojur_")) {
+  const nm = mappedMuniName || "ללא שיפוט";
+  showInfo(
+    nm,
+    `אין נתוני פשיעה עבור <strong>${escapeHtml(nm)}</strong> בשנת ${escapeHtml(currentYear)}.`,
+    "warn",
+  );
+  return;
+}
+
+
+                  // 2) nopop -> יש פשיעה אבל אין אוכלוסייה => להציג את מסך הרשות הרגיל (כמו בלי צביעה)
+                  if (s.includes("_nopop_")) {
+                    if (mappedMuniName) {
+                      selectFromRank(mappedMuniName, false);
+                      // ✅ זה יביא למסך "X אירועים" + ההודעה הצהובה על אין אוכלוסייה
+                      return;
+                    }
+
+                    // אם אין מיפוי (לא עשית את סעיף 2) – אין דרך לדעת איזו רשות זו
+                    showInfo(
+                      "אין אוכלוסייה",
+                      "נבחרה גיאומטריית צביעה של 'אין אוכלוסייה', אבל אין מיפוי לשם רשות. הוסף מיפוי ב-buildChoroplethPayloadForYear.",
+                      "warn",
+                    );
+                    return;
+                  }
+
+                  // fallback לכל גיאומטריה של צביעה בלי שיוך
+                  showInfo("מידע", "נבחרה גיאומטריית צביעה ללא שיוך.", "warn");
+                  return;
+                }
+
+                // שם רגיל מהשכבה -> עובד כרגיל
+                selectFromRank(mappedMuniName || geomName, false);
+              },
+              (err) => {
+                // ✅ שינוי מ-catch ל-fail callback
+                console.warn("displayGeometries promise rejected:", err);
+              },
+            );
+
+            // ✅ לא צריך await - ה-then כבר מטפל בזה
+          }
+
+          // אם כיבו בזמן הציור או התחיל רינדור חדש — לנקות את מה שנצבע עכשיו
+          if (!choroplethEnabled || mySeq !== choroRenderSeq) {
+            try {
+              if (typeof govmap.clearGeometriesByName === "function") {
+                govmap.clearGeometriesByName(activeChoroplethNames);
+              } else if (typeof govmap.clearGeometries === "function") {
+                govmap.clearGeometries();
+              }
+            } catch (_) {}
+            setMunicipalLayerOpacity(100);
+            return;
+          }
+
+          // הרינדור עדיין בתוקף
+          activeChoroplethNames = safePayload.names;
+          setChoroBtnUI();
+        } catch (e) {
+          console.error("displayGeometries failed:", e);
+          setMunicipalLayerOpacity(100);
+          showInfo(
+            "שגיאה",
+            `נכשלתי לצייר גיאומטריות: ${escapeHtml(e?.message || e)}`,
+            "error",
+          );
+        }
+      }
+
+      function subscribeGovmapProgressEvent(ev, handler) {
+        try {
+          if (!ev || typeof govmap?.onEvent !== "function") return false;
+          const h = govmap.onEvent(ev);
+          if (h && typeof h.progress === "function") {
+            h.progress(handler);
+            return true;
+          }
+        } catch (_) {}
+        return false;
+      }
+
+      function installChoroplethClickFallback() {
+        if (!window.govmap || !govmap.onEvent) return;
+
+        // GovMap tends to keep only one active listener at a time.
+        // When choropleth geometries are drawn, GovMap may bind its own hover/click handlers.
+        // We force a single CLICK listener and explicitly remove hover.
+        try {
+          govmap.unbindEvent && govmap.unbindEvent(govmap.events.MOUSE_MOVE);
+        } catch (e) {}
+        try {
+          govmap.unbindEvent && govmap.unbindEvent(govmap.events.CLICK);
+        } catch (e) {}
+
+        subscribeGovmapProgressEvent(govmap.events.CLICK, function (e) {
+          const pt = normalizeMapPoint(e);
+          if (!pt) return;
+          lastHoverMapPoint = pt; // keep for compatibility, even though we don’t rely on hover
+          // Call the same click pipeline used everywhere else
+          onMapClick({ mapPoint: pt, __fromGovmap: true }, e);
         });
       }
 
       // ===================== GOVMAP INIT =====================
       function initGovMap() {
-        // Start loading CSV immediately (in parallel)
-        loadCsv().finally(() => {
-          setPanelSubtitle();
-          updateStats();
+        if (!window.crimeByYear || typeof window.crimeByYear !== "object") {
+          showInfo(
+            "שגיאה",
+            "לא ניתן לטעון את קובץ הנתונים crimeByYear_2020_2025.js",
+            "error",
+          );
+          const l = document.getElementById("loading");
+          if (l) l.style.display = "none";
+          return;
+        }
+
+        buildPopulationIndex();
+        updateMetricButtonsUI();
+
+        const years = Object.keys(window.crimeByYear).sort();
+        const sel = document.getElementById("yearSelect");
+        if (!sel) return;
+        sel.innerHTML = "";
+
+        years.forEach((y) => {
+          const opt = document.createElement("option");
+          opt.value = y;
+          opt.textContent = y;
+          sel.appendChild(opt);
         });
 
-        // Init panel defaults
-        setPanelSubtitle();
-        updateStats();
+        currentYear = years.includes("2025") ? "2025" : years[years.length - 1];
+        sel.value = currentYear;
+
+        buildAllIndexesForYear(currentYear);
+        updateQuickStats();
+
+        sel.addEventListener("change", (e) => {
+          currentYear = e.target.value;
+
+          choroplethCache.clear();
+
+          buildAllIndexesForYear(currentYear);
+          updateQuickStats();
+
+          if (choroplethEnabled && currentMode === "muni") renderChoropleth();
+
+          if (selectedEntityKey) {
+            const index = getIndexByMode(currentMode);
+            const entry = index[selectedEntityKey];
+            if (entry) {
+              selectedEntityName = entry.name;
+
+              if (currentTab === "single") {
+                showEntry(entry);
+                return;
+              }
+              if (currentTab === "trends") {
+                showTrends(selectedEntityName, currentMode);
+                return;
+              }
+            }
+          }
+
+          if (currentTab === "compare") updateCompareView();
+          else if (currentTab === "rankings") renderRankings();
+          else if (currentTab === "trends") {
+            const tc = document.getElementById("trends-content");
+            if (tc)
+              tc.innerHTML = `<div class="message message-info">בחר ${getEntityLabel(currentMode)} במפה כדי לראות נתונים היסטוריים</div>`;
+          } else {
+            showInfo(
+              "מפה לפי " + getModeLabel(currentMode),
+              `שנה נבחרת: ${currentYear}<br>לחץ על ${getEntityLabel(currentMode)} במפה כדי לראות נתונים`,
+              "info",
+            );
+          }
+        });
 
         govmap.createMap("map", {
           token: TOKEN,
-          layers: [BUILDINGS_LAYER],
+          layers: [MUNICIPAL_LAYER, POLICE_MERHAV_LAYER, POLICE_STATION_LAYER],
           layersMode: 4,
           background: 3,
           zoomButtons: true,
           identifyOnClick: false,
-          visibleLayers: [BUILDINGS_LAYER],
+          visibleLayers: [MUNICIPAL_LAYER],
           onLoad: () => {
             mapInitialized = true;
 
+            setMode(currentMode);
+            setChoroBtnUI();
+
+            // CLICK (normal)
+            try {
+              govmap.onEvent(govmap.events.CLICK).progress((e) => {
+                lastGovmapClickAt = Date.now();
+                const pt = normalizeMapPoint(e);
+                if (pt) lastHoverMapPoint = pt;
+
+                // ✅ קורא עם נקודה תקינה בלבד
+                onMapClick(pt ? { mapPoint: pt, __fromGovmap: true } : e);
+              });
+            } catch (e) {}
+
+            installChoroplethClickFallback();
+
             initModals();
-            initTopBar();
+            initAddressSearchUI();
 
             const toggleBtn = document.getElementById("panelToggleBtn");
             if (toggleBtn) toggleBtn.addEventListener("click", togglePanel);
             if (toggleBtn) toggleBtn.textContent = "➖ הקטן";
 
-            try {
-              govmap.onEvent(govmap.events.CLICK).progress((e) => {
-                const pt = normalizeMapPoint(e);
-                onMapClick(pt ? { mapPoint: pt, __fromGovmap: true } : e);
-              });
-            } catch (_) {}
-
             const l = document.getElementById("loading");
             if (l) l.style.display = "none";
 
             showInfo(
-              "SatMap – בניינים + CSV",
-              `שכבה: <strong>${escapeHtml(BUILDINGS_LAYER)}</strong><br>
-               לחץ על בניין כדי לקבל נתונים מה-CSV. עבור "חריגים" – פתח את הטאב חריגים.`,
+              "מפה לפי ישובים/רשויות",
+              `שנה נבחרת: ${currentYear}<br>לחץ על רשות במפה כדי לראות נתונים`,
               "info",
             );
 
-            setPanelSubtitle();
-            updateStats();
             console.log("✅ Map initialized successfully");
           },
         });
       }
+      function setMobileVh() {
+  const vh = window.innerHeight * 0.01;
+  document.documentElement.style.setProperty("--vh", `${vh}px`);
+}
+setMobileVh();
+window.addEventListener("resize", setMobileVh);
+if (window.visualViewport) window.visualViewport.addEventListener("resize", setMobileVh);
+
 
       // Expose functions for inline handlers
-      window.switchTab = switchTab;
-      window.togglePanel = togglePanel;
-      window.applyThreshold = applyThreshold;
-      window.setPreset = setPreset;
-      window.selectBuildingFromList = selectBuildingFromList;
-      window.setOutSort = setOutSort;
-      window.setOutOrder = setOutOrder;
-      window.renderOutliers = renderOutliers;
-      window.runIdSearch = runIdSearch;
       window.initGovMap = initGovMap;
+      window.switchTab = switchTab;
+      window.setMode = setMode;
+      window.setMetric = setMetric;
+      window.addToCompare = addToCompare;
+      window.removeFromCompare = removeFromCompare;
+      window.showTrends = showTrends;
+      window.renderRankings = renderRankings;
+      window.toggleChoropleth = toggleChoropleth;
+      window.selectFromRank = selectFromRank;
+      window.setRankingsOrder = setRankingsOrder;
     </script>
 
     <!-- GOVMAP API -->
@@ -2287,61 +3694,127 @@
   <body>
     <div id="loading">
       <div class="spinner"></div>
-      <div style="font-size: 14px; color: #333; font-weight: 1000">טוען מפה...</div>
+      <div style="font-size: 14px; color: #333; font-weight: 1000">
+        טוען מפה...
+      </div>
     </div>
 
     <div id="map"></div>
 
     <!-- Top Always-Open Search Bar -->
     <div id="top-searchbar">
-      <button id="addrBtn" class="pillBtn" type="button">חפש כתובת</button>
-      <input id="addrInput" class="pillInput" type="text" placeholder="לדוגמה: דיזנגוף 50 תל אביב" autocomplete="off" />
-      <button id="idBtn" class="pillBtn secondary" type="button">חפש ID</button>
-      <input id="idInput" class="pillInput ltr" type="text" placeholder="417568" autocomplete="off" />
-      <button id="toggleOutliersBtn" class="pillBtn" type="button">🚨 חריגים: פעיל</button>
+      <button id="addrBtn" type="button">חפש</button>
+
+      <input
+        id="addrInput"
+        type="text"
+        placeholder="לדוגמה: דיזנגוף 50 תל אביב"
+        autocomplete="off"
+      />
 
       <div id="addrResults"></div>
-      <div id="idResults"></div>
     </div>
 
     <div id="info-panel">
       <div id="panel-header">
-        <h1>🛰️ SatMap – Buildings + CSV</h1>
-        <p>טוען CSV…<br>מצב חריגים: <strong>פעיל</strong></p>
+        <h1>🗺️ מפת פשיעה בישראל</h1>
+        <p>
+          מצב נוכחי: <strong>ישובים/רשויות</strong><br />מדד ל-10,000 זמין כאן
+          (רק אם יש נתון אוכלוסייה)
+        </p>
 
         <div id="header-actions">
           <button id="aboutBtn" class="hbtn secondary">ℹ️ אודות</button>
-          <button id="panelToggleBtn" class="hbtn secondary" title="כיווץ/הרחבה">➖ הקטן</button>
+          <button
+            id="panelToggleBtn"
+            class="hbtn secondary"
+            title="כיווץ/הרחבה"
+          >
+            ➖ הקטן
+          </button>
         </div>
       </div>
 
       <div id="tabs">
-        <div class="tab active" data-tab="single" onclick="switchTab('single')">בניין</div>
-        <div class="tab" data-tab="outliers" onclick="switchTab('outliers')">חריגים</div>
-        <div class="tab" data-tab="search" onclick="switchTab('search')">חיפוש</div>
-        <div class="tab" data-tab="about" onclick="switchTab('about')">הסבר</div>
+        <div class="tab active" data-tab="single" onclick="switchTab('single')">
+          תצוגה
+        </div>
+        <div class="tab" data-tab="compare" onclick="switchTab('compare')">
+          השוואה
+        </div>
+        <div class="tab" data-tab="trends" onclick="switchTab('trends')">
+          היסטוריה
+        </div>
+        <div class="tab" data-tab="rankings" onclick="switchTab('rankings')">
+          דירוגים
+        </div>
       </div>
 
       <div id="controls">
         <div class="mode-grid">
-          <button class="mode-btn full primary active" onclick="switchTab('single')">🏢 קליק על בניין → נתוני CSV</button>
-          <button class="mode-btn" onclick="switchTab('outliers')">🚨 מצב חריגים</button>
-          <button class="mode-btn" onclick="switchTab('search')">🔎 חיפוש ID</button>
-          <button class="mode-btn full" onclick="switchTab('about')">ℹ️ איך זה עובד</button>
+          <button
+            id="btnModeMuni"
+            class="mode-btn full primary active"
+            onclick="setMode('muni')"
+          >
+            🏘️ ישובים
+          </button>
+          <button
+            id="btnModeMerhav"
+            class="mode-btn"
+            onclick="setMode('merhav')"
+          >
+            🚔 מרחבים
+          </button>
+          <button
+            id="btnModeStation"
+            class="mode-btn"
+            onclick="setMode('station')"
+          >
+            🏢 תחנות משטרה
+          </button>
+
+          <button
+            id="btnMetricAbs"
+            class="mode-btn active"
+            onclick="setMetric('abs')"
+          >
+            🔢 כמות
+          </button>
+          <button
+            id="btnMetricRate"
+            class="mode-btn"
+            onclick="setMetric('rate')"
+            title="זמין רק במצב ישובים"
+          >
+            👥 ל-10,000
+          </button>
+          <button
+            id="btnChoro"
+            class="mode-btn full"
+            onclick="toggleChoropleth()"
+          >
+            🎨 צביעה
+          </button>
+        </div>
+
+        <div id="controls-row">
+          <label for="yearSelect">שנה:</label>
+          <select id="yearSelect"></select>
         </div>
 
         <div id="quick-stats">
           <div class="stat-card">
+            <div class="stat-value" id="stat-municipalities">-</div>
+            <div class="stat-label" id="stat-entities-label">רשויות</div>
+          </div>
+          <div class="stat-card">
             <div class="stat-value" id="stat-total">-</div>
-            <div class="stat-label">סה"כ IDs ב-CSV</div>
+            <div class="stat-label">סה"כ</div>
           </div>
           <div class="stat-card">
-            <div class="stat-value" id="stat-outliers">-</div>
-            <div class="stat-label">חריגים לפי סף</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-value" id="stat-selected">-</div>
-            <div class="stat-label">נבחר</div>
+            <div class="stat-value" id="stat-avg">-</div>
+            <div class="stat-label">ממוצע</div>
           </div>
         </div>
       </div>
@@ -2352,27 +3825,30 @@
           <div id="info-body"></div>
         </div>
 
-        <div class="tab-content" id="tab-outliers">
-          <div id="outliers-content">
-            <div class="message message-info">טוען חריגים…</div>
+        <div class="tab-content" id="tab-compare">
+          <div id="compare-content">
+            <div class="message message-info">
+              בחר ישויות במפה והוסף להשוואה
+            </div>
           </div>
         </div>
 
-        <div class="tab-content" id="tab-search">
-          <div id="search-content">
-            <div class="message message-info">טוען חיפוש…</div>
+        <div class="tab-content" id="tab-trends">
+          <div id="trends-content">
+            <div class="message message-info">
+              בחר ישות במפה לצפייה בהיסטוריה
+            </div>
           </div>
         </div>
 
-        <div class="tab-content" id="tab-about">
-          <div id="about-content">
-            <div class="message message-info">טוען הסבר…</div>
+        <div class="tab-content" id="tab-rankings">
+          <div id="rankings-content">
+            <div class="message message-info">טוען דירוגים...</div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- About Modal (optional – keeps CrimesMap feel) -->
     <div id="aboutModal" class="modal" aria-hidden="true">
       <div id="aboutOverlay" class="modalOverlay"></div>
       <div class="modalCard" role="dialog">
@@ -2382,13 +3858,26 @@
         </div>
         <div class="modalBody">
           <p style="margin-top: 0; font-weight: 900">
-            SatMap – אתר בדיקה לבניינים חריגים לפי נתוני CSV (למשל InSAR/Velocity) בשילוב שכבת בניינים של GovMap.
+            מפת פשיעה אינטראקטיבית המבוססת על נתוני משטרת ישראל (2020–2025).
           </p>
-          <ul style="margin: 0; padding-right: 18px; font-weight: 900; color: #333; line-height: 1.6">
-            <li><strong>שכבת בניינים:</strong> GovMap Layer <code class="inline">225287</code> (visibleLayers).</li>
-            <li><strong>CSV:</strong> נטען מהנתיב היחסי <code class="inline">data/tablecsv.csv</code> (עם ניסיונות fallback).</li>
-            <li><strong>מזהה:</strong> בלחיצה – GovMap מחזיר לרוב <code class="inline">objectid</code>, והאתר מחפש אותו ב-CSV.</li>
-            <li><strong>חריגים:</strong> רק ערך מספרי שמקיים ≤ סף (שלילי) נחשב חריג; “אין נתונים” לא חריג.</li>
+          <ul
+            style="
+              margin: 0;
+              padding-right: 18px;
+              font-weight: 900;
+              color: #333;
+              line-height: 1.6;
+            "
+          >
+            <li><strong>נתוני פשיעה:</strong> קבצים מעובדים לפי שנה.</li>
+            <li>
+              <strong>אוכלוסייה:</strong> נתון סטטי (שנה אחת) לחישוב יחס
+              ל‑10,000 ב״ישובים״ בלבד, ורק אם קיים נתון.
+            </li>
+            <li>
+              <strong>צביעה:</strong> GeoJSON מקומי (ITM/EPSG:2039) – מומלץ
+              להגיש ב‑GitHub Pages או localhost.
+            </li>
           </ul>
         </div>
       </div>
